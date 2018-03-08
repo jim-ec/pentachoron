@@ -46,14 +46,12 @@ open class Vector(private val components: DoubleArray) {
     /**
      * Represent this vector as a string.
      */
-    override fun toString(): String {
-        val sb = StringBuilder()
-        sb.append('(')
-        components.forEach { d -> sb.append(d).append('|') }
-        sb.deleteCharAt(sb.length - 1)
-        sb.append(')')
-        return sb.toString()
-    }
+    override fun toString() =
+            StringBuilder().apply {
+                append('(')
+                components.forEach { d -> append(d).append('|') }
+                setCharAt(length - 1, ')')
+            }.toString()
 
     /**
      * Iterate over the components.

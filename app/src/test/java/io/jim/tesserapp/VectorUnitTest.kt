@@ -13,6 +13,7 @@ class VectorUnitTest {
     @Test
     fun construction() {
         val v = Vector(doubleArrayOf(1.0, 2.0, 5.0))
+        println(v)
 
         assertEquals(v.size, 3)
 
