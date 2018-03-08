@@ -13,7 +13,7 @@ open class Vector(private val components: DoubleArray) {
     /**
      * Return this vector's hash code.
      */
-    override fun hashCode(): Int = Arrays.hashCode(components)
+    override fun hashCode() = Arrays.hashCode(components)
 
     /**
      * Checks whether this vector and [other] are equal in instance or in value.
@@ -58,12 +58,12 @@ open class Vector(private val components: DoubleArray) {
     /**
      * Iterate over the components.
      */
-    operator fun iterator(): Iterator<Int> = components.indices.iterator()
+    operator fun iterator() = components.indices.iterator()
 
     /**
      * Get the [index]'th element.
      */
-    operator fun get(index: Int): Double = components[index]
+    operator fun get(index: Int) = components[index]
 
     /**
      * Set the [index]'th element to [value].
