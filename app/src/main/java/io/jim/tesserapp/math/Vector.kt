@@ -3,13 +3,16 @@ package io.jim.tesserapp.math
 import java.lang.Math.sqrt
 import java.util.*
 
-open class Vector(private val components: DoubleArray) {
+class Vector(vararg comps: Double) {
 
-    /**
-     * Create a vector with components taken from [l].
-     */
-    constructor(l: List<Double>)
-            : this(l.toDoubleArray())
+    val components = DoubleArray(comps.size, { comps[it] })
+
+    constructor(l: List<Double>) : this(*l.toDoubleArray())
+
+    val x get() = this[0]
+    val y get() = this[1]
+    val z get() = this[2]
+    val w get() = this[3]
 
     /**
      * Return this vector's hash code.
@@ -97,13 +100,23 @@ open class Vector(private val components: DoubleArray) {
      * Scales this by [d].
      */
     operator fun times(d: Double) =
-            Vector(components.map({ it * d }))
+            Vector(components.map { it * d })
 
     /**
      * Divides this vector through [d].
      */
     operator fun div(d: Double) =
-            Vector(components.map({ it / d }))
+            Vector(components.map { it / d })
+
+    /**
+     * Compute the vector product of this vector and [v].
+     * Does only work if both vectors are three dimensional.
+     */
+    infix fun cross(v: Vector): Vector {
+        require(size == 3)
+        require(v.size == 3)
+        return Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x)
+    }
 
     /**
      * Compute this vector's length.
@@ -120,7 +133,7 @@ open class Vector(private val components: DoubleArray) {
     /**
      * Project this vector orthographically into one smaller dimension.
      */
-    open val orthographicProjection
+    val orthographicProjection
         get() = Vector(components.dropLast(1))
 
     /**
