@@ -113,4 +113,16 @@ open class Vector(private val components: DoubleArray) {
     open val orthographicProjection
         get() = Vector(components.dropLast(1))
 
+    /**
+     * Project this vector into one smaller dimension by using perspective division
+     * through the last component. All points are projected onto a single plane defined by all
+     * points where the last component equals to [projectionPlane].
+     */
+    infix fun perspectiveProjection(projectionPlane: Double) =
+            orthographicProjection.also {
+                it.components.forEachIndexed { i, d ->
+                    it[i] = (d * projectionPlane) / components.last()
+                }
+            }
+
 }
