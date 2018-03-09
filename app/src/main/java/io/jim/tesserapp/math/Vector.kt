@@ -44,7 +44,7 @@ open class Vector(private val components: DoubleArray) {
      * Checks whether this is a null vector, i.e. all components are 0.
      */
     val isNull
-        get() = components.all { d -> d == 0.0 }
+        get() = components.all { it == 0.0 }
 
     /**
      * Represent this vector as a string.
@@ -52,7 +52,7 @@ open class Vector(private val components: DoubleArray) {
     override fun toString() =
             StringBuilder().apply {
                 append('(')
-                components.forEach { d -> append(d).append('|') }
+                components.forEach { append(it).append('|') }
                 setCharAt(length - 1, ')')
             }.toString()
 
@@ -97,19 +97,19 @@ open class Vector(private val components: DoubleArray) {
      * Scales this by [d].
      */
     operator fun times(d: Double) =
-            Vector(components.map({ it -> it * d }))
+            Vector(components.map({ it * d }))
 
     /**
      * Divides this vector through [d].
      */
     operator fun div(d: Double) =
-            Vector(components.map({ it -> it / d }))
+            Vector(components.map({ it / d }))
 
     /**
      * Compute this vector's length.
      */
     val length
-        get() = sqrt(components.map { it -> it * it }.sum())
+        get() = sqrt(components.map { it * it }.sum())
 
     /**
      * Return this vector in it's normalized form.
@@ -127,6 +127,8 @@ open class Vector(private val components: DoubleArray) {
      * Project this vector into one smaller dimension by using perspective division
      * through the last component. All points are projected onto a single plane defined by all
      * points where the last component equals to [projectionPlane].
+     *
+     *
      */
     infix fun perspectiveProjection(projectionPlane: Double) =
             orthographicProjection.also {
