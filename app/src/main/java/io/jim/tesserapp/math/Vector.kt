@@ -8,12 +8,14 @@ open class Vector(private val components: DoubleArray) {
     /**
      * Create a vector with components taken from [l].
      */
-    constructor(l: List<Double>) : this(l.toDoubleArray())
+    constructor(l: List<Double>)
+            : this(l.toDoubleArray())
 
     /**
      * Return this vector's hash code.
      */
-    override fun hashCode() = Arrays.hashCode(components)
+    override fun hashCode() =
+            Arrays.hashCode(components)
 
     /**
      * Checks whether this vector and [other] are equal in instance or in value.
@@ -35,7 +37,8 @@ open class Vector(private val components: DoubleArray) {
     /**
      * Checks whether two vector have the same count of components.
      */
-    infix fun compatible(v: Vector) = size == v.size
+    infix fun compatible(v: Vector) =
+            size == v.size
 
     /**
      * Checks whether this is a null vector, i.e. all components are 0.
@@ -56,12 +59,14 @@ open class Vector(private val components: DoubleArray) {
     /**
      * Iterate over the components.
      */
-    operator fun iterator() = components.indices.iterator()
+    operator fun iterator() =
+            components.indices.iterator()
 
     /**
      * Get the [index]'th element.
      */
-    operator fun get(index: Int) = components[index]
+    operator fun get(index: Int) =
+            components[index]
 
     /**
      * Set the [index]'th element to [value].
@@ -73,27 +78,32 @@ open class Vector(private val components: DoubleArray) {
     /**
      * Return [v] added to this vector.
      */
-    operator fun plus(v: Vector) = Vector(components.zip(v.components, { a, b -> a + b }))
+    operator fun plus(v: Vector) =
+            Vector(components.zip(v.components, { a, b -> a + b }))
 
     /**
      * Return [v] subtracted from this vector.
      */
-    operator fun minus(v: Vector) = Vector(components.zip(v.components, { a, b -> a - b }))
+    operator fun minus(v: Vector) =
+            Vector(components.zip(v.components, { a, b -> a - b }))
 
     /**
      * Scalar this and [v].
      */
-    operator fun times(v: Vector) = components.zip(v.components, { a, b -> a * b }).sum()
+    operator fun times(v: Vector) =
+            components.zip(v.components, { a, b -> a * b }).sum()
 
     /**
      * Scales this by [d].
      */
-    operator fun times(d: Double) = Vector(components.map({ it -> it * d }))
+    operator fun times(d: Double) =
+            Vector(components.map({ it -> it * d }))
 
     /**
      * Divides this vector through [d].
      */
-    operator fun div(d: Double) = Vector(components.map({ it -> it / d }))
+    operator fun div(d: Double) =
+            Vector(components.map({ it -> it / d }))
 
     /**
      * Compute this vector's length.
