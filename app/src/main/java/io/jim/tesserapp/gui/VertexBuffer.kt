@@ -53,18 +53,18 @@ class VertexBuffer(private val size: Int) {
         }
     }
 
-    fun draw(program: Int, mode: Int) {
+    fun draw(shader: Shader, mode: Int) {
         floatBuffer.rewind()
         glBindBuffer(GL_ARRAY_BUFFER, handle)
         glBufferData(GL_ARRAY_BUFFER, size * VERTEX_BYTE_LENGTH, floatBuffer, GL_DYNAMIC_DRAW)
 
 
-        glGetAttribLocation(program, "position").apply {
+        glGetAttribLocation(shader.program, "position").apply {
             glEnableVertexAttribArray(this)
             glVertexAttribPointer(this, COMPONENTS_PER_POSITION, GL_FLOAT, false, VERTEX_BYTE_LENGTH, 0)
         }
 
-        glGetAttribLocation(program, "color").apply {
+        glGetAttribLocation(shader.program, "color").apply {
             glEnableVertexAttribArray(this)
             glVertexAttribPointer(this, COMPONENTS_PER_COLOR, GL_FLOAT, false, VERTEX_BYTE_LENGTH, COMPONENTS_PER_POSITION * FLOAT_BYTE_LENGTH)
         }
