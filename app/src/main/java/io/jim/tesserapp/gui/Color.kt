@@ -1,6 +1,6 @@
 package io.jim.tesserapp.gui
 
-data class Color(val red: Float, val green: Float, val blue: Float, val alpha: Float = 1.0f) {
+data class Color(val red: Float, val green: Float, val blue: Float) {
 
     companion object {
         val RED = Color(1f, 0f, 0f)

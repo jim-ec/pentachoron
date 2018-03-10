@@ -12,7 +12,7 @@ class Renderer(maxTriangles: Int) : GLSurfaceView.Renderer {
 
     companion object {
         private const val COMPONENTS_PER_POSITION = 3
-        private const val COMPONENTS_PER_COLOR = 4
+        private const val COMPONENTS_PER_COLOR = 3
         const val COMPONENTS_PER_VERTEX = COMPONENTS_PER_POSITION + COMPONENTS_PER_COLOR
         const val FLOAT_BYTE_LENGTH = 4
         const val VERTEX_BYTE_LENGTH = COMPONENTS_PER_VERTEX * FLOAT_BYTE_LENGTH
@@ -34,9 +34,9 @@ class Renderer(maxTriangles: Int) : GLSurfaceView.Renderer {
 
     private val vertexShaderSource = """
         attribute vec3 position;
-        attribute vec4 color;
+        attribute vec3 color;
 
-        varying vec4 vColor;
+        varying vec3 vColor;
 
         void main() {
             gl_Position = vec4(position, 1.0);
@@ -45,10 +45,10 @@ class Renderer(maxTriangles: Int) : GLSurfaceView.Renderer {
     """.trimIndent()
 
     private val fragmentShaderSource = """
-        varying mediump vec4 vColor;
+        varying mediump vec3 vColor;
 
         void main() {
-            gl_FragColor = vColor;
+            gl_FragColor = vec4(vColor, 1.0);
         }
     """.trimIndent()
 
@@ -143,7 +143,6 @@ class Renderer(maxTriangles: Int) : GLSurfaceView.Renderer {
             put(color.red)
             put(color.green)
             put(color.blue)
-            put(color.alpha)
         }
     }
 
