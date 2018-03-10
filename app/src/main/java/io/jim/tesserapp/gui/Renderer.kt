@@ -24,7 +24,13 @@ class Renderer(maxTriangles: Int) : GLSurfaceView.Renderer {
             ByteBuffer.allocateDirect(maxTriangleVertices * VERTEX_BYTE_LENGTH)
                     .apply { order(ByteOrder.nativeOrder()) }
 
-    private val floatBuffer = byteBuffer.asFloatBuffer()
+    private val floatBuffer = byteBuffer.asFloatBuffer().apply {
+        clear()
+        while (position() < capacity()) {
+            put(0f)
+        }
+        rewind()
+    }
 
     private val vertexShaderSource = """
         attribute vec3 position;
@@ -46,14 +52,13 @@ class Renderer(maxTriangles: Int) : GLSurfaceView.Renderer {
         }
     """.trimIndent()
 
-    // TODO: try to create shaders right here:
     private var vertexShader = -1
     private var fragmentShader = -1
     private var program = -1
     private var buffer = -1
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-        glClearColor(0.3f, 0.3f, 0.3f, 1.0f)
+        glClearColor(1f, 1f, 1f, 1f)
 
         // Disabled due to transparency:
         glDisable(GL_CULL_FACE)
@@ -63,7 +68,7 @@ class Renderer(maxTriangles: Int) : GLSurfaceView.Renderer {
 
         val status = IntArray(1)
 
-        vertexShader = glCreateShader(GL_VERTEX_SHADER) // TODO: Create shaders at definitions, make val
+        vertexShader = glCreateShader(GL_VERTEX_SHADER)
         vertexShader.apply {
             glShaderSource(this, vertexShaderSource)
             glCompileShader(this)
@@ -149,10 +154,11 @@ class Renderer(maxTriangles: Int) : GLSurfaceView.Renderer {
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        println("Vertex buffer: pos=${floatBuffer.position()}  cap=${floatBuffer.capacity()}")
+        println("Vertex buffer: " +
+                "pos=${floatBuffer.position()} " +
+                "cap=${floatBuffer.capacity()} ")
 
-        // TODO: Try to read from byte-buffer instead
-        floatBuffer.position(0)
+        floatBuffer.rewind()
         glBindBuffer(GL_ARRAY_BUFFER, buffer)
         glBufferData(GL_ARRAY_BUFFER, maxTriangleVertices * VERTEX_BYTE_LENGTH, floatBuffer, GL_DYNAMIC_DRAW)
 
@@ -163,7 +169,6 @@ class Renderer(maxTriangles: Int) : GLSurfaceView.Renderer {
 
         glGetAttribLocation(program, "color").apply {
             glEnableVertexAttribArray(this)
-            // TODO: Can I give the buffer directly to this function?
             glVertexAttribPointer(this, COMPONENTS_PER_COLOR, GL_FLOAT, false, VERTEX_BYTE_LENGTH, COMPONENTS_PER_POSITION * FLOAT_BYTE_LENGTH)
         }
 
