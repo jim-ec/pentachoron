@@ -53,7 +53,7 @@ class VertexBuffer(private val size: Int) {
         }
     }
 
-    fun update(program: Int) {
+    fun draw(program: Int, mode: Int) {
         floatBuffer.rewind()
         glBindBuffer(GL_ARRAY_BUFFER, handle)
         glBufferData(GL_ARRAY_BUFFER, size * VERTEX_BYTE_LENGTH, floatBuffer, GL_DYNAMIC_DRAW)
@@ -68,6 +68,8 @@ class VertexBuffer(private val size: Int) {
             glEnableVertexAttribArray(this)
             glVertexAttribPointer(this, COMPONENTS_PER_COLOR, GL_FLOAT, false, VERTEX_BYTE_LENGTH, COMPONENTS_PER_POSITION * FLOAT_BYTE_LENGTH)
         }
+
+        glDrawArrays(mode, 0, size)
     }
 
 }

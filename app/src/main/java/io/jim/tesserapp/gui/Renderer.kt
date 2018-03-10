@@ -6,11 +6,13 @@ import io.jim.tesserapp.math.Vector
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-class Renderer(maxTriangles: Int) : GLSurfaceView.Renderer {
+class Renderer(maxTriangles: Int, maxLines: Int) : GLSurfaceView.Renderer {
 
     private val maxTriangleVertices = maxTriangles * 3
+    private val maxLineVertices = maxLines * 2
 
     private lateinit var triangleBuffer: VertexBuffer
+    private lateinit var lineBuffer: VertexBuffer
 
     private val vertexShaderSource = """
         attribute vec3 position;
@@ -39,9 +41,8 @@ class Renderer(maxTriangles: Int) : GLSurfaceView.Renderer {
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glClearColor(1f, 1f, 1f, 1f)
 
-        // Disabled due to transparency:
         glDisable(GL_CULL_FACE)
-        glDisable(GL_DEPTH_TEST)
+        glEnable(GL_DEPTH_TEST)
 
         glLineWidth(4f)
 
@@ -85,17 +86,22 @@ class Renderer(maxTriangles: Int) : GLSurfaceView.Renderer {
         }
 
         triangleBuffer = VertexBuffer(maxTriangleVertices)
+        lineBuffer = VertexBuffer(maxLineVertices)
     }
 
-    /*private fun appendLine(line: Pair<Vector, Vector>, color: Color) {
-        appendVertex(line.first, color)
-        appendVertex(line.second, color)
-    }*/
+    fun appendLine(a: Vector, b: Vector, color: Color) {
+        lineBuffer.apply {
+            appendVertex(a, color)
+            appendVertex(b, color)
+        }
+    }
 
     fun appendTriangle(a: Vector, b: Vector, c: Vector, color: Color) {
-        triangleBuffer.appendVertex(a, color)
-        triangleBuffer.appendVertex(b, color)
-        triangleBuffer.appendVertex(c, color)
+        triangleBuffer.apply {
+            appendVertex(a, color)
+            appendVertex(b, color)
+            appendVertex(c, color)
+        }
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
@@ -105,9 +111,8 @@ class Renderer(maxTriangles: Int) : GLSurfaceView.Renderer {
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        triangleBuffer.update(program)
-
-        glDrawArrays(GL_TRIANGLES, 0, maxTriangleVertices)
+        triangleBuffer.draw(program, GL_TRIANGLES)
+        lineBuffer.draw(program, GL_LINES)
     }
 
 }

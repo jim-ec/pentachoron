@@ -8,7 +8,7 @@ import io.jim.tesserapp.math.Vector
 
 class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(context, attrs) {
 
-    private val renderer = Renderer(3)
+    private val renderer = Renderer(3, 2)
 
     init {
         setEGLContextClientVersion(2)
@@ -16,11 +16,9 @@ class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(
         debugFlags = DEBUG_CHECK_GL_ERROR
         renderMode = RENDERMODE_WHEN_DIRTY
 
-        //renderer.appendLine(Pair(Vector(0.0, 100.0), Vector(100.0, 100.0)), Color.RED)
-        //renderer.appendLine(Pair(Vector(-100.0, 100.0), Vector(100.0, 100.0)), Color.BLUE)
-
         Handler().postDelayed({
-            renderer.appendTriangle(Vector(0.0, 1.0, 1.0), Vector(1.0, -1.0, 1.0), Vector(-1.0, -1.0, 1.0), Color.GREEN)
+            renderer.appendTriangle(Vector(0.0, 1.0, 0.7), Vector(1.0, -1.0, 0.7), Vector(-1.0, -1.0, 0.7), Color.GREEN)
+            renderer.appendLine(Vector(-1.0, 0.0, 0.8), Vector(1.0, 0.0, 0.8), Color.RED)
             requestRender()
         }, 1000)
     }
