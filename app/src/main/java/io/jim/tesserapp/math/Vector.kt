@@ -5,7 +5,7 @@ import java.util.*
 
 class Vector(vararg comps: Double) {
 
-    val components = DoubleArray(comps.size, { comps[it] })
+    private val components = DoubleArray(comps.size, { comps[it] })
 
     constructor(l: List<Double>) : this(*l.toDoubleArray())
 
@@ -82,19 +82,19 @@ class Vector(vararg comps: Double) {
      * Return [v] added to this vector.
      */
     operator fun plus(v: Vector) =
-            Vector(components.zip(v.components, { a, b -> a + b }))
+            Vector(components.zip(v.components) { a, b -> a + b })
 
     /**
      * Return [v] subtracted from this vector.
      */
     operator fun minus(v: Vector) =
-            Vector(components.zip(v.components, { a, b -> a - b }))
+            Vector(components.zip(v.components) { a, b -> a - b })
 
     /**
      * Scalar this and [v].
      */
     operator fun times(v: Vector) =
-            components.zip(v.components, { a, b -> a * b }).sum()
+            components.zip(v.components) { a, b -> a * b }.sum()
 
     /**
      * Scales this by [d].
