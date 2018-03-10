@@ -1,19 +1,24 @@
 package io.jim.tesserapp.gui
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Path
+import android.opengl.GLSurfaceView
 import android.util.AttributeSet
-import android.view.View
-import io.jim.tesserapp.math.Triangle
 import io.jim.tesserapp.math.Vector
 
-class CoordinateSystem(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
+class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(context, attrs) {
 
-    private val paint = Paint().apply { color = Color.RED }
-    private val triangle = Triangle(Vector(0.0, 1.0), Vector(1.0, 0.0), Vector(-1.0, 0.0))
+    private val renderer = Renderer(1)
+
+    init {
+        renderer.clearVertices()
+        //renderer.appendLine(Pair(Vector(0.0, 100.0), Vector(100.0, 100.0)), Color.RED)
+        //renderer.appendLine(Pair(Vector(-100.0, 100.0), Vector(100.0, 100.0)), Color.BLUE)
+        renderer.appendTriangle(Vector(0.0, 1.0, 1.0), Vector(1.0, -1.0, 1.0), Vector(-1.0, -1.0, 1.0), Color.GREEN)
+
+        setEGLContextClientVersion(2)
+        setRenderer(renderer)
+        renderMode = RENDERMODE_WHEN_DIRTY
+    }
 
     private fun transform(v: Vector): Vector {
         return Vector(v.x, -v.y) * 100.0 + Vector(width / 2.0, height / 2.0)
@@ -21,17 +26,5 @@ class CoordinateSystem(context: Context?, attrs: AttributeSet?) : View(context, 
 
     private fun tx(v: Vector) = transform(v).x.toFloat()
     private fun ty(v: Vector) = transform(v).y.toFloat()
-
-    override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
-        if (canvas === null) return
-
-        val path = Path()
-                .apply { moveTo(tx(triangle.first), ty(triangle.first)) }
-                .apply { lineTo(tx(triangle.second), ty(triangle.second)) }
-                .apply { lineTo(tx(triangle.third), ty(triangle.third)) }
-
-        canvas.drawPath(path, paint)
-    }
 
 }
