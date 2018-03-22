@@ -2,7 +2,7 @@ package io.jim.tesserapp.math
 
 class Triangle(a: Vector, b: Vector, c: Vector) {
 
-    val points: Array<Vector> = arrayOf(a, b, c)
+    private val points: Array<Vector> = arrayOf(a, b, c)
 
     val first get() = points[0]
     val second get() = points[1]

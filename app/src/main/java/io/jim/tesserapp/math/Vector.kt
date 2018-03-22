@@ -139,14 +139,13 @@ class Vector(vararg comps: Double) {
     /**
      * Project this vector into one smaller dimension by using perspective division
      * through the last component. All points are projected onto a single plane defined by all
-     * points where the last component equals to [projectionPlane].
-     *
-     *
+     * points where the last component equals to 1.
      */
-    infix fun perspectiveProjection(projectionPlane: Double) =
+    val perspectiveProjection
+        get() =
             orthographicProjection.also {
                 it.components.forEachIndexed { i, d ->
-                    it[i] = (d * projectionPlane) / components.last()
+                    it[i] = d / components.last()
                 }
             }
 

@@ -120,10 +120,10 @@ class VectorUnitTest {
     fun perspectiveProjection() {
         val v = Vector(3.0, 5.0, 9.0)
 
-        (v perspectiveProjection 2.5).apply {
+        v.perspectiveProjection.apply {
             assertEquals(2, size)
-            assertEquals(0.83, x, 0.01)
-            assertEquals(1.38, y, 0.01)
+            assertEquals(0.33, x, 0.01)
+            assertEquals(0.55, y, 0.01)
         }
     }
 
