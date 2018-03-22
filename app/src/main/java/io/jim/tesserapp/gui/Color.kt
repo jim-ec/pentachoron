@@ -1,5 +1,6 @@
 package io.jim.tesserapp.gui
 
+@Suppress("unused")
 data class Color(val red: Float, val green: Float, val blue: Float) {
 
     companion object {

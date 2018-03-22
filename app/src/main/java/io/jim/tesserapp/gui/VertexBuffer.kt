@@ -34,8 +34,8 @@ class VertexBuffer(private val size: Int) {
     }
 
     fun appendVertex(position: Vector, color: Color) {
-        require(3 == position.size) { "Position vectors must be 3D" }
-        require(floatBuffer.position() + COMPONENTS_PER_VERTEX <= floatBuffer.capacity())
+        assert(3 == position.size) { "Position vectors must be 3D" }
+        assert(floatBuffer.position() + COMPONENTS_PER_VERTEX <= floatBuffer.capacity())
         {
             "Insufficient memory to store vertex: pos=%d(%d verts)  cap=%d(%d verts)  needed=%d"
                     .format(floatBuffer.position(), floatBuffer.position() / COMPONENTS_PER_VERTEX,
@@ -57,7 +57,6 @@ class VertexBuffer(private val size: Int) {
         floatBuffer.rewind()
         glBindBuffer(GL_ARRAY_BUFFER, handle)
         glBufferData(GL_ARRAY_BUFFER, size * VERTEX_BYTE_LENGTH, floatBuffer, GL_DYNAMIC_DRAW)
-
 
         glGetAttribLocation(shader.program, "position").apply {
             glEnableVertexAttribArray(this)

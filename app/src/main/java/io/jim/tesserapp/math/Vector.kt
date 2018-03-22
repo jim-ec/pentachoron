@@ -3,11 +3,21 @@ package io.jim.tesserapp.math
 import java.lang.Math.sqrt
 import java.util.*
 
-class Vector(vararg comps: Double) {
+class Vector {
 
-    private val components = DoubleArray(comps.size, { comps[it] })
+    private val components: DoubleArray
 
-    constructor(l: List<Double>) : this(*l.toDoubleArray())
+    constructor(vararg comps: Double) {
+        components = DoubleArray(comps.size, { comps[it] })
+    }
+
+    constructor(l: List<Double>) {
+        components = l.toDoubleArray()
+    }
+
+    constructor(size: Int, value: Double = 0.0) {
+        components = DoubleArray(size, { value })
+    }
 
     val x get() = this[0]
     val y get() = this[1]
@@ -113,8 +123,8 @@ class Vector(vararg comps: Double) {
      * Does only work if both vectors are three dimensional.
      */
     infix fun cross(v: Vector): Vector {
-        require(size == 3)
-        require(v.size == 3)
+        assert(size == 3)
+        assert(v.size == 3)
         return Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x)
     }
 
