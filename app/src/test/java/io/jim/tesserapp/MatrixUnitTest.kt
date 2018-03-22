@@ -46,7 +46,7 @@ class MatrixUnitTest {
     @Test
     fun vectorMultiplication() {
         val m = Matrix(2, listOf(0.0, 1.0, -1.0, 0.0))
-        val v = m * Vector(2.0, 1.0)
+        val v = Vector(2.0, 1.0) * m
         assertEquals(-1.0, v.x, 0.1)
         assertEquals(2.0, v.y, 0.1)
     }
@@ -54,7 +54,7 @@ class MatrixUnitTest {
     @Test
     fun shearing() {
         val m = Matrix.shear(2, 0, 0.0, 1, 0.5)
-        val v = m * Vector(2.0, 2.0)
+        val v = Vector(2.0, 2.0) * m
         assertEquals(3.0, v.x, 0.1)
         assertEquals(2.0, v.y, 0.1)
     }
@@ -62,7 +62,7 @@ class MatrixUnitTest {
     @Test
     fun scaling() {
         val m = Matrix.scale(2, 3.0)
-        val v = m * Vector(2.0, 4.0)
+        val v = Vector(2.0, 4.0) * m
         assertEquals(6.0, v.x, 0.1)
         assertEquals(12.0, v.y, 0.1)
     }
@@ -70,7 +70,7 @@ class MatrixUnitTest {
     @Test
     fun rotation() {
         val m = Matrix.rotation(4, 1, 3, PI / 2)
-        val v = m * Vector(0.0, 3.0, 0.0, 5.0)
+        val v = Vector(0.0, 3.0, 0.0, 5.0) * m
         assertEquals(0.0, v.x, 0.1)
         assertEquals(-5.0, v.y, 0.1)
         assertEquals(0.0, v.z, 0.1)
@@ -80,7 +80,7 @@ class MatrixUnitTest {
     @Test
     fun transformation() {
         val m = Matrix.translation(3, Vector(2.0, 1.0))
-        val p = m * Vector(2.0, 2.0, 1.0)
+        val p = Vector(2.0, 2.0, 1.0) * m
         assertEquals(4.0, p.x, 0.1)
         assertEquals(3.0, p.y, 0.1)
     }

@@ -102,16 +102,4 @@ class Matrix private constructor(val size: Int) {
                 }
             }
 
-    /**
-     * Multiply this and a given right-hand-side vector, resulting into a vector.
-     * @exception AssertionError If matrix and vector are not of the same size.
-     */
-    operator fun times(rhs: Vector) =
-            Vector(size).also {
-                assert(this compatible rhs)
-                for (c in 0 until size) {
-                    it[c] = (0 until size).map { i -> this[i][c] * rhs[i] }.sum()
-                }
-            }
-
 }

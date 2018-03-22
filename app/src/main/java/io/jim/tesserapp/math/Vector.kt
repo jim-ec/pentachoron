@@ -159,4 +159,16 @@ class Vector {
                 }
             }
 
+    /**
+     * Multiply this and a given left-hand-side vector, resulting into a vector.
+     * @exception AssertionError If matrix and vector are not of the same size.
+     */
+    operator fun times(rhs: Matrix) =
+            Vector(size).also {
+                assert(rhs compatible this)
+                for (c in 0 until size) {
+                    it[c] = (0 until size).map { i -> rhs[i][c] * this[i] }.sum()
+                }
+            }
+
 }
