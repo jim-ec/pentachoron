@@ -24,7 +24,7 @@ class Matrix private constructor(val size: Int) {
         fun identity(size: Int) = scale(size, 1.0)
 
         /**
-         * Construct a matrix, representing linear scaling.
+         * Construct a matrix, representing an affine linear scaling transformation.
          */
         fun scale(size: Int, s: Double) =
                 Matrix(size).apply {
@@ -34,7 +34,7 @@ class Matrix private constructor(val size: Int) {
                 }
 
         /**
-         * Construct a matrix, representing a rotation of [phi] on the [n]-[m]-plane.
+         * Construct a matrix, representing an affine rotation transformation of [phi] on the [n]-[m]-plane.
          * @exception AssertionError If any rotation-plane axis is larger in dimension than the matrix itself.
          */
         fun rotation(size: Int, n: Int, m: Int, phi: Double) =
@@ -55,11 +55,11 @@ class Matrix private constructor(val size: Int) {
                 }
 
         /**
-         * Construct a matrix, representing sheering on the [n]-[m]-plane.
+         * Construct a matrix, representing an affine shearing transformation on the [n]-[m]-plane.
          * The [n]-axis stretched along the [m]-axis by [nm],
          * and the [m]-axis is stretched along the [n]-axis by [mn].
          */
-        fun sheer(size: Int, n: Int, nm: Double, m: Int, mn: Double) =
+        fun shear(size: Int, n: Int, nm: Double, m: Int, mn: Double) =
                 identity(size).apply {
                     assert(n < size)
                     assert(m < size)
@@ -67,11 +67,26 @@ class Matrix private constructor(val size: Int) {
                     this[m][n] = mn
                 }
 
+        /**
+         * Construct a matrix, representing an affine translation transformation by a given [v] vector.
+         * Remember that vectors multiplied to this matrix must be homogeneous, their last component
+         * determines whether they are transformed at all.
+         * @exception AssertionError If [v]'s size is not equal to [size] less one.
+         */
+        fun translation(size: Int, v: Vector) =
+                identity(size).apply {
+                    assert(size == v.size - 1)
+                    for (i in 0 until size - 1) {
+                        this[size - 1][i] = v[i]
+                    }
+                }
+
     }
 
     operator fun get(index: Int) = rows[index]
 
     infix fun compatible(rhs: Matrix) = size == rhs.size
+    infix fun compatible(rhs: Vector) = size == rhs.size
 
     /**
      * Multiply this and a given right-hand-side matrix, resulting into a matrix.
@@ -93,7 +108,7 @@ class Matrix private constructor(val size: Int) {
      */
     operator fun times(rhs: Vector) =
             Vector(size).also {
-                assert(size == rhs.size)
+                assert(this compatible rhs)
                 for (c in 0 until size) {
                     it[c] = (0 until size).map { i -> this[i][c] * rhs[i] }.sum()
                 }

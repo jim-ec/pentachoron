@@ -22,8 +22,10 @@ class MatrixUnitTest {
         val m = Matrix.identity(4)
         val n = Matrix.identity(4)
         val u = Matrix.identity(5)
+        val v = Vector(1.0, 2.0, 3.0, 4.0)
         assertTrue(m compatible n)
         assertTrue(n compatible m)
+        assertTrue(m compatible v)
         assertFalse(m compatible u)
         assertFalse(n compatible u)
         assertFalse(u compatible m)
@@ -50,8 +52,8 @@ class MatrixUnitTest {
     }
 
     @Test
-    fun sheering() {
-        val m = Matrix.sheer(2, 0, 0.0, 1, 0.5)
+    fun shearing() {
+        val m = Matrix.shear(2, 0, 0.0, 1, 0.5)
         val v = m * Vector(2.0, 2.0)
         assertEquals(3.0, v.x, 0.1)
         assertEquals(2.0, v.y, 0.1)
@@ -73,6 +75,14 @@ class MatrixUnitTest {
         assertEquals(-5.0, v.y, 0.1)
         assertEquals(0.0, v.z, 0.1)
         assertEquals(3.0, v.w, 0.1)
+    }
+
+    @Test
+    fun transformation() {
+        val m = Matrix.translation(3, Vector(2.0, 1.0))
+        val p = m * Vector(2.0, 2.0, 1.0)
+        assertEquals(4.0, p.x, 0.1)
+        assertEquals(3.0, p.y, 0.1)
     }
 
 }
