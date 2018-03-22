@@ -85,4 +85,16 @@ class MatrixUnitTest {
         assertEquals(3.0, p.y, 0.1)
     }
 
+    @Test
+    fun transpose() {
+        val m = Matrix(2, listOf(
+                1.0, 2.0,
+                3.0, 4.0))
+        val n = m.transposed()
+        assertEquals(1.0, n[0][0], 0.1)
+        assertEquals(3.0, n[0][1], 0.1)
+        assertEquals(2.0, n[1][0], 0.1)
+        assertEquals(4.0, n[1][1], 0.1)
+    }
+
 }

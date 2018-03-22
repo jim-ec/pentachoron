@@ -102,4 +102,16 @@ class Matrix private constructor(val size: Int) {
                 }
             }
 
+    /**
+     * Construct a matrix representing a transpose of this matrix.
+     */
+    fun transposed() =
+            Matrix(size).also {
+                for (r in 0 until size) {
+                    for (c in 0 until size) {
+                        it[r][c] = this[c][r]
+                    }
+                }
+            }
+
 }
