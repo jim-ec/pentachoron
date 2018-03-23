@@ -1,14 +1,14 @@
 package io.jim.tesserapp.math
 
-import java.lang.Math.sqrt
+import java.lang.Math.*
 import java.util.*
 
-class Vector {
+open class Vector {
 
     private val components: DoubleArray
 
     constructor(vararg comps: Double) {
-        components = DoubleArray(comps.size, { comps[it] })
+        components = DoubleArray(comps.size) { comps[it] }
     }
 
     constructor(l: List<Double>) {
@@ -16,7 +16,14 @@ class Vector {
     }
 
     constructor(size: Int, value: Double = 0.0) {
-        components = DoubleArray(size, { value })
+        components = DoubleArray(size) { value }
+    }
+
+    constructor(p: SphericalCoordinate) {
+        components = DoubleArray(3)
+        this[0] = cos(p.phi) * sin(p.theta) * p.r
+        this[1] = sin(p.phi) * sin(p.theta) * p.r
+        this[2] = cos(p.theta) * p.r
     }
 
     val x get() = this[0]
@@ -37,21 +44,21 @@ class Vector {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as Vector
-        if (size != other.size) return false
+        if (dimension != other.dimension) return false
         return Arrays.equals(components, other.components)
     }
 
     /**
      * Return the number of components.
      */
-    val size
+    val dimension
         get() = components.size
 
     /**
      * Checks whether two vector have the same count of components.
      */
     infix fun compatible(v: Vector) =
-            size == v.size
+            dimension == v.dimension
 
     /**
      * Checks whether this is a null vector, i.e. all components are 0.
@@ -123,8 +130,8 @@ class Vector {
      * Does only work if both vectors are three dimensional.
      */
     infix fun cross(v: Vector): Vector {
-        assert(size == 3)
-        assert(v.size == 3)
+        assert(dimension == 3)
+        assert(v.dimension == 3)
         return Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x)
     }
 
@@ -161,13 +168,13 @@ class Vector {
 
     /**
      * Multiply this and a given left-hand-side vector, resulting into a vector.
-     * @exception AssertionError If matrix and vector are not of the same size.
+     * @exception AssertionError If matrix and vector are not of the same dimension.
      */
     operator fun times(rhs: Matrix) =
-            Vector(size).also {
+            Vector(dimension).also {
                 assert(rhs compatible this)
-                for (c in 0 until size) {
-                    it[c] = (0 until size).map { i -> rhs[i][c] * this[i] }.sum()
+                for (c in 0 until dimension) {
+                    it[c] = (0 until dimension).map { i -> rhs[i][c] * this[i] }.sum()
                 }
             }
 

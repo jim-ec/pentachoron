@@ -1,5 +1,6 @@
 package io.jim.tesserapp
 
+import io.jim.tesserapp.math.SphericalCoordinate
 import io.jim.tesserapp.math.Vector
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -14,7 +15,7 @@ class VectorUnitTest {
     fun construction() {
         val v = Vector(1.0, 2.0, 5.0, 4.0)
 
-        assertEquals(v.size, 4)
+        assertEquals(v.dimension, 4)
 
         assertEquals(1.0, v[0], 0.1)
         assertEquals(2.0, v[1], 0.1)
@@ -110,7 +111,7 @@ class VectorUnitTest {
     fun orthographicProjection() {
         val v = Vector(3.0, 1.0, 4.0)
         v.orthographicProjection.apply {
-            assertEquals(2, size)
+            assertEquals(2, dimension)
             assertEquals(3.0, x, 0.01)
             assertEquals(1.0, y, 0.01)
         }
@@ -120,10 +121,23 @@ class VectorUnitTest {
     fun perspectiveProjection() {
         val v = Vector(3.0, 5.0, 9.0)
         v.perspectiveProjection.apply {
-            assertEquals(2, size)
+            assertEquals(2, dimension)
             assertEquals(0.33, x, 0.01)
             assertEquals(0.55, y, 0.01)
         }
+    }
+
+    @Test
+    fun spherical() {
+        val v = Vector(1.0, 4.0, 2.0)
+        val p = SphericalCoordinate(v)
+        assertEquals(4.58, p.r, 0.01)
+        assertEquals(1.11, p.theta, 0.01)
+        assertEquals(1.32, p.phi, 0.01)
+        val u = Vector(p)
+        assertEquals(u.x, v.x, 0.01)
+        assertEquals(u.y, v.y, 0.01)
+        assertEquals(u.z, v.z, 0.01)
     }
 
 }

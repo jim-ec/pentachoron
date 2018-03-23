@@ -34,7 +34,7 @@ class VertexBuffer(private val size: Int) {
     }
 
     fun appendVertex(position: Vector, color: Color) {
-        assert(3 == position.size) { "Position vectors must be 3D" }
+        assert(3 == position.dimension) { "Position vectors must be 3D" }
         assert(floatBuffer.position() + COMPONENTS_PER_VERTEX <= floatBuffer.capacity())
         {
             "Insufficient memory to store vertex: pos=%d(%d verts)  cap=%d(%d verts)  needed=%d"
