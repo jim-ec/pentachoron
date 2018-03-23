@@ -17,6 +17,7 @@ class TransformationUnitTest {
         val v = Vector.point(2.0, 2.0) * m
         assertEquals(3.0, v.x, 0.1)
         assertEquals(2.0, v.y, 0.1)
+        assertEquals(1.0, m.last().last(), 0.01)
     }
 
     @Test
@@ -25,6 +26,13 @@ class TransformationUnitTest {
         val v = Vector.point(2.0, 4.0) * m
         assertEquals(6.0, v.x, 0.1)
         assertEquals(12.0, v.y, 0.1)
+        assertEquals(1.0, m.last().last(), 0.01)
+
+        val m1 = Matrix.scale(3, Vector(4.0, 5.0))
+        val v1 = Vector.direction(2.0, 4.0) * m1
+        assertEquals(8.0, v1.x, 0.1)
+        assertEquals(20.0, v1.y, 0.1)
+        assertEquals(1.0, m1.last().last(), 0.01)
     }
 
     @Test
@@ -35,11 +43,13 @@ class TransformationUnitTest {
         assertEquals(-5.0, v.y, 0.1)
         assertEquals(0.0, v.z, 0.1)
         assertEquals(3.0, v.w, 0.1)
+        assertEquals(1.0, m.last().last(), 0.01)
     }
 
     @Test
     fun translation() {
         val m = Matrix.translation(3, Vector(2.0, 1.0))
+        assertEquals(1.0, m.last().last(), 0.01)
 
         val p = Vector.point(2.0, 2.0) * m
         assertEquals(4.0, p.x, 0.1)
@@ -58,15 +68,18 @@ class TransformationUnitTest {
                 Vector(0.0, 1.0, 0.0),
                 Vector(0.0, 0.0, 1.0)
         ))
+        assertEquals(1.0, m.last().last(), 0.01)
         m.forEachCoefficient { r, c -> assertEquals(i[r][c], m[r][c], 0.01) }
 
-        val t = Matrix.scale(4, 5.0)
+        val s = Matrix.scale(4, 5.0)
         val n = Matrix.space(4, listOf(
                 Vector(5.0, 0.0, 0.0),
                 Vector(0.0, 5.0, 0.0),
                 Vector(0.0, 0.0, 5.0)
         ))
-        t.forEachCoefficient { r, c -> assertEquals(t[r][c], n[r][c], 0.01) }
+        assertEquals(1.0, s.last().last(), 0.01)
+        assertEquals(1.0, n.last().last(), 0.01)
+        s.forEachCoefficient { r, c -> assertEquals(s[r][c], n[r][c], 0.01) }
     }
 
 }

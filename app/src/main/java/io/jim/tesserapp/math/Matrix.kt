@@ -3,18 +3,15 @@ package io.jim.tesserapp.math
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Matrix {
+class Matrix : ArrayList<Vector> {
 
-    val size: Int
-    private val rows: Array<Vector>
-
+    /**
+     * Construct an identity matrix with side length equal to [size].
+     */
     constructor(size: Int) {
         assert(size > 0) { "Size must be greater than 0" }
-        this.size = size
-        this.rows = Array(size) {
-            Vector(size).apply {
-                this[it] = 1.0
-            }
+        for (i in 0 until size) {
+            add(Vector(size).also { it[i] = 1.0 })
         }
     }
 
@@ -24,7 +21,7 @@ class Matrix {
      */
     constructor(size: Int, l: List<Double>) : this(size) {
         assert(size * size == l.size)
-        l.forEachIndexed { i, v -> rows[i / size][i % size] = v }
+        l.forEachIndexed { i, v -> this[i / size][i % size] = v }
     }
 
     companion object {
@@ -34,8 +31,8 @@ class Matrix {
                     assert(axises.size + 1 == dimension) { "Axis count ${axises.size} does not match up with matrix size $dimension" }
                     assert(axises.all { it.dimension + 1 == dimension }) { "All vectors must have one component less than the matrix size $dimension" }
                     axises.forEachIndexed { r, axis ->
-                        for (c in 0 until dimension - 1) {
-                            this[r][c] = axis[c]
+                        axis.forEachIndexed { c, coefficient ->
+                            this[r][c] = coefficient
                         }
                     }
                 }
@@ -48,6 +45,18 @@ class Matrix {
                     for (i in 0 until dimension - 1) {
                         this[i][i] = factor
                     }
+                }
+
+        /**
+         * Construct a matrix, representing an affine linear scaling transformation.
+         */
+        fun scale(dimension: Int, factor: Vector) =
+                Matrix(dimension).apply {
+
+                    assert(dimension == factor.dimension + 1)
+                    { "Scale vector dimension ${factor.dimension} does not match up with matrix dimension $dimension" }
+
+                    factor.forEachIndexed { i, fi -> this[i][i] = fi }
                 }
 
         /**
@@ -93,13 +102,11 @@ class Matrix {
         fun translation(dimension: Int, t: Vector) =
                 Matrix(dimension).apply {
                     assert(dimension == t.dimension + 1) { "Translation size ${t.dimension} does not match up with matrix size $dimension" }
-                    for (i in 0 until dimension - 1) {
-                        this[dimension - 1][i] = t[i]
+                    t.forEachIndexed { i, ti ->
+                        this[dimension - 1][i] = ti
                     }
                 }
     }
-
-    operator fun get(index: Int) = rows[index]
 
     infix fun compatible(rhs: Matrix) = size == rhs.size
     infix fun compatible(rhs: Vector) = size == rhs.dimension
@@ -128,11 +135,24 @@ class Matrix {
      * Call a function for each coefficient. Indices of row and column are passed to [f].
      */
     fun forEachCoefficient(f: (Int, Int) -> Unit) {
-        for (r in 0 until size) {
-            for (c in 0 until size) {
+        forEachIndexed { r, row ->
+            row.forEachIndexed { c, _ ->
                 f(r, c)
             }
         }
     }
+
+    override fun toString() =
+            StringBuilder().also {
+                it.append("[ (").append(size).append('x').append(size).append("): ")
+                forEachIndexed { r, row ->
+                    row.forEachIndexed { c, col ->
+                        it.append(col)
+                        if (c < size - 1) it.append(", ")
+                    }
+                    if (r < size - 1) it.append(" | ")
+                }
+                it.append(" ]")
+            }.toString()
 
 }
