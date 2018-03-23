@@ -59,7 +59,7 @@ class Vector : ArrayList<Double> {
     override fun toString() =
             StringBuilder().apply {
                 append('(')
-                forEach { append(it).append('|') }
+                this@Vector.forEach { append(it).append('|') }
                 setCharAt(length - 1, ')')
             }.toString()
 

@@ -3,6 +3,7 @@ package io.jim.tesserapp
 import io.jim.tesserapp.math.Matrix
 import io.jim.tesserapp.math.Vector
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import kotlin.math.PI
 
@@ -80,6 +81,17 @@ class TransformationUnitTest {
         assertEquals(1.0, s.last().last(), 0.01)
         assertEquals(1.0, n.last().last(), 0.01)
         s.forEachCoefficient { r, c -> assertEquals(s[r][c], n[r][c], 0.01) }
+    }
+
+    @Test
+    fun perspective() {
+        val m = Matrix.perspective(4, 5.0, 10.0)
+        val v = Vector.point(2.0, 3.0, -10.0) * m
+        assertTrue(v.w != 1.0)
+        assertTrue(v.w != 0.0)
+
+        val vp = v / v.w
+        assertEquals(vp.z, 1.0, 0.1)
     }
 
 }
