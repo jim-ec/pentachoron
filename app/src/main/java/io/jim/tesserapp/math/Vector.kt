@@ -3,16 +3,16 @@ package io.jim.tesserapp.math
 import java.lang.Math.*
 import java.util.*
 
-open class Vector {
+class Vector {
 
     private val components: DoubleArray
 
-    constructor(vararg comps: Double) {
-        components = DoubleArray(comps.size) { comps[it] }
+    constructor(vararg components: Double) {
+        this.components = DoubleArray(components.size) { components[it] }
     }
 
-    constructor(l: List<Double>) {
-        components = l.toDoubleArray()
+    constructor(components: List<Double>) {
+        this.components = components.toDoubleArray()
     }
 
     constructor(size: Int, value: Double = 0.0) {
@@ -24,6 +24,16 @@ open class Vector {
         this[0] = cos(p.phi) * sin(p.theta) * p.r
         this[1] = sin(p.phi) * sin(p.theta) * p.r
         this[2] = cos(p.theta) * p.r
+    }
+
+    companion object {
+
+        fun point(vararg components: Double) =
+                Vector(*components, 1.0)
+
+        fun direction(vararg components: Double) =
+                Vector(*components, 0.0)
+
     }
 
     val x get() = this[0]
@@ -148,13 +158,13 @@ open class Vector {
         get() = this / length
 
     /**
-     * Project this vector orthographically into one smaller dimension.
+     * Project this vector orthographically into one smaller size.
      */
     val orthographicProjection
         get() = Vector(components.dropLast(1))
 
     /**
-     * Project this vector into one smaller dimension by using perspective division
+     * Project this vector into one smaller size by using perspective division
      * through the last component. All points are projected onto a single plane defined by all
      * points where the last component equals to 1.
      */
@@ -168,7 +178,7 @@ open class Vector {
 
     /**
      * Multiply this and a given left-hand-side vector, resulting into a vector.
-     * @exception AssertionError If matrix and vector are not of the same dimension.
+     * @exception AssertionError If matrix and vector are not of the same size.
      */
     operator fun times(rhs: Matrix) =
             Vector(dimension).also {
