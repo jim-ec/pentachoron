@@ -85,13 +85,18 @@ class TransformationUnitTest {
 
     @Test
     fun perspective() {
-        val m = Matrix.perspective(4, 5.0, 10.0)
-        val v = Vector.point(2.0, 3.0, -10.0) * m
-        assertTrue(v.w != 1.0)
-        assertTrue(v.w != 0.0)
+        val m = Matrix.perspective(4)
+        val r = Matrix.perspective(4, 5.0, 10.0)
+        val v = Vector.point(2.0, 3.0, -10.0)
 
-        val vp = v / v.w
-        assertEquals(vp.z, 1.0, 0.1)
+        assertTrue((v * m).w != 1.0)
+        assertTrue((v * m).w != 0.0)
+
+        val vProjected = (v * m).perspectiveProjection
+        assertEquals(2.0 / 10.0, vProjected.x, 0.1)
+
+        val vRemapped = (v * r).perspectiveProjection
+        assertEquals(vRemapped.z, 1.0, 0.1)
     }
 
 }

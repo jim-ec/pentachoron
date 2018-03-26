@@ -110,18 +110,27 @@ class Matrix : ArrayList<Vector> {
         /**
          * Construct a matrix, representing an perspective division transformation.
          * @param dimension Homogeneous dimension, e.g. 4 for a 3D perspective world.
+         */
+        fun perspective(dimension: Int) =
+                Matrix(dimension).apply {
+                    this[dimension - 2][dimension - 1] = -1.0
+                    this[dimension - 1][dimension - 1] = 0.0
+                }
+
+        /**
+         * Construct a matrix, representing an perspective division transformation,
+         * while remapping the last vector component between a near and far value.
+         * @param dimension Homogeneous dimension, e.g. 4 for a 3D perspective world.
          * @param near Near plane. If point lies on that plane (negated), it will be projected to 0.
          * @param far Far plane. If point lies on that plane (negated), it will be projected to 1.
          */
         fun perspective(dimension: Int, near: Double, far: Double) =
-                Matrix(dimension).apply {
+                perspective(dimension).apply {
                     assert(near > 0.0)
                     assert(far > 0.0)
                     assert(far > near)
                     this[dimension - 2][dimension - 2] = -far / (far - near)
-                    this[dimension - 2][dimension - 1] = -1.0
                     this[dimension - 1][dimension - 2] = -(far * near) / (far - near)
-                    this[dimension - 1][dimension - 1] = 0.0
                 }
     }
 
