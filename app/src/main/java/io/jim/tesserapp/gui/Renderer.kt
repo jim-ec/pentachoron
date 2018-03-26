@@ -2,17 +2,20 @@ package io.jim.tesserapp.gui
 
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
+import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.math.Matrix
 import io.jim.tesserapp.math.Vector
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-class Renderer(maxTriangles: Int, maxLines: Int) : GLSurfaceView.Renderer {
+class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
 
-    private val maxTriangleVertices = maxTriangles * 3
+    private val geometries = ArrayList<Geometry>()
     private val maxLineVertices = maxLines * 2
-    private lateinit var triangleBuffer: VertexBuffer
-    private lateinit var lineBuffer: VertexBuffer
+    private lateinit var vertexBuffer: VertexBuffer
     private lateinit var shader: Shader
+    private val matrix = Matrix.scale(4, 0.5)
+    private var viewMatrix = Matrix(4)
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glClearColor(1f, 1f, 1f, 1f)
@@ -21,34 +24,30 @@ class Renderer(maxTriangles: Int, maxLines: Int) : GLSurfaceView.Renderer {
         glLineWidth(4f)
 
         shader = Shader()
-        triangleBuffer = VertexBuffer(maxTriangleVertices)
-        lineBuffer = VertexBuffer(maxLineVertices)
+        vertexBuffer = VertexBuffer(maxLineVertices)
     }
 
-    fun appendLine(a: Vector, b: Vector, color: Color) {
-        lineBuffer.apply {
-            appendVertex(a, color)
-            appendVertex(b, color)
-        }
-    }
-
-    fun appendTriangle(a: Vector, b: Vector, c: Vector, color: Color) {
-        triangleBuffer.apply {
-            appendVertex(a, color)
-            appendVertex(b, color)
-            appendVertex(c, color)
-        }
+    fun addGeometry(geometry: Geometry) {
+        geometries.add(geometry)
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
+        //project3into2 = Matrix.perspective(4, 10.0, 0.1)
+        viewMatrix = Matrix.scale(4, Vector(1.0, (width).toDouble() / height, 1.0))
     }
 
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        triangleBuffer.draw(shader, GL_TRIANGLES)
-        lineBuffer.draw(shader, GL_LINES)
+        println("Draw, fill vertex buffer")
+        for (geometry in geometries) {
+            for (point in geometry) {
+                vertexBuffer.appendVertex((point * viewMatrix * matrix).perspectiveProjection, geometry.color)
+            }
+        }
+
+        vertexBuffer.draw(shader, GL_LINES)
     }
 
 }
