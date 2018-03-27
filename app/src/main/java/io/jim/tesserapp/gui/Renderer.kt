@@ -16,6 +16,7 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
     private lateinit var shader: Shader
     private val matrix = Matrix.scale(4, 0.5)
     private var viewMatrix = Matrix(4)
+    private var modelMatrix = Matrix(4)
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glClearColor(1f, 1f, 1f, 1f)
@@ -43,11 +44,15 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
         println("Draw, fill vertex buffer")
         for (geometry in geometries) {
             for (point in geometry) {
-                vertexBuffer.appendVertex((point * viewMatrix * matrix).perspectiveProjection, geometry.color)
+                vertexBuffer.appendVertex((point * modelMatrix * viewMatrix * matrix).perspectiveProjection, geometry.color)
             }
         }
 
         vertexBuffer.draw(shader, GL_LINES)
+    }
+
+    fun rotate(theta: Double, phi: Double) {
+        modelMatrix = Matrix.rotation(4, 0, 1, phi) * Matrix.rotation(4, 1, 2, theta) * modelMatrix
     }
 
 }

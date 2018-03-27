@@ -30,10 +30,29 @@ class Vector : ArrayList<Double> {
 
     }
 
-    val x: Double get() = this[0]
-    val y: Double get() = this[1]
-    val z: Double get() = this[2]
-    val w: Double get() = this[3]
+    var x: Double
+        get() = this[0]
+        set(value) {
+            this[0] = value
+        }
+
+    var y: Double
+        get() = this[1]
+        set(value) {
+            this[1] = value
+        }
+
+    var z: Double
+        get() = this[2]
+        set(value) {
+            this[2] = value
+        }
+
+    var w: Double
+        get() = this[3]
+        set(value) {
+            this[3] = value
+        }
 
     /**
      * Return the number of components.
