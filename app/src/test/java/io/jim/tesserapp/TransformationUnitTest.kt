@@ -4,6 +4,7 @@ import io.jim.tesserapp.math.Direction
 import io.jim.tesserapp.math.Matrix
 import io.jim.tesserapp.math.Point
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import kotlin.math.PI
 
@@ -40,7 +41,7 @@ class TransformationUnitTest {
 
     @Test
     fun translation() {
-        val m = Matrix.translation(2, Point(2.0, 1.0))
+        val m = Matrix.translation(2, Direction(2.0, 1.0))
 
         val p = Point(2.0, 2.0) * m
         assertEquals(4.0, p.x, 0.1)
@@ -75,20 +76,38 @@ class TransformationUnitTest {
 
     @Test
     fun perspective() {
-        val m = Matrix.perspective(3)
-        val r = Matrix.perspective(3, 5.0, 10.0)
-        val v = Point(2.0, 3.0, -10.0)
+        assertEquals(2.0 / 10.0, (Point(2.0, 3.0, -10.0) * Matrix.perspective(3)).x, 0.1)
 
-        val vProjected = v * m
-        assertEquals(2.0 / 10.0, vProjected.x, 0.1)
+        val m = Matrix.perspective(3, 5.0, 10.0)
 
-        val vRemapped = v * r
-        assertEquals(1.0, vRemapped.z, 0.1)
+        (Point(2.0, 3.0, -10.0) * m).apply {
+            assertEquals(1.0, z, 0.1)
+            assertEquals(2.0 / 10.0, x, 0.1)
+            assertEquals(3.0 / 10.0, y, 0.1)
+        }
+
+        (Point(2.0, 3.0, -5.0) * m).apply {
+            assertEquals(0.0, z, 0.1)
+            assertEquals(2.0 / 5.0, x, 0.1)
+            assertEquals(3.0 / 5.0, y, 0.1)
+        }
+
+        (Point(2.0, 3.0, -7.0) * m).apply {
+            assertTrue(0.0 < z && z < 1.0)
+            assertEquals(2.0 / 7.0, x, 0.1)
+            assertEquals(3.0 / 7.0, y, 0.1)
+        }
+
+        (Point(2.0, 3.0, -2.0) * m).apply {
+            assertTrue(z < 0.0)
+            assertEquals(2.0 / 2.0, x, 0.1)
+            assertEquals(3.0 / 2.0, y, 0.1)
+        }
     }
 
     @Test
     fun combination() {
-        val m = Matrix.scale(3, 2.0) * Matrix.translation(3, Point(4.0, 0.0, 0.0))
+        val m = Matrix.scale(3, 2.0) * Matrix.translation(3, Direction(4.0, 0.0, 0.0))
         val p = Point(1.0, 2.0, 3.0) * m
         assertEquals(6.0, p.x, 0.1)
         assertEquals(4.0, p.y, 0.1)

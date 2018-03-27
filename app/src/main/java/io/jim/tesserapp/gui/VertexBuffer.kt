@@ -44,6 +44,7 @@ class VertexBuffer(private val size: Int) {
                 floatBuffer.position() + COMPONENTS_PER_VERTEX <= floatBuffer.capacity())
         
         floatBuffer.apply {
+            println("Add vertex[${position() / COMPONENTS_PER_VERTEX}]: $position")
             put(position.x.toFloat())
             put(position.y.toFloat())
             put(position.z.toFloat())

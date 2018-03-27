@@ -3,6 +3,7 @@ package io.jim.tesserapp.gui
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.math.Direction
 import io.jim.tesserapp.math.Matrix
 import io.jim.tesserapp.math.Point
 import junit.framework.Assert.assertEquals
@@ -17,7 +18,8 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
     private lateinit var shader: Shader
     private var viewMatrix = Matrix(3)
     private var rotationMatrix = Matrix(3)
-    //private val projectionMatrix = Matrix.perspective(4, 0.1, 10.0)
+    private val projectionMatrix = Matrix.perspective(3, 0.1, 10.0)
+    private val translationMatrix = Matrix.translation(3, Direction(0.0, 0.0, -4.0))
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glClearColor(1f, 1f, 1f, 1f)
@@ -35,9 +37,7 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
-        //project3into2 = Matrix.perspective(4, 10.0, 0.1)
-        viewMatrix = Matrix.scale(3, Point(1.0, (width).toDouble() / height, 1.0)) *
-                Matrix.translation(3, Point(-1.0, 0.0, 0.0))
+        viewMatrix = Matrix.scale(3, Point(1.0, (width).toDouble() / height, 1.0))
     }
 
     override fun onDrawFrame(gl: GL10?) {
@@ -47,7 +47,7 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
         for (geometry in geometries) {
             for (point in geometry.toLineList()) {
                 assertEquals("All vertices must be 3D", 3, point.dimension)
-                vertexBuffer.appendVertex(point * rotationMatrix * viewMatrix, geometry.color)
+                vertexBuffer.appendVertex(point * rotationMatrix * translationMatrix * viewMatrix * projectionMatrix, geometry.color)
             }
         }
 

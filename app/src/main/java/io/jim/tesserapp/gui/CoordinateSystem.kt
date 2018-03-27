@@ -30,13 +30,13 @@ class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(
         /*renderer.addGeometry(Triangle(Vector.point(0.0, 1.0, 0.5), Vector.point(1.0, -1.0, 0.5), Vector.point(-1.0, -1.0, 0.5), Color.GREEN))
         renderer.addGeometry(Line(Vector.point(1.0, 1.0, 0.7), Vector.point(-1.0, -1.0, 0.7), Color.RED))*/
         renderer.addGeometry(Quadrilateral(
-                Point(1.0, 1.0, 0.2),
-                Point(-1.0, 1.0, 0.2),
-                Point(-1.0, -1.0, 0.2),
-                Point(1.0, -1.0, 0.2),
+                Point(1.0, 1.0, 1.0),
+                Point(-1.0, 1.0, 1.0),
+                Point(-1.0, -1.0, 1.0),
+                Point(1.0, -1.0, 1.0),
                 Color.BLACK
         ).apply {
-            extrude(Direction(0.0, 0.0, 0.7))
+            extrude(Direction(0.0, 0.0, -2.0))
         })
 
         renderer.addGeometry(Line(Point(0.0, 0.0, 0.0), Point(1.0, 0.0, 0.0), Color.RED))

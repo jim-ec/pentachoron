@@ -94,7 +94,7 @@ class Matrix(val dimension: Int) {
          * determines whether they are transformed at all.
          * @exception AssertionError If [t]'s size is not equal to [n] less one.
          */
-        fun translation(n: Int, t: Vector) =
+        fun translation(n: Int, t: Direction) =
                 Matrix(n).apply {
                     assertEquals("Translation vector dimension must match with matrix", n, t.dimension)
                     t.forEachIndexed { i, ti ->
