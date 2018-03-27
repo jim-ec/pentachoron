@@ -7,7 +7,7 @@ import junit.framework.Assert.assertTrue
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-class VertexBuffer(private val size: Int) {
+data class VertexBuffer(val size: Int) {
 
     companion object {
         private const val COMPONENTS_PER_POSITION = 3
@@ -29,9 +29,7 @@ class VertexBuffer(private val size: Int) {
 
     private val floatBuffer = byteBuffer.asFloatBuffer().apply {
         clear()
-        while (position() < capacity()) {
-            put(0f)
-        }
+        while (position() < capacity()) put(0f)
         rewind()
     }
 
@@ -53,7 +51,7 @@ class VertexBuffer(private val size: Int) {
         }
     }
 
-    fun draw(shader: Shader, mode: Int) {
+    fun bind(shader: Shader) {
         floatBuffer.rewind()
         glBindBuffer(GL_ARRAY_BUFFER, handle)
         glBufferData(GL_ARRAY_BUFFER, size * VERTEX_BYTE_LENGTH, floatBuffer, GL_DYNAMIC_DRAW)
@@ -67,8 +65,6 @@ class VertexBuffer(private val size: Int) {
             glEnableVertexAttribArray(this)
             glVertexAttribPointer(this, COMPONENTS_PER_COLOR, GL_FLOAT, false, VERTEX_BYTE_LENGTH, COMPONENTS_PER_POSITION * FLOAT_BYTE_LENGTH)
         }
-
-        glDrawArrays(mode, 0, size)
     }
 
 }

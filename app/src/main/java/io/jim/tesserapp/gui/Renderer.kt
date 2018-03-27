@@ -14,8 +14,10 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
 
     private val geometries = ArrayList<Geometry>()
     private val maxLineVertices = maxLines * 2
-    private lateinit var vertexBuffer: VertexBuffer
     private lateinit var shader: Shader
+    private lateinit var vertexBuffer: VertexBuffer
+    private lateinit var indexBuffer: IndexBuffer
+    private var updateGeometryBuffers = false
     private val viewMatrix = Matrix(3)
     private val rotationMatrixXY = Matrix(3)
     private val rotationMatrixYZ = Matrix(3)
@@ -30,10 +32,12 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
 
         shader = Shader()
         vertexBuffer = VertexBuffer(maxLineVertices)
+        indexBuffer = IndexBuffer(maxLineVertices)
     }
 
     fun addGeometry(geometry: Geometry) {
         geometries.add(geometry)
+        updateGeometryBuffers = true
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
@@ -44,14 +48,26 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        for (geometry in geometries) {
-            for (point in geometry.toLineList()) {
-                assertEquals("All vertices must be 3D", 3, point.dimension)
-                vertexBuffer.appendVertex(point * rotationMatrixXY * rotationMatrixYZ * translationMatrix * viewMatrix * projectionMatrix, geometry.color)
+        if (updateGeometryBuffers) {
+            indexBuffer.baseIndex = 0
+            for (geometry in geometries) {
+                for (point in geometry.points) {
+                    assertEquals("All vertices must be 3D", 3, point.dimension)
+                    vertexBuffer.appendVertex(point * rotationMatrixXY * rotationMatrixYZ * translationMatrix * viewMatrix * projectionMatrix, geometry.color)
+                }
+                for (line in geometry.lines) {
+                    indexBuffer.appendIndex(line.first)
+                    indexBuffer.appendIndex(line.second)
+                }
+                indexBuffer.baseIndex += geometry.points.size
             }
+            // TODO: move matrices to shaders, uncomment: updateGeometryBuffers = false
         }
 
-        vertexBuffer.draw(shader, GL_LINES)
+        vertexBuffer.bind(shader)
+        indexBuffer.bind()
+
+        glDrawElements(GL_LINES, indexBuffer.size, GL_UNSIGNED_INT, 0)
     }
 
     fun rotation(yaw: Double, pitch: Double) {

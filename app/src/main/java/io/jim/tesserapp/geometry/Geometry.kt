@@ -17,13 +17,6 @@ open class Geometry(val color: Color) {
         lines.add(Pair(a, b))
     }
 
-    fun toLineList() = ArrayList<Point>().apply {
-        for (line in lines) {
-            add(points[line.first])
-            add(points[line.second])
-        }
-    }
-
     /**
      * Extrudes the whole geometry in the given [direction].
      * This works by duplicating the whole geometry and then connecting all point duplicate counterparts.

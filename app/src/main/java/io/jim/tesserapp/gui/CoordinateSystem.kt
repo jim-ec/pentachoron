@@ -27,8 +27,6 @@ class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(
         debugFlags = DEBUG_CHECK_GL_ERROR
         renderMode = RENDERMODE_WHEN_DIRTY
 
-        /*renderer.addGeometry(Triangle(Vector.point(0.0, 1.0, 0.5), Vector.point(1.0, -1.0, 0.5), Vector.point(-1.0, -1.0, 0.5), Color.GREEN))
-        renderer.addGeometry(Line(Vector.point(1.0, 1.0, 0.7), Vector.point(-1.0, -1.0, 0.7), Color.RED))*/
         renderer.addGeometry(Quadrilateral(
                 Point(1.0, 1.0, 1.0),
                 Point(-1.0, 1.0, 1.0),
