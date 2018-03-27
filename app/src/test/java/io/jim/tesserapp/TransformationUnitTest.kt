@@ -34,7 +34,7 @@ class TransformationUnitTest {
         assertEquals(0.0, v.x, 0.1)
         assertEquals(-5.0, v.y, 0.1)
         assertEquals(0.0, v.z, 0.1)
-        assertEquals(3.0, v.w, 0.1)
+        assertEquals(3.0, v.q, 0.1)
         assertEquals(1.0, m[4][4], 0.01)
     }
 

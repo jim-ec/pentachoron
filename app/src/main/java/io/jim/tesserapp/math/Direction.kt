@@ -7,9 +7,6 @@ import java.lang.Math.sin
 
 class Direction(components: List<Double>) : Vector(components) {
 
-    override val homogeneous: List<Double>
-        get() = ArrayList<Double>(this.toList()).apply { add(0.0) }
-
     constructor(vararg components: Double) : this(components.toList())
 
     constructor(p: SphericalCoordinate) : this(

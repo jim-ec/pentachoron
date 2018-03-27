@@ -4,9 +4,6 @@ import junit.framework.Assert
 
 class Point(components: List<Double>) : Vector(components) {
 
-    override val homogeneous: List<Double>
-        get() = ArrayList<Double>(this.toList()).apply { add(1.0) }
-
     constructor(vararg components: Double) : this(components.toList())
 
     /**

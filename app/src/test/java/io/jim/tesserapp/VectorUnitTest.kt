@@ -26,7 +26,7 @@ class VectorUnitTest {
         assertEquals(1.0, v.x, 0.1)
         assertEquals(2.0, v.y, 0.1)
         assertEquals(5.0, v.z, 0.1)
-        assertEquals(4.0, v.w, 0.1)
+        assertEquals(4.0, v.q, 0.1)
     }
 
     @Test

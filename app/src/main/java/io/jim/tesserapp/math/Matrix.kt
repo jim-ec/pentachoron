@@ -19,7 +19,7 @@ class Matrix(val dimension: Int) {
 
     init {
         // Initialize to identity matrix:
-        assertTrue("Size must be greater than 0", dimension > 0)
+        assertTrue("Size must be > 0", dimension > 0)
         for (i in 0..dimension) coefficients.add(ArrayList<Double>().also {
             for (j in 0..dimension) it.add(0.0)
             it[i] = 1.0
@@ -64,7 +64,7 @@ class Matrix(val dimension: Int) {
          */
         fun scale(n: Int, scale: Vector) =
                 Matrix(n).apply {
-                    assertEquals("Scale vector dimension ${scale.dimension} does not match up with matrix dimension $dimension", dimension, scale.dimension)
+                    assertEquals("Scale vector dimension must match with matrix", dimension, scale.dimension)
                     scale.forEachIndexed { i, fi -> this[i][i] = fi }
                 }
 
@@ -74,14 +74,13 @@ class Matrix(val dimension: Int) {
          */
         fun rotation(n: Int, a: Int, b: Int, phi: Double) =
                 Matrix(n).apply {
-                    assertTrue("Plane-axis $a not in size $n", a < n)
-                    assertTrue("Plane-axis $b not in size $n", b < n)
-                    // Rotation on y-w plane:
-                    //  -> y-axis rotates towards w-axis
-                    //  -> w-axis rotates towards negative y-axis
+                    assertTrue("Plane-axis not in matrix dimension", a < n && b < n)
+                    // Rotation on y-q plane:
+                    //  -> y-axis rotates towards q-axis
+                    //  -> q-axis rotates towards negative y-axis
                     // Myy = cos(phi)   | decreases
                     // Myw = sin(phi)   | increases
-                    // Mwy = -sin(phi)  | increases, but in negative direction, since y rotates towards w
+                    // Mwy = -sin(phi)  | increases, but in negative direction, since y rotates towards q
                     // Mww = cos(phi)   | decreases
                     this[a][a] = cos(phi)
                     this[a][b] = sin(phi)
@@ -97,7 +96,7 @@ class Matrix(val dimension: Int) {
          */
         fun translation(n: Int, t: Vector) =
                 Matrix(n).apply {
-                    assertEquals("Translation size ${t.dimension} does not match up with matrix size $n", n, t.dimension)
+                    assertEquals("Translation vector dimension must match with matrix", n, t.dimension)
                     t.forEachIndexed { i, ti ->
                         this[n][i] = ti
                     }
@@ -105,7 +104,6 @@ class Matrix(val dimension: Int) {
 
         /**
          * Construct a matrix, representing an perspective division transformation.
-         * @param n Homogeneous dimension, e.g. 4 for a 3D perspective world.
          */
         fun perspective(n: Int) =
                 Matrix(n).apply {
@@ -135,11 +133,10 @@ class Matrix(val dimension: Int) {
 
     /**
      * Multiply this and a given right-hand-side matrix, resulting into a matrix.
-     * @exception AssertionError If matrices are not of the same size.
      */
     operator fun times(rhs: Matrix) =
             Matrix(dimension).also {
-                assertTrue(this compatible rhs)
+                assertTrue("Matrices must be compatible", this compatible rhs)
                 forEachCoefficient { r, c ->
                     it[r][c] = (0..dimension).map { i -> this[r][i] * rhs[i][c] }.sum()
                 }
