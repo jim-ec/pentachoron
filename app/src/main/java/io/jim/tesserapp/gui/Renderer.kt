@@ -15,8 +15,8 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
     private val maxLineVertices = maxLines * 2
     private lateinit var vertexBuffer: VertexBuffer
     private lateinit var shader: Shader
-    private var viewMatrix = Matrix(4)
-    private var rotationMatrix = Matrix(4)
+    private var viewMatrix = Matrix(3)
+    private var rotationMatrix = Matrix(3)
     //private val projectionMatrix = Matrix.perspective(4, 0.1, 10.0)
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
@@ -46,7 +46,7 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
         println("Draw, fill vertex buffer")
         for (geometry in geometries) {
             for (point in geometry.toLineList()) {
-                assertEquals("All vertices must be 4D", 4, point.dimension)
+                assertEquals("All vertices must be 3D", 3, point.dimension)
                 vertexBuffer.appendVertex(point * rotationMatrix * viewMatrix, geometry.color)
             }
         }
@@ -55,7 +55,7 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
     }
 
     fun rotation(yaw: Double, pitch: Double) {
-        rotationMatrix = Matrix.rotation(4, 0, 1, pitch) * Matrix.rotation(4, 1, 2, yaw)
+        rotationMatrix = Matrix.rotation(3, 0, 1, pitch) * Matrix.rotation(3, 1, 2, yaw)
     }
 
 }
