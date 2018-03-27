@@ -1,9 +1,9 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.gui.Color
-import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.math.Point
 
-class Triangle(a: Vector, b: Vector, c: Vector, color: Color) : Geometry(color) {
+class Triangle(a: Point, b: Point, c: Point, color: Color) : Geometry(color) {
 
     init {
         addPoints(a, b, c)

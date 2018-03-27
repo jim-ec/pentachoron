@@ -5,69 +5,77 @@ import junit.framework.Assert.assertTrue
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Matrix : ArrayList<Vector> {
+/**
+ * Homogeneous matrices used for affine and perspective transformation.
+ * The [dimension] specifies the vector dimension this matrix can be applied to.
+ * The matrix size itself is always one dimension bigger than it specifies,
+ * as the matrix is used for homogeneous coordinates.
+ * Vectors multiplied to this matrix must be one greater than the dimension as
+ * well, since they are homogeneous coordinates or directions as well.
+ */
+class Matrix(val dimension: Int) {
 
-    /**
-     * Construct an identity matrix with side length equal to [size].
-     */
-    constructor(size: Int) {
-        assertTrue("Size must be greater than 0", size > 0)
-        for (i in 0 until size) {
-            add(Vector(size).also { it[i] = 1.0 })
-        }
+    private val coefficients = ArrayList<ArrayList<Double>>()
+
+    init {
+        // Initialize to identity matrix:
+        assertTrue("Size must be greater than 0", dimension > 0)
+        for (i in 0..dimension) coefficients.add(ArrayList<Double>().also {
+            for (j in 0..dimension) it.add(0.0)
+            it[i] = 1.0
+        })
     }
 
-    /**
-     * Construct a matrix, filled up with initial values.
-     * @exception AssertionError If count of given values in [l] does not match up with the matrix [size].
-     */
-    constructor(size: Int, l: List<Double>) : this(size) {
-        assertEquals(size * size, l.size)
-        l.forEachIndexed { i, v -> this[i / size][i % size] = v }
+    operator fun get(index: Int): ArrayList<Double> {
+        return coefficients[index]
     }
 
     companion object {
 
-        fun space(dimension: Int, axises: List<Vector>) =
-                Matrix(dimension).apply {
-                    assertEquals("Axis count ${axises.size} does not match up with matrix size $dimension", axises.size + 1, dimension)
-                    assertTrue("All vectors must have one component less than the matrix size $dimension", axises.all { it.dimension + 1 == dimension })
+        /**
+         * Construct an [n] dimensional matrix by defining a coordinate space from [axises].
+         * The axises themselves are positioned at [base].
+         */
+        fun space(n: Int, base: Point, vararg axises: Vector) =
+                Matrix(n).apply {
+                    assertEquals("Axis count must match with matrix", axises.size, n)
+                    assertTrue("Axis dimension must match with matrix", axises.all { it.dimension == n })
+                    assertEquals("Base position dimension must match with matrix", base.dimension, dimension)
                     axises.forEachIndexed { r, axis ->
                         axis.forEachIndexed { c, coefficient ->
                             this[r][c] = coefficient
                         }
                     }
+                    base.forEachIndexed { index, d -> this[dimension][index] = d }
                 }
 
         /**
-         * Construct a matrix, representing an affine linear scaling transformation.
+         * Construct an [n] dimensional matrix, representing an affine linear scaling transformation.
          */
-        fun scale(dimension: Int, factor: Double) =
-                Matrix(dimension).apply {
-                    for (i in 0 until dimension - 1) {
-                        this[i][i] = factor
+        fun scale(n: Int, scale: Double) =
+                Matrix(n).apply {
+                    for (i in 0 until n) {
+                        this[i][i] = scale
                     }
                 }
 
         /**
          * Construct a matrix, representing an affine linear scaling transformation.
          */
-        fun scale(dimension: Int, factor: Vector) =
-                Matrix(dimension).apply {
-
-                    assertEquals("Scale vector dimension ${factor.dimension} does not match up with matrix dimension $dimension", dimension, factor.dimension + 1)
-
-                    factor.forEachIndexed { i, fi -> this[i][i] = fi }
+        fun scale(n: Int, scale: Vector) =
+                Matrix(n).apply {
+                    assertEquals("Scale vector dimension ${scale.dimension} does not match up with matrix dimension $dimension", dimension, scale.dimension)
+                    scale.forEachIndexed { i, fi -> this[i][i] = fi }
                 }
 
         /**
-         * Construct a matrix, representing an affine rotation transformation of [phi] on the [n]-[m]-plane.
+         * Construct an [n] dimensional matrix, representing an affine rotation transformation of [phi] on the [a]-[b]-plane.
          * @exception AssertionError If any rotation-plane axis is larger in size than the matrix itself.
          */
-        fun rotation(dimension: Int, n: Int, m: Int, phi: Double) =
-                Matrix(dimension).apply {
-                    assertTrue("Plane-axis $n not in size $dimension", n < dimension)
-                    assertTrue("Plane-axis $m not in size $dimension", m < dimension)
+        fun rotation(n: Int, a: Int, b: Int, phi: Double) =
+                Matrix(n).apply {
+                    assertTrue("Plane-axis $a not in size $n", a < n)
+                    assertTrue("Plane-axis $b not in size $n", b < n)
                     // Rotation on y-w plane:
                     //  -> y-axis rotates towards w-axis
                     //  -> w-axis rotates towards negative y-axis
@@ -75,47 +83,34 @@ class Matrix : ArrayList<Vector> {
                     // Myw = sin(phi)   | increases
                     // Mwy = -sin(phi)  | increases, but in negative direction, since y rotates towards w
                     // Mww = cos(phi)   | decreases
-                    this[n][n] = cos(phi)
-                    this[n][m] = sin(phi)
-                    this[m][n] = -sin(phi)
-                    this[m][m] = cos(phi)
-                }
-
-        /**
-         * Construct a matrix, representing an affine shearing transformation on the [n]-[m]-plane.
-         * The [n]-axis stretched along the [m]-axis by [nm],
-         * and the [m]-axis is stretched along the [n]-axis by [mn].
-         */
-        fun shear(dimension: Int, n: Int, nm: Double, m: Int, mn: Double) =
-                Matrix(dimension).apply {
-                    assertTrue("Plane-axis $n not in size $dimension", n < dimension)
-                    assertTrue("Plane-axis $m not in size $dimension", m < dimension)
-                    this[n][m] = nm
-                    this[m][n] = mn
+                    this[a][a] = cos(phi)
+                    this[a][b] = sin(phi)
+                    this[b][a] = -sin(phi)
+                    this[b][b] = cos(phi)
                 }
 
         /**
          * Construct a matrix, representing an affine translation transformation by a given [t] vector.
          * Remember that vectors multiplied to this matrix must be homogeneous, their last component
          * determines whether they are transformed at all.
-         * @exception AssertionError If [t]'s size is not equal to [size] less one.
+         * @exception AssertionError If [t]'s size is not equal to [n] less one.
          */
-        fun translation(dimension: Int, t: Vector) =
-                Matrix(dimension).apply {
-                    assertEquals("Translation size ${t.dimension} does not match up with matrix size $dimension", dimension, t.dimension + 1)
+        fun translation(n: Int, t: Vector) =
+                Matrix(n).apply {
+                    assertEquals("Translation size ${t.dimension} does not match up with matrix size $n", n, t.dimension)
                     t.forEachIndexed { i, ti ->
-                        this[dimension - 1][i] = ti
+                        this[n][i] = ti
                     }
                 }
 
         /**
          * Construct a matrix, representing an perspective division transformation.
-         * @param dimension Homogeneous dimension, e.g. 4 for a 3D perspective world.
+         * @param n Homogeneous dimension, e.g. 4 for a 3D perspective world.
          */
-        fun perspective(dimension: Int) =
-                Matrix(dimension).apply {
-                    this[dimension - 2][dimension - 1] = -1.0
-                    this[dimension - 1][dimension - 1] = 0.0
+        fun perspective(n: Int) =
+                Matrix(n).apply {
+                    this[dimension - 1][dimension] = -1.0
+                    this[dimension][dimension] = 0.0
                 }
 
         /**
@@ -130,23 +125,23 @@ class Matrix : ArrayList<Vector> {
                     assertTrue(near > 0.0)
                     assertTrue(far > 0.0)
                     assertTrue(far > near)
-                    this[dimension - 2][dimension - 2] = -far / (far - near)
-                    this[dimension - 1][dimension - 2] = -(far * near) / (far - near)
+                    this[dimension - 1][dimension - 1] = -far / (far - near)
+                    this[dimension][dimension - 1] = -(far * near) / (far - near)
                 }
     }
 
-    infix fun compatible(rhs: Matrix) = size == rhs.size
-    infix fun compatible(rhs: Vector) = size == rhs.dimension
+    infix fun compatible(rhs: Matrix) = dimension == rhs.dimension
+    infix fun compatible(rhs: Vector) = dimension == rhs.dimension
 
     /**
      * Multiply this and a given right-hand-side matrix, resulting into a matrix.
      * @exception AssertionError If matrices are not of the same size.
      */
     operator fun times(rhs: Matrix) =
-            Matrix(size).also {
+            Matrix(dimension).also {
                 assertTrue(this compatible rhs)
                 forEachCoefficient { r, c ->
-                    it[r][c] = (0 until size).map { i -> this[r][i] * rhs[i][c] }.sum()
+                    it[r][c] = (0..dimension).map { i -> this[r][i] * rhs[i][c] }.sum()
                 }
             }
 
@@ -154,7 +149,7 @@ class Matrix : ArrayList<Vector> {
      * Construct a matrix representing a transpose of this matrix.
      */
     fun transposed() =
-            Matrix(size).also {
+            Matrix(dimension).also {
                 forEachCoefficient { r, c -> it[r][c] = this[c][r] }
             }
 
@@ -162,7 +157,7 @@ class Matrix : ArrayList<Vector> {
      * Call a function for each coefficient. Indices of row and column are passed to [f].
      */
     fun forEachCoefficient(f: (Int, Int) -> Unit) {
-        forEachIndexed { r, row ->
+        coefficients.forEachIndexed { r, row ->
             row.forEachIndexed { c, _ ->
                 f(r, c)
             }
@@ -171,13 +166,13 @@ class Matrix : ArrayList<Vector> {
 
     override fun toString() =
             StringBuilder().also {
-                it.append("[ (").append(size).append('x').append(size).append("): ")
-                forEachIndexed { r, row ->
+                it.append("[ (").append(dimension).append("D): ")
+                coefficients.forEachIndexed { r, row ->
                     row.forEachIndexed { c, col ->
                         it.append(col)
-                        if (c < size - 1) it.append(", ")
+                        if (c < dimension) it.append(", ")
                     }
-                    if (r < size - 1) it.append(" | ")
+                    if (r < dimension) it.append(" | ")
                 }
                 it.append(" ]")
             }.toString()

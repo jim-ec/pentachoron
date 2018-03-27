@@ -4,7 +4,7 @@ import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.math.Matrix
-import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.math.Point
 import junit.framework.Assert.assertEquals
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -36,7 +36,8 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
         //project3into2 = Matrix.perspective(4, 10.0, 0.1)
-        viewMatrix = Matrix.scale(4, Vector(1.0, (width).toDouble() / height, 1.0)) * Matrix.translation(4, Vector(-1.0, 0.0, 0.0))
+        viewMatrix = Matrix.scale(3, Point(1.0, (width).toDouble() / height, 1.0)) *
+                Matrix.translation(3, Point(-1.0, 0.0, 0.0))
     }
 
     override fun onDrawFrame(gl: GL10?) {
@@ -46,7 +47,7 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
         for (geometry in geometries) {
             for (point in geometry.toLineList()) {
                 assertEquals("All vertices must be 4D", 4, point.dimension)
-                vertexBuffer.appendVertex((point * rotationMatrix * viewMatrix).perspectiveProjection, geometry.color)
+                vertexBuffer.appendVertex(point * rotationMatrix * viewMatrix, geometry.color)
             }
         }
 

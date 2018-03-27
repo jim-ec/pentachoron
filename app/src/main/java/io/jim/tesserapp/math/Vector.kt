@@ -1,42 +1,38 @@
 package io.jim.tesserapp.math
 
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
-import java.lang.Math.*
+import java.lang.Math.sqrt
 
-class Vector : ArrayList<Double> {
+/**
+ * A homogeneous vector, but does not store the homogeneous component.
+ */
+abstract class Vector(components: List<Double>) : Iterable<Double> {
 
-    constructor(vararg components: Double) : super(components.toList())
+    private val components = ArrayList<Double>(components)
 
-    constructor(components: List<Double>) : super(components)
-
-    constructor(size: Int) {
-        for (i in 0 until size) {
-            add(0.0)
-        }
-    }
-
-    constructor(p: SphericalCoordinate) {
-        add(cos(p.phi) * sin(p.theta) * p.r)
-        add(sin(p.phi) * sin(p.theta) * p.r)
-        add(cos(p.theta) * p.r)
-    }
-
-    companion object {
-
-        fun point(vararg components: Double) =
-                Vector(*components, 1.0)
-
-        fun direction(vararg components: Double) =
-                Vector(*components, 0.0)
-
-    }
+    override operator fun iterator() = components.iterator()
 
     var x: Double
         get() = this[0]
         set(value) {
             this[0] = value
         }
+
+    operator fun set(index: Int, value: Double) {
+        components[index] = value
+    }
+
+    operator fun get(index: Int): Double {
+        return components[index]
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is Vector) return false
+        return zip(other) { a, b -> a == b }.all { it }
+    }
+
+    override fun hashCode(): Int {
+        return components.hashCode()
+    }
 
     var y: Double
         get() = this[1]
@@ -60,7 +56,7 @@ class Vector : ArrayList<Double> {
      * Return the number of components.
      */
     val dimension
-        get() = size
+        get() = components.size
 
     /**
      * Checks whether two vector have the same count of components.
@@ -69,66 +65,26 @@ class Vector : ArrayList<Double> {
             dimension == v.dimension
 
     /**
-     * Checks whether this is a null vector, i.e. all components are 0.
-     */
-    val isNull
-        get() = all { it == 0.0 }
-
-    /**
      * Represent this vector as a string.
      */
     override fun toString() =
-            StringBuilder().apply {
-                append('(')
-                this@Vector.forEach { append(it).append('|') }
-                setCharAt(length - 1, ')')
+            StringBuilder().also {
+                it.append('(')
+                components.forEach { component -> it.append(component).append('|') }
+                it.setCharAt(it.length - 1, ')')
             }.toString()
-
-    /**
-     * Return [v] added to this vector.
-     */
-    operator fun plus(v: Vector) =
-            Vector(zip(v) { a, b -> a + b })
-
-    /**
-     * Return [v] subtracted from this vector.
-     */
-    operator fun minus(v: Vector) =
-            Vector(zip(v) { a, b -> a - b })
-
-    /**
-     * Scalar this and [v].
-     */
-    operator fun times(v: Vector) =
-            zip(v) { a, b -> a * b }.sum()
-
-    /**
-     * Scales this by [d].
-     */
-    operator fun times(d: Double) =
-            Vector(map { it * d })
-
-    /**
-     * Divides this vector through [d].
-     */
-    operator fun div(d: Double) =
-            Vector(map { it / d })
-
-    /**
-     * Compute the vector product of this vector and [v].
-     * Does only work if both vectors are three dimensional.
-     */
-    infix fun cross(v: Vector): Vector {
-        assertEquals(dimension, 3)
-        assertEquals(v.dimension, 3)
-        return Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x)
-    }
 
     /**
      * Compute this vector's length.
      */
     val length
-        get() = sqrt(map { it * it }.sum())
+        get() = sqrt(components.map { it * it }.sum())
+
+    /**
+     * Scalar this and [v].
+     */
+    operator fun times(v: Vector) =
+            components.zip(v.components) { a, b -> a * b }.sum()
 
     /**
      * Return this vector in it's normalized form.
@@ -137,34 +93,16 @@ class Vector : ArrayList<Double> {
         get() = this / length
 
     /**
-     * Project this vector orthographically into one smaller size.
+     * Scales this point by [scale].
      */
-    val orthographicProjection
-        get() = Vector(dropLast(1))
+    abstract operator fun times(scale: Double): Vector
 
     /**
-     * Project this vector into one smaller size by using perspective division
-     * through the last component. All points are projected onto a single plane defined by all
-     * points where the last component equals to 1.
+     * Divides this vector through [divisor].
      */
-    val perspectiveProjection
-        get() =
-            orthographicProjection.also {
-                it.forEachIndexed { i, d ->
-                    it[i] = d / last()
-                }
-            }
+    abstract operator fun div(divisor: Double): Vector
 
-    /**
-     * Multiply this and a given left-hand-side vector, resulting into a vector.
-     * @exception AssertionError If matrix and vector are not of the same size.
-     */
-    operator fun times(rhs: Matrix) =
-            Vector(dimension).also {
-                assertTrue(rhs compatible this)
-                for (c in 0 until dimension) {
-                    it[c] = (0 until dimension).map { i -> rhs[i][c] * this[i] }.sum()
-                }
-            }
+    abstract val homogeneous: List<Double>
 
+    abstract operator fun times(rhs: Matrix): Vector
 }

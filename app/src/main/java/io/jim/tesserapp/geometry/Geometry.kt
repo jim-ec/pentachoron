@@ -1,14 +1,15 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.gui.Color
-import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.math.Direction
+import io.jim.tesserapp.math.Point
 
 open class Geometry(val color: Color) {
 
-    val points = ArrayList<Vector>()
+    val points = ArrayList<Point>()
     val lines = ArrayList<Pair<Int, Int>>()
 
-    fun addPoints(vararg p: Vector) {
+    fun addPoints(vararg p: Point) {
         points.addAll(p)
     }
 
@@ -16,7 +17,7 @@ open class Geometry(val color: Color) {
         lines.add(Pair(a, b))
     }
 
-    fun toLineList() = ArrayList<Vector>().apply {
+    fun toLineList() = ArrayList<Point>().apply {
         for (line in lines) {
             add(points[line.first])
             add(points[line.second])
@@ -27,7 +28,7 @@ open class Geometry(val color: Color) {
      * Extrudes the whole geometry in the given [direction].
      * This works by duplicating the whole geometry and then connecting all point duplicate counterparts.
      */
-    fun extrude(direction: Vector) {
+    fun extrude(direction: Direction) {
         val size = points.size
         points.addAll(points.map { it + direction })
         lines.addAll(lines.map { Pair(it.first + size, it.second + size) })

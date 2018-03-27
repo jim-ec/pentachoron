@@ -9,7 +9,8 @@ import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_MOVE
 import io.jim.tesserapp.geometry.Line
 import io.jim.tesserapp.geometry.Quadrilateral
-import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.math.Direction
+import io.jim.tesserapp.math.Point
 
 /**
  * A view capable of rendering 3D geometry.
@@ -17,8 +18,8 @@ import io.jim.tesserapp.math.Vector
 class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(context, attrs) {
 
     private val renderer = Renderer(100)
-    private val touchStartPosition = Vector(2)
-    private val rotation = Vector(2)
+    private val touchStartPosition = Point(0.0, 0.0)
+    private val rotation = Point(0.0, 0.0)
 
     init {
         setEGLContextClientVersion(2)
@@ -29,18 +30,18 @@ class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(
         /*renderer.addGeometry(Triangle(Vector.point(0.0, 1.0, 0.5), Vector.point(1.0, -1.0, 0.5), Vector.point(-1.0, -1.0, 0.5), Color.GREEN))
         renderer.addGeometry(Line(Vector.point(1.0, 1.0, 0.7), Vector.point(-1.0, -1.0, 0.7), Color.RED))*/
         renderer.addGeometry(Quadrilateral(
-                Vector.point(1.0, 1.0, 0.2),
-                Vector.point(-1.0, 1.0, 0.2),
-                Vector.point(-1.0, -1.0, 0.2),
-                Vector.point(1.0, -1.0, 0.2),
+                Point(1.0, 1.0, 0.2),
+                Point(-1.0, 1.0, 0.2),
+                Point(-1.0, -1.0, 0.2),
+                Point(1.0, -1.0, 0.2),
                 Color.BLACK
         ).apply {
-            extrude(Vector.direction(0.0, 0.0, 0.7))
+            extrude(Direction(0.0, 0.0, 0.7))
         })
 
-        renderer.addGeometry(Line(Vector.point(0.0, 0.0, 0.0), Vector.point(1.0, 0.0, 0.0), Color.RED))
-        renderer.addGeometry(Line(Vector.point(0.0, 0.0, 0.0), Vector.point(0.0, 1.0, 0.0), Color.GREEN))
-        renderer.addGeometry(Line(Vector.point(0.0, 0.0, 0.0), Vector.point(0.0, 0.0, 1.0), Color.BLUE))
+        renderer.addGeometry(Line(Point(0.0, 0.0, 0.0), Point(1.0, 0.0, 0.0), Color.RED))
+        renderer.addGeometry(Line(Point(0.0, 0.0, 0.0), Point(0.0, 1.0, 0.0), Color.GREEN))
+        renderer.addGeometry(Line(Point(0.0, 0.0, 0.0), Point(0.0, 0.0, 1.0), Color.BLUE))
     }
 
     @SuppressLint("ClickableViewAccessibility")
