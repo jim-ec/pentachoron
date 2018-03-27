@@ -34,7 +34,7 @@ class MatrixUnitTest {
 
     @Test
     fun spaceDefinition() {
-        val m = Matrix.space(2, Point(3.0, 4.0),
+        val m = Matrix(2).space(Point(3.0, 4.0),
                 Direction(-1.0, 0.0),
                 Direction(0.0, 2.0))
         val p = Point(1.0, 1.0) * m
@@ -43,7 +43,7 @@ class MatrixUnitTest {
 
     @Test
     fun transpose() {
-        val m = Matrix.space(2, Point(0.0, 0.0),
+        val m = Matrix(2).space(Point(0.0, 0.0),
                 Direction(1.0, 2.0),
                 Direction(3.0, 4.0))
         val n = m.transposed()
@@ -55,10 +55,10 @@ class MatrixUnitTest {
 
     @Test
     fun multiplication() {
-        val m = Matrix.space(2, Point(0.0, 0.0),
+        val m = Matrix(2).space(Point(0.0, 0.0),
                 Direction(2.0, 3.0),
                 Direction(4.0, 5.0))
-        val n = Matrix.space(2, Point(0.0, 0.0),
+        val n = Matrix(2).space(Point(0.0, 0.0),
                 Direction(6.0, 7.0),
                 Direction(8.0, 9.0))
         val u = m * n
@@ -70,7 +70,7 @@ class MatrixUnitTest {
 
     @Test
     fun vectorMultiplication() {
-        val m = Matrix.space(2, Point(0.0, 0.0),
+        val m = Matrix(2).space(Point(0.0, 0.0),
                 Direction(0.0, 1.0),
                 Direction(-1.0, 0.0))
         val v = Point(2.0, 1.0) * m

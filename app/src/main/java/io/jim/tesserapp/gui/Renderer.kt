@@ -16,10 +16,11 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
     private val maxLineVertices = maxLines * 2
     private lateinit var vertexBuffer: VertexBuffer
     private lateinit var shader: Shader
-    private var viewMatrix = Matrix(3)
-    private var rotationMatrix = Matrix(3)
-    private val projectionMatrix = Matrix.perspective(3, 0.1, 10.0)
-    private val translationMatrix = Matrix.translation(3, Direction(0.0, 0.0, -4.0))
+    private val viewMatrix = Matrix(3)
+    private val rotationMatrixXY = Matrix(3)
+    private val rotationMatrixYZ = Matrix(3)
+    private val projectionMatrix = Matrix(3).perspective(0.1, 10.0)
+    private val translationMatrix = Matrix(3).translation(Direction(0.0, 0.0, -4.0))
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glClearColor(1f, 1f, 1f, 1f)
@@ -37,17 +38,16 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
-        viewMatrix = Matrix.scale(3, Point(1.0, (width).toDouble() / height, 1.0))
+        viewMatrix.scale(Point(1.0, (width).toDouble() / height, 1.0))
     }
 
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        println("Draw, fill vertex buffer")
         for (geometry in geometries) {
             for (point in geometry.toLineList()) {
                 assertEquals("All vertices must be 3D", 3, point.dimension)
-                vertexBuffer.appendVertex(point * rotationMatrix * translationMatrix * viewMatrix * projectionMatrix, geometry.color)
+                vertexBuffer.appendVertex(point * rotationMatrixXY * rotationMatrixYZ * translationMatrix * viewMatrix * projectionMatrix, geometry.color)
             }
         }
 
@@ -55,7 +55,8 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
     }
 
     fun rotation(yaw: Double, pitch: Double) {
-        rotationMatrix = Matrix.rotation(3, 0, 1, pitch) * Matrix.rotation(3, 1, 2, yaw)
+        rotationMatrixXY.rotation(0, 1, pitch)
+        rotationMatrixYZ.rotation(1, 2, yaw)
     }
 
 }
