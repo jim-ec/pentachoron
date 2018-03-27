@@ -2,6 +2,8 @@ package io.jim.tesserapp.gui
 
 import android.opengl.GLES20.*
 import io.jim.tesserapp.math.Vector
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -34,17 +36,14 @@ class VertexBuffer(private val size: Int) {
     }
 
     fun appendVertex(position: Vector, color: Color) {
-        assert(3 == position.dimension) { "Position vectors must be 3D" }
-        assert(floatBuffer.position() + COMPONENTS_PER_VERTEX <= floatBuffer.capacity())
-        {
-            "Insufficient memory to store vertex: pos=%d(%d verts)  cap=%d(%d verts)  needed=%d"
-                    .format(floatBuffer.position(), floatBuffer.position() / COMPONENTS_PER_VERTEX,
-                            floatBuffer.capacity(), floatBuffer.capacity() / COMPONENTS_PER_VERTEX,
-                            COMPONENTS_PER_VERTEX)
-        }
-
+        assertEquals("Position vectors must be 3D", 3, position.dimension)
+        assertTrue("Insufficient memory to store vertex: pos=%d(%d verts)  cap=%d(%d verts)  needed=%d"
+                .format(floatBuffer.position(), floatBuffer.position() / COMPONENTS_PER_VERTEX,
+                        floatBuffer.capacity(), floatBuffer.capacity() / COMPONENTS_PER_VERTEX,
+                        COMPONENTS_PER_VERTEX),
+                floatBuffer.position() + COMPONENTS_PER_VERTEX <= floatBuffer.capacity())
+        
         floatBuffer.apply {
-            println("Add vertex [${floatBuffer.position() / COMPONENTS_PER_VERTEX}]: $position")
             put(position.x.toFloat())
             put(position.y.toFloat())
             put(position.z.toFloat())

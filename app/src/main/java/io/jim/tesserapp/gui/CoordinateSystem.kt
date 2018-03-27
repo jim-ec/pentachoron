@@ -9,7 +9,6 @@ import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_MOVE
 import io.jim.tesserapp.geometry.Line
 import io.jim.tesserapp.geometry.Quadrilateral
-import io.jim.tesserapp.geometry.Triangle
 import io.jim.tesserapp.math.Vector
 
 /**
@@ -19,6 +18,7 @@ class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(
 
     private val renderer = Renderer(100)
     private val touchStartPosition = Vector(2)
+    private val rotation = Vector(2)
 
     init {
         setEGLContextClientVersion(2)
@@ -26,31 +26,45 @@ class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(
         debugFlags = DEBUG_CHECK_GL_ERROR
         renderMode = RENDERMODE_WHEN_DIRTY
 
-        renderer.addGeometry(Triangle(Vector.point(0.0, 1.0, 0.5), Vector.point(1.0, -1.0, 0.5), Vector.point(-1.0, -1.0, 0.5), Color.GREEN))
-        renderer.addGeometry(Line(Vector.point(1.0, 1.0, 0.7), Vector.point(-1.0, -1.0, 0.7), Color.RED))
+        /*renderer.addGeometry(Triangle(Vector.point(0.0, 1.0, 0.5), Vector.point(1.0, -1.0, 0.5), Vector.point(-1.0, -1.0, 0.5), Color.GREEN))
+        renderer.addGeometry(Line(Vector.point(1.0, 1.0, 0.7), Vector.point(-1.0, -1.0, 0.7), Color.RED))*/
         renderer.addGeometry(Quadrilateral(
-                Vector.point(1.0, 1.0, 0.5),
-                Vector.point(-1.0, 1.0, 0.5),
-                Vector.point(-1.0, -1.0, 0.5),
-                Vector.point(1.0, -1.0, 0.5),
-                Color.BLUE
-        ))
+                Vector.point(1.0, 1.0, 0.2),
+                Vector.point(-1.0, 1.0, 0.2),
+                Vector.point(-1.0, -1.0, 0.2),
+                Vector.point(1.0, -1.0, 0.2),
+                Color.BLACK
+        ).apply {
+            extrude(Vector.direction(0.0, 0.0, 0.7))
+        })
+
+        renderer.addGeometry(Line(Vector.point(0.0, 0.0, 0.0), Vector.point(1.0, 0.0, 0.0), Color.RED))
+        renderer.addGeometry(Line(Vector.point(0.0, 0.0, 0.0), Vector.point(0.0, 1.0, 0.0), Color.GREEN))
+        renderer.addGeometry(Line(Vector.point(0.0, 0.0, 0.0), Vector.point(0.0, 0.0, 1.0), Color.BLUE))
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (null == event) return false
+        val x = event.x.toDouble()
+        val y = event.y.toDouble()
 
         if (event.action == ACTION_DOWN) {
-            touchStartPosition.x = event.x.toDouble()
-            touchStartPosition.y = event.y.toDouble()
+            touchStartPosition.x = x
+            touchStartPosition.y = y
             return true
         }
 
         if (event.action == ACTION_MOVE) {
-            val dx = event.x.toDouble() - touchStartPosition.x
-            renderer.rotate(0.0, dx * 0.0001)
+            val dx = x - touchStartPosition.x
+            val dy = y - touchStartPosition.y
+            rotation.x += dx
+            rotation.y += dy
+            renderer.rotation(rotation.y * 0.005, rotation.x * 0.005)
             requestRender()
+
+            touchStartPosition.x = x
+            touchStartPosition.y = y
             return true
         }
 

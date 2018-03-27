@@ -6,8 +6,8 @@ import io.jim.tesserapp.math.Vector
 class Line(a: Vector, b: Vector, color: Color) : Geometry(color) {
 
     init {
-        add(a)
-        add(b)
+        addPoints(a, b)
+        addLine(0, 1)
     }
 
 }

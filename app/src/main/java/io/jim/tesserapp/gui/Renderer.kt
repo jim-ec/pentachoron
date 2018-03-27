@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.math.Matrix
 import io.jim.tesserapp.math.Vector
+import junit.framework.Assert.assertEquals
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -14,9 +15,9 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
     private val maxLineVertices = maxLines * 2
     private lateinit var vertexBuffer: VertexBuffer
     private lateinit var shader: Shader
-    private val matrix = Matrix.scale(4, 0.5)
     private var viewMatrix = Matrix(4)
-    private var modelMatrix = Matrix(4)
+    private var rotationMatrix = Matrix(4)
+    //private val projectionMatrix = Matrix.perspective(4, 0.1, 10.0)
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glClearColor(1f, 1f, 1f, 1f)
@@ -35,7 +36,7 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
         //project3into2 = Matrix.perspective(4, 10.0, 0.1)
-        viewMatrix = Matrix.scale(4, Vector(1.0, (width).toDouble() / height, 1.0))
+        viewMatrix = Matrix.scale(4, Vector(1.0, (width).toDouble() / height, 1.0)) * Matrix.translation(4, Vector(-1.0, 0.0, 0.0))
     }
 
     override fun onDrawFrame(gl: GL10?) {
@@ -43,16 +44,17 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
 
         println("Draw, fill vertex buffer")
         for (geometry in geometries) {
-            for (point in geometry) {
-                vertexBuffer.appendVertex((point * modelMatrix * viewMatrix * matrix).perspectiveProjection, geometry.color)
+            for (point in geometry.toLineList()) {
+                assertEquals("All vertices must be 4D", 4, point.dimension)
+                vertexBuffer.appendVertex((point * rotationMatrix * viewMatrix).perspectiveProjection, geometry.color)
             }
         }
 
         vertexBuffer.draw(shader, GL_LINES)
     }
 
-    fun rotate(theta: Double, phi: Double) {
-        modelMatrix = Matrix.rotation(4, 0, 1, phi) * Matrix.rotation(4, 1, 2, theta) * modelMatrix
+    fun rotation(yaw: Double, pitch: Double) {
+        rotationMatrix = Matrix.rotation(4, 0, 1, pitch) * Matrix.rotation(4, 1, 2, yaw)
     }
 
 }

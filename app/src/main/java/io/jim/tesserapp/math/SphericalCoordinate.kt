@@ -1,5 +1,6 @@
 package io.jim.tesserapp.math
 
+import junit.framework.Assert.assertEquals
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
@@ -21,7 +22,7 @@ class SphericalCoordinate(v: Vector) {
     val r: Double
 
     init {
-        assert(v.dimension == 3)
+        assertEquals(v.dimension, 3)
         r = v.length
         theta = atan2(sqrt(v.x * v.x + v.y * v.y), v.z)
         phi = atan2(v.y, v.x)

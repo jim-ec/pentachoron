@@ -1,5 +1,7 @@
 package io.jim.tesserapp.math
 
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -9,7 +11,7 @@ class Matrix : ArrayList<Vector> {
      * Construct an identity matrix with side length equal to [size].
      */
     constructor(size: Int) {
-        assert(size > 0) { "Size must be greater than 0" }
+        assertTrue("Size must be greater than 0", size > 0)
         for (i in 0 until size) {
             add(Vector(size).also { it[i] = 1.0 })
         }
@@ -20,7 +22,7 @@ class Matrix : ArrayList<Vector> {
      * @exception AssertionError If count of given values in [l] does not match up with the matrix [size].
      */
     constructor(size: Int, l: List<Double>) : this(size) {
-        assert(size * size == l.size)
+        assertEquals(size * size, l.size)
         l.forEachIndexed { i, v -> this[i / size][i % size] = v }
     }
 
@@ -28,8 +30,8 @@ class Matrix : ArrayList<Vector> {
 
         fun space(dimension: Int, axises: List<Vector>) =
                 Matrix(dimension).apply {
-                    assert(axises.size + 1 == dimension) { "Axis count ${axises.size} does not match up with matrix size $dimension" }
-                    assert(axises.all { it.dimension + 1 == dimension }) { "All vectors must have one component less than the matrix size $dimension" }
+                    assertEquals("Axis count ${axises.size} does not match up with matrix size $dimension", axises.size + 1, dimension)
+                    assertTrue("All vectors must have one component less than the matrix size $dimension", axises.all { it.dimension + 1 == dimension })
                     axises.forEachIndexed { r, axis ->
                         axis.forEachIndexed { c, coefficient ->
                             this[r][c] = coefficient
@@ -53,8 +55,7 @@ class Matrix : ArrayList<Vector> {
         fun scale(dimension: Int, factor: Vector) =
                 Matrix(dimension).apply {
 
-                    assert(dimension == factor.dimension + 1)
-                    { "Scale vector dimension ${factor.dimension} does not match up with matrix dimension $dimension" }
+                    assertEquals("Scale vector dimension ${factor.dimension} does not match up with matrix dimension $dimension", dimension, factor.dimension + 1)
 
                     factor.forEachIndexed { i, fi -> this[i][i] = fi }
                 }
@@ -65,8 +66,8 @@ class Matrix : ArrayList<Vector> {
          */
         fun rotation(dimension: Int, n: Int, m: Int, phi: Double) =
                 Matrix(dimension).apply {
-                    assert(n < dimension) { "Plane-axis $n not in size $dimension" }
-                    assert(m < dimension) { "Plane-axis $m not in size $dimension" }
+                    assertTrue("Plane-axis $n not in size $dimension", n < dimension)
+                    assertTrue("Plane-axis $m not in size $dimension", m < dimension)
                     // Rotation on y-w plane:
                     //  -> y-axis rotates towards w-axis
                     //  -> w-axis rotates towards negative y-axis
@@ -87,8 +88,8 @@ class Matrix : ArrayList<Vector> {
          */
         fun shear(dimension: Int, n: Int, nm: Double, m: Int, mn: Double) =
                 Matrix(dimension).apply {
-                    assert(n < dimension) { "Axis $n not in size $dimension" }
-                    assert(m < dimension) { "Axis $m not in size $dimension" }
+                    assertTrue("Plane-axis $n not in size $dimension", n < dimension)
+                    assertTrue("Plane-axis $m not in size $dimension", m < dimension)
                     this[n][m] = nm
                     this[m][n] = mn
                 }
@@ -101,7 +102,7 @@ class Matrix : ArrayList<Vector> {
          */
         fun translation(dimension: Int, t: Vector) =
                 Matrix(dimension).apply {
-                    assert(dimension == t.dimension + 1) { "Translation size ${t.dimension} does not match up with matrix size $dimension" }
+                    assertEquals("Translation size ${t.dimension} does not match up with matrix size $dimension", dimension, t.dimension + 1)
                     t.forEachIndexed { i, ti ->
                         this[dimension - 1][i] = ti
                     }
@@ -126,9 +127,9 @@ class Matrix : ArrayList<Vector> {
          */
         fun perspective(dimension: Int, near: Double, far: Double) =
                 perspective(dimension).apply {
-                    assert(near > 0.0)
-                    assert(far > 0.0)
-                    assert(far > near)
+                    assertTrue(near > 0.0)
+                    assertTrue(far > 0.0)
+                    assertTrue(far > near)
                     this[dimension - 2][dimension - 2] = -far / (far - near)
                     this[dimension - 1][dimension - 2] = -(far * near) / (far - near)
                 }
@@ -143,7 +144,7 @@ class Matrix : ArrayList<Vector> {
      */
     operator fun times(rhs: Matrix) =
             Matrix(size).also {
-                assert(this compatible rhs)
+                assertTrue(this compatible rhs)
                 forEachCoefficient { r, c ->
                     it[r][c] = (0 until size).map { i -> this[r][i] * rhs[i][c] }.sum()
                 }

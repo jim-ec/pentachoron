@@ -6,17 +6,11 @@ import io.jim.tesserapp.math.Vector
 class Quadrilateral(a: Vector, b: Vector, c: Vector, d: Vector, color: Color) : Geometry(color) {
 
     init {
-        add(a)
-        add(b)
-
-        add(b)
-        add(c)
-
-        add(c)
-        add(d)
-
-        add(d)
-        add(a)
+        addPoints(a, b, c, d)
+        addLine(0, 1)
+        addLine(1, 2)
+        addLine(2, 3)
+        addLine(3, 0)
     }
 
 }

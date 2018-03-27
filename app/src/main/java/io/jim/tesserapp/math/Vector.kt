@@ -1,5 +1,7 @@
 package io.jim.tesserapp.math
 
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
 import java.lang.Math.*
 
 class Vector : ArrayList<Double> {
@@ -117,8 +119,8 @@ class Vector : ArrayList<Double> {
      * Does only work if both vectors are three dimensional.
      */
     infix fun cross(v: Vector): Vector {
-        assert(dimension == 3)
-        assert(v.dimension == 3)
+        assertEquals(dimension, 3)
+        assertEquals(v.dimension, 3)
         return Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x)
     }
 
@@ -159,7 +161,7 @@ class Vector : ArrayList<Double> {
      */
     operator fun times(rhs: Matrix) =
             Vector(dimension).also {
-                assert(rhs compatible this)
+                assertTrue(rhs compatible this)
                 for (c in 0 until dimension) {
                     it[c] = (0 until dimension).map { i -> rhs[i][c] * this[i] }.sum()
                 }
