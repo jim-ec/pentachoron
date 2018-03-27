@@ -40,7 +40,7 @@ data class VertexBuffer(val size: Int) {
                         floatBuffer.capacity(), floatBuffer.capacity() / COMPONENTS_PER_VERTEX,
                         COMPONENTS_PER_VERTEX),
                 floatBuffer.position() + COMPONENTS_PER_VERTEX <= floatBuffer.capacity())
-        
+
         floatBuffer.apply {
             put(position.x.toFloat())
             put(position.y.toFloat())
@@ -56,15 +56,11 @@ data class VertexBuffer(val size: Int) {
         glBindBuffer(GL_ARRAY_BUFFER, handle)
         glBufferData(GL_ARRAY_BUFFER, size * VERTEX_BYTE_LENGTH, floatBuffer, GL_DYNAMIC_DRAW)
 
-        glGetAttribLocation(shader.program, "position").apply {
-            glEnableVertexAttribArray(this)
-            glVertexAttribPointer(this, COMPONENTS_PER_POSITION, GL_FLOAT, false, VERTEX_BYTE_LENGTH, 0)
-        }
+        glEnableVertexAttribArray(shader.positionAttribute)
+        glVertexAttribPointer(shader.positionAttribute, COMPONENTS_PER_POSITION, GL_FLOAT, false, VERTEX_BYTE_LENGTH, 0)
 
-        glGetAttribLocation(shader.program, "color").apply {
-            glEnableVertexAttribArray(this)
-            glVertexAttribPointer(this, COMPONENTS_PER_COLOR, GL_FLOAT, false, VERTEX_BYTE_LENGTH, COMPONENTS_PER_POSITION * FLOAT_BYTE_LENGTH)
-        }
+        glEnableVertexAttribArray(shader.colorAttribute)
+        glVertexAttribPointer(shader.colorAttribute, COMPONENTS_PER_COLOR, GL_FLOAT, false, VERTEX_BYTE_LENGTH, COMPONENTS_PER_POSITION * FLOAT_BYTE_LENGTH)
     }
 
 }
