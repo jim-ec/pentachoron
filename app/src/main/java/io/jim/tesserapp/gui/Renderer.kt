@@ -3,8 +3,10 @@ package io.jim.tesserapp.gui
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.math.Direction
 import io.jim.tesserapp.math.Matrix
-import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.math.Point
+import junit.framework.Assert.assertEquals
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -12,11 +14,16 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
 
     private val geometries = ArrayList<Geometry>()
     private val maxLineVertices = maxLines * 2
-    private lateinit var vertexBuffer: VertexBuffer
     private lateinit var shader: Shader
-    private val matrix = Matrix.scale(4, 0.5)
-    private var viewMatrix = Matrix(4)
-    private var modelMatrix = Matrix(4)
+    private lateinit var vertexBuffer: VertexBuffer
+    private lateinit var indexBuffer: IndexBuffer
+    private var uploadGeometryBuffers = false
+    private val viewMatrix = Matrix(3)
+    private val rotationMatrixXY = Matrix(3)
+    private val rotationMatrixYZ = Matrix(3)
+    private val projectionMatrix = Matrix(3).perspective(0.1, 10.0)
+    private val translationMatrix = Matrix(3).translation(Direction(0.0, 0.0, -4.0))
+    private var uploadMatrices = false
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glClearColor(1f, 1f, 1f, 1f)
@@ -26,33 +33,54 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
 
         shader = Shader()
         vertexBuffer = VertexBuffer(maxLineVertices)
+        indexBuffer = IndexBuffer(maxLineVertices)
     }
 
     fun addGeometry(geometry: Geometry) {
         geometries.add(geometry)
+        uploadGeometryBuffers = true
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
-        //project3into2 = Matrix.perspective(4, 10.0, 0.1)
-        viewMatrix = Matrix.scale(4, Vector(1.0, (width).toDouble() / height, 1.0))
+        viewMatrix.scale(Point(1.0, width.toDouble() / height, 1.0))
+        uploadMatrices = true
     }
 
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        println("Draw, fill vertex buffer")
-        for (geometry in geometries) {
-            for (point in geometry) {
-                vertexBuffer.appendVertex((point * modelMatrix * viewMatrix * matrix).perspectiveProjection, geometry.color)
-            }
+        if (uploadMatrices) {
+            shader.updateMatrix(rotationMatrixXY * rotationMatrixYZ * translationMatrix * viewMatrix * projectionMatrix)
+            uploadMatrices = false
         }
 
-        vertexBuffer.draw(shader, GL_LINES)
+        if (uploadGeometryBuffers) {
+            indexBuffer.baseIndex = 0
+            for (geometry in geometries) {
+                for (point in geometry.points) {
+                    assertEquals("All vertices must be 3D", 3, point.dimension)
+                    vertexBuffer.appendVertex(point, geometry.color)
+                }
+                for (line in geometry.lines) {
+                    indexBuffer.appendIndex(line.first)
+                    indexBuffer.appendIndex(line.second)
+                }
+                indexBuffer.baseIndex += geometry.points.size
+            }
+            uploadGeometryBuffers = false
+        }
+
+        vertexBuffer.bind(shader)
+        indexBuffer.bind()
+
+        glDrawElements(GL_LINES, indexBuffer.size, GL_UNSIGNED_INT, 0)
     }
 
-    fun rotate(theta: Double, phi: Double) {
-        modelMatrix = Matrix.rotation(4, 0, 1, phi) * Matrix.rotation(4, 1, 2, theta) * modelMatrix
+    fun rotation(yaw: Double, pitch: Double) {
+        rotationMatrixXY.rotation(0, 1, pitch)
+        rotationMatrixYZ.rotation(1, 2, yaw)
+        uploadMatrices = true
     }
 
 }

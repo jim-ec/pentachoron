@@ -2,10 +2,12 @@ package io.jim.tesserapp.gui
 
 import android.opengl.GLES20.*
 import io.jim.tesserapp.math.Vector
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-class VertexBuffer(private val size: Int) {
+data class VertexBuffer(val size: Int) {
 
     companion object {
         private const val COMPONENTS_PER_POSITION = 3
@@ -27,24 +29,19 @@ class VertexBuffer(private val size: Int) {
 
     private val floatBuffer = byteBuffer.asFloatBuffer().apply {
         clear()
-        while (position() < capacity()) {
-            put(0f)
-        }
+        while (position() < capacity()) put(0f)
         rewind()
     }
 
     fun appendVertex(position: Vector, color: Color) {
-        assert(3 == position.dimension) { "Position vectors must be 3D" }
-        assert(floatBuffer.position() + COMPONENTS_PER_VERTEX <= floatBuffer.capacity())
-        {
-            "Insufficient memory to store vertex: pos=%d(%d verts)  cap=%d(%d verts)  needed=%d"
-                    .format(floatBuffer.position(), floatBuffer.position() / COMPONENTS_PER_VERTEX,
-                            floatBuffer.capacity(), floatBuffer.capacity() / COMPONENTS_PER_VERTEX,
-                            COMPONENTS_PER_VERTEX)
-        }
+        assertEquals("Position vectors must be 3D", 3, position.dimension)
+        assertTrue("Insufficient memory to store vertex: pos=%d(%d verts)  cap=%d(%d verts)  needed=%d"
+                .format(floatBuffer.position(), floatBuffer.position() / COMPONENTS_PER_VERTEX,
+                        floatBuffer.capacity(), floatBuffer.capacity() / COMPONENTS_PER_VERTEX,
+                        COMPONENTS_PER_VERTEX),
+                floatBuffer.position() + COMPONENTS_PER_VERTEX <= floatBuffer.capacity())
 
         floatBuffer.apply {
-            println("Add vertex [${floatBuffer.position() / COMPONENTS_PER_VERTEX}]: $position")
             put(position.x.toFloat())
             put(position.y.toFloat())
             put(position.z.toFloat())
@@ -54,22 +51,16 @@ class VertexBuffer(private val size: Int) {
         }
     }
 
-    fun draw(shader: Shader, mode: Int) {
+    fun bind(shader: Shader) {
         floatBuffer.rewind()
         glBindBuffer(GL_ARRAY_BUFFER, handle)
         glBufferData(GL_ARRAY_BUFFER, size * VERTEX_BYTE_LENGTH, floatBuffer, GL_DYNAMIC_DRAW)
 
-        glGetAttribLocation(shader.program, "position").apply {
-            glEnableVertexAttribArray(this)
-            glVertexAttribPointer(this, COMPONENTS_PER_POSITION, GL_FLOAT, false, VERTEX_BYTE_LENGTH, 0)
-        }
+        glEnableVertexAttribArray(shader.positionAttribute)
+        glVertexAttribPointer(shader.positionAttribute, COMPONENTS_PER_POSITION, GL_FLOAT, false, VERTEX_BYTE_LENGTH, 0)
 
-        glGetAttribLocation(shader.program, "color").apply {
-            glEnableVertexAttribArray(this)
-            glVertexAttribPointer(this, COMPONENTS_PER_COLOR, GL_FLOAT, false, VERTEX_BYTE_LENGTH, COMPONENTS_PER_POSITION * FLOAT_BYTE_LENGTH)
-        }
-
-        glDrawArrays(mode, 0, size)
+        glEnableVertexAttribArray(shader.colorAttribute)
+        glVertexAttribPointer(shader.colorAttribute, COMPONENTS_PER_COLOR, GL_FLOAT, false, VERTEX_BYTE_LENGTH, COMPONENTS_PER_POSITION * FLOAT_BYTE_LENGTH)
     }
 
 }
