@@ -90,7 +90,7 @@ class Shader {
         assertTrue(matrixUniform >= 0)
     }
 
-    fun updateMatrix(matrix: Matrix) {
+    fun uploadMatrix(matrix: Matrix) {
         assertEquals("Shader matrices must be 4x4 homogeneous", matrix.dimension, 3)
         val floats = FloatArray(16) { i -> matrix[i / 4][i % 4].toFloat() }
         glUniformMatrix4fv(matrixUniform, 1, false, floats, 0)

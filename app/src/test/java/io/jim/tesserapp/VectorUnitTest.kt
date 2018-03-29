@@ -84,6 +84,18 @@ class VectorUnitTest {
     }
 
     @Test
+    fun negation() {
+        (-Point(2.0, 1.0)).apply {
+            assertEquals(-2.0, x, 0.1)
+            assertEquals(-1.0, y, 0.1)
+        }
+        (-Direction(2.0, 1.0)).apply {
+            assertEquals(-2.0, x, 0.1)
+            assertEquals(-1.0, y, 0.1)
+        }
+    }
+
+    @Test
     fun cross() {
         assertEquals(Direction(-3.0, -11.0, 5.0), Direction(3.0, 1.0, 4.0) cross Direction(1.0, 2.0, 5.0))
     }

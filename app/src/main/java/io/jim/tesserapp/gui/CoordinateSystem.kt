@@ -1,12 +1,10 @@
 package io.jim.tesserapp.gui
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.view.MotionEvent.ACTION_DOWN
-import android.view.MotionEvent.ACTION_MOVE
+import android.view.MotionEvent.*
 import io.jim.tesserapp.geometry.Line
 import io.jim.tesserapp.geometry.Quadrilateral
 import io.jim.tesserapp.math.Direction
@@ -20,6 +18,13 @@ class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(
     private val renderer = Renderer(100)
     private val touchStartPosition = Point(0.0, 0.0)
     private val rotation = Point(0.0, 0.0)
+    private var touchStartTime = 0L
+
+    companion object {
+
+        const val CLICK_TIME_MS = 100L
+
+    }
 
     init {
         setEGLContextClientVersion(2)
@@ -33,16 +38,13 @@ class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(
                 Point(-1.0, -1.0, 1.0),
                 Point(1.0, -1.0, 1.0),
                 Color.BLACK
-        ).apply {
-            extrude(Direction(0.0, 0.0, -2.0))
-        })
+        ).apply { extrude(Direction(0.0, 0.0, -2.0)) })
 
         renderer.addGeometry(Line(Point(0.0, 0.0, 0.0), Point(1.0, 0.0, 0.0), Color.RED))
         renderer.addGeometry(Line(Point(0.0, 0.0, 0.0), Point(0.0, 1.0, 0.0), Color.GREEN))
         renderer.addGeometry(Line(Point(0.0, 0.0, 0.0), Point(0.0, 0.0, 1.0), Color.BLUE))
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (null == event) return false
         val x = event.x.toDouble()
@@ -51,6 +53,7 @@ class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(
         if (event.action == ACTION_DOWN) {
             touchStartPosition.x = x
             touchStartPosition.y = y
+            touchStartTime = System.currentTimeMillis()
             return true
         }
 
@@ -59,7 +62,7 @@ class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(
             val dy = y - touchStartPosition.y
             rotation.x += dx
             rotation.y += dy
-            renderer.rotation(rotation.y * 0.005, rotation.x * 0.005)
+            renderer.rotation(rotation.x * -0.005, rotation.y * 0.005)
             requestRender()
 
             touchStartPosition.x = x
@@ -67,7 +70,21 @@ class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(
             return true
         }
 
+        if (event.action == ACTION_UP && System.currentTimeMillis() - touchStartTime < CLICK_TIME_MS) {
+            println("onTouchEvent(): clicked!")
+            performClick()
+        }
+
         return false
+    }
+
+    override fun performClick(): Boolean {
+        super.performClick()
+
+        renderer.rotation(0.0, 0.0)
+        requestRender()
+
+        return true
     }
 
 }

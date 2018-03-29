@@ -131,31 +131,27 @@ class Matrix(val dimension: Int) {
                 }
             }
 
-    fun lookAt(from: Point, to: Point) {
-        assertTrue("Look at does only work in 3D", dimension == 3 && from.dimension == 3 && to.dimension == 3)
+    fun lookAt(eye: Point, target: Point, refUp: Direction) {
+        assertTrue("Look at does only work in 3D", dimension == 3 && eye.dimension == 3 && target.dimension == 3)
 
-        val ref = Direction(0.0, 1.0, 0.0)
+        val forward = (eye - target).apply { normalize() }
+        val right = (refUp cross forward).apply { normalize() }
+        val up = (forward cross right).apply { normalize() }
 
-        val forward = (from - to).apply { normalize() }
-        val right = ref cross forward
-        val up = forward cross right
+        // Copy vectors transposed:
+        fun copy(v: Vector, row: Int) {
+            this[0][row] = v.x
+            this[1][row] = v.y
+            this[2][row] = v.z
+        }
+        copy(right, 0)
+        copy(up, 1)
+        copy(forward, 2)
 
-        assertTrue("Forward cannot be equal to $ref", ref != forward)
-
-        this[0][0] = right.x
-        this[0][1] = right.y
-        this[0][2] = right.z
-        this[1][0] = up.x
-        this[1][1] = up.y
-        this[1][2] = up.z
-        this[2][0] = forward.x
-        this[2][1] = forward.y
-        this[2][2] = forward.z
-        this[3][0] = from.x
-        this[3][1] = from.y
-        this[3][2] = from.z
-
-        TODO("Invert matrix, since that is cam-to-world")
+        val eyeC = -eye * this
+        this[3][0] = eyeC.x
+        this[3][1] = eyeC.y
+        this[3][2] = eyeC.z
     }
 
     /**
@@ -182,7 +178,7 @@ class Matrix(val dimension: Int) {
                 it.append("[ (").append(dimension).append("D): ")
                 coefficients.forEachIndexed { r, row ->
                     row.forEachIndexed { c, col ->
-                        it.append(col)
+                        it.append(Format.decimalFormat.format(col))
                         if (c < dimension) it.append(", ")
                     }
                     if (r < dimension) it.append(" | ")

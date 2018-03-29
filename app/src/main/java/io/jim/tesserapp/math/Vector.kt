@@ -66,12 +66,13 @@ abstract class Vector(components: List<Double>) : Iterable<Double> {
     /**
      * Represent this vector as a string.
      */
-    override fun toString() =
-            StringBuilder().also {
-                it.append('(')
-                components.forEach { component -> it.append(component).append('|') }
-                it.setCharAt(it.length - 1, ')')
-            }.toString()
+    override fun toString(): String {
+        val sb = StringBuilder()
+        sb.append('(')
+        components.forEach { component -> sb.append(Format.decimalFormat.format(component)).append('|') }
+        sb.setCharAt(sb.length - 1, ')')
+        return sb.toString()
+    }
 
     /**
      * Compute this vector's length.
@@ -105,5 +106,14 @@ abstract class Vector(components: List<Double>) : Iterable<Double> {
      */
     abstract operator fun div(divisor: Double): Vector
 
+    /**
+     * Applies the matrix [rhs] to this vector in a returned result.
+     */
     abstract operator fun times(rhs: Matrix): Vector
+
+    /**
+     * Invert this vector.
+     */
+    abstract operator fun unaryMinus(): Vector
+
 }

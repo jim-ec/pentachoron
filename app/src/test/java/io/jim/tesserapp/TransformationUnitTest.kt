@@ -116,23 +116,34 @@ class TransformationUnitTest {
 
     @Test
     fun lookAt() {
-        val m0 = Matrix(3).apply { lookAt(Point(0.0, 0.0, 1.0), Point(1.0, 0.0, 1.0)) }
+        val m = Matrix(3).apply { lookAt(Point(-2.0, 0.0, -1.0), Point(2.0, -1.0, 1.0), Direction(0.0, 0.0, 1.0)) }
 
-        println(m0)
+        m.apply {
+            val f = Direction(this[0][0], this[0][1], this[0][2])
+            val r = Direction(this[1][0], this[1][1], this[1][2])
+            val u = Direction(this[2][0], this[2][1], this[2][2])
 
-        (Point(0.0, 0.0, 0.0) * m0).apply {
-            assertEquals(0.0, x, 0.1)
-            assertEquals(0.0, y, 0.1)
-            assertEquals(-1.0, z, 0.1)
+            // Check that all matrix axis are perpendicular to each other:
+            assertEquals(0.0, f * r, 0.1)
+            assertEquals(0.0, r * u, 0.1)
+            assertEquals(0.0, u * f, 0.1)
+
+            // Check the all matrix axis are unit vectors:
+            assertEquals(1.0, f.length, 0.1)
+            assertEquals(1.0, r.length, 0.1)
+            assertEquals(1.0, u.length, 0.1)
         }
+    }
 
-        /*val m1 = Matrix(3).apply { lookAt(Point(2.0, 2.0, 2.0), Point(1.0, 1.0, 1.0)) }
+    @Test
+    fun lookAt_3dToOrigin() {
+        val m = Matrix(3).apply { lookAt(Point(2.0, 2.0, 2.0), Point(0.0, 0.0, 0.0), Direction(0.0, 1.0, 0.0)) }
 
-        (Point(1.0, 1.0, 1.0) * m1).apply {
+        (Point(0.0, 0.0, 0.0) * m).apply {
             assertEquals(0.0, x, 0.1)
             assertEquals(0.0, y, 0.1)
-            assertEquals(0.0, z, 0.1)
-        }*/
+            assertTrue(z < 0.0)
+        }
     }
 
 }

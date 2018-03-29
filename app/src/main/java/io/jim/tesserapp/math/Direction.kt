@@ -60,4 +60,8 @@ class Direction(components: List<Double>) : Vector(components) {
         return Direction(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x)
     }
 
+    override fun unaryMinus() = Direction(ArrayList<Double>().also {
+        mapTo(it) { component -> -component }
+    })
+
 }

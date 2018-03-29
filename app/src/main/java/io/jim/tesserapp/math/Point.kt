@@ -56,4 +56,8 @@ class Point(components: List<Double>) : Vector(components) {
                 list.removeAt(dimension)
             })
 
+    override fun unaryMinus() = Direction(ArrayList<Double>().also {
+        mapTo(it) { component -> -component }
+    })
+
 }
