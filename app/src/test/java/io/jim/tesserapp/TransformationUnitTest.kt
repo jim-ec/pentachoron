@@ -114,4 +114,25 @@ class TransformationUnitTest {
         assertEquals(6.0, p.z, 0.1)
     }
 
+    @Test
+    fun lookAt() {
+        val m0 = Matrix(3).apply { lookAt(Point(0.0, 0.0, 1.0), Point(1.0, 0.0, 1.0)) }
+
+        println(m0)
+
+        (Point(0.0, 0.0, 0.0) * m0).apply {
+            assertEquals(0.0, x, 0.1)
+            assertEquals(0.0, y, 0.1)
+            assertEquals(-1.0, z, 0.1)
+        }
+
+        /*val m1 = Matrix(3).apply { lookAt(Point(2.0, 2.0, 2.0), Point(1.0, 1.0, 1.0)) }
+
+        (Point(1.0, 1.0, 1.0) * m1).apply {
+            assertEquals(0.0, x, 0.1)
+            assertEquals(0.0, y, 0.1)
+            assertEquals(0.0, z, 0.1)
+        }*/
+    }
+
 }

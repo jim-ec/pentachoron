@@ -86,10 +86,14 @@ abstract class Vector(components: List<Double>) : Iterable<Double> {
             components.zip(v.components) { a, b -> a * b }.sum()
 
     /**
-     * Return this vector in it's normalized form.
+     * Normalize this vector.
      */
-    val normalized
-        get() = this / length
+    fun normalize() {
+        val l = 1.0 / length
+        for (i in 0 until dimension) {
+            components[i] *= l
+        }
+    }
 
     /**
      * Scales this point by [scale].

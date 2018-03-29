@@ -96,8 +96,8 @@ class VectorUnitTest {
 
     @Test
     fun normalized() {
-        assertEquals(1.0, Direction(3.0, 1.0, 4.0).normalized.length, 0.1)
-        assertEquals(1.0, Point(3.0, 1.0, 4.0).normalized.length, 0.1)
+        assertEquals(1.0, Direction(3.0, 1.0, 4.0).apply { normalize() }.length, 0.1)
+        assertEquals(1.0, Point(3.0, 1.0, 4.0).apply { normalize() }.length, 0.1)
     }
 
     @Test

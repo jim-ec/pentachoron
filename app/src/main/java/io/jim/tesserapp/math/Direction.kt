@@ -1,7 +1,7 @@
 package io.jim.tesserapp.math
 
 import junit.framework.Assert
-import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
 import java.lang.Math.cos
 import java.lang.Math.sin
 
@@ -52,13 +52,12 @@ class Direction(components: List<Double>) : Vector(components) {
             })
 
     /**
-     * Compute the vector product of this vector and [v].
+     * Compute the vector product of this direction and [v].
      * Does only work if both vectors are three dimensional.
      */
-    infix fun cross(v: Vector): Vector {
-        assertEquals(dimension, 3)
-        assertEquals(v.dimension, 3)
-        return Direction(listOf(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x))
+    infix fun cross(v: Direction): Direction {
+        assertTrue("Cross product works only in 3D", dimension == 3 && v.dimension == 3)
+        return Direction(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x)
     }
 
 }

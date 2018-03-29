@@ -131,12 +131,39 @@ class Matrix(val dimension: Int) {
                 }
             }
 
+    fun lookAt(from: Point, to: Point) {
+        assertTrue("Look at does only work in 3D", dimension == 3 && from.dimension == 3 && to.dimension == 3)
+
+        val ref = Direction(0.0, 1.0, 0.0)
+
+        val forward = (from - to).apply { normalize() }
+        val right = ref cross forward
+        val up = forward cross right
+
+        assertTrue("Forward cannot be equal to $ref", ref != forward)
+
+        this[0][0] = right.x
+        this[0][1] = right.y
+        this[0][2] = right.z
+        this[1][0] = up.x
+        this[1][1] = up.y
+        this[1][2] = up.z
+        this[2][0] = forward.x
+        this[2][1] = forward.y
+        this[2][2] = forward.z
+        this[3][0] = from.x
+        this[3][1] = from.y
+        this[3][2] = from.z
+
+        TODO("Invert matrix, since that is cam-to-world")
+    }
+
     /**
      * Construct a matrix representing a transpose of this matrix.
      */
     fun transposed() =
-            Matrix(dimension).also {
-                forEachCoefficient { r, c -> it[r][c] = this[c][r] }
+            Matrix(dimension).also { result ->
+                forEachCoefficient { r, c -> result[r][c] = this[c][r] }
             }
 
     /**
