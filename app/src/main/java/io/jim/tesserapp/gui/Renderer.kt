@@ -19,15 +19,16 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
     private lateinit var indexBuffer: IndexBuffer
     private var uploadGeometryBuffers = false
     private val viewMatrix = Matrix(3)
-    private val lookAtMatrix = Matrix(3).apply { lookAt(Point(2.0, 2.5, 3.0), Point(0.0, 0.0, 0.0), Direction(0.0, 1.0, 0.0)) }
+    private val lookAtMatrix = Matrix(3).apply { lookAt(Point(4.0, 0.0, 0.0), Point(0.0, 0.0, 0.0), Direction(0.0, 1.0, 0.0)) }
     private val zxRotationMatrix = Matrix(3)
     private val xyRotationMatrix = Matrix(3)
     private val projectionMatrix = Matrix(3).perspective(0.1, 100.0)
     private val translationMatrix = Matrix(3)//.translation(Direction(0.0, 0.0, -4.0))
     private var uploadMatrices = false
+    private val clearColor = Color(0.15f)
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-        glClearColor(1f, 1f, 1f, 1f)
+        glClearColor(clearColor.red, clearColor.green, clearColor.blue, 1.0f)
         glDisable(GL_CULL_FACE)
         glEnable(GL_DEPTH_TEST)
         glLineWidth(4f)

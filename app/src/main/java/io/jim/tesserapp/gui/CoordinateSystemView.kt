@@ -13,7 +13,7 @@ import io.jim.tesserapp.math.Point
 /**
  * A view capable of rendering 3D geometry.
  */
-class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(context, attrs) {
+class CoordinateSystemView(context: Context?, attrs: AttributeSet?) : GLSurfaceView(context, attrs) {
 
     private val renderer = Renderer(100)
     private val touchStartPosition = Point(0.0, 0.0)
@@ -37,12 +37,25 @@ class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(
                 Point(-1.0, 1.0, 1.0),
                 Point(-1.0, -1.0, 1.0),
                 Point(1.0, -1.0, 1.0),
-                Color.BLACK
+                Color(0.9f)
         ).apply { extrude(Direction(0.0, 0.0, -2.0)) })
 
-        renderer.addGeometry(Line(Point(0.0, 0.0, 0.0), Point(1.0, 0.0, 0.0), Color.RED))
-        renderer.addGeometry(Line(Point(0.0, 0.0, 0.0), Point(0.0, 1.0, 0.0), Color.GREEN))
-        renderer.addGeometry(Line(Point(0.0, 0.0, 0.0), Point(0.0, 0.0, 1.0), Color.BLUE))
+        renderer.addGeometry(Line(Point(0.0, 0.0, 0.0), Point(1.0, 0.0, 0.0), Color(1.0f, 0.3f, 0.3f)))
+        renderer.addGeometry(Line(Point(0.0, 0.0, 0.0), Point(0.0, 1.0, 0.0), Color(0.3f, 1.0f, 0.3f)))
+        renderer.addGeometry(Line(Point(0.0, 0.0, 0.0), Point(0.0, 0.0, 1.0), Color(0.3f, 0.3f, 1.0f)))
+
+        for (i in -5..5) {
+            renderer.addGeometry(Line(
+                    Point(i.toDouble(), 0.0, -5.0),
+                    Point(i.toDouble(), 0.0, 5.0),
+                    Color(0.5f)
+            ))
+            renderer.addGeometry(Line(
+                    Point(-5.0, 0.0, i.toDouble()),
+                    Point(5.0, 0.0, i.toDouble()),
+                    Color(0.5f)
+            ))
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -71,6 +84,8 @@ class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(
         }
 
         if (event.action == ACTION_UP && System.currentTimeMillis() - touchStartTime < CLICK_TIME_MS) {
+            rotation.x = 0.0
+            rotation.y = 0.0
             performClick()
         }
 
