@@ -46,7 +46,7 @@ class MatrixUnitTest {
         val m = Matrix(2).space(Point(0.0, 0.0),
                 Direction(1.0, 2.0),
                 Direction(3.0, 4.0))
-        val n = m.transposed()
+        val n = Matrix(m).apply { transpose() }
         assertEquals(1.0, n[0][0], 0.1)
         assertEquals(3.0, n[0][1], 0.1)
         assertEquals(2.0, n[1][0], 0.1)

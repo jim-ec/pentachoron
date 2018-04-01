@@ -20,10 +20,14 @@ class Matrix(val dimension: Int) {
     init {
         // Initialize to identity matrix:
         assertTrue("Size must be > 0", dimension > 0)
-        for (i in 0..dimension) coefficients.add(ArrayList<Double>().also {
-            for (j in 0..dimension) it.add(0.0)
-            it[i] = 1.0
+        for (r in 0..dimension) coefficients.add(ArrayList<Double>().also {
+            for (c in 0..dimension) it.add(0.0)
+            it[r] = 1.0
         })
+    }
+
+    constructor(other: Matrix) : this(other.dimension) {
+        forEachCoefficient { r, c -> this[r][c] = other[r][c] }
     }
 
     operator fun get(index: Int): ArrayList<Double> {
@@ -131,6 +135,11 @@ class Matrix(val dimension: Int) {
                 }
             }
 
+    /**
+     * Construct a look-at matrix, representing both, translation and rotation.
+     * The camera is constructed in such a way that it is positioned at [eye], points to [target],
+     * and the upper edge is oriented in the [refUp] direction.
+     */
     fun lookAt(eye: Point, target: Point, refUp: Direction) {
         assertTrue("Look at does only work in 3D", dimension == 3 && eye.dimension == 3 && target.dimension == 3)
 
@@ -155,12 +164,19 @@ class Matrix(val dimension: Int) {
     }
 
     /**
-     * Construct a matrix representing a transpose of this matrix.
+     * Transpose this matrix.
      */
-    fun transposed() =
-            Matrix(dimension).also { result ->
-                forEachCoefficient { r, c -> result[r][c] = this[c][r] }
+    fun transpose() {
+        var tmp: Double
+
+        for (r in 0..dimension) {
+            for (c in 0..r) {
+                tmp = this[r][c]
+                this[r][c] = this[c][r]
+                this[c][r] = tmp
             }
+        }
+    }
 
     /**
      * Call a function for each coefficient. Indices of row and column are passed to [f].
@@ -173,6 +189,9 @@ class Matrix(val dimension: Int) {
         }
     }
 
+    /**
+     * Create a string representing this matrix.
+     */
     override fun toString() =
             StringBuilder().also {
                 it.append("[ (").append(dimension).append("D): ")
