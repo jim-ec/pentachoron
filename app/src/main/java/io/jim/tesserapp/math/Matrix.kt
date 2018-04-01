@@ -13,7 +13,7 @@ import kotlin.math.sin
  * Vectors multiplied to this matrix must be one greater than the dimension as
  * well, since they are homogeneous coordinates or directions as well.
  */
-class Matrix(val dimension: Int) : Indexable<Matrix, Direction> {
+class Matrix(val dimension: Int) : Indexable<Direction> {
 
     private val coefficients = ArrayList<Direction>()
 

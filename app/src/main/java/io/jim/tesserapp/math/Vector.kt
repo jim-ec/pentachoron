@@ -6,7 +6,7 @@ import java.lang.Math.sqrt
  * A homogeneous vector, but does not store the homogeneous component, as that component is
  * implicitly given by the subclass used.
  */
-abstract class Vector(components: List<Double>) : Iterable<Double>, Indexable<Vector, Double> {
+abstract class Vector(components: List<Double>) : Iterable<Double>, Indexable<Double> {
 
     private val components = ArrayList<Double>(components)
 
