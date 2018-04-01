@@ -56,7 +56,7 @@ class Direction(components: List<Double>) : Vector(components) {
      * Does only work if both vectors are three dimensional.
      */
     infix fun cross(v: Direction): Direction {
-        assertTrue("Cross product works only in 3D", dimension == 3 && v.dimension == 3)
+        assertTrue("Cross product works only in 3D", dimension >= 3 && v.dimension >= 3)
         return Direction(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x)
     }
 

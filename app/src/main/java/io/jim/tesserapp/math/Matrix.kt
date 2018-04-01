@@ -13,25 +13,48 @@ import kotlin.math.sin
  * Vectors multiplied to this matrix must be one greater than the dimension as
  * well, since they are homogeneous coordinates or directions as well.
  */
-class Matrix(val dimension: Int) {
+class Matrix(val dimension: Int) : Indexable<Matrix, Direction> {
 
-    private val coefficients = ArrayList<ArrayList<Double>>()
+    private val coefficients = ArrayList<Direction>()
 
     init {
         // Initialize to identity matrix:
         assertTrue("Size must be > 0", dimension > 0)
-        for (r in 0..dimension) coefficients.add(ArrayList<Double>().also {
+        val initializer = ArrayList<Double>().also {
             for (c in 0..dimension) it.add(0.0)
-            it[r] = 1.0
-        })
+        }
+
+        for (r in 0..dimension) coefficients.add(Direction(initializer))
+
+        identity()
     }
 
     constructor(other: Matrix) : this(other.dimension) {
         forEachCoefficient { r, c -> this[r][c] = other[r][c] }
     }
 
-    operator fun get(index: Int): ArrayList<Double> {
+    override operator fun get(index: Int): Direction {
         return coefficients[index]
+    }
+
+    override operator fun set(index: Int, value: Direction) {
+        for (i in 0 until value.dimension) this[index][i] = value[i]
+    }
+
+    var x: Direction by IndexAlias(0)
+    var y: Direction by IndexAlias(1)
+    var z: Direction by IndexAlias(2)
+    var q: Direction by IndexAlias(3)
+
+    var right: Direction by IndexAlias(0)
+    var up: Direction by IndexAlias(1)
+    var forward: Direction by IndexAlias(2)
+
+    /**
+     * Load the identity matrix.
+     */
+    private fun identity() {
+        forEachCoefficient { r, c -> this[r][c] = if (r == c) 1.0 else 0.0 }
     }
 
     /**
@@ -143,24 +166,13 @@ class Matrix(val dimension: Int) {
     fun lookAt(eye: Point, target: Point, refUp: Direction) {
         assertTrue("Look at does only work in 3D", dimension == 3 && eye.dimension == 3 && target.dimension == 3)
 
-        val forward = (eye - target).apply { normalize() }
-        val right = (refUp cross forward).apply { normalize() }
-        val up = (forward cross right).apply { normalize() }
+        forward = (eye - target).apply { normalize() }
+        right = (refUp cross forward).apply { normalize() }
+        up = (forward cross right).apply { normalize() }
 
-        // Copy vectors transposed:
-        fun copy(v: Vector, row: Int) {
-            this[0][row] = v.x
-            this[1][row] = v.y
-            this[2][row] = v.z
-        }
-        copy(right, 0)
-        copy(up, 1)
-        copy(forward, 2)
+        transpose()
 
-        val eyeC = -eye * this
-        this[3][0] = eyeC.x
-        this[3][1] = eyeC.y
-        this[3][2] = eyeC.z
+        this[3] = -eye * this
     }
 
     /**

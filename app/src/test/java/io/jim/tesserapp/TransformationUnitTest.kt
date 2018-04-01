@@ -19,13 +19,13 @@ class TransformationUnitTest {
         val v = Point(2.0, 4.0) * m
         assertEquals(6.0, v.x, 0.1)
         assertEquals(12.0, v.y, 0.1)
-        assertEquals(1.0, m[2][2], 0.01)
+        assertEquals(1.0, m.z.z, 0.01)
 
         val m1 = Matrix(2).scale(Point(4.0, 5.0))
         val v1 = Direction(2.0, 4.0) * m1
         assertEquals(8.0, v1.x, 0.1)
         assertEquals(20.0, v1.y, 0.1)
-        assertEquals(1.0, m1[2][2], 0.01)
+        assertEquals(1.0, m1.z.z, 0.01)
     }
 
     @Test
@@ -60,7 +60,7 @@ class TransformationUnitTest {
                 Direction(0.0, 1.0, 0.0),
                 Direction(0.0, 0.0, 1.0)
         )
-        assertEquals(1.0, m[3][3], 0.01)
+        assertEquals(1.0, m.q.q, 0.01)
         m.forEachCoefficient { r, c -> assertEquals(i[r][c], m[r][c], 0.01) }
 
         val s = Matrix(3).scale(5.0)
@@ -69,8 +69,8 @@ class TransformationUnitTest {
                 Direction(0.0, 5.0, 0.0),
                 Direction(0.0, 0.0, 5.0)
         )
-        assertEquals(1.0, s[3][3], 0.01)
-        assertEquals(1.0, n[3][3], 0.01)
+        assertEquals(1.0, s.q.q, 0.01)
+        assertEquals(1.0, n.q.q, 0.01)
         s.forEachCoefficient { r, c -> assertEquals(s[r][c], n[r][c], 0.01) }
     }
 
@@ -119,19 +119,15 @@ class TransformationUnitTest {
         val m = Matrix(3).apply { lookAt(Point(-2.0, 0.0, -1.0), Point(2.0, -1.0, 1.0), Direction(0.0, 0.0, 1.0)) }
 
         m.apply {
-            val f = Direction(this[0][0], this[0][1], this[0][2])
-            val r = Direction(this[1][0], this[1][1], this[1][2])
-            val u = Direction(this[2][0], this[2][1], this[2][2])
-
             // Check that all matrix axis are perpendicular to each other:
-            assertEquals(0.0, f * r, 0.1)
-            assertEquals(0.0, r * u, 0.1)
-            assertEquals(0.0, u * f, 0.1)
+            assertEquals(0.0, forward * right, 0.1)
+            assertEquals(0.0, right * up, 0.1)
+            assertEquals(0.0, up * forward, 0.1)
 
             // Check the all matrix axis are unit vectors:
-            assertEquals(1.0, f.length, 0.1)
-            assertEquals(1.0, r.length, 0.1)
-            assertEquals(1.0, u.length, 0.1)
+            assertEquals(1.0, forward.length, 0.1)
+            assertEquals(1.0, right.length, 0.1)
+            assertEquals(1.0, up.length, 0.1)
         }
     }
 

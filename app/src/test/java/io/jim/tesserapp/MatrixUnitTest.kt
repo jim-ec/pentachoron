@@ -47,10 +47,10 @@ class MatrixUnitTest {
                 Direction(1.0, 2.0),
                 Direction(3.0, 4.0))
         val n = Matrix(m).apply { transpose() }
-        assertEquals(1.0, n[0][0], 0.1)
-        assertEquals(3.0, n[0][1], 0.1)
-        assertEquals(2.0, n[1][0], 0.1)
-        assertEquals(4.0, n[1][1], 0.1)
+        assertEquals(1.0, n.x.x, 0.1)
+        assertEquals(3.0, n.x.y, 0.1)
+        assertEquals(2.0, n.y.x, 0.1)
+        assertEquals(4.0, n.y.y, 0.1)
     }
 
     @Test
@@ -62,10 +62,10 @@ class MatrixUnitTest {
                 Direction(6.0, 7.0),
                 Direction(8.0, 9.0))
         val u = m * n
-        assertEquals(2.0 * 6.0 + 3.0 * 8.0, u[0][0], 0.1)
-        assertEquals(2.0 * 7.0 + 3.0 * 9.0, u[0][1], 0.1)
-        assertEquals(4.0 * 6.0 + 5.0 * 8.0, u[1][0], 0.1)
-        assertEquals(4.0 * 7.0 + 5.0 * 9.0, u[1][1], 0.1)
+        assertEquals(2.0 * 6.0 + 3.0 * 8.0, u.x.x, 0.1)
+        assertEquals(2.0 * 7.0 + 3.0 * 9.0, u.x.y, 0.1)
+        assertEquals(4.0 * 6.0 + 5.0 * 8.0, u.y.x, 0.1)
+        assertEquals(4.0 * 7.0 + 5.0 * 9.0, u.y.y, 0.1)
     }
 
     @Test

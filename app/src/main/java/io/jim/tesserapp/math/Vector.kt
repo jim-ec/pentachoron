@@ -1,23 +1,22 @@
 package io.jim.tesserapp.math
 
 import java.lang.Math.sqrt
-import kotlin.reflect.KProperty
 
 /**
  * A homogeneous vector, but does not store the homogeneous component, as that component is
  * implicitly given by the subclass used.
  */
-abstract class Vector(components: List<Double>) : Iterable<Double> {
+abstract class Vector(components: List<Double>) : Iterable<Double>, Indexable<Vector, Double> {
 
     private val components = ArrayList<Double>(components)
 
     override operator fun iterator() = components.iterator()
 
-    operator fun set(index: Int, value: Double) {
+    override operator fun set(index: Int, value: Double) {
         components[index] = value
     }
 
-    operator fun get(index: Int): Double {
+    override operator fun get(index: Int): Double {
         return components[index]
     }
 
@@ -30,26 +29,10 @@ abstract class Vector(components: List<Double>) : Iterable<Double> {
         return components.hashCode()
     }
 
-    var x: Double by Delegate(0)
-    var y: Double by Delegate(1)
-    var z: Double by Delegate(2)
-    var q: Double by Delegate(3)
-
-    /**
-     * Enables property aliasing to components with a specific [index],
-     * so 'x' aliases to the first component and so on.
-     */
-    private class Delegate(private val index: Int) {
-
-        operator fun getValue(thisRef: Vector?, property: KProperty<*>): Double {
-            return thisRef?.get(index)!!
-        }
-
-        operator fun setValue(thisRef: Vector?, property: KProperty<*>, value: Double) {
-            thisRef?.set(index, value)
-        }
-
-    }
+    var x: Double by IndexAlias(0)
+    var y: Double by IndexAlias(1)
+    var z: Double by IndexAlias(2)
+    var q: Double by IndexAlias(3)
 
     /**
      * Return the number of components.
