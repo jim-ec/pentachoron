@@ -62,7 +62,7 @@ class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(
             val dy = y - touchStartPosition.y
             rotation.x += dx
             rotation.y += dy
-            renderer.rotation(rotation.x * -0.005, rotation.y * 0.005)
+            renderer.rotation(rotation.x * 0.005, rotation.y * 0.005)
             requestRender()
 
             touchStartPosition.x = x
@@ -71,7 +71,6 @@ class CoordinateSystem(context: Context?, attrs: AttributeSet?) : GLSurfaceView(
         }
 
         if (event.action == ACTION_UP && System.currentTimeMillis() - touchStartTime < CLICK_TIME_MS) {
-            println("onTouchEvent(): clicked!")
             performClick()
         }
 

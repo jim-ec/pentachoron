@@ -19,9 +19,9 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
     private lateinit var indexBuffer: IndexBuffer
     private var uploadGeometryBuffers = false
     private val viewMatrix = Matrix(3)
-    private val lookAtMatrix = Matrix(3).apply { lookAt(Point(2.0, 2.0, 2.0), Point(0.0, 0.0, 0.0), Direction(0.0, 1.0, 0.0)) }
-    private val majorRotationMatrix = Matrix(3)
-    private val minorRotationMatrix = Matrix(3)
+    private val lookAtMatrix = Matrix(3).apply { lookAt(Point(2.0, 2.5, 3.0), Point(0.0, 0.0, 0.0), Direction(0.0, 1.0, 0.0)) }
+    private val zxRotationMatrix = Matrix(3)
+    private val xyRotationMatrix = Matrix(3)
     private val projectionMatrix = Matrix(3).perspective(0.1, 100.0)
     private val translationMatrix = Matrix(3)//.translation(Direction(0.0, 0.0, -4.0))
     private var uploadMatrices = false
@@ -52,7 +52,7 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
         if (uploadMatrices) {
-            shader.uploadMatrix(minorRotationMatrix * majorRotationMatrix * translationMatrix * lookAtMatrix * viewMatrix * projectionMatrix)
+            shader.uploadMatrix(zxRotationMatrix * xyRotationMatrix * translationMatrix * lookAtMatrix * viewMatrix * projectionMatrix)
             uploadMatrices = false
         }
 
@@ -79,8 +79,8 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
     }
 
     fun rotation(horizontal: Double, vertical: Double) {
-        majorRotationMatrix.rotation(0, 2, horizontal)
-        minorRotationMatrix.rotation(1, 2, vertical)
+        zxRotationMatrix.rotation(2, 0, horizontal)
+        xyRotationMatrix.rotation(1, 0, vertical)
         uploadMatrices = true
     }
 
