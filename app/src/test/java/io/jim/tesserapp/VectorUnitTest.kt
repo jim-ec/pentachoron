@@ -27,36 +27,6 @@ class VectorUnitTest {
             assertEquals(5.0, z, 0.1)
             assertEquals(4.0, q, 0.1)
         }
-
-        Vector(listOf(1.0, 2.0, 5.0, 4.0)).apply {
-
-            assertEquals(4, dimension)
-
-            assertEquals(1.0, this[0], 0.1)
-            assertEquals(2.0, this[1], 0.1)
-            assertEquals(5.0, this[2], 0.1)
-            assertEquals(4.0, this[3], 0.1)
-
-            assertEquals(1.0, x, 0.1)
-            assertEquals(2.0, y, 0.1)
-            assertEquals(5.0, z, 0.1)
-            assertEquals(4.0, q, 0.1)
-        }
-
-        Vector(ArrayList(listOf(1.0, 2.0, 5.0, 4.0))).apply {
-
-            assertEquals(4, dimension)
-
-            assertEquals(1.0, this[0], 0.1)
-            assertEquals(2.0, this[1], 0.1)
-            assertEquals(5.0, this[2], 0.1)
-            assertEquals(4.0, this[3], 0.1)
-
-            assertEquals(1.0, x, 0.1)
-            assertEquals(2.0, y, 0.1)
-            assertEquals(5.0, z, 0.1)
-            assertEquals(4.0, q, 0.1)
-        }
     }
 
     @Test

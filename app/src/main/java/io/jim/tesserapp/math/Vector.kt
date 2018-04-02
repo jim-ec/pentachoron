@@ -11,16 +11,27 @@ class Vector : Iterable<Double>, Indexable<Double> {
 
     private val components: ArrayList<Double>
 
-    constructor(components: List<Double>) {
-        this.components = ArrayList(components)
+    constructor(dimension: Int) {
+        components = ArrayList(dimension)
+        for (i in 0 until dimension) components.add(0.0)
     }
 
-    constructor(vararg components: Double) : this(components.toList())
+    /**
+     * Creates a vector without allocating a dedicated component list.
+     * Constructing two vectors using this constructor using the same list results in two
+     * different vectors, using the same shared component data.
+     */
+    private constructor(componentList: ArrayList<Double>) {
+        this.components = componentList
+    }
+
+    constructor(vararg components: Double) : this(ArrayList(components.toList()))
 
     constructor(p: SphericalCoordinate) : this(
             cos(p.phi) * sin(p.theta) * p.r,
             sin(p.phi) * sin(p.theta) * p.r,
             cos(p.theta) * p.r)
+
 
     override operator fun iterator() = components.iterator()
 
@@ -95,25 +106,25 @@ class Vector : Iterable<Double>, Indexable<Double> {
      * Add [v] added to this v.
      */
     operator fun plus(v: Vector) =
-            Vector(zip(v) { a, b -> a + b })
+            Vector(ArrayList(zip(v) { a, b -> a + b }))
 
     /**
      * Subtract [v] from this vector.
      */
     operator fun minus(v: Vector) =
-            Vector(zip(v) { a, b -> a - b })
+            Vector(ArrayList(zip(v) { a, b -> a - b }))
 
     /**
      * Scales this by [scale].
      */
     operator fun times(scale: Double) =
-            Vector(map { it * scale })
+            Vector(ArrayList(map { it * scale }))
 
     /**
      * Divides this vector through [divisor].
      */
     operator fun div(divisor: Double) =
-            Vector(map { it / divisor })
+            Vector(ArrayList(map { it / divisor }))
 
     infix fun applyDirection(rhs: Matrix) =
             Vector(ArrayList<Double>().also {

@@ -18,11 +18,8 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
     init {
         // Initialize to identity matrix:
         assertTrue("Size must be > 0", dimension > 0)
-        val initializer = ArrayList<Double>().also {
-            for (c in 0..dimension) it.add(0.0)
-        }
 
-        for (r in 0..dimension) rows.add(Vector(initializer))
+        for (r in 0..dimension) rows.add(Vector(dimension + 1))
 
         identity()
     }
