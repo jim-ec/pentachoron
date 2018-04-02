@@ -1,6 +1,6 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.gui.Color
+import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.Vector
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue

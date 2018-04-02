@@ -1,6 +1,6 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.gui.Color
+import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.Vector
 
 class Quadrilateral(dimension: Int, a: Vector, b: Vector, c: Vector, d: Vector, color: Color) : Geometry(dimension, color) {

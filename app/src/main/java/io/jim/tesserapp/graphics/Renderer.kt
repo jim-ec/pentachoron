@@ -1,4 +1,4 @@
-package io.jim.tesserapp.gui
+package io.jim.tesserapp.graphics
 
 import android.content.Context
 import android.opengl.GLES20.*

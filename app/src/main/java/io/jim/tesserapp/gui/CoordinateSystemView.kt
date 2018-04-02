@@ -10,6 +10,8 @@ import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.Line
 import io.jim.tesserapp.geometry.Quadrilateral
 import io.jim.tesserapp.geometry.Spatial
+import io.jim.tesserapp.graphics.Color
+import io.jim.tesserapp.graphics.Renderer
 import io.jim.tesserapp.math.Vector
 
 /**

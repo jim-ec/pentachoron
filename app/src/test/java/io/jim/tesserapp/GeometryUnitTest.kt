@@ -1,7 +1,7 @@
 package io.jim.tesserapp
 
 import io.jim.tesserapp.geometry.Line
-import io.jim.tesserapp.gui.Color
+import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.Vector
 import org.junit.Assert.assertEquals
 import org.junit.Test
