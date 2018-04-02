@@ -67,18 +67,22 @@ class MatrixUnitTest {
 
     @Test
     fun spaceDefinition() {
-        val m = Matrix(2).space(Vector(3.0, 4.0),
-                Vector(-1.0, 0.0),
-                Vector(0.0, 2.0))
+        val m = Matrix(2).apply {
+            space(Vector(3.0, 4.0),
+                    Vector(-1.0, 0.0),
+                    Vector(0.0, 2.0))
+        }
         val p = Vector(1.0, 1.0) applyPoint m
         assertEquals(2.0, p.x, 0.1)
     }
 
     @Test
     fun transpose() {
-        val m = Matrix(2).space(Vector(2),
-                Vector(1.0, 2.0),
-                Vector(3.0, 4.0))
+        val m = Matrix(2).apply {
+            space(Vector(2),
+                    Vector(1.0, 2.0),
+                    Vector(3.0, 4.0))
+        }
         val n = Matrix(m).apply { transpose() }
         assertEquals(1.0, n.x.x, 0.1)
         assertEquals(3.0, n.x.y, 0.1)
@@ -88,12 +92,16 @@ class MatrixUnitTest {
 
     @Test
     fun multiplication() {
-        val m = Matrix(2).space(Vector(2),
-                Vector(2.0, 3.0),
-                Vector(4.0, 5.0))
-        val n = Matrix(2).space(Vector(2),
-                Vector(6.0, 7.0),
-                Vector(8.0, 9.0))
+        val m = Matrix(2).apply {
+            space(Vector(2),
+                    Vector(2.0, 3.0),
+                    Vector(4.0, 5.0))
+        }
+        val n = Matrix(2).apply {
+            space(Vector(2),
+                    Vector(6.0, 7.0),
+                    Vector(8.0, 9.0))
+        }
         val u = m * n
         assertEquals(2.0 * 6.0 + 3.0 * 8.0, u.x.x, 0.1)
         assertEquals(2.0 * 7.0 + 3.0 * 9.0, u.x.y, 0.1)
@@ -103,9 +111,11 @@ class MatrixUnitTest {
 
     @Test
     fun vectorMultiplication() {
-        val m = Matrix(2).space(Vector(2),
-                Vector(0.0, 1.0),
-                Vector(-1.0, 0.0))
+        val m = Matrix(2).apply {
+            space(Vector(2),
+                    Vector(0.0, 1.0),
+                    Vector(-1.0, 0.0))
+        }
         val v = Vector(2.0, 1.0) applyPoint m
         assertEquals(v.dimension, 2)
         assertEquals(-1.0, v.x, 0.1)

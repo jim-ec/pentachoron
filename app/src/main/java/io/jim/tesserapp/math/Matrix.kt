@@ -59,7 +59,7 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
      * Construct a matrix by defining a coordinate space from [axises].
      * The axises themselves are positioned at [base].
      */
-    fun space(base: Vector, vararg axises: Vector) = this.apply {
+    fun space(base: Vector, vararg axises: Vector) {
         assertEquals("Axis count must match with matrix", axises.size, dimension)
         assertTrue("Axis dimension must match with matrix", axises.all { it.dimension == dimension })
         assertEquals("Base position dimension must match with matrix", base.dimension, dimension)
@@ -75,7 +75,7 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
     /**
      * Construct a matrix, representing an affine linear scaling transformation.
      */
-    fun scale(scale: Double) = this.apply {
+    fun scale(scale: Double) {
         for (i in 0 until dimension) {
             this[i][i] = scale
         }
@@ -84,7 +84,7 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
     /**
      * Construct a matrix, representing an affine linear scaling transformation.
      */
-    fun scale(scale: Vector) = this.apply {
+    fun scale(scale: Vector) {
         assertEquals("Scale vector dimension must match with matrix", dimension, scale.dimension)
         scale.forEachIndexed { i, fi -> this[i][i] = fi }
     }
@@ -93,7 +93,7 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
      * Construct a matrix, representing an affine rotation transformation of [phi] on the [a]-[b]-plane.
      * @exception AssertionError If any rotation-plane axis is larger in size than the matrix itself.
      */
-    fun rotation(a: Int, b: Int, phi: Double) = this.apply {
+    fun rotation(a: Int, b: Int, phi: Double) {
         assertTrue("Plane-axis not in matrix dimension", a < dimension && b < dimension)
         // Rotation on y-q plane:
         //  -> y-axis rotates towards q-axis
@@ -113,7 +113,7 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
      * Remember that vectors multiplied to this matrix must be homogeneous, their last component
      * determines whether they are transformed at all.
      */
-    fun translation(v: Vector) = this.apply {
+    fun translation(v: Vector) {
         assertEquals("Translation vector dimension must match with matrix", dimension, v.dimension)
         v.forEachIndexed { index, d ->
             this[dimension][index] = d
@@ -123,7 +123,7 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
     /**
      * Construct a matrix, representing an perspective division transformation.
      */
-    fun perspective() = this.apply {
+    fun perspective() {
         this[dimension - 1][dimension] = -1.0
         this[dimension][dimension] = 0.0
     }
@@ -134,7 +134,7 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
      * @param near Near plane. If Vector lies on that plane (negated), it will be projected to 0.
      * @param far Far plane. If Vector lies on that plane (negated), it will be projected to 1.
      */
-    fun perspective(near: Double, far: Double) = this.apply {
+    fun perspective(near: Double, far: Double) {
         perspective()
         assertTrue(near > 0.0)
         assertTrue(far > 0.0)
