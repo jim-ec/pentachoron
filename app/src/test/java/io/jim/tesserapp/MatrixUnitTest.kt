@@ -48,7 +48,6 @@ class MatrixUnitTest {
         m.forEachCoefficient(startRow = 1, rows = 2, startCol = 2) { r, c ->
             m[r][c] = r + c.toDouble()
         }
-        println(m)
     }
 
     @Test

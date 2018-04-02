@@ -7,7 +7,13 @@ import java.lang.Math.*
  * A homogeneous vector, but does not store the homogeneous component, as that component is
  * implicitly given by the subclass used.
  */
-class Vector(components: List<Double>) : Iterable<Double>, Indexable<Double> {
+class Vector : Iterable<Double>, Indexable<Double> {
+
+    private val components: ArrayList<Double>
+
+    constructor(components: List<Double>) {
+        this.components = ArrayList(components)
+    }
 
     constructor(vararg components: Double) : this(components.toList())
 
@@ -15,8 +21,6 @@ class Vector(components: List<Double>) : Iterable<Double>, Indexable<Double> {
             cos(p.phi) * sin(p.theta) * p.r,
             sin(p.phi) * sin(p.theta) * p.r,
             cos(p.theta) * p.r)
-
-    private val components = ArrayList<Double>(components)
 
     override operator fun iterator() = components.iterator()
 
