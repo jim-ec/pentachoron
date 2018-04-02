@@ -18,8 +18,7 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
     private lateinit var vertexBuffer: VertexBuffer
     private lateinit var indexBuffer: IndexBuffer
     private var uploadGeometryBuffers = false
-    private val zxRotationMatrix = Matrix(3)
-    private val xyRotationMatrix = Matrix(3)
+    private var modelMatrix = Matrix(3)
     private val clearColor = Color(context, android.R.color.background_light)
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
@@ -43,14 +42,14 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
         shader.uploadViewMatrix(
-                Matrix(3).apply { lookAt(Vector(4.0, 0.0, 0.0), Vector(3), Vector(0.0, 1.0, 0.0)) }
+                Matrix(3).apply { lookAt(Vector(4.0, 4.0, 0.0), Vector(3), Vector(0.0, 1.0, 0.0)) }
                         * Matrix(3).scale(Vector(1.0, width.toDouble() / height, 1.0)))
     }
 
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        shader.uploadModelMatrix(zxRotationMatrix * xyRotationMatrix)
+        shader.uploadModelMatrix(modelMatrix)
 
         if (uploadGeometryBuffers) {
             indexBuffer.baseIndex = 0
@@ -75,8 +74,7 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
     }
 
     fun rotation(horizontal: Double, vertical: Double) {
-        zxRotationMatrix.rotation(2, 0, horizontal)
-        xyRotationMatrix.rotation(1, 0, vertical)
+        modelMatrix = Matrix(3).rotation(2, 0, horizontal) * Matrix(3).rotation(1, 0, vertical)
     }
 
 }

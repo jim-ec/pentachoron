@@ -8,6 +8,7 @@ import android.view.MotionEvent.*
 import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Line
 import io.jim.tesserapp.geometry.Quadrilateral
+import io.jim.tesserapp.geometry.Spatial
 import io.jim.tesserapp.math.Vector
 
 /**
@@ -19,6 +20,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     private val touchStartPosition = Vector(2)
     private val rotation = Vector(2)
     private var touchStartTime = 0L
+    private val geometry = Spatial(3)
 
     companion object {
 
@@ -32,7 +34,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         debugFlags = DEBUG_CHECK_GL_ERROR
         renderMode = RENDERMODE_WHEN_DIRTY
 
-        renderer.addGeometry(Quadrilateral(
+        renderer.addGeometry(Quadrilateral(3,
                 Vector(1.0, 1.0, 1.0),
                 Vector(-1.0, 1.0, 1.0),
                 Vector(-1.0, -1.0, 1.0),
@@ -40,17 +42,17 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
                 Color(context, R.color.colorAccent)
         ).apply { extrude(Vector(0.0, 0.0, -2.0)) })
 
-        renderer.addGeometry(Line(Vector(3), Vector(1.0, 0.0, 0.0), Color(context, R.color.colorPrimary)))
-        renderer.addGeometry(Line(Vector(3), Vector(0.0, 1.0, 0.0), Color(context, R.color.colorPrimary)))
-        renderer.addGeometry(Line(Vector(3), Vector(0.0, 0.0, 1.0), Color(context, R.color.colorPrimary)))
+        renderer.addGeometry(Line(3, Vector(3), Vector(1.0, 0.0, 0.0), Color(context, R.color.colorPrimary)))
+        renderer.addGeometry(Line(3, Vector(3), Vector(0.0, 1.0, 0.0), Color(context, R.color.colorPrimary)))
+        renderer.addGeometry(Line(3, Vector(3), Vector(0.0, 0.0, 1.0), Color(context, R.color.colorPrimary)))
 
         for (i in -5..5) {
-            renderer.addGeometry(Line(
+            renderer.addGeometry(Line(3,
                     Vector(i.toDouble(), 0.0, -5.0),
                     Vector(i.toDouble(), 0.0, 5.0),
                     Color(context, R.color.colorGrid)
             ))
-            renderer.addGeometry(Line(
+            renderer.addGeometry(Line(3,
                     Vector(-5.0, 0.0, i.toDouble()),
                     Vector(5.0, 0.0, i.toDouble()),
                     Color(context, R.color.colorGrid)
