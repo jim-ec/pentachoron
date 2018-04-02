@@ -9,11 +9,17 @@ import java.lang.Math.*
  */
 data class Vector(val dimension: Int, private val components: ArrayList<Double> = ArrayList(dimension)) : Iterable<Double>, Indexable<Double> {
 
+    companion object {
+        var counter = 0
+    }
+
     /**
      * Initialize remaining components to 0.
      */
     init {
         for (i in 0 until dimension - components.size) components.add(0.0)
+        println("Create vector #$counter")
+        counter++
     }
 
     /**

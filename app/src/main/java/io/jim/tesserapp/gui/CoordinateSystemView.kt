@@ -6,9 +6,9 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.*
 import io.jim.tesserapp.R
+import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.Line
 import io.jim.tesserapp.geometry.Quadrilateral
-import io.jim.tesserapp.geometry.Spatial
 import io.jim.tesserapp.math.Vector
 
 /**
@@ -20,7 +20,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     private val touchStartPosition = Vector(2)
     private val rotation = Vector(2)
     private var touchStartTime = 0L
-    private val geometry = Spatial(3)
+    private val cube: Geometry
 
     companion object {
 
@@ -34,13 +34,14 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         debugFlags = DEBUG_CHECK_GL_ERROR
         renderMode = RENDERMODE_WHEN_DIRTY
 
-        renderer.addGeometry(Quadrilateral(3,
+        cube = Quadrilateral(3,
                 Vector(1.0, 1.0, 1.0),
                 Vector(-1.0, 1.0, 1.0),
                 Vector(-1.0, -1.0, 1.0),
                 Vector(1.0, -1.0, 1.0),
                 Color(context, R.color.colorAccent)
-        ).apply { extrude(Vector(0.0, 0.0, -2.0)) })
+        ).apply { extrude(Vector(0.0, 0.0, -2.0)) }
+        renderer.addGeometry(cube)
 
         renderer.addGeometry(Line(3, Vector(3), Vector(1.0, 0.0, 0.0), Color(context, R.color.colorPrimary)))
         renderer.addGeometry(Line(3, Vector(3), Vector(0.0, 1.0, 0.0), Color(context, R.color.colorPrimary)))
@@ -77,7 +78,8 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
             val dy = y - touchStartPosition.y
             rotation.x += dx
             rotation.y += dy
-            renderer.rotation(rotation.x * 0.005, rotation.y * 0.005)
+            cube.rotationZX(rotation.x * 0.005)
+            cube.rotationYX(rotation.y * 0.005)
             requestRender()
 
             touchStartPosition.x = x
@@ -97,7 +99,9 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     override fun performClick(): Boolean {
         super.performClick()
 
-        renderer.rotation(0.0, 0.0)
+        //renderer.rotation(0.0, 0.0)
+        cube.rotationYX(0.0)
+        cube.rotationZX(0.0)
         requestRender()
 
         return true

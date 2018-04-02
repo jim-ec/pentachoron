@@ -90,22 +90,22 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
     }
 
     /**
-     * Construct a matrix, representing an affine rotation transformation of [phi] on the [a]-[b]-plane.
+     * Construct a matrix, representing an affine rotation transformation of [theta] on the [a]-[b]-plane.
      * @exception AssertionError If any rotation-plane axis is larger in size than the matrix itself.
      */
-    fun rotation(a: Int, b: Int, phi: Double) = this.apply {
+    fun rotation(a: Int, b: Int, theta: Double) = this.apply {
         assertTrue("Plane-axis not in matrix dimension", a < dimension && b < dimension)
         // Rotation on y-q plane:
         //  -> y-axis rotates towards q-axis
         //  -> q-axis rotates towards negative y-axis
-        // Myy = cos(phi)   | decreases
-        // Myw = sin(phi)   | increases
-        // Mwy = -sin(phi)  | increases, but in negative Vector, since y rotates towards q
-        // Mww = cos(phi)   | decreases
-        this[a][a] = cos(phi)
-        this[a][b] = sin(phi)
-        this[b][a] = -sin(phi)
-        this[b][b] = cos(phi)
+        // Myy = cos(theta)   | decreases
+        // Myw = sin(theta)   | increases
+        // Mwy = -sin(theta)  | increases, but in negative Vector, since y rotates towards q
+        // Mww = cos(theta)   | decreases
+        this[a][a] = cos(theta)
+        this[a][b] = sin(theta)
+        this[b][a] = -sin(theta)
+        this[b][b] = cos(theta)
     }
 
     /**

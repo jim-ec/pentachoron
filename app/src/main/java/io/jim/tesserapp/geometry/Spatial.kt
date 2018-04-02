@@ -2,15 +2,22 @@ package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.math.Matrix
 
-open class Spatial(dimension: Int) : Iterable<Spatial> {
+open class Spatial(dimension: Int) {
 
-    val matrix = Matrix(dimension)
-    private val children = ArrayList<Spatial>()
+    protected val matrix = Matrix(dimension)
+    private val rotationZX = Matrix(dimension)
+    private val rotationYX = Matrix(dimension)
 
-    fun addChild(child: Spatial) {
-        children.add(child)
+    fun modelMatrix() = matrix.apply {
+        multiplicationFrom(rotationZX, rotationYX)
     }
 
-    override fun iterator() = children.iterator()
+    fun rotationZX(theta: Double) {
+        rotationZX.rotation(2, 0, theta)
+    }
+
+    fun rotationYX(theta: Double) {
+        rotationYX.rotation(1, 0, theta)
+    }
 
 }

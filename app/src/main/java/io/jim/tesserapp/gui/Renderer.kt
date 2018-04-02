@@ -21,8 +21,6 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
     private val clearColor = Color(context, android.R.color.background_light)
     private val viewMatrix = Matrix(3)
 
-    private val modelMatrixList = ArrayList<Matrix>()
-
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glClearColor(clearColor.red, clearColor.green, clearColor.blue, 1.0f)
         glDisable(GL_CULL_FACE)
@@ -39,9 +37,6 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
     fun addGeometry(geometry: Geometry) {
         geometries.add(geometry)
         uploadGeometryBuffers = true
-
-        // TODO:
-        modelMatrixList.add(Matrix(3))
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
@@ -80,14 +75,8 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
         indexBuffer.bind()
 
         indexBuffer.forEachGeometry { index, offset, indexCount ->
-            shader.uploadModelMatrix(modelMatrixList[index])
+            shader.uploadModelMatrix(geometries[index].modelMatrix())
             glDrawElements(GL_LINES, indexCount, GL_UNSIGNED_INT, offset * IndexBuffer.INDEX_BYTE_LENGTH)
-        }
-    }
-
-    fun rotation(horizontal: Double, vertical: Double) {
-        modelMatrixList.forEach {
-            it.multiplicationFrom(Matrix(3).rotation(2, 0, horizontal), Matrix(3).rotation(1, 0, vertical))
         }
     }
 
