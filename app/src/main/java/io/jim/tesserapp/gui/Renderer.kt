@@ -6,7 +6,6 @@ import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.math.Matrix
 import io.jim.tesserapp.math.Vector
-import junit.framework.Assert.assertEquals
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -52,19 +51,8 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
         if (uploadGeometryBuffers) {
             indexBuffer.startRecording()
 
-            for (geometry in geometries) {
-
-                for (point in geometry.points) {
-                    assertEquals("All vertices must be 3D", 3, point.dimension)
-                    vertexBuffer.appendVertex(point, geometry.color)
-                }
-
-                for (line in geometry.lines) {
-                    indexBuffer.appendIndex(line.first)
-                    indexBuffer.appendIndex(line.second)
-                }
-
-                indexBuffer.commitGeometry(geometry)
+            geometries.forEach {
+                indexBuffer.recordGeometry(it, vertexBuffer)
             }
 
             indexBuffer.endRecording()

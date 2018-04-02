@@ -54,7 +54,7 @@ data class VertexBuffer(val size: Int) {
     fun bind(shader: Shader) {
         floatBuffer.rewind()
         glBindBuffer(GL_ARRAY_BUFFER, handle)
-        glBufferData(GL_ARRAY_BUFFER, size * VERTEX_BYTE_LENGTH, floatBuffer, GL_DYNAMIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, size * VERTEX_BYTE_LENGTH, floatBuffer, GL_STATIC_DRAW)
 
         glEnableVertexAttribArray(shader.positionAttributeLocation)
         glVertexAttribPointer(shader.positionAttributeLocation, COMPONENTS_PER_POSITION, GL_FLOAT, false, VERTEX_BYTE_LENGTH, 0)

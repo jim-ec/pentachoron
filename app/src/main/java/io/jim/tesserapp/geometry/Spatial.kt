@@ -7,6 +7,7 @@ open class Spatial(dimension: Int) {
     protected val matrix = Matrix(dimension)
     private val rotationZX = Matrix(dimension)
     private val rotationYX = Matrix(dimension)
+    private val children = ArrayList<Spatial>()
 
     fun modelMatrix() = matrix.apply {
         multiplicationFrom(rotationZX, rotationYX)
