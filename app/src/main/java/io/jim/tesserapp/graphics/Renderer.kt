@@ -3,7 +3,6 @@ package io.jim.tesserapp.graphics
 import android.content.Context
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
-import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.Spatial
 import io.jim.tesserapp.math.Matrix
 import io.jim.tesserapp.math.Vector
@@ -14,16 +13,11 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
 
     private val maxLineVertices = maxLines * 2
     private lateinit var shader: Shader
-    private lateinit var vertexBuffer: VertexBuffer
-    private lateinit var indexBuffer: IndexBuffer
+    private lateinit var geometryBuffer: GeometryBuffer
     private var uploadGeometryBuffers = false
     private val clearColor = Color(context, android.R.color.background_light)
     private val viewMatrix = Matrix(3)
-    val rootSpatial = Spatial(3).also {
-        it.onChildrenChangedListener = fun() {
-            uploadGeometryBuffers = true
-        }
-    }
+    val rootSpatial = Spatial(3, fun() { uploadGeometryBuffers = true })
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glClearColor(clearColor.red, clearColor.green, clearColor.blue, 1.0f)
@@ -32,8 +26,7 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
         glLineWidth(4f)
 
         shader = Shader()
-        vertexBuffer = VertexBuffer(maxLineVertices)
-        indexBuffer = IndexBuffer(maxLineVertices)
+        geometryBuffer = GeometryBuffer(maxLineVertices)
 
         shader.uploadProjectionMatrix(Matrix(3).perspective(0.1, 100.0))
     }
@@ -49,20 +42,13 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
         if (uploadGeometryBuffers) {
-            indexBuffer.startRecording()
-
-            rootSpatial.forEachRecursive {
-                if (it is Geometry) indexBuffer.recordGeometry(it, vertexBuffer)
-            }
-
-            indexBuffer.endRecording()
+            geometryBuffer.recordGeometries(rootSpatial)
             uploadGeometryBuffers = false
         }
 
-        vertexBuffer.bind(shader)
-        indexBuffer.bind()
+        geometryBuffer.bind(shader)
 
-        indexBuffer.forEachGeometry { geometry, offset, indexCount ->
+        geometryBuffer.forEachGeometry { geometry, offset, indexCount ->
             shader.uploadModelMatrix(geometry.modelMatrix())
             glDrawElements(GL_LINES, indexCount, GL_UNSIGNED_INT, offset * IndexBuffer.INDEX_BYTE_LENGTH)
         }

@@ -3,7 +3,7 @@ package io.jim.tesserapp.geometry
 import io.jim.tesserapp.math.Matrix
 import io.jim.tesserapp.math.Vector
 
-open class Spatial(val dimension: Int) : Iterable<Spatial> {
+open class Spatial(val dimension: Int, var onChildrenChangedListener: (() -> Unit)? = null) : Iterable<Spatial> {
 
     private val global = Matrix(dimension)
     private val local = Matrix(dimension)
@@ -15,8 +15,6 @@ open class Spatial(val dimension: Int) : Iterable<Spatial> {
 
     private val children = ArrayList<Spatial>()
     private var parent: Spatial? = null
-
-    var onChildrenChangedListener: (() -> Unit)? = null
 
     fun modelMatrix(): Matrix {
         rotation.multiplicationFrom(rotationZX, rotationYX)
