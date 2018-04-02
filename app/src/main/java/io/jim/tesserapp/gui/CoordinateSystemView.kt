@@ -29,6 +29,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     companion object {
 
         const val CLICK_TIME_MS = 100L
+        const val TOUCH_ROTATION_SENSITIVITY = 0.005
 
     }
 
@@ -87,8 +88,8 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
             val dy = y - touchStartPosition.y
             rotation.x += dx
             rotation.y += dy
-            cube.rotationZX(rotation.x * 0.005)
-            cube.rotationYX(rotation.y * 0.005)
+            renderer.rootSpatial.rotationZX(rotation.x * TOUCH_ROTATION_SENSITIVITY)
+            renderer.rootSpatial.rotationYX(rotation.y * TOUCH_ROTATION_SENSITIVITY)
             requestRender()
 
             touchStartPosition.x = x
@@ -108,9 +109,8 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     override fun performClick(): Boolean {
         super.performClick()
 
-        //renderer.rotation(0.0, 0.0)
-        cube.rotationYX(0.0)
-        cube.rotationZX(0.0)
+        renderer.rootSpatial.rotationYX(0.0)
+        renderer.rootSpatial.rotationZX(0.0)
         requestRender()
 
         return true
