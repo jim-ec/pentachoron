@@ -4,9 +4,8 @@ import android.content.Context
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.math.Direction
 import io.jim.tesserapp.math.Matrix
-import io.jim.tesserapp.math.Point
+import io.jim.tesserapp.math.Vector
 import junit.framework.Assert.assertEquals
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -20,7 +19,7 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
     private lateinit var indexBuffer: IndexBuffer
     private var uploadGeometryBuffers = false
     private val viewMatrix = Matrix(3)
-    private val lookAtMatrix = Matrix(3).apply { lookAt(Point(4.0, 0.0, 0.0), Point(0.0, 0.0, 0.0), Direction(0.0, 1.0, 0.0)) }
+    private val lookAtMatrix = Matrix(3).apply { lookAt(Vector(4.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0), Vector(0.0, 1.0, 0.0)) }
     private val zxRotationMatrix = Matrix(3)
     private val xyRotationMatrix = Matrix(3)
     private val projectionMatrix = Matrix(3).perspective(0.1, 100.0)
@@ -46,7 +45,7 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
-        viewMatrix.scale(Point(1.0, width.toDouble() / height, 1.0))
+        viewMatrix.scale(Vector(1.0, width.toDouble() / height, 1.0))
         uploadMatrices = true
     }
 

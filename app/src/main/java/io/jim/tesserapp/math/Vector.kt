@@ -1,12 +1,20 @@
 package io.jim.tesserapp.math
 
-import java.lang.Math.sqrt
+import junit.framework.Assert
+import java.lang.Math.*
 
 /**
  * A homogeneous vector, but does not store the homogeneous component, as that component is
  * implicitly given by the subclass used.
  */
-abstract class Vector(components: List<Double>) : Iterable<Double>, Indexable<Double> {
+class Vector(components: List<Double>) : Iterable<Double>, Indexable<Double> {
+
+    constructor(vararg components: Double) : this(components.toList())
+
+    constructor(p: SphericalCoordinate) : this(
+            cos(p.phi) * sin(p.theta) * p.r,
+            sin(p.phi) * sin(p.theta) * p.r,
+            cos(p.theta) * p.r)
 
     private val components = ArrayList<Double>(components)
 
@@ -80,23 +88,67 @@ abstract class Vector(components: List<Double>) : Iterable<Double>, Indexable<Do
     }
 
     /**
-     * Scales this point by [scale].
+     * Add [v] added to this v.
      */
-    abstract operator fun times(scale: Double): Vector
+    operator fun plus(v: Vector) =
+            Vector(zip(v) { a, b -> a + b })
+
+    /**
+     * Subtract [v] from this vector.
+     */
+    operator fun minus(v: Vector) =
+            Vector(zip(v) { a, b -> a - b })
+
+    /**
+     * Scales this by [scale].
+     */
+    operator fun times(scale: Double) =
+            Vector(map { it * scale })
 
     /**
      * Divides this vector through [divisor].
      */
-    abstract operator fun div(divisor: Double): Vector
+    operator fun div(divisor: Double) =
+            Vector(map { it / divisor })
+
+    infix fun applyDirection(rhs: Matrix) =
+            Vector(ArrayList<Double>().also {
+                Assert.assertTrue(rhs compatible this)
+                // Ignore last matrix row, since directions are not translated:
+                for (c in 0 until dimension) {
+                    it.add((0 until dimension).map { i -> rhs[i][c] * this[i] }.sum())
+                }
+            })
+
+    infix fun applyPoint(rhs: Matrix) =
+            Vector(ArrayList<Double>().also { list ->
+                Assert.assertTrue("Vector and matrix must be compatible", rhs compatible this)
+
+                for (c in 0..dimension) {
+                    list.add((0..dimension).map { i -> rhs[i][c] * if (i < dimension) this[i] else 1.0 }.sum())
+                }
+
+                // Perspective division:
+                if (list.last() != 0.0) {
+                    list.forEachIndexed { index, d -> list[index] = d / list.last() }
+                }
+                list.removeAt(dimension)
+            })
 
     /**
-     * Applies the matrix [rhs] to this vector in a returned result.
+     * Compute the vector product of this direction and [v].
+     * Does only work if both vectors are three dimensional.
      */
-    abstract operator fun times(rhs: Matrix): Vector
+    infix fun cross(v: Vector): Vector {
+        Assert.assertTrue("Cross product works only in 3D", dimension >= 3 && v.dimension >= 3)
+        return Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x)
+    }
 
     /**
      * Invert this vector.
      */
-    abstract operator fun unaryMinus(): Vector
+    operator fun unaryMinus() {
+        forEachIndexed { index, d -> this[index] = -d }
+    }
 
 }

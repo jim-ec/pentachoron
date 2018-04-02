@@ -11,11 +11,11 @@ import kotlin.math.sin
  * The matrix size itself is always one dimension bigger than it specifies,
  * as the matrix is used for homogeneous coordinates.
  * Vectors multiplied to this matrix must be one greater than the dimension as
- * well, since they are homogeneous coordinates or directions as well.
+ * well, since they are homogeneous coordinates or Vectors as well.
  */
-class Matrix(val dimension: Int) : Indexable<Direction> {
+class Matrix(val dimension: Int) : Indexable<Vector> {
 
-    private val coefficients = ArrayList<Direction>()
+    private val rows = ArrayList<Vector>()
 
     init {
         // Initialize to identity matrix:
@@ -24,7 +24,9 @@ class Matrix(val dimension: Int) : Indexable<Direction> {
             for (c in 0..dimension) it.add(0.0)
         }
 
-        for (r in 0..dimension) coefficients.add(Direction(initializer))
+        for (r in 0..dimension) rows.add(Vector(initializer))
+
+        rows.forEach { println("Row: ${System.identityHashCode(it)}") }
 
         identity()
     }
@@ -33,22 +35,22 @@ class Matrix(val dimension: Int) : Indexable<Direction> {
         forEachCoefficient { r, c -> this[r][c] = other[r][c] }
     }
 
-    override operator fun get(index: Int): Direction {
-        return coefficients[index]
+    override operator fun get(index: Int): Vector {
+        return rows[index]
     }
 
-    override operator fun set(index: Int, value: Direction) {
+    override operator fun set(index: Int, value: Vector) {
         for (i in 0 until value.dimension) this[index][i] = value[i]
     }
 
-    var x: Direction by IndexAlias(0)
-    var y: Direction by IndexAlias(1)
-    var z: Direction by IndexAlias(2)
-    var q: Direction by IndexAlias(3)
+    var x: Vector by IndexAlias(0)
+    var y: Vector by IndexAlias(1)
+    var z: Vector by IndexAlias(2)
+    var q: Vector by IndexAlias(3)
 
-    var right: Direction by IndexAlias(0)
-    var up: Direction by IndexAlias(1)
-    var forward: Direction by IndexAlias(2)
+    var right: Vector by IndexAlias(0)
+    var up: Vector by IndexAlias(1)
+    var forward: Vector by IndexAlias(2)
 
     /**
      * Load the identity matrix.
@@ -61,16 +63,17 @@ class Matrix(val dimension: Int) : Indexable<Direction> {
      * Construct a matrix by defining a coordinate space from [axises].
      * The axises themselves are positioned at [base].
      */
-    fun space(base: Point, vararg axises: Vector) = this.apply {
+    fun space(base: Vector, vararg axises: Vector) = this.apply {
         assertEquals("Axis count must match with matrix", axises.size, dimension)
         assertTrue("Axis dimension must match with matrix", axises.all { it.dimension == dimension })
         assertEquals("Base position dimension must match with matrix", base.dimension, dimension)
-        axises.forEachIndexed { r, axis ->
-            axis.forEachIndexed { c, coefficient ->
-                this[r][c] = coefficient
-            }
+
+        forEachCoefficient(rows = dimension, cols = dimension) { r, c ->
+            this[r][c] = axises[r][c]
         }
-        base.forEachIndexed { index, d -> this[dimension][index] = d }
+        forEachCoefficient(startRow = dimension, cols = dimension) { r, c ->
+            this[r][c] = base[c]
+        }
     }
 
     /**
@@ -101,7 +104,7 @@ class Matrix(val dimension: Int) : Indexable<Direction> {
         //  -> q-axis rotates towards negative y-axis
         // Myy = cos(phi)   | decreases
         // Myw = sin(phi)   | increases
-        // Mwy = -sin(phi)  | increases, but in negative direction, since y rotates towards q
+        // Mwy = -sin(phi)  | increases, but in negative Vector, since y rotates towards q
         // Mww = cos(phi)   | decreases
         this[a][a] = cos(phi)
         this[a][b] = sin(phi)
@@ -110,13 +113,13 @@ class Matrix(val dimension: Int) : Indexable<Direction> {
     }
 
     /**
-     * Construct a matrix, representing an affine translation transformation by a given [direction] vector.
+     * Construct a matrix, representing an affine translation transformation by a given [Vector] vector.
      * Remember that vectors multiplied to this matrix must be homogeneous, their last component
      * determines whether they are transformed at all.
      */
-    fun translation(direction: Direction) = this.apply {
-        assertEquals("Translation vector dimension must match with matrix", dimension, direction.dimension)
-        direction.forEachIndexed { i, d ->
+    fun translation(Vector: Vector) = this.apply {
+        assertEquals("Translation vector dimension must match with matrix", dimension, Vector.dimension)
+        Vector.forEachIndexed { i, d ->
             this[dimension][i] = d
         }
     }
@@ -132,8 +135,8 @@ class Matrix(val dimension: Int) : Indexable<Direction> {
     /**
      * Construct a matrix, representing an perspective division transformation,
      * while remapping the last vector component between a near and far value.
-     * @param near Near plane. If point lies on that plane (negated), it will be projected to 0.
-     * @param far Far plane. If point lies on that plane (negated), it will be projected to 1.
+     * @param near Near plane. If Vector lies on that plane (negated), it will be projected to 0.
+     * @param far Far plane. If Vector lies on that plane (negated), it will be projected to 1.
      */
     fun perspective(near: Double, far: Double) = this.apply {
         perspective()
@@ -160,10 +163,10 @@ class Matrix(val dimension: Int) : Indexable<Direction> {
 
     /**
      * Construct a look-at matrix, representing both, translation and rotation.
-     * The camera is constructed in such a way that it is positioned at [eye], points to [target],
-     * and the upper edge is oriented in the [refUp] direction.
+     * The camera is constructed in such a way that it is positioned at [eye], Vectors to [target],
+     * and the upper edge is oriented in the [refUp] Vector.
      */
-    fun lookAt(eye: Point, target: Point, refUp: Direction) {
+    fun lookAt(eye: Vector, target: Vector, refUp: Vector) {
         assertTrue("Look at does only work in 3D", dimension == 3 && eye.dimension == 3 && target.dimension == 3)
 
         forward = (eye - target).apply { normalize() }
@@ -172,7 +175,7 @@ class Matrix(val dimension: Int) : Indexable<Direction> {
 
         transpose()
 
-        this[3] = -eye * this
+        this[3] = eye.apply { -this } applyPoint this
     }
 
     /**
@@ -193,9 +196,12 @@ class Matrix(val dimension: Int) : Indexable<Direction> {
     /**
      * Call a function for each coefficient. Indices of row and column are passed to [f].
      */
-    fun forEachCoefficient(f: (Int, Int) -> Unit) {
-        coefficients.forEachIndexed { r, row ->
-            row.forEachIndexed { c, _ ->
+    fun forEachCoefficient(
+            startRow: Int = 0, rows: Int = dimension + 1 - startRow,
+            startCol: Int = 0, cols: Int = dimension + 1 - startCol,
+            f: (r: Int, c: Int) -> Unit) {
+        for (r in startRow until startRow + rows) {
+            for (c in startCol until startCol + cols) {
                 f(r, c)
             }
         }
@@ -207,7 +213,7 @@ class Matrix(val dimension: Int) : Indexable<Direction> {
     override fun toString() =
             StringBuilder().also {
                 it.append("[ (").append(dimension).append("D): ")
-                coefficients.forEachIndexed { r, row ->
+                rows.forEachIndexed { r, row ->
                     row.forEachIndexed { c, col ->
                         it.append(Format.decimalFormat.format(col))
                         if (c < dimension) it.append(", ")

@@ -1,9 +1,9 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.gui.Color
-import io.jim.tesserapp.math.Point
+import io.jim.tesserapp.math.Vector
 
-class Line(a: Point, b: Point, color: Color) : Geometry(color) {
+class Line(a: Vector, b: Vector, color: Color) : Geometry(color) {
 
     init {
         addPoints(a, b)
