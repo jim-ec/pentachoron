@@ -1,5 +1,6 @@
 package io.jim.tesserapp.gui
 
+import android.content.Context
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.Geometry
@@ -10,7 +11,7 @@ import junit.framework.Assert.assertEquals
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
+class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
 
     private val geometries = ArrayList<Geometry>()
     private val maxLineVertices = maxLines * 2
@@ -25,7 +26,7 @@ class Renderer(maxLines: Int) : GLSurfaceView.Renderer {
     private val projectionMatrix = Matrix(3).perspective(0.1, 100.0)
     private val translationMatrix = Matrix(3)//.translation(Direction(0.0, 0.0, -4.0))
     private var uploadMatrices = false
-    private val clearColor = Color(0.15f)
+    private val clearColor = Color(context, android.R.color.background_light)
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glClearColor(clearColor.red, clearColor.green, clearColor.blue, 1.0f)
