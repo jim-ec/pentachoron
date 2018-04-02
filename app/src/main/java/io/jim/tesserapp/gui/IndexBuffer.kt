@@ -13,11 +13,14 @@ data class IndexBuffer(
         const val INDEX_BYTE_LENGTH = 4
     }
 
+    private data class GeometryEntry(val indexOffset: Int, val indexCount: Int)
+
     private var recording = false
     private var globalIndex = 0
-    private var counter = 0
-    private var indexOffset = 0
-    private val geometryOffsets = ArrayList<Int>()
+    private var localIndexCounter = 0
+    internal var globalIndexCounter = 0
+    private var globalIndicesOffset = 0
+    private val geometryRegistry = ArrayList<GeometryEntry>()
     private val handle = let {
         val status = IntArray(1)
         glGenBuffers(1, status, 0)
@@ -36,7 +39,8 @@ data class IndexBuffer(
         assertTrue("Index buffer is not recording", recording)
         assertTrue("Insufficient memory to store vertex: pos=%d  cap=%d".format(intBuffer.position(), intBuffer.capacity()),
                 intBuffer.position() < intBuffer.capacity())
-        intBuffer.put(indexOffset + index)
+        intBuffer.put(globalIndicesOffset + index)
+        localIndexCounter++
     }
 
     fun bind() {
@@ -48,24 +52,32 @@ data class IndexBuffer(
 
     fun startRecording() {
         assertFalse("Index buffer is already recording", recording)
-        geometryOffsets.clear()
-        indexOffset = 0
+        geometryRegistry.clear()
+        globalIndicesOffset = 0
         globalIndex = 0
-        counter = 0
+        localIndexCounter = 0
+        globalIndexCounter = 0
         recording = true
     }
 
     fun endRecording() {
         assertTrue("Index buffer is not recording", recording)
-        assertEquals("Geometry is not committed", 0, counter)
+        assertEquals("Geometry is not committed", 0, localIndexCounter)
         recording = false
-        println("End recording, geometry offsets: $geometryOffsets")
     }
 
     fun commitGeometry(geometry: Geometry) {
         assertTrue("Index buffer is not recording", recording)
-        geometryOffsets.add(indexOffset)
-        indexOffset += geometry.points.size
+        geometryRegistry.add(GeometryEntry(globalIndexCounter, localIndexCounter))
+        globalIndexCounter += localIndexCounter
+        globalIndicesOffset += geometry.points.size
+        localIndexCounter = 0
+    }
+
+    fun forEachGeometry(f: (index: Int, indexOffset: Int, indexCount: Int) -> Unit) {
+        geometryRegistry.forEachIndexed { index, entry ->
+            f(index, entry.indexOffset, entry.indexCount)
+        }
     }
 
 }
