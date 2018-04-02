@@ -56,11 +56,11 @@ data class VertexBuffer(val size: Int) {
         glBindBuffer(GL_ARRAY_BUFFER, handle)
         glBufferData(GL_ARRAY_BUFFER, size * VERTEX_BYTE_LENGTH, floatBuffer, GL_DYNAMIC_DRAW)
 
-        glEnableVertexAttribArray(shader.positionAttribute)
-        glVertexAttribPointer(shader.positionAttribute, COMPONENTS_PER_POSITION, GL_FLOAT, false, VERTEX_BYTE_LENGTH, 0)
+        glEnableVertexAttribArray(shader.positionAttributeLocation)
+        glVertexAttribPointer(shader.positionAttributeLocation, COMPONENTS_PER_POSITION, GL_FLOAT, false, VERTEX_BYTE_LENGTH, 0)
 
-        glEnableVertexAttribArray(shader.colorAttribute)
-        glVertexAttribPointer(shader.colorAttribute, COMPONENTS_PER_COLOR, GL_FLOAT, false, VERTEX_BYTE_LENGTH, COMPONENTS_PER_POSITION * FLOAT_BYTE_LENGTH)
+        glEnableVertexAttribArray(shader.colorAttributeLocation)
+        glVertexAttribPointer(shader.colorAttributeLocation, COMPONENTS_PER_COLOR, GL_FLOAT, false, VERTEX_BYTE_LENGTH, COMPONENTS_PER_POSITION * FLOAT_BYTE_LENGTH)
     }
 
 }

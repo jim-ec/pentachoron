@@ -10,6 +10,8 @@ class Shader {
     companion object {
 
         const val VERTEX_SHADER_SOURCE = """
+            uniform mat4 P;
+            uniform mat4 V;
             uniform mat4 M;
 
             attribute vec3 position;
@@ -18,7 +20,7 @@ class Shader {
             varying vec3 vColor;
 
             void main() {
-                gl_Position = M * vec4(position, 1.0);
+                gl_Position = P * V * M * vec4(position, 1.0);
                 vColor = color;
             }
         """
@@ -36,9 +38,11 @@ class Shader {
     private val vertexShader = glCreateShader(GL_VERTEX_SHADER)
     private val fragmentShader = glCreateShader(GL_FRAGMENT_SHADER)
     private val program = glCreateProgram()
-    private val matrixUniform: Int
-    val positionAttribute: Int
-    val colorAttribute: Int
+    private val modelMatrixLocation: Int
+    private val viewMatrixLocation: Int
+    private val projectionMatrixLocation: Int
+    val positionAttributeLocation: Int
+    val colorAttributeLocation: Int
 
     init {
         assertTrue(vertexShader >= 0)
@@ -81,19 +85,32 @@ class Shader {
             glUseProgram(this)
         }
 
-        positionAttribute = glGetAttribLocation(program, "position")
-        colorAttribute = glGetAttribLocation(program, "color")
-        matrixUniform = glGetUniformLocation(program, "M")
+        positionAttributeLocation = glGetAttribLocation(program, "position")
+        colorAttributeLocation = glGetAttribLocation(program, "color")
+        modelMatrixLocation = glGetUniformLocation(program, "M")
+        viewMatrixLocation = glGetUniformLocation(program, "V")
+        projectionMatrixLocation = glGetUniformLocation(program, "P")
 
-        assertTrue(positionAttribute >= 0)
-        assertTrue(colorAttribute >= 0)
-        assertTrue(matrixUniform >= 0)
+        assertTrue(positionAttributeLocation >= 0)
+        assertTrue(colorAttributeLocation >= 0)
+        assertTrue(modelMatrixLocation >= 0)
+        assertTrue(viewMatrixLocation >= 0)
+        assertTrue(projectionMatrixLocation >= 0)
     }
 
-    fun uploadMatrix(matrix: Matrix) {
-        assertEquals("Shader matrices must be 4x4 homogeneous", matrix.dimension, 3)
-        val floats = FloatArray(16) { i -> matrix[i / 4][i % 4].toFloat() }
-        glUniformMatrix4fv(matrixUniform, 1, false, floats, 0)
+    fun uploadModelMatrix(matrix: Matrix) {
+        assertEquals("Shader matrix must be 3D", matrix.dimension, 3)
+        glUniformMatrix4fv(modelMatrixLocation, 1, false, matrix.toFloatArray(), 0)
+    }
+
+    fun uploadViewMatrix(matrix: Matrix) {
+        assertEquals("Shader matrix must be 3D", matrix.dimension, 3)
+        glUniformMatrix4fv(viewMatrixLocation, 1, false, matrix.toFloatArray(), 0)
+    }
+
+    fun uploadProjectionMatrix(matrix: Matrix) {
+        assertEquals("Shader matrix must be 3D", matrix.dimension, 3)
+        glUniformMatrix4fv(projectionMatrixLocation, 1, false, matrix.toFloatArray(), 0)
     }
 
 }

@@ -204,6 +204,11 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
     }
 
     /**
+     * Allocate a float array, containing this matrix in column-major representation.
+     */
+    fun toFloatArray() = FloatArray(16) { i -> this[i / 4][i % 4].toFloat() }
+
+    /**
      * Create a string representing this matrix.
      */
     override fun toString() =
