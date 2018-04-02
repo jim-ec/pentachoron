@@ -9,6 +9,7 @@ import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.Line
 import io.jim.tesserapp.geometry.Quadrilateral
+import io.jim.tesserapp.geometry.Spatial
 import io.jim.tesserapp.math.Vector
 
 /**
@@ -21,6 +22,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     private val rotation = Vector(2)
     private var touchStartTime = 0L
     private val cube: Geometry
+    private val grid = Spatial(3)
 
     companion object {
 
@@ -34,26 +36,31 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         debugFlags = DEBUG_CHECK_GL_ERROR
         renderMode = RENDERMODE_WHEN_DIRTY
 
+        // Create cube:
         cube = Quadrilateral(3,
                 Vector(1.0, 1.0, 1.0),
                 Vector(-1.0, 1.0, 1.0),
                 Vector(-1.0, -1.0, 1.0),
                 Vector(1.0, -1.0, 1.0),
                 Color(context, R.color.colorAccent)
-        ).apply { extrude(Vector(0.0, 0.0, -2.0)) }
-        renderer.addGeometry(cube)
+        )
+        cube.extrude(Vector(0.0, 0.0, -2.0))
+        renderer.rootSpatial.addChildSpatial(cube)
 
-        renderer.addGeometry(Line(3, Vector(3), Vector(1.0, 0.0, 0.0), Color(context, R.color.colorPrimary)))
-        renderer.addGeometry(Line(3, Vector(3), Vector(0.0, 1.0, 0.0), Color(context, R.color.colorPrimary)))
-        renderer.addGeometry(Line(3, Vector(3), Vector(0.0, 0.0, 1.0), Color(context, R.color.colorPrimary)))
+        // Create axis:
+        renderer.rootSpatial.addChildSpatial(Line(3, Vector(3), Vector(1.0, 0.0, 0.0), Color(context, R.color.colorPrimary)))
+        renderer.rootSpatial.addChildSpatial(Line(3, Vector(3), Vector(0.0, 1.0, 0.0), Color(context, R.color.colorPrimary)))
+        renderer.rootSpatial.addChildSpatial(Line(3, Vector(3), Vector(0.0, 0.0, 1.0), Color(context, R.color.colorPrimary)))
 
+        // Create grid:
+        renderer.rootSpatial.addChildSpatial(grid)
         for (i in -5..5) {
-            renderer.addGeometry(Line(3,
+            grid.addChildSpatial(Line(3,
                     Vector(i.toDouble(), 0.0, -5.0),
                     Vector(i.toDouble(), 0.0, 5.0),
                     Color(context, R.color.colorGrid)
             ))
-            renderer.addGeometry(Line(3,
+            grid.addChildSpatial(Line(3,
                     Vector(-5.0, 0.0, i.toDouble()),
                     Vector(5.0, 0.0, i.toDouble()),
                     Color(context, R.color.colorGrid)

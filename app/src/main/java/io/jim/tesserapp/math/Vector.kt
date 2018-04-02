@@ -18,7 +18,7 @@ data class Vector(val dimension: Int, private val components: ArrayList<Double> 
      */
     init {
         for (i in 0 until dimension - components.size) components.add(0.0)
-        println("Create vector #$counter")
+        //println("Create vector #$counter")
         counter++
     }
 

@@ -13,7 +13,7 @@ data class IndexBuffer(
         const val INDEX_BYTE_LENGTH = 4
     }
 
-    private data class GeometryEntry(val indexOffset: Int, val indexCount: Int)
+    private data class GeometryEntry(val geometry: Geometry, val indexOffset: Int, val indexCount: Int)
 
     private var recording = false
     private var globalIndex = 0
@@ -82,7 +82,7 @@ data class IndexBuffer(
             appendIndex(line.second)
         }
 
-        geometryRegistry.add(GeometryEntry(globalIndexCounter, geometry.lines.size * 2))
+        geometryRegistry.add(GeometryEntry(geometry, globalIndexCounter, geometry.lines.size * 2))
         globalIndexCounter += geometry.lines.size * 2
         globalIndicesOffset += geometry.points.size
     }
@@ -90,13 +90,12 @@ data class IndexBuffer(
     /**
      * Call a function for each stored geometry.
      * The function [f] gets the following parameters:
-     *  - index: The index of the geometry, as it appears in this index buffer.
      *  - indexOffset: The position within this index buffer the current geometry's indices begin.
      *  - indexCount: The count of the current geometry's indices.
      */
-    fun forEachGeometry(f: (index: Int, indexOffset: Int, indexCount: Int) -> Unit) {
-        geometryRegistry.forEachIndexed { index, entry ->
-            f(index, entry.indexOffset, entry.indexCount)
+    fun forEachGeometry(f: (geometry: Geometry, indexOffset: Int, indexCount: Int) -> Unit) {
+        geometryRegistry.forEach { entry ->
+            f(entry.geometry, entry.indexOffset, entry.indexCount)
         }
     }
 

@@ -4,6 +4,7 @@ import android.content.Context
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.geometry.Spatial
 import io.jim.tesserapp.math.Matrix
 import io.jim.tesserapp.math.Vector
 import javax.microedition.khronos.egl.EGLConfig
@@ -11,7 +12,6 @@ import javax.microedition.khronos.opengles.GL10
 
 class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
 
-    private val geometries = ArrayList<Geometry>()
     private val maxLineVertices = maxLines * 2
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
@@ -19,6 +19,11 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
     private var uploadGeometryBuffers = false
     private val clearColor = Color(context, android.R.color.background_light)
     private val viewMatrix = Matrix(3)
+    val rootSpatial = Spatial(3).also {
+        it.onChildrenChangedListener = fun() {
+            uploadGeometryBuffers = true
+        }
+    }
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glClearColor(clearColor.red, clearColor.green, clearColor.blue, 1.0f)
@@ -31,11 +36,6 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
         indexBuffer = IndexBuffer(maxLineVertices)
 
         shader.uploadProjectionMatrix(Matrix(3).perspective(0.1, 100.0))
-    }
-
-    fun addGeometry(geometry: Geometry) {
-        geometries.add(geometry)
-        uploadGeometryBuffers = true
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
@@ -51,8 +51,8 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
         if (uploadGeometryBuffers) {
             indexBuffer.startRecording()
 
-            geometries.forEach {
-                indexBuffer.recordGeometry(it, vertexBuffer)
+            rootSpatial.forEachRecursive {
+                if (it is Geometry) indexBuffer.recordGeometry(it, vertexBuffer)
             }
 
             indexBuffer.endRecording()
@@ -62,8 +62,8 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
         vertexBuffer.bind(shader)
         indexBuffer.bind()
 
-        indexBuffer.forEachGeometry { index, offset, indexCount ->
-            shader.uploadModelMatrix(geometries[index].modelMatrix())
+        indexBuffer.forEachGeometry { geometry, offset, indexCount ->
+            shader.uploadModelMatrix(geometry.modelMatrix())
             glDrawElements(GL_LINES, indexCount, GL_UNSIGNED_INT, offset * IndexBuffer.INDEX_BYTE_LENGTH)
         }
     }
