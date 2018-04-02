@@ -54,7 +54,7 @@ class TransformationUnitTest {
     @Test
     fun spaces() {
         val i = Matrix(3)
-        val m = Matrix(3).space(Vector(0.0, 0.0, 0.0),
+        val m = Matrix(3).space(Vector(3),
                 Vector(1.0, 0.0, 0.0),
                 Vector(0.0, 1.0, 0.0),
                 Vector(0.0, 0.0, 1.0)
@@ -63,7 +63,7 @@ class TransformationUnitTest {
         m.forEachCoefficient { r, c -> assertEquals(i[r][c], m[r][c], 0.01) }
 
         val s = Matrix(3).scale(5.0)
-        val n = Matrix(3).space(Vector(0.0, 0.0, 0.0),
+        val n = Matrix(3).space(Vector(3),
                 Vector(5.0, 0.0, 0.0),
                 Vector(0.0, 5.0, 0.0),
                 Vector(0.0, 0.0, 5.0)
@@ -132,9 +132,9 @@ class TransformationUnitTest {
 
     @Test
     fun lookAt_3dToOrigin() {
-        val m = Matrix(3).apply { lookAt(Vector(2.0, 2.0, 2.0), Vector(0.0, 0.0, 0.0), Vector(0.0, 1.0, 0.0)) }
+        val m = Matrix(3).apply { lookAt(Vector(2.0, 2.0, 2.0), Vector(3), Vector(0.0, 1.0, 0.0)) }
 
-        (Vector(0.0, 0.0, 0.0) applyPoint m).apply {
+        (Vector(3) applyPoint m).apply {
             assertEquals(0.0, x, 0.1)
             assertEquals(0.0, y, 0.1)
             assertTrue(z < 0.0)

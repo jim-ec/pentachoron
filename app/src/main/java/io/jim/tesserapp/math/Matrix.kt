@@ -109,14 +109,14 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
     }
 
     /**
-     * Construct a matrix, representing an affine translation transformation by a given [Vector] vector.
+     * Construct a matrix, representing an affine translation transformation by a given [v] vector.
      * Remember that vectors multiplied to this matrix must be homogeneous, their last component
      * determines whether they are transformed at all.
      */
-    fun translation(Vector: Vector) = this.apply {
-        assertEquals("Translation vector dimension must match with matrix", dimension, Vector.dimension)
-        Vector.forEachIndexed { i, d ->
-            this[dimension][i] = d
+    fun translation(v: Vector) = this.apply {
+        assertEquals("Translation vector dimension must match with matrix", dimension, v.dimension)
+        v.forEachIndexed { index, d ->
+            this[dimension][index] = d
         }
     }
 

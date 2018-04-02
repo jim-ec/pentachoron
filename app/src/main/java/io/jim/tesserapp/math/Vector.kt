@@ -7,25 +7,27 @@ import java.lang.Math.*
  * A homogeneous vector, but does not store the homogeneous component, as that component is
  * implicitly given by the subclass used.
  */
-class Vector : Iterable<Double>, Indexable<Double> {
+data class Vector(val dimension: Int, private val components: ArrayList<Double> = ArrayList(dimension)) : Iterable<Double>, Indexable<Double> {
 
-    private val components: ArrayList<Double>
-
-    constructor(dimension: Int) {
-        components = ArrayList(dimension)
-        for (i in 0 until dimension) components.add(0.0)
+    /**
+     * Initialize remaining components to 0.
+     */
+    init {
+        for (i in 0 until dimension - components.size) components.add(0.0)
     }
+
+    /**
+     * Creates a vector from the given [components].
+     * The vector dimension is determined from the count of components.
+     */
+    constructor(vararg components: Double) : this(components.size, ArrayList(components.toList()))
 
     /**
      * Creates a vector without allocating a dedicated component list.
      * Constructing two vectors using this constructor using the same list results in two
      * different vectors, using the same shared component data.
      */
-    private constructor(componentList: ArrayList<Double>) {
-        this.components = componentList
-    }
-
-    constructor(vararg components: Double) : this(ArrayList(components.toList()))
+    private constructor(componentList: ArrayList<Double>) : this(componentList.size, componentList)
 
     constructor(p: SphericalCoordinate) : this(
             cos(p.phi) * sin(p.theta) * p.r,
@@ -56,12 +58,6 @@ class Vector : Iterable<Double>, Indexable<Double> {
     var y: Double by IndexAlias(1)
     var z: Double by IndexAlias(2)
     var q: Double by IndexAlias(3)
-
-    /**
-     * Return the number of components.
-     */
-    val dimension
-        get() = components.size
 
     /**
      * Checks whether two vector have the same count of components.

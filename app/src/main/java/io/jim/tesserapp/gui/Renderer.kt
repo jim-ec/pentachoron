@@ -19,7 +19,7 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
     private lateinit var indexBuffer: IndexBuffer
     private var uploadGeometryBuffers = false
     private val viewMatrix = Matrix(3)
-    private val lookAtMatrix = Matrix(3).apply { lookAt(Vector(4.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0), Vector(0.0, 1.0, 0.0)) }
+    private val lookAtMatrix = Matrix(3).apply { lookAt(Vector(4.0, 0.0, 0.0), Vector(3), Vector(0.0, 1.0, 0.0)) }
     private val zxRotationMatrix = Matrix(3)
     private val xyRotationMatrix = Matrix(3)
     private val projectionMatrix = Matrix(3).perspective(0.1, 100.0)

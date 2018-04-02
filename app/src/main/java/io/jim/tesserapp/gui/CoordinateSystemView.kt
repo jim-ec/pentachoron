@@ -16,8 +16,8 @@ import io.jim.tesserapp.math.Vector
 class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceView(context, attrs) {
 
     private val renderer = Renderer(100, context)
-    private val touchStartPosition = Vector(0.0, 0.0)
-    private val rotation = Vector(0.0, 0.0)
+    private val touchStartPosition = Vector(2)
+    private val rotation = Vector(2)
     private var touchStartTime = 0L
 
     companion object {
@@ -40,9 +40,9 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
                 Color(context, R.color.colorAccent)
         ).apply { extrude(Vector(0.0, 0.0, -2.0)) })
 
-        renderer.addGeometry(Line(Vector(0.0, 0.0, 0.0), Vector(1.0, 0.0, 0.0), Color(context, R.color.colorPrimary)))
-        renderer.addGeometry(Line(Vector(0.0, 0.0, 0.0), Vector(0.0, 1.0, 0.0), Color(context, R.color.colorPrimary)))
-        renderer.addGeometry(Line(Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0), Color(context, R.color.colorPrimary)))
+        renderer.addGeometry(Line(Vector(3), Vector(1.0, 0.0, 0.0), Color(context, R.color.colorPrimary)))
+        renderer.addGeometry(Line(Vector(3), Vector(0.0, 1.0, 0.0), Color(context, R.color.colorPrimary)))
+        renderer.addGeometry(Line(Vector(3), Vector(0.0, 0.0, 1.0), Color(context, R.color.colorPrimary)))
 
         for (i in -5..5) {
             renderer.addGeometry(Line(
