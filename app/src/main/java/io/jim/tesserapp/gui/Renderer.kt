@@ -18,9 +18,11 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
     private lateinit var vertexBuffer: VertexBuffer
     private lateinit var indexBuffer: IndexBuffer
     private var uploadGeometryBuffers = false
-    private var modelMatrix = Matrix(3)
     private val clearColor = Color(context, android.R.color.background_light)
     private val viewMatrix = Matrix(3)
+
+    private val modelMatrix = Matrix(3)
+    //private val modelMatrixList = ArrayList<Matrix>()
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glClearColor(clearColor.red, clearColor.green, clearColor.blue, 1.0f)
@@ -50,31 +52,41 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        shader.uploadModelMatrix(modelMatrix)
-
         if (uploadGeometryBuffers) {
-            indexBuffer.baseIndex = 0
+            indexBuffer.startRecording()
+
             for (geometry in geometries) {
+
                 for (point in geometry.points) {
                     assertEquals("All vertices must be 3D", 3, point.dimension)
                     vertexBuffer.appendVertex(point, geometry.color)
                 }
+
                 for (line in geometry.lines) {
                     indexBuffer.appendIndex(line.first)
                     indexBuffer.appendIndex(line.second)
                 }
-                indexBuffer.baseIndex += geometry.points.size
+
+                indexBuffer.commitGeometry(geometry)
             }
+
+            indexBuffer.endRecording()
             uploadGeometryBuffers = false
         }
 
         vertexBuffer.bind(shader)
         indexBuffer.bind()
 
+
+        //shader.uploadModelMatrix(modelMatrixList[0])
+        shader.uploadModelMatrix(modelMatrix)
         glDrawElements(GL_LINES, indexBuffer.size, GL_UNSIGNED_INT, 0)
     }
 
     fun rotation(horizontal: Double, vertical: Double) {
+        //modelMatrixList.forEach {
+        //    it.multiplicationFrom(Matrix(3).rotation(2, 0, horizontal), Matrix(3).rotation(1, 0, vertical))
+        //}
         modelMatrix.multiplicationFrom(Matrix(3).rotation(2, 0, horizontal), Matrix(3).rotation(1, 0, vertical))
     }
 
