@@ -91,7 +91,7 @@ data class Vector(val dimension: Int, private val components: ArrayList<Double> 
     /**
      * Normalize this vector.
      */
-    fun normalize() {
+    fun normalize() = this.apply {
         val l = 1.0 / length
         for (i in 0 until dimension) {
             components[i] *= l
@@ -158,7 +158,7 @@ data class Vector(val dimension: Int, private val components: ArrayList<Double> 
     /**
      * Invert this vector.
      */
-    operator fun unaryMinus() {
+    operator fun unaryMinus() = this.apply {
         forEachIndexed { index, d -> this[index] = -d }
     }
 

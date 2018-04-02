@@ -32,7 +32,7 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
         vertexBuffer = VertexBuffer(maxLineVertices)
         indexBuffer = IndexBuffer(maxLineVertices)
 
-        shader.uploadProjectionMatrix(Matrix(3).apply { perspective(0.1, 100.0) })
+        shader.uploadProjectionMatrix(Matrix(3).perspective(0.1, 100.0))
     }
 
     fun addGeometry(geometry: Geometry) {
@@ -42,8 +42,8 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
-        viewMatrix.multiplicationFrom(Matrix(3).apply { lookAt(Vector(4.0, 4.0, 0.0), Vector(3), Vector(0.0, 1.0, 0.0)) },
-                Matrix(3).apply { scale(Vector(1.0, width.toDouble() / height, 1.0)) })
+        viewMatrix.multiplicationFrom(Matrix(3).lookAt(Vector(4.0, 4.0, 0.0), Vector(3), Vector(0.0, 1.0, 0.0)),
+                Matrix(3).scale(Vector(1.0, width.toDouble() / height, 1.0)))
         shader.uploadViewMatrix(viewMatrix)
     }
 
@@ -75,7 +75,7 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
     }
 
     fun rotation(horizontal: Double, vertical: Double) {
-        modelMatrix.multiplicationFrom(Matrix(3).apply { rotation(2, 0, horizontal) }, Matrix(3).apply { rotation(1, 0, vertical) })
+        modelMatrix.multiplicationFrom(Matrix(3).rotation(2, 0, horizontal), Matrix(3).rotation(1, 0, vertical))
     }
 
 }

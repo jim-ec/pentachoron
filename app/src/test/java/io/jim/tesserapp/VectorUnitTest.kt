@@ -85,13 +85,11 @@ class VectorUnitTest {
 
     @Test
     fun negation() {
-        (Vector(2.0, 1.0)).apply {
-            -this
+        (-Vector(2.0, 1.0)).apply {
             assertEquals(-2.0, x, 0.1)
             assertEquals(-1.0, y, 0.1)
         }
-        (Vector(2.0, 1.0)).apply {
-            -this
+        (-Vector(2.0, 1.0)).apply {
             assertEquals(-2.0, x, 0.1)
             assertEquals(-1.0, y, 0.1)
         }
@@ -110,8 +108,8 @@ class VectorUnitTest {
 
     @Test
     fun normalized() {
-        assertEquals(1.0, Vector(3.0, 1.0, 4.0).apply { normalize() }.length, 0.1)
-        assertEquals(1.0, Vector(3.0, 1.0, 4.0).apply { normalize() }.length, 0.1)
+        assertEquals(1.0, Vector(3.0, 1.0, 4.0).normalize().length, 0.1)
+        assertEquals(1.0, Vector(3.0, 1.0, 4.0).normalize().length, 0.1)
     }
 
     @Test
