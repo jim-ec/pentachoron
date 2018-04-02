@@ -13,7 +13,8 @@ import kotlin.math.sin
  * Vectors multiplied to this matrix must be one greater than the dimension as
  * well, since they are homogeneous coordinates or Vectors as well.
  */
-data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = ArrayList()) : Indexable<Vector> {
+data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = ArrayList())
+    : Indexable<Vector>, Iterable<Vector> {
 
     init {
         // Initialize to identity matrix:
@@ -39,6 +40,8 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
         for (i in 0 until value.dimension) this[index][i] = value[i]
     }
 
+    override fun iterator() = rows.iterator()
+
     var x: Vector by IndexAlias(0)
     var y: Vector by IndexAlias(1)
     var z: Vector by IndexAlias(2)
@@ -51,7 +54,7 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
     /**
      * Load the identity matrix.
      */
-    fun identity() = this.apply {
+    private fun identity() = this.apply {
         forEachCoefficient { r, c -> this[r][c] = if (r == c) 1.0 else 0.0 }
     }
 

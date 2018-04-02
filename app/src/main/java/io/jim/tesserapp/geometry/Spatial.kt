@@ -3,7 +3,7 @@ package io.jim.tesserapp.geometry
 import io.jim.tesserapp.math.Matrix
 import io.jim.tesserapp.math.Vector
 
-open class Spatial(val dimension: Int, var onChildrenChangedListener: (() -> Unit)? = null) : Iterable<Spatial> {
+open class Spatial(val dimension: Int, private val onChildrenChangedListener: (() -> Unit)? = null) : Iterable<Spatial> {
 
     private val global = Matrix(dimension)
     private val local = Matrix(dimension)
