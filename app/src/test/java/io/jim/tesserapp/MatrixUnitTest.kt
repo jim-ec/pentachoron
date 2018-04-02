@@ -102,7 +102,7 @@ class MatrixUnitTest {
                     Vector(6.0, 7.0),
                     Vector(8.0, 9.0))
         }
-        val u = m * n
+        val u = Matrix(2).apply { multiplicationFrom(m, n) }
         assertEquals(2.0 * 6.0 + 3.0 * 8.0, u.x.x, 0.1)
         assertEquals(2.0 * 7.0 + 3.0 * 9.0, u.x.y, 0.1)
         assertEquals(4.0 * 6.0 + 5.0 * 8.0, u.y.x, 0.1)

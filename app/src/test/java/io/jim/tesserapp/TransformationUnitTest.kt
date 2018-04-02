@@ -110,7 +110,8 @@ class TransformationUnitTest {
 
     @Test
     fun combination() {
-        val m = Matrix(3).apply { scale(2.0) } * Matrix(3).apply { translation(Vector(4.0, 0.0, 0.0)) }
+        val m = Matrix(3)
+        m.multiplicationFrom(Matrix(3).apply { scale(2.0) }, Matrix(3).apply { translation(Vector(4.0, 0.0, 0.0)) })
         val p = Vector(1.0, 2.0, 3.0) applyPoint m
         assertEquals(6.0, p.x, 0.1)
         assertEquals(4.0, p.y, 0.1)

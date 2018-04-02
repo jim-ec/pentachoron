@@ -51,7 +51,7 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
     /**
      * Load the identity matrix.
      */
-    private fun identity() {
+    fun identity() {
         forEachCoefficient { r, c -> this[r][c] = if (r == c) 1.0 else 0.0 }
     }
 
@@ -147,15 +147,15 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
     infix fun compatible(rhs: Vector) = dimension == rhs.dimension
 
     /**
-     * Multiply this and a given right-hand-side matrix, resulting into a matrix.
+     * Multiply two matrices, [lhs] * [rhs], and store the result in this matrix,
+     * without allocating new matrices.
      */
-    operator fun times(rhs: Matrix) =
-            Matrix(dimension).also {
-                assertTrue("Matrices must be compatible", this compatible rhs)
-                forEachCoefficient { r, c ->
-                    it[r][c] = (0..dimension).map { i -> this[r][i] * rhs[i][c] }.sum()
-                }
-            }
+    fun multiplicationFrom(lhs: Matrix, rhs: Matrix) {
+        assertTrue("Matrix dimensions must match", dimension == lhs.dimension && lhs.dimension == rhs.dimension)
+        forEachCoefficient { r, c ->
+            this[r][c] = (0..dimension).map { i -> lhs[r][i] * rhs[i][c] }.sum()
+        }
+    }
 
     /**
      * Construct a look-at matrix, representing both, translation and rotation.
