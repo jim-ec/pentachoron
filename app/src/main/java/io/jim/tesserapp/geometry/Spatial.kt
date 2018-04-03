@@ -32,24 +32,35 @@ open class Spatial(val dimension: Int) : Iterable<Spatial> {
     }
 
     fun modelMatrix(): Matrix {
+        return if (null != parent) global else local
+    }
+
+    private fun computeLocal() {
         rotation.multiplicationFrom(rotationZX, rotationYX)
         local.multiplicationFrom(rotation, translation)
-        return if (null != parent) global.multiplicationFrom(local, parent!!.modelMatrix())
-        else local
+
+        if (null != parent) {
+            global.multiplicationFrom(local, parent!!.modelMatrix())
+        }
+
+        children.forEach(Spatial::computeLocal)
     }
 
     fun rotationZX(theta: Double) {
         rotationZX.rotation(2, 0, theta)
+        computeLocal()
         onMatrixChangedListeners.forEach { it() }
     }
 
     fun rotationYX(theta: Double) {
         rotationYX.rotation(1, 0, theta)
+        computeLocal()
         onMatrixChangedListeners.forEach { it() }
     }
 
     fun translate(v: Vector) {
         translation.translation(v)
+        computeLocal()
         onMatrixChangedListeners.forEach { it() }
     }
 
@@ -62,6 +73,9 @@ open class Spatial(val dimension: Int) : Iterable<Spatial> {
         // Re-parent to new spatial:
         parent = spatial
         spatial.children.add(this)
+
+        // Re-compute global transform:
+        computeLocal()
 
         // Fire children changed listener recursively:
         onChildrenChangedListeners.forEach { it() }

@@ -7,7 +7,7 @@ import android.view.MotionEvent
 import android.view.MotionEvent.*
 import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.geometry.Line
+import io.jim.tesserapp.geometry.Lines
 import io.jim.tesserapp.geometry.Quadrilateral
 import io.jim.tesserapp.geometry.Spatial
 import io.jim.tesserapp.graphics.Color
@@ -24,7 +24,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     private val rotation = Vector(2)
     private var touchStartTime = 0L
     val cube: Geometry
-    private val grid = Spatial(3)
+    private val grid: Lines
 
     companion object {
 
@@ -39,6 +39,20 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         debugFlags = DEBUG_CHECK_GL_ERROR
         renderMode = RENDERMODE_WHEN_DIRTY
 
+        Spatial.addMatrixChangedListener {
+            requestRender()
+        }
+        Spatial.addChildrenChangedListener {
+            requestRender()
+        }
+
+        // Create axis:
+        val axis = Lines(3, Color(context, R.color.colorPrimary))
+        axis.addLine(Vector(3), Vector(1.0, 0.0, 0.0))
+        axis.addLine(Vector(3), Vector(0.0, 1.0, 0.0))
+        axis.addLine(Vector(3), Vector(0.0, 0.0, 1.0))
+        axis.addToParentSpatial(renderer.rootSpatial)
+
         // Create cube:
         cube = Quadrilateral(3,
                 Vector(1.0, 1.0, 1.0),
@@ -50,32 +64,13 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         cube.extrude(Vector(0.0, 0.0, -2.0))
         cube.addToParentSpatial(renderer.rootSpatial)
 
-        Spatial.addMatrixChangedListener {
-            requestRender()
-        }
-        Spatial.addChildrenChangedListener {
-            requestRender()
-        }
-
-        // Create axis:
-        Line(3, Vector(3), Vector(1.0, 0.0, 0.0), Color(context, R.color.colorPrimary)).addToParentSpatial(renderer.rootSpatial)
-        Line(3, Vector(3), Vector(0.0, 1.0, 0.0), Color(context, R.color.colorPrimary)).addToParentSpatial(renderer.rootSpatial)
-        Line(3, Vector(3), Vector(0.0, 0.0, 1.0), Color(context, R.color.colorPrimary)).addToParentSpatial(renderer.rootSpatial)
-
         // Create grid:
-        grid.addToParentSpatial(renderer.rootSpatial)
+        grid = Lines(3, Color(context, R.color.colorGrid))
         for (i in -5..5) {
-            Line(3,
-                    Vector(i.toDouble(), 0.0, -5.0),
-                    Vector(i.toDouble(), 0.0, 5.0),
-                    Color(context, R.color.colorGrid)
-            ).addToParentSpatial(grid)
-            Line(3,
-                    Vector(-5.0, 0.0, i.toDouble()),
-                    Vector(5.0, 0.0, i.toDouble()),
-                    Color(context, R.color.colorGrid)
-            ).addToParentSpatial(grid)
+            grid.addLine(Vector(i.toDouble(), 0.0, -5.0), Vector(i.toDouble(), 0.0, 5.0))
+            grid.addLine(Vector(-5.0, 0.0, i.toDouble()), Vector(5.0, 0.0, i.toDouble()))
         }
+        grid.addToParentSpatial(renderer.rootSpatial)
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {

@@ -16,11 +16,13 @@ import kotlin.math.sin
 data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = ArrayList())
     : Indexable<Vector>, Iterable<Vector> {
 
+    private val range = 0..dimension
+
     init {
         // Initialize to identity matrix:
         assertTrue("Size must be > 0", dimension > 0)
 
-        for (r in 0..dimension) rows.add(Vector(dimension + 1))
+        for (r in range) rows.add(Vector(dimension + 1))
 
         identity()
     }
@@ -154,9 +156,12 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
      * without allocating new matrices.
      */
     fun multiplicationFrom(lhs: Matrix, rhs: Matrix) = this.apply {
-        assertTrue("Matrix dimensions must match", dimension == lhs.dimension && lhs.dimension == rhs.dimension)
         forEachCoefficient { r, c ->
-            this[r][c] = (0..dimension).map { i -> lhs[r][i] * rhs[i][c] }.sum()
+            var sum = 0.0
+            for (i in range) {
+                sum += lhs[r][i] * rhs[i][c]
+            }
+            this[r][c] = sum
         }
     }
 
@@ -183,7 +188,7 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
     fun transpose() = this.apply {
         var tmp: Double
 
-        for (r in 0..dimension) {
+        for (r in range) {
             for (c in 0..r) {
                 tmp = this[r][c]
                 this[r][c] = this[c][r]
@@ -207,9 +212,14 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
     }
 
     /**
-     * Allocate a float array, containing this matrix in column-major representation.
+     * Store this matrix to a target float [array] at [offset] in row-major order.
      */
-    fun toFloatArray() = FloatArray(16) { i -> this[i / 4][i % 4].toFloat() }
+    fun storeToFloatArray(array: FloatArray, offset: Int) {
+        var i = 0
+        forEachCoefficient { r, c ->
+            array[offset + i++] = this[r][c].toFloat()
+        }
+    }
 
     /**
      * Create a string representing this matrix.

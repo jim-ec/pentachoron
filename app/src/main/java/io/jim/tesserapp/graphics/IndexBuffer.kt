@@ -16,7 +16,7 @@ data class IndexBuffer(
 
     private var recording = false
     private var globalIndex = 0
-    private var globalIndexCounter = 0
+    var globalIndexCounter = 0
     private var globalIndicesOffset = 0
     private val handle = let {
         val status = IntArray(1)

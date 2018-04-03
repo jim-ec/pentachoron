@@ -7,10 +7,14 @@ import junit.framework.Assert
 class GeometryBuffer(maxIndices: Int) {
 
     private val vertexBuffer = VertexBuffer(maxIndices)
-    private val indexBuffer = IndexBuffer(maxIndices)
+    val indexBuffer = IndexBuffer(maxIndices)
     private val geometryRegistry = ArrayList<GeometryEntry>()
 
-    private data class GeometryEntry(val geometry: Geometry, val indexOffset: Int, val indexCount: Int)
+    data class GeometryEntry(
+            val geometry: Geometry,
+            val geometryIndex: Int,
+            val indexOffset: Int,
+            val indexCount: Int)
 
     fun bind(shader: Shader) {
         vertexBuffer.bind(shader)
@@ -22,16 +26,20 @@ class GeometryBuffer(maxIndices: Int) {
 
         indexBuffer.startRecording()
 
+        var geometryIndex = 0
+
         rootSpatial.forEachRecursive { geometry ->
             if (geometry is Geometry) {
 
                 for (point in geometry.points) {
                     Assert.assertEquals("All vertices must be 3D", 3, point.dimension)
-                    vertexBuffer.appendVertex(point, geometry.color)
+                    vertexBuffer.appendVertex(point, geometry.color, geometryIndex)
                 }
 
                 val offset = indexBuffer.recordGeometry(geometry)
-                geometryRegistry.add(GeometryEntry(geometry, offset, geometry.lines.size * 2))
+                geometryRegistry.add(GeometryEntry(geometry, geometryIndex, offset, geometry.lines.size * 2))
+
+                geometryIndex++
             }
         }
 
@@ -45,9 +53,9 @@ class GeometryBuffer(maxIndices: Int) {
      *  - indexOffset: The position within this index buffer the current geometry's indices begin.
      *  - indexCount: The count of the current geometry's indices.
      */
-    fun forEachGeometry(f: (geometry: Geometry, indexOffset: Int, indexCount: Int) -> Unit) {
+    fun forEachGeometry(f: (entry: GeometryEntry) -> Unit) {
         geometryRegistry.forEach { entry ->
-            f(entry.geometry, entry.indexOffset, entry.indexCount)
+            f(entry)
         }
     }
 

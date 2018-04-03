@@ -1,6 +1,7 @@
 package io.jim.tesserapp.graphics
 
 import android.content.Context
+import android.opengl.GLES10.GL_MULTISAMPLE
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.Spatial
@@ -18,11 +19,13 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
     private val clearColor = Color(context, android.R.color.background_light)
     private val viewMatrix = Matrix(3)
     val rootSpatial = Spatial(3)
+    private val modelMatrixArray = FloatArray(16 * maxLineVertices)
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glClearColor(clearColor.red, clearColor.green, clearColor.blue, 1.0f)
         glDisable(GL_CULL_FACE)
         glEnable(GL_DEPTH_TEST)
+        glEnable(GL_MULTISAMPLE)
         glLineWidth(4f)
 
         shader = Shader()
@@ -45,17 +48,24 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
         if (rebuildGeometryBuffers) {
-            println("Rebuild geometry buffers")
             geometryBuffer.recordGeometries(rootSpatial)
             rebuildGeometryBuffers = false
         }
 
         geometryBuffer.bind(shader)
 
-        geometryBuffer.forEachGeometry { geometry, offset, indexCount ->
-            shader.uploadModelMatrix(geometry.modelMatrix())
-            glDrawElements(GL_LINES, indexCount, GL_UNSIGNED_INT, offset * IndexBuffer.INDEX_BYTE_LENGTH)
+        // Fetch model matrices:
+        var modelMatrixOffset = 0
+        var modelIndex = 0
+        geometryBuffer.forEachGeometry { entry ->
+            entry.geometry.modelMatrix().storeToFloatArray(modelMatrixArray, modelMatrixOffset)
+            modelMatrixOffset += 16
+            modelIndex++
         }
+        shader.uploadModelMatrixArray(modelMatrixArray, modelMatrixOffset / 16)
+
+        // Draw actual geometry:
+        glDrawElements(GL_LINES, geometryBuffer.indexBuffer.globalIndexCounter, GL_UNSIGNED_INT, 0)
     }
 
 }

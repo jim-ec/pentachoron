@@ -2,7 +2,6 @@ package io.jim.tesserapp.graphics
 
 import android.opengl.GLES20.*
 import io.jim.tesserapp.math.Matrix
-import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
 
 class Shader {
@@ -44,6 +43,9 @@ class Shader {
     private val projectionMatrixLocation: Int
     val positionAttributeLocation: Int
     val colorAttributeLocation: Int
+    val modelIndexAttributeLocation: Int
+    val projectionMatrixArray = FloatArray(16)
+    val viewMatrixArray = FloatArray(16)
 
     init {
         assertTrue(vertexShader >= 0)
@@ -88,30 +90,31 @@ class Shader {
 
         positionAttributeLocation = glGetAttribLocation(program, "position")
         colorAttributeLocation = glGetAttribLocation(program, "color")
-        modelMatrixLocation = glGetUniformLocation(program, "M[0]")
+        modelIndexAttributeLocation = glGetAttribLocation(program, "modelIndex")
+        modelMatrixLocation = glGetUniformLocation(program, "M")
         viewMatrixLocation = glGetUniformLocation(program, "V")
         projectionMatrixLocation = glGetUniformLocation(program, "P")
 
         assertTrue(positionAttributeLocation >= 0)
         assertTrue(colorAttributeLocation >= 0)
+        assertTrue(modelIndexAttributeLocation >= 0)
         assertTrue(modelMatrixLocation >= 0)
         assertTrue(viewMatrixLocation >= 0)
         assertTrue(projectionMatrixLocation >= 0)
     }
 
-    fun uploadModelMatrix(matrix: Matrix) {
-        assertEquals("Shader matrix must be 3D", matrix.dimension, 3)
-        glUniformMatrix4fv(modelMatrixLocation, 1, false, matrix.toFloatArray(), 0)
+    fun uploadModelMatrixArray(array: FloatArray, matrixCount: Int) {
+        glUniformMatrix4fv(modelMatrixLocation, matrixCount, false, array, 0)
     }
 
     fun uploadViewMatrix(matrix: Matrix) {
-        assertEquals("Shader matrix must be 3D", matrix.dimension, 3)
-        glUniformMatrix4fv(viewMatrixLocation, 1, false, matrix.toFloatArray(), 0)
+        matrix.storeToFloatArray(viewMatrixArray, 0)
+        glUniformMatrix4fv(viewMatrixLocation, 1, false, viewMatrixArray, 0)
     }
 
     fun uploadProjectionMatrix(matrix: Matrix) {
-        assertEquals("Shader matrix must be 3D", matrix.dimension, 3)
-        glUniformMatrix4fv(projectionMatrixLocation, 1, false, matrix.toFloatArray(), 0)
+        matrix.storeToFloatArray(projectionMatrixArray, 0)
+        glUniformMatrix4fv(projectionMatrixLocation, 1, false, projectionMatrixArray, 0)
     }
 
 }

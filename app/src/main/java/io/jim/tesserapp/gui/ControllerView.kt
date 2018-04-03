@@ -26,7 +26,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         seekerRotationXZ.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
 
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val radiansOverPi = progress.toDouble() / seekerRotationXZ.max
+                val radiansOverPi = 2 * progress.toDouble() / seekerRotationXZ.max
                 formatValueTextView(valueRotationXZ, radiansOverPi)
                 rotationXZListener(radiansOverPi)
             }

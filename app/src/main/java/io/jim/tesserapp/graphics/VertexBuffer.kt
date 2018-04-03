@@ -12,7 +12,8 @@ data class VertexBuffer(val size: Int) {
     companion object {
         private const val COMPONENTS_PER_POSITION = 3
         private const val COMPONENTS_PER_COLOR = 3
-        const val COMPONENTS_PER_VERTEX = COMPONENTS_PER_POSITION + COMPONENTS_PER_COLOR
+        private const val COMPONENTS_PER_MODEL_INDEX = 1
+        const val COMPONENTS_PER_VERTEX = COMPONENTS_PER_POSITION + COMPONENTS_PER_COLOR + COMPONENTS_PER_MODEL_INDEX
         const val FLOAT_BYTE_LENGTH = 4
         const val VERTEX_BYTE_LENGTH = COMPONENTS_PER_VERTEX * FLOAT_BYTE_LENGTH
     }
@@ -33,7 +34,7 @@ data class VertexBuffer(val size: Int) {
         rewind()
     }
 
-    fun appendVertex(position: Vector, color: Color) {
+    fun appendVertex(position: Vector, color: Color, modelIndex: Int) {
         assertEquals("Position vectors must be 3D", 3, position.dimension)
         assertTrue("Insufficient memory to store vertex: pos=%d(%d verts)  cap=%d(%d verts)  needed=%d"
                 .format(floatBuffer.position(), floatBuffer.position() / COMPONENTS_PER_VERTEX,
@@ -48,6 +49,7 @@ data class VertexBuffer(val size: Int) {
             put(color.red)
             put(color.green)
             put(color.blue)
+            put(modelIndex.toFloat())
         }
     }
 
@@ -56,11 +58,20 @@ data class VertexBuffer(val size: Int) {
         glBindBuffer(GL_ARRAY_BUFFER, handle)
         glBufferData(GL_ARRAY_BUFFER, size * VERTEX_BYTE_LENGTH, floatBuffer, GL_STATIC_DRAW)
 
+        // Position attribute:
         glEnableVertexAttribArray(shader.positionAttributeLocation)
-        glVertexAttribPointer(shader.positionAttributeLocation, COMPONENTS_PER_POSITION, GL_FLOAT, false, VERTEX_BYTE_LENGTH, 0)
+        glVertexAttribPointer(shader.positionAttributeLocation, COMPONENTS_PER_POSITION, GL_FLOAT, false,
+                VERTEX_BYTE_LENGTH, 0)
 
+        // Color attribute:
         glEnableVertexAttribArray(shader.colorAttributeLocation)
-        glVertexAttribPointer(shader.colorAttributeLocation, COMPONENTS_PER_COLOR, GL_FLOAT, false, VERTEX_BYTE_LENGTH, COMPONENTS_PER_POSITION * FLOAT_BYTE_LENGTH)
+        glVertexAttribPointer(shader.colorAttributeLocation, COMPONENTS_PER_COLOR, GL_FLOAT, false,
+                VERTEX_BYTE_LENGTH, COMPONENTS_PER_POSITION * FLOAT_BYTE_LENGTH)
+
+        // Model index attribute:
+        glEnableVertexAttribArray(shader.modelIndexAttributeLocation)
+        glVertexAttribPointer(shader.modelIndexAttributeLocation, COMPONENTS_PER_MODEL_INDEX, GL_FLOAT, false,
+                VERTEX_BYTE_LENGTH, (COMPONENTS_PER_POSITION + COMPONENTS_PER_COLOR) * FLOAT_BYTE_LENGTH)
     }
 
 }
