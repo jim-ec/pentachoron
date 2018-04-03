@@ -12,15 +12,16 @@ class Shader {
         const val VERTEX_SHADER_SOURCE = """
             uniform mat4 P;
             uniform mat4 V;
-            uniform mat4 M;
+            uniform mat4 M[100];
 
             attribute vec3 position;
             attribute vec3 color;
+            attribute float modelIndex;
 
             varying vec3 vColor;
 
             void main() {
-                gl_Position = P * V * M * vec4(position, 1.0);
+                gl_Position = P * V * M[int(modelIndex)] * vec4(position, 1.0);
                 vColor = color;
             }
         """
@@ -51,43 +52,43 @@ class Shader {
 
         val status = IntArray(1)
 
-        vertexShader.apply {
-            glShaderSource(this, VERTEX_SHADER_SOURCE)
-            glCompileShader(this)
-            glGetShaderiv(this, GL_COMPILE_STATUS, status, 0)
+        vertexShader.also {
+            glShaderSource(it, VERTEX_SHADER_SOURCE)
+            glCompileShader(it)
+            glGetShaderiv(it, GL_COMPILE_STATUS, status, 0)
             if (GL_TRUE != status[0]) {
-                throw Exception("Cannot compile vertex shader: ${glGetShaderInfoLog(this)}")
+                throw Exception("Cannot compile vertex shader: ${glGetShaderInfoLog(it)}")
             }
         }
 
-        fragmentShader.apply {
-            glShaderSource(this, FRAGMENT_SHADER_SOURCE)
-            glCompileShader(this)
-            glGetShaderiv(this, GL_COMPILE_STATUS, status, 0)
+        fragmentShader.also {
+            glShaderSource(it, FRAGMENT_SHADER_SOURCE)
+            glCompileShader(it)
+            glGetShaderiv(it, GL_COMPILE_STATUS, status, 0)
             if (GL_TRUE != status[0]) {
-                throw Exception("Cannot compile fragment shader: ${glGetShaderInfoLog(this)}")
+                throw Exception("Cannot compile fragment shader: ${glGetShaderInfoLog(it)}")
             }
         }
 
-        program.apply {
-            glAttachShader(this, vertexShader)
-            glAttachShader(this, fragmentShader)
-            glLinkProgram(this)
-            glGetProgramiv(this, GL_LINK_STATUS, status, 0)
+        program.also {
+            glAttachShader(it, vertexShader)
+            glAttachShader(it, fragmentShader)
+            glLinkProgram(it)
+            glGetProgramiv(it, GL_LINK_STATUS, status, 0)
             if (GL_TRUE != status[0]) {
-                throw Exception("Cannot link program: ${glGetProgramInfoLog(this)}")
+                throw Exception("Cannot link program: ${glGetProgramInfoLog(it)}")
             }
-            glValidateProgram(this)
-            glGetProgramiv(this, GL_VALIDATE_STATUS, status, 0)
+            glValidateProgram(it)
+            glGetProgramiv(it, GL_VALIDATE_STATUS, status, 0)
             if (GL_TRUE != status[0]) {
-                throw Exception("Cannot validate program: ${glGetProgramInfoLog(this)}")
+                throw Exception("Cannot validate program: ${glGetProgramInfoLog(it)}")
             }
-            glUseProgram(this)
+            glUseProgram(it)
         }
 
         positionAttributeLocation = glGetAttribLocation(program, "position")
         colorAttributeLocation = glGetAttribLocation(program, "color")
-        modelMatrixLocation = glGetUniformLocation(program, "M")
+        modelMatrixLocation = glGetUniformLocation(program, "M[0]")
         viewMatrixLocation = glGetUniformLocation(program, "V")
         projectionMatrixLocation = glGetUniformLocation(program, "P")
 
