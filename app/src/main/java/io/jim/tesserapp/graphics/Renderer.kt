@@ -33,7 +33,7 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
-        viewMatrix.multiplicationFrom(Matrix(3).lookAt(Vector(4.0, 4.0, 0.0), Vector(3), Vector(0.0, 1.0, 0.0)),
+        viewMatrix.multiplicationFrom(Matrix(3).lookAt(Vector(4.0, 0.0, 0.0), Vector(3), Vector(0.0, 1.0, 0.0)),
                 Matrix(3).scale(Vector(1.0, width.toDouble() / height, 1.0)))
         shader.uploadViewMatrix(viewMatrix)
     }

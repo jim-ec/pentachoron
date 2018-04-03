@@ -23,7 +23,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     private val touchStartPosition = Vector(2)
     private val rotation = Vector(2)
     private var touchStartTime = 0L
-    private val cube: Geometry
+    val cube: Geometry
     private val grid = Spatial(3)
 
     companion object {
@@ -49,6 +49,10 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         )
         cube.extrude(Vector(0.0, 0.0, -2.0))
         renderer.rootSpatial.addChildSpatial(cube)
+
+        renderer.rootSpatial.onMatrixChangedListener = fun() {
+            requestRender()
+        }
 
         // Create axis:
         renderer.rootSpatial.addChildSpatial(Line(3, Vector(3), Vector(1.0, 0.0, 0.0), Color(context, R.color.colorPrimary)))
@@ -90,7 +94,6 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
             rotation.y += dy
             renderer.rootSpatial.rotationZX(rotation.x * TOUCH_ROTATION_SENSITIVITY)
             renderer.rootSpatial.rotationYX(rotation.y * TOUCH_ROTATION_SENSITIVITY)
-            requestRender()
 
             touchStartPosition.x = x
             touchStartPosition.y = y

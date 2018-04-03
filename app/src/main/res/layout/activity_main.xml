@@ -1,18 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="io.jim.tesserapp.MainActivity">
 
-    <io.jim.tesserapp.gui.CoordinateSystemView
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="0dp"
+        android:layout_weight="2">
+
+        <io.jim.tesserapp.gui.CoordinateSystemView
+            android:id="@+id/coordinateSystemView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </android.support.v7.widget.CardView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <io.jim.tesserapp.gui.ControllerView
+            android:id="@+id/controllerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </io.jim.tesserapp.gui.ControllerView>
+
+    </ScrollView>
 
 </LinearLayout>

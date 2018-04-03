@@ -3,7 +3,11 @@ package io.jim.tesserapp.geometry
 import io.jim.tesserapp.math.Matrix
 import io.jim.tesserapp.math.Vector
 
-open class Spatial(val dimension: Int, private val onChildrenChangedListener: (() -> Unit)? = null) : Iterable<Spatial> {
+open class Spatial(
+        val dimension: Int,
+        private val onChildrenChangedListener: (() -> Unit)? = null,
+        var onMatrixChangedListener: (() -> Unit)? = null
+) : Iterable<Spatial> {
 
     private val global = Matrix(dimension)
     private val local = Matrix(dimension)
@@ -25,27 +29,35 @@ open class Spatial(val dimension: Int, private val onChildrenChangedListener: ((
 
     fun rotationZX(theta: Double) {
         rotationZX.rotation(2, 0, theta)
+        invokeOnMatrixChangedListenerRecursive()
     }
 
     fun rotationYX(theta: Double) {
         rotationYX.rotation(1, 0, theta)
+        invokeOnMatrixChangedListenerRecursive()
     }
 
     fun translate(v: Vector) {
         translation.translation(v)
+        invokeOnMatrixChangedListenerRecursive()
     }
 
     fun addChildSpatial(spatial: Spatial) {
         children.add(spatial)
         spatial.parent = this
-        invokeOnChildrenChangedListener()
+        invokeOnChildrenChangedListenerRecursive()
     }
 
     override fun iterator() = children.iterator()
 
-    private fun invokeOnChildrenChangedListener() {
+    private fun invokeOnChildrenChangedListenerRecursive() {
         onChildrenChangedListener?.let { it() }
-        parent?.invokeOnChildrenChangedListener()
+        parent?.invokeOnChildrenChangedListenerRecursive()
+    }
+
+    private fun invokeOnMatrixChangedListenerRecursive() {
+        onMatrixChangedListener?.let { it() }
+        parent?.invokeOnMatrixChangedListenerRecursive()
     }
 
     fun forEachRecursive(f: (Spatial) -> Unit) {
