@@ -3,4 +3,5 @@
     <string name="transform_rotation">Rotation</string>
     <string name="transform_rotation_xz">X-Z Plane</string>
     <string name="transform_rotation_value">%1$.2fπ (%2$3.0f°)</string>
+    <string name="render_option_grid">Grid</string>
 </resources>

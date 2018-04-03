@@ -3,11 +3,7 @@ package io.jim.tesserapp.geometry
 import io.jim.tesserapp.math.Matrix
 import io.jim.tesserapp.math.Vector
 
-open class Spatial(
-        val dimension: Int,
-        private val onChildrenChangedListener: (() -> Unit)? = null,
-        var onMatrixChangedListener: (() -> Unit)? = null
-) : Iterable<Spatial> {
+open class Spatial(val dimension: Int) : Iterable<Spatial> {
 
     private val global = Matrix(dimension)
     private val local = Matrix(dimension)
@@ -20,6 +16,21 @@ open class Spatial(
     private val children = ArrayList<Spatial>()
     private var parent: Spatial? = null
 
+    companion object {
+
+        private val onMatrixChangedListeners = ArrayList<() -> Unit>()
+        private val onChildrenChangedListeners = ArrayList<() -> Unit>()
+
+        fun addMatrixChangedListener(f: () -> Unit) {
+            onMatrixChangedListeners.add(f)
+        }
+
+        fun addChildrenChangedListener(f: () -> Unit) {
+            onChildrenChangedListeners.add(f)
+        }
+
+    }
+
     fun modelMatrix(): Matrix {
         rotation.multiplicationFrom(rotationZX, rotationYX)
         local.multiplicationFrom(rotation, translation)
@@ -29,36 +40,42 @@ open class Spatial(
 
     fun rotationZX(theta: Double) {
         rotationZX.rotation(2, 0, theta)
-        invokeOnMatrixChangedListenerRecursive()
+        onMatrixChangedListeners.forEach { it() }
     }
 
     fun rotationYX(theta: Double) {
         rotationYX.rotation(1, 0, theta)
-        invokeOnMatrixChangedListenerRecursive()
+        onMatrixChangedListeners.forEach { it() }
     }
 
     fun translate(v: Vector) {
         translation.translation(v)
-        invokeOnMatrixChangedListenerRecursive()
+        onMatrixChangedListeners.forEach { it() }
     }
 
-    fun addChildSpatial(spatial: Spatial) {
-        children.add(spatial)
-        spatial.parent = this
-        invokeOnChildrenChangedListenerRecursive()
+    fun addToParentSpatial(spatial: Spatial) {
+        if (parent == spatial) return
+
+        // Release from former parent:
+        parent?.children?.remove(this)
+
+        // Re-parent to new spatial:
+        parent = spatial
+        spatial.children.add(this)
+
+        // Fire children changed listener recursively:
+        onChildrenChangedListeners.forEach { it() }
+    }
+
+    fun releaseFromParentSpatial() {
+        parent?.children?.remove(this)
+        parent = null
+
+        // Fire children changed listener recursively:
+        onChildrenChangedListeners.forEach { it() }
     }
 
     override fun iterator() = children.iterator()
-
-    private fun invokeOnChildrenChangedListenerRecursive() {
-        onChildrenChangedListener?.let { it() }
-        parent?.invokeOnChildrenChangedListenerRecursive()
-    }
-
-    private fun invokeOnMatrixChangedListenerRecursive() {
-        onMatrixChangedListener?.let { it() }
-        parent?.invokeOnMatrixChangedListenerRecursive()
-    }
 
     fun forEachRecursive(f: (Spatial) -> Unit) {
         this.forEach { child ->

@@ -14,10 +14,10 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
     private val maxLineVertices = maxLines * 2
     private lateinit var shader: Shader
     private lateinit var geometryBuffer: GeometryBuffer
-    private var uploadGeometryBuffers = false
+    private var rebuildGeometryBuffers = true
     private val clearColor = Color(context, android.R.color.background_light)
     private val viewMatrix = Matrix(3)
-    val rootSpatial = Spatial(3, fun() { uploadGeometryBuffers = true })
+    val rootSpatial = Spatial(3)
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glClearColor(clearColor.red, clearColor.green, clearColor.blue, 1.0f)
@@ -29,6 +29,9 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
         geometryBuffer = GeometryBuffer(maxLineVertices)
 
         shader.uploadProjectionMatrix(Matrix(3).perspective(0.1, 100.0))
+
+        // Rebuild geometry buffers upon spatial hierarchy change:
+        Spatial.addChildrenChangedListener { rebuildGeometryBuffers = true }
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
@@ -41,9 +44,10 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        if (uploadGeometryBuffers) {
+        if (rebuildGeometryBuffers) {
+            println("Rebuild geometry buffers")
             geometryBuffer.recordGeometries(rootSpatial)
-            uploadGeometryBuffers = false
+            rebuildGeometryBuffers = false
         }
 
         geometryBuffer.bind(shader)

@@ -48,30 +48,33 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
                 Color(context, R.color.colorAccent)
         )
         cube.extrude(Vector(0.0, 0.0, -2.0))
-        renderer.rootSpatial.addChildSpatial(cube)
+        cube.addToParentSpatial(renderer.rootSpatial)
 
-        renderer.rootSpatial.onMatrixChangedListener = fun() {
+        Spatial.addMatrixChangedListener {
+            requestRender()
+        }
+        Spatial.addChildrenChangedListener {
             requestRender()
         }
 
         // Create axis:
-        renderer.rootSpatial.addChildSpatial(Line(3, Vector(3), Vector(1.0, 0.0, 0.0), Color(context, R.color.colorPrimary)))
-        renderer.rootSpatial.addChildSpatial(Line(3, Vector(3), Vector(0.0, 1.0, 0.0), Color(context, R.color.colorPrimary)))
-        renderer.rootSpatial.addChildSpatial(Line(3, Vector(3), Vector(0.0, 0.0, 1.0), Color(context, R.color.colorPrimary)))
+        Line(3, Vector(3), Vector(1.0, 0.0, 0.0), Color(context, R.color.colorPrimary)).addToParentSpatial(renderer.rootSpatial)
+        Line(3, Vector(3), Vector(0.0, 1.0, 0.0), Color(context, R.color.colorPrimary)).addToParentSpatial(renderer.rootSpatial)
+        Line(3, Vector(3), Vector(0.0, 0.0, 1.0), Color(context, R.color.colorPrimary)).addToParentSpatial(renderer.rootSpatial)
 
         // Create grid:
-        renderer.rootSpatial.addChildSpatial(grid)
+        grid.addToParentSpatial(renderer.rootSpatial)
         for (i in -5..5) {
-            grid.addChildSpatial(Line(3,
+            Line(3,
                     Vector(i.toDouble(), 0.0, -5.0),
                     Vector(i.toDouble(), 0.0, 5.0),
                     Color(context, R.color.colorGrid)
-            ))
-            grid.addChildSpatial(Line(3,
+            ).addToParentSpatial(grid)
+            Line(3,
                     Vector(-5.0, 0.0, i.toDouble()),
                     Vector(5.0, 0.0, i.toDouble()),
                     Color(context, R.color.colorGrid)
-            ))
+            ).addToParentSpatial(grid)
         }
     }
 
@@ -117,6 +120,14 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         requestRender()
 
         return true
+    }
+
+    fun enableGrid(enable: Boolean) {
+        if (enable) {
+            grid.addToParentSpatial(renderer.rootSpatial)
+        } else {
+            grid.releaseFromParentSpatial()
+        }
     }
 
 }

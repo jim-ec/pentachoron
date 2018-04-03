@@ -20,7 +20,10 @@ class MainActivity : AppCompatActivity() {
 
         controllerView.rotationXZListener = fun(rotation: Double) {
             coordinateSystemView.cube.rotationZX(rotation * PI)
-            println("Rotate cube in XZ-Plane: ${rotation * PI}")
+        }
+
+        controllerView.renderGridOptionChangedListener = fun(enable: Boolean) {
+            coordinateSystemView.enableGrid(enable)
         }
     }
 }
