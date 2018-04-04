@@ -91,7 +91,7 @@ open class Spatial(
         if (null != parent) {
             buffer[globalModelMatrixOffset].multiplicationFrom(
                     buffer[offset + LOCAL_MATRIX],
-                    parent!!.buffer[parent!!.globalModelMatrixOffset])
+                    buffer[parent!!.globalModelMatrixOffset])
         }
         else {
             buffer[globalModelMatrixOffset] = buffer[offset + LOCAL_MATRIX].copy()
