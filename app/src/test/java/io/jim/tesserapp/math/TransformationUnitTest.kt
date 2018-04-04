@@ -1,7 +1,5 @@
-package io.jim.tesserapp
+package io.jim.tesserapp.math
 
-import io.jim.tesserapp.math.Matrix
-import io.jim.tesserapp.math.Vector
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
