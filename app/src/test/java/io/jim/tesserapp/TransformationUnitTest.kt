@@ -63,12 +63,11 @@ class TransformationUnitTest {
         m.forEachCoefficient { r, c -> assertEquals(i[r][c], m[r][c], 0.01) }
 
         val s = Matrix(3).scale(5.0)
-        val n = Matrix(3).
-            space(Vector(3),
-                    Vector(5.0, 0.0, 0.0),
-                    Vector(0.0, 5.0, 0.0),
-                    Vector(0.0, 0.0, 5.0)
-            )
+        val n = Matrix(3).space(Vector(3),
+                Vector(5.0, 0.0, 0.0),
+                Vector(0.0, 5.0, 0.0),
+                Vector(0.0, 0.0, 5.0)
+        )
         assertEquals(1.0, s.q.q, 0.01)
         assertEquals(1.0, n.q.q, 0.01)
         s.forEachCoefficient { r, c -> assertEquals(s[r][c], n[r][c], 0.01) }
@@ -76,7 +75,8 @@ class TransformationUnitTest {
 
     @Test
     fun perspective() {
-        assertEquals(2.0 / 10.0, (Vector(2.0, 3.0, -10.0) applyPoint Matrix(3).perspective()).x, 0.1)
+        assertEquals(2.0 / 10.0,
+                (Vector(2.0, 3.0, -10.0) applyPoint Matrix(3).perspective()).x, 0.1)
 
         val m = Matrix(3).perspective(5.0, 10.0)
 
@@ -117,7 +117,11 @@ class TransformationUnitTest {
 
     @Test
     fun lookAt() {
-        val m = Matrix(3).lookAt(Vector(-2.0, 0.0, -1.0), Vector(2.0, -1.0, 1.0), Vector(0.0, 0.0, 1.0))
+        val m = Matrix(3).lookAt(
+                Vector(-2.0, 0.0, -1.0),
+                Vector(2.0, -1.0, 1.0),
+                Vector(0.0, 0.0, 1.0)
+        )
 
         m.apply {
             // Check that all matrix axis are perpendicular to each other:

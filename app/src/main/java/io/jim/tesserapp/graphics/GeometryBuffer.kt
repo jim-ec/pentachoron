@@ -2,25 +2,36 @@ package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.Spatial
+import io.jim.tesserapp.math.Matrix
 import junit.framework.Assert
 
+/**
+ * A geometry buffer, responsible for vertex and index data.
+ */
 class GeometryBuffer(maxIndices: Int) {
 
     private val vertexBuffer = VertexBuffer(maxIndices)
-    val indexBuffer = IndexBuffer(maxIndices)
+    private val indexBuffer = IndexBuffer(maxIndices)
     private val geometryRegistry = ArrayList<GeometryEntry>()
 
-    data class GeometryEntry(
+    private data class GeometryEntry(
             val geometry: Geometry,
             val geometryIndex: Int,
             val indexOffset: Int,
             val indexCount: Int)
 
+    /**
+     * Bind the geometry buffers and re-instructs vertex attribute pointers of [shader].
+     */
     fun bind(shader: Shader) {
         vertexBuffer.bind(shader)
         indexBuffer.bind()
     }
 
+    /**
+     * Store the geometries, whose root is denoted by [rootSpatial], into the vertex and index
+     * buffers.
+     */
     fun recordGeometries(rootSpatial: Spatial) {
         geometryRegistry.clear()
 
@@ -37,7 +48,8 @@ class GeometryBuffer(maxIndices: Int) {
                 }
 
                 val offset = indexBuffer.recordGeometry(geometry)
-                geometryRegistry.add(GeometryEntry(geometry, geometryIndex, offset, geometry.lines.size * 2))
+                geometryRegistry +=
+                        GeometryEntry(geometry, geometryIndex, offset, geometry.lines.size * 2)
 
                 geometryIndex++
             }
@@ -53,10 +65,15 @@ class GeometryBuffer(maxIndices: Int) {
      *  - indexOffset: The position within this index buffer the current geometry's indices begin.
      *  - indexCount: The count of the current geometry's indices.
      */
-    fun forEachGeometry(f: (entry: GeometryEntry) -> Unit) {
-        geometryRegistry.forEach { entry ->
-            f(entry)
+    fun forEachGeometry(f: (modelMatrix: Matrix) -> Unit) {
+        geometryRegistry.forEach { (geometry) ->
+            f(geometry.modelMatrix())
         }
     }
+
+    /**
+     * Return the count of indices actually stored and needed to be drawn.
+     */
+    fun indexCount() = indexBuffer.globalIndexCounter
 
 }

@@ -3,7 +3,10 @@ package io.jim.tesserapp.gui
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.SeekBar
+import android.widget.Switch
+import android.widget.TextView
 import io.jim.tesserapp.R
 
 /**
@@ -12,9 +15,17 @@ import io.jim.tesserapp.R
  */
 class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
-    val seekerRotationXZ: SeekBar
-    val valueRotationXZ: TextView
+    private val seekerRotationXZ: SeekBar
+    private val valueRotationXZ: TextView
+
+    /**
+     * Fired when xy rotation changed.
+     */
     lateinit var rotationXZListener: (Double) -> Unit
+
+    /**
+     * Fire when render grid option changed.
+     */
     lateinit var renderGridOptionChangedListener: (Boolean) -> Unit
 
     init {
@@ -36,13 +47,14 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         })
 
         // Pass render options:
-        findViewById<Switch>(R.id.renderOptionGrid).setOnCheckedChangeListener(fun(_: CompoundButton, isChecked: Boolean) {
+        findViewById<Switch>(R.id.renderOptionGrid).setOnCheckedChangeListener { _, isChecked ->
             renderGridOptionChangedListener(isChecked)
-        })
+        }
     }
 
     private fun formatValueTextView(view: TextView, radiansOverPi: Double) {
-        view.text = String.format(context.getString(R.string.transform_rotation_value), radiansOverPi, radiansOverPi * 180.0)
+        view.text = String.format(context.getString(R.string.transform_rotation_value),
+                radiansOverPi, radiansOverPi * 180.0)
     }
 
 }

@@ -5,29 +5,56 @@ import io.jim.tesserapp.math.Vector
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
 
-open class Geometry(dimension: Int, val color: Color) : Spatial(dimension) {
+/**
+ * A spatial object, containing geometry info and having a color.
+ */
+open class Geometry(
 
+        dimension: Int,
+
+        /**
+         * Color of this geometry.
+         */
+        val color: Color
+
+) : Spatial(dimension) {
+
+    /**
+     * List of points.
+     */
     val points = ArrayList<Vector>()
+
+    /**
+     * List of lines, represented by indices to two points.
+     */
     val lines = ArrayList<Pair<Int, Int>>()
 
+    /**
+     * Add a series of points.
+     * The actual lines are drawn from indices to these points.
+     */
     fun addPoints(vararg p: Vector) {
         assertTrue("Point must match geometry dimension", p.all { it.dimension == dimension })
-        points.addAll(p)
+        points += p
     }
 
+    /**
+     * Add a lines from point [a] to point [b].
+     */
     fun addLine(a: Int, b: Int) {
-        lines.add(Pair(a, b))
+        lines += Pair(a, b)
     }
 
     /**
      * Extrudes the whole geometry in the given [direction].
-     * This works by duplicating the whole geometry and then connecting all point duplicate counterparts.
+     * This works by duplicating the whole geometry and then connecting all point duplicate
+     * counterparts.
      */
     fun extrude(direction: Vector) {
         assertEquals("Extrude vector must match geometry dimension", dimension, direction.dimension)
         val size = points.size
-        points.addAll(points.map { it + direction })
-        lines.addAll(lines.map { Pair(it.first + size, it.second + size) })
+        points += points.map { it + direction }
+        lines += lines.map { Pair(it.first + size, it.second + size) }
         for (i in 0 until size) {
             addLine(i, i + size)
         }

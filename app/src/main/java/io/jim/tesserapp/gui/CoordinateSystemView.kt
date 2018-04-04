@@ -19,18 +19,20 @@ import io.jim.tesserapp.math.Vector
  */
 class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceView(context, attrs) {
 
+    /**
+     * Controllable demonstration geometry.
+     */
+    val cube: Geometry
+
     private val renderer = Renderer(100, context)
     private val touchStartPosition = Vector(2)
     private val rotation = Vector(2)
     private var touchStartTime = 0L
-    val cube: Geometry
     private val grid: Lines
 
     companion object {
-
-        const val CLICK_TIME_MS = 100L
-        const val TOUCH_ROTATION_SENSITIVITY = 0.005
-
+        private const val CLICK_TIME_MS = 100L
+        private const val TOUCH_ROTATION_SENSITIVITY = 0.005
     }
 
     init {
@@ -73,6 +75,9 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         grid.addToParentSpatial(renderer.rootSpatial)
     }
 
+    /**
+     * Handles camera orbit position upon touch events.
+     */
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (null == event) return false
         val x = event.x.toDouble()
@@ -98,7 +103,8 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
             return true
         }
 
-        if (event.action == ACTION_UP && System.currentTimeMillis() - touchStartTime < CLICK_TIME_MS) {
+        if (event.action == ACTION_UP && System.currentTimeMillis() -
+                touchStartTime < CLICK_TIME_MS) {
             rotation.x = 0.0
             rotation.y = 0.0
             performClick()
@@ -107,6 +113,9 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         return false
     }
 
+    /**
+     * Clicks reset camera position to default.
+     */
     override fun performClick(): Boolean {
         super.performClick()
 
@@ -117,6 +126,9 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         return true
     }
 
+    /**
+     * Enable or disable grid rendering.
+     */
     fun enableGrid(enable: Boolean) {
         if (enable) {
             grid.addToParentSpatial(renderer.rootSpatial)

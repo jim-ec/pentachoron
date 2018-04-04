@@ -4,7 +4,25 @@ import android.content.Context
 import android.support.annotation.ColorRes
 import android.support.v4.content.ContextCompat
 
-data class Color(val red: Float, val green: Float, val blue: Float) {
+/**
+ * A color with red, green and blue values.
+ */
+data class Color(
+
+        /**
+         * The red component.
+         */
+        val red: Float,
+
+        /**
+         * The green component.
+         */
+        val green: Float,
+
+        /**
+         * The blue component.
+         */
+        val blue: Float) {
 
     constructor(greyScale: Float) :
             this(greyScale, greyScale, greyScale)

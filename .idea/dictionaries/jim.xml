@@ -2,6 +2,7 @@
   <dictionary name="jim">
     <words>
       <w>eckerlein</w>
+      <w>glsl</w>
       <w>lowp</w>
       <w>mediump</w>
       <w>noninfringement</w>

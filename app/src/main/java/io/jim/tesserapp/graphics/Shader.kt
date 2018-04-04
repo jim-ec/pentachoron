@@ -4,11 +4,16 @@ import android.opengl.GLES20.*
 import io.jim.tesserapp.math.Matrix
 import junit.framework.Assert.assertTrue
 
+/**
+ * A shader pipeline with a vertex shader, fragment shader an locations of all attributes and
+ * uniforms.
+ * TODO: Add maxModel parameter
+ */
 class Shader {
 
     companion object {
 
-        const val VERTEX_SHADER_SOURCE = """
+        private const val VERTEX_SHADER_SOURCE = """
             uniform mat4 P;
             uniform mat4 V;
             uniform mat4 M[100];
@@ -25,7 +30,7 @@ class Shader {
             }
         """
 
-        const val FRAGMENT_SHADER_SOURCE = """
+        private const val FRAGMENT_SHADER_SOURCE = """
             varying mediump vec3 vColor;
 
             void main() {
@@ -41,11 +46,24 @@ class Shader {
     private val modelMatrixLocation: Int
     private val viewMatrixLocation: Int
     private val projectionMatrixLocation: Int
+    private val projectionMatrixArray = FloatArray(16)
+    private val viewMatrixArray = FloatArray(16)
+
+    /**
+     * GLSL location of position attribute.
+     */
     val positionAttributeLocation: Int
+
+    /**
+     * GLSL location of color attribute.
+     */
     val colorAttributeLocation: Int
+
+    /**
+     * GLSL location of model matrix index attribute.
+     * Although it's an index into the model matrix array, it is represented as a float.
+     */
     val modelIndexAttributeLocation: Int
-    val projectionMatrixArray = FloatArray(16)
-    val viewMatrixArray = FloatArray(16)
 
     init {
         assertTrue(vertexShader >= 0)
@@ -103,15 +121,27 @@ class Shader {
         assertTrue(projectionMatrixLocation >= 0)
     }
 
+    /**
+     * Upload the complete model matrix [array] to the uniform array.
+     * The count of actually uploaded matrices is given in [matrixCount],
+     * since the count of actually drawn models might differ from the maximum.
+     * TODO: Remove matrixCount parameter when using matrix buffers.
+     */
     fun uploadModelMatrixArray(array: FloatArray, matrixCount: Int) {
         glUniformMatrix4fv(modelMatrixLocation, matrixCount, false, array, 0)
     }
 
+    /**
+     * Upload the view [matrix] to the uniform.
+     */
     fun uploadViewMatrix(matrix: Matrix) {
         matrix.storeToFloatArray(viewMatrixArray, 0)
         glUniformMatrix4fv(viewMatrixLocation, 1, false, viewMatrixArray, 0)
     }
 
+    /**
+     * Upload the projection [matrix] to the uniform.
+     */
     fun uploadProjectionMatrix(matrix: Matrix) {
         matrix.storeToFloatArray(projectionMatrixArray, 0)
         glUniformMatrix4fv(projectionMatrixLocation, 1, false, projectionMatrixArray, 0)

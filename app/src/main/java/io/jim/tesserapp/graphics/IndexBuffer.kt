@@ -7,23 +7,29 @@ import junit.framework.Assert.assertTrue
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-data class IndexBuffer(
-        val size: Int) {
+/**
+ * Index buffer.
+ */
+data class IndexBuffer(private val maxIndices: Int) {
 
     companion object {
-        const val INDEX_BYTE_LENGTH = 4
+        private const val INDEX_BYTE_LENGTH = 4
     }
+
+    /**
+     * The count of currently recorded indices.
+     */
+    var globalIndexCounter = 0
 
     private var recording = false
     private var globalIndex = 0
-    var globalIndexCounter = 0
     private var globalIndicesOffset = 0
     private val handle = let {
         val status = IntArray(1)
         glGenBuffers(1, status, 0)
         status[0]
     }
-    private val byteBuffer = ByteBuffer.allocateDirect(size * INDEX_BYTE_LENGTH).apply {
+    private val byteBuffer = ByteBuffer.allocateDirect(maxIndices * INDEX_BYTE_LENGTH).apply {
         order(ByteOrder.nativeOrder())
     }
     private val intBuffer = byteBuffer.asIntBuffer().apply {
@@ -39,7 +45,8 @@ data class IndexBuffer(
         assertFalse("Index buffer is currently recording", recording)
         intBuffer.rewind()
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle)
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * INDEX_BYTE_LENGTH, intBuffer, GL_STATIC_DRAW)
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, maxIndices * INDEX_BYTE_LENGTH, intBuffer,
+                GL_STATIC_DRAW)
     }
 
     /**
@@ -69,9 +76,9 @@ data class IndexBuffer(
     fun recordGeometry(geometry: Geometry): Int {
         assertTrue("Index buffer is not recording", recording)
 
-        for (line in geometry.lines) {
-            appendIndex(line.first)
-            appendIndex(line.second)
+        for ((first, second) in geometry.lines) {
+            appendIndex(first)
+            appendIndex(second)
         }
 
         val ret = globalIndexCounter
@@ -82,7 +89,8 @@ data class IndexBuffer(
     }
 
     private fun appendIndex(index: Int) {
-        assertTrue("Insufficient memory to store vertex: pos=%d  cap=%d".format(intBuffer.position(), intBuffer.capacity()),
+        assertTrue("Insufficient memory to store vertex: pos=%d  cap=%d".format(
+                intBuffer.position(), intBuffer.capacity()),
                 intBuffer.position() < intBuffer.capacity())
         intBuffer.put(globalIndicesOffset + index)
     }

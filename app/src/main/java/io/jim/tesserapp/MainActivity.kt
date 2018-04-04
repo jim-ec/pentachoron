@@ -6,11 +6,17 @@ import io.jim.tesserapp.gui.ControllerView
 import io.jim.tesserapp.gui.CoordinateSystemView
 import kotlin.math.PI
 
+/**
+ * Main activity.
+ */
 class MainActivity : AppCompatActivity() {
 
-    lateinit var coordinateSystemView: CoordinateSystemView
-    lateinit var controllerView: ControllerView
+    private lateinit var coordinateSystemView: CoordinateSystemView
+    private lateinit var controllerView: ControllerView
 
+    /**
+     * Initialize activity.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

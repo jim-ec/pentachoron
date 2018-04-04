@@ -3,7 +3,11 @@ package io.jim.tesserapp.geometry
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.Vector
 
-class Quadrilateral(dimension: Int, a: Vector, b: Vector, c: Vector, d: Vector, color: Color) : Geometry(dimension, color) {
+/**
+ * A quadrilateral geometry, with four sides.
+ */
+class Quadrilateral(dimension: Int, a: Vector, b: Vector, c: Vector, d: Vector, color: Color)
+    : Geometry(dimension, color) {
 
     init {
         addPoints(a, b, c, d)
