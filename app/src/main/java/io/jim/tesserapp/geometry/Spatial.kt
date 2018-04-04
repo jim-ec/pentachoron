@@ -6,15 +6,15 @@ import io.jim.tesserapp.math.Vector
 /**
  * A spatial object with no geometry but just transformation and child spatial data.
  */
-open class Spatial(val dimension: Int) : Iterable<Spatial> {
+open class Spatial : Iterable<Spatial> {
 
-    private val global = Matrix(dimension)
-    private val local = Matrix(dimension)
-    private val rotation = Matrix(dimension)
+    private val global = Matrix()
+    private val local = Matrix()
+    private val rotation = Matrix()
 
-    private val rotationZX = Matrix(dimension)
-    private val rotationYX = Matrix(dimension)
-    private val translation = Matrix(dimension)
+    private val rotationZX = Matrix()
+    private val rotationYX = Matrix()
+    private val translation = Matrix()
 
     private val children = ArrayList<Spatial>()
     private var parent: Spatial? = null

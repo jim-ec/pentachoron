@@ -1,97 +1,99 @@
 package io.jim.tesserapp.math
 
-import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
 import kotlin.math.cos
 import kotlin.math.sin
 
 /**
- * Homogeneous matrices used for affine and perspective transformation.
- * The [dimension] specifies the vector dimension this matrix can be applied to.
- * The matrix size itself is always one dimension bigger than it specifies,
- * as the matrix is used for homogeneous coordinates.
- * Vectors multiplied to this matrix must be one greater than the dimension as
- * well, since they are homogeneous coordinates or Vectors as well.
+ * 4 dimensional matrix.
  */
-data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = ArrayList())
+data class Matrix(private val rows: ArrayList<Vector> = ArrayList())
     : Indexable<Vector>, Iterable<Vector> {
 
-    private val range = 0..dimension
+    private val range = 0..3
 
     init {
         // Initialize to identity matrix:
-        assertTrue("Size must be > 0", dimension > 0)
-
-        for (r in range) rows.add(Vector(dimension + 1))
-
-        identity()
+        rows += Vector(1.0, 0.0, 0.0, 0.0)
+        rows += Vector(0.0, 1.0, 0.0, 0.0)
+        rows += Vector(0.0, 0.0, 1.0, 0.0)
+        rows += Vector(0.0, 0.0, 0.0, 1.0)
     }
 
     /**
-     * Copy constructor, creates a copy of [other].
+     * Return the row at the given [index]
      */
-    constructor(other: Matrix) : this(other.dimension) {
-        forEachCoefficient { r, c -> this[r][c] = other[r][c] }
-    }
-
     override operator fun get(index: Int): Vector {
         return rows[index]
     }
 
+    /**
+     * Set the row at the given [index] to [value]
+     */
     override operator fun set(index: Int, value: Vector) {
-        for (i in 0 until value.dimension) this[index][i] = value[i]
+        for (i in 0 until 4) this[index][i] = value[i]
     }
 
     override fun iterator() = rows.iterator()
 
+    /**
+     * X row.
+     */
     var x: Vector by IndexAlias(0)
+
+    /**
+     * Y row.
+     */
     var y: Vector by IndexAlias(1)
+
+    /**
+     * Z row.
+     */
     var z: Vector by IndexAlias(2)
+
+    /**
+     * W row.
+     */
     var q: Vector by IndexAlias(3)
 
+    /**
+     * Right vector.
+     */
     var right: Vector by IndexAlias(0)
+
+    /**
+     * Up vector.
+     */
     var up: Vector by IndexAlias(1)
+
+    /**
+     * Forward vector.
+     */
     var forward: Vector by IndexAlias(2)
 
     /**
-     * Load the identity matrix.
+     * Base vector.
      */
-    private fun identity() = this.apply {
-        forEachCoefficient { r, c -> this[r][c] = if (r == c) 1.0 else 0.0 }
-    }
+    var base: Vector by IndexAlias(3)
 
     /**
-     * Construct a matrix by defining a coordinate space from [axises].
+     * Construct a matrix by defining a coordinate space from [right], [up] and [forward].
      * The axises themselves are positioned at [base].
      */
-    fun space(base: Vector, vararg axises: Vector) = this.apply {
-        assertEquals("Axis count must match with matrix", axises.size, dimension)
-        assertTrue("Axis dimension must match with matrix", axises.all { it.dimension == dimension })
-        assertEquals("Base position dimension must match with matrix", base.dimension, dimension)
-
-        forEachCoefficient(rows = dimension, cols = dimension) { r, c ->
-            this[r][c] = axises[r][c]
-        }
-        forEachCoefficient(startRow = dimension, cols = dimension) { r, c ->
-            this[r][c] = base[c]
-        }
-    }
-
-    /**
-     * Construct a matrix, representing an affine linear scaling transformation.
-     */
-    fun scale(scale: Double) = this.apply {
-        for (i in 0 until dimension) {
-            this[i][i] = scale
-        }
+    fun space(right: Vector, up: Vector, forward: Vector, base: Vector) = this.apply {
+        this.right = right
+        this.up = up
+        this.forward = forward
+        this.base = base
     }
 
     /**
      * Construct a matrix, representing an affine linear scaling transformation.
      */
     fun scale(scale: Vector) = this.apply {
-        assertEquals("Scale vector dimension must match with matrix", dimension, scale.dimension)
-        scale.forEachIndexed { i, fi -> this[i][i] = fi }
+        for (i in 0..3) {
+            this[i][i] = scale[i]
+        }
     }
 
     /**
@@ -99,13 +101,13 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
      * @exception AssertionError If any rotation-plane axis is larger in size than the matrix itself.
      */
     fun rotation(a: Int, b: Int, theta: Double) = this.apply {
-        assertTrue("Plane-axis not in matrix dimension", a < dimension && b < dimension)
-        // Rotation on y-q plane:
-        //  -> y-axis rotates towards q-axis
-        //  -> q-axis rotates towards negative y-axis
+        assertTrue("Plane-axis not in matrix dimension", a <= 3 && b <= 3)
+        // Rotation on y-w plane:
+        //  -> y-axis rotates towards w-axis
+        //  -> w-axis rotates towards negative y-axis
         // Myy = cos(theta)   | decreases
         // Myw = sin(theta)   | increases
-        // Mwy = -sin(theta)  | increases, but in negative Vector, since y rotates towards q
+        // Mwy = -sin(theta)  | increases, but in negative Vector, since y rotates towards w
         // Mww = cos(theta)   | decreases
         this[a][a] = cos(theta)
         this[a][b] = sin(theta)
@@ -119,18 +121,15 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
      * determines whether they are transformed at all.
      */
     fun translation(v: Vector) = this.apply {
-        assertEquals("Translation vector dimension must match with matrix", dimension, v.dimension)
-        v.forEachIndexed { index, d ->
-            this[dimension][index] = d
-        }
+        this.base = v
     }
 
     /**
      * Construct a matrix, representing an perspective division transformation.
      */
     fun perspective() = this.apply {
-        this[dimension - 1][dimension] = -1.0
-        this[dimension][dimension] = 0.0
+        this[2][3] = -1.0
+        this[3][3] = 0.0
     }
 
     /**
@@ -144,12 +143,9 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
         assertTrue(near > 0.0)
         assertTrue(far > 0.0)
         assertTrue(far > near)
-        this[dimension - 1][dimension - 1] = -far / (far - near)
-        this[dimension][dimension - 1] = -(far * near) / (far - near)
+        this[2][2] = -far / (far - near)
+        this[3][2] = -(far * near) / (far - near)
     }
-
-    infix fun compatible(rhs: Matrix) = dimension == rhs.dimension
-    infix fun compatible(rhs: Vector) = dimension == rhs.dimension
 
     /**
      * Multiply two matrices, [lhs] * [rhs], and store the result in this matrix,
@@ -171,7 +167,6 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
      * and the upper edge is oriented in the [refUp] Vector.
      */
     fun lookAt(eye: Vector, target: Vector, refUp: Vector) = this.apply {
-        assertTrue("Look at does only work in 3D", dimension == 3 && eye.dimension == 3 && target.dimension == 3)
 
         forward = (eye - target).normalize()
         right = (refUp cross forward).normalize()
@@ -179,7 +174,7 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
 
         transpose()
 
-        this[3] = -eye applyPoint this
+        this[3] = Vector(-eye.x, -eye.y, -eye.z, eye.w) * this
     }
 
     /**
@@ -201,8 +196,8 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
      * Call a function for each coefficient. Indices of row and column are passed to [f].
      */
     fun forEachCoefficient(
-            startRow: Int = 0, rows: Int = dimension + 1 - startRow,
-            startCol: Int = 0, cols: Int = dimension + 1 - startCol,
+            startRow: Int = 0, rows: Int = 4 - startRow,
+            startCol: Int = 0, cols: Int = 4 - startCol,
             f: (r: Int, c: Int) -> Unit) {
         for (r in startRow until startRow + rows) {
             for (c in startCol until startCol + cols) {
@@ -226,13 +221,14 @@ data class Matrix(val dimension: Int, private val rows: ArrayList<Vector> = Arra
      */
     override fun toString() =
             StringBuilder().also {
-                it.append("[ (").append(dimension).append("D): ")
+                it.append("[ ")
                 rows.forEachIndexed { r, row ->
-                    row.forEachIndexed { c, col ->
-                        it.append(Format.decimalFormat.format(col))
-                        if (c < dimension) it.append(", ")
+                    for (c in 0..3) {
+                        val col = row[c]
+                        it.append(decimalFormat.format(col))
+                        if (c < 3) it.append(", ")
                     }
-                    if (r < dimension) it.append(" | ")
+                    if (r < 3) it.append(" | ")
                 }
                 it.append(" ]")
             }.toString()

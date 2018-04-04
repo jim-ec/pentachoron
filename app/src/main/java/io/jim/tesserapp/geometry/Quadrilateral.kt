@@ -6,8 +6,8 @@ import io.jim.tesserapp.math.Vector
 /**
  * A quadrilateral geometry, with four sides.
  */
-class Quadrilateral(dimension: Int, a: Vector, b: Vector, c: Vector, d: Vector, color: Color)
-    : Geometry(dimension, color) {
+class Quadrilateral(a: Vector, b: Vector, c: Vector, d: Vector, color: Color)
+    : Geometry(color) {
 
     init {
         addPoints(a, b, c, d)

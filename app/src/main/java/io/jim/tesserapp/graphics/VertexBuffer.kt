@@ -2,7 +2,6 @@ package io.jim.tesserapp.graphics
 
 import android.opengl.GLES20.*
 import io.jim.tesserapp.math.Vector
-import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -48,7 +47,6 @@ data class VertexBuffer(private val maxVertices: Int) {
      * into the model matrix array.
      */
     fun appendVertex(position: Vector, color: Color, modelIndex: Int) {
-        assertEquals("Position vectors must be 3D", 3, position.dimension)
         assertTrue(
                 "Insufficient memory to store vertex:  pos=%d(%d verts) cap=%d(%d verts) needed=%d"
                         .format(floatBuffer.position(),

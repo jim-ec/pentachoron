@@ -6,7 +6,7 @@ import io.jim.tesserapp.math.Vector
 /**
  * A geometry containing a list of lines.
  */
-class Lines(dimension: Int, color: Color) : Geometry(dimension, color) {
+class Lines(color: Color) : Geometry(color) {
 
     private var index = 0
 

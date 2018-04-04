@@ -3,7 +3,6 @@ package io.jim.tesserapp.graphics
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.Spatial
 import io.jim.tesserapp.math.Matrix
-import junit.framework.Assert
 
 /**
  * A geometry buffer, responsible for vertex and index data.
@@ -43,7 +42,6 @@ class GeometryBuffer(maxIndices: Int) {
             if (geometry is Geometry) {
 
                 for (point in geometry.points) {
-                    Assert.assertEquals("All vertices must be 3D", 3, point.dimension)
                     vertexBuffer.appendVertex(point, geometry.color, geometryIndex)
                 }
 

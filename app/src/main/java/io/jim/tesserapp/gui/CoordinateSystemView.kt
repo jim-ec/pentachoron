@@ -25,8 +25,8 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     val cube: Geometry
 
     private val renderer = Renderer(100, context)
-    private val touchStartPosition = Vector(2)
-    private val rotation = Vector(2)
+    private val touchStartPosition = Vector(0.0, 0.0, 0.0, 0.0)
+    private val rotation = Vector(0.0, 0.0, 0.0, 0.0)
     private var touchStartTime = 0L
     private val grid: Lines
 
@@ -49,28 +49,27 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         }
 
         // Create axis:
-        val axis = Lines(3, Color(context, R.color.colorPrimary))
-        axis.addLine(Vector(3), Vector(1.0, 0.0, 0.0))
-        axis.addLine(Vector(3), Vector(0.0, 1.0, 0.0))
-        axis.addLine(Vector(3), Vector(0.0, 0.0, 1.0))
+        val axis = Lines(Color(context, R.color.colorPrimary))
+        axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(1.0, 0.0, 0.0, 1.0))
+        axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 1.0, 0.0, 1.0))
+        axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 0.0, 1.0, 1.0))
         axis.addToParentSpatial(renderer.rootSpatial)
 
         // Create cube:
-        cube = Quadrilateral(3,
-                Vector(1.0, 1.0, 1.0),
-                Vector(-1.0, 1.0, 1.0),
-                Vector(-1.0, -1.0, 1.0),
-                Vector(1.0, -1.0, 1.0),
+        cube = Quadrilateral(Vector(1.0, 1.0, 1.0, 1.0),
+                Vector(-1.0, 1.0, 1.0, 1.0),
+                Vector(-1.0, -1.0, 1.0, 1.0),
+                Vector(1.0, -1.0, 1.0, 1.0),
                 Color(context, R.color.colorAccent)
         )
-        cube.extrude(Vector(0.0, 0.0, -2.0))
+        cube.extrude(Vector(0.0, 0.0, -2.0, 0.0))
         cube.addToParentSpatial(renderer.rootSpatial)
 
         // Create grid:
-        grid = Lines(3, Color(context, R.color.colorGrid))
+        grid = Lines(Color(context, R.color.colorGrid))
         for (i in -5..5) {
-            grid.addLine(Vector(i.toDouble(), 0.0, -5.0), Vector(i.toDouble(), 0.0, 5.0))
-            grid.addLine(Vector(-5.0, 0.0, i.toDouble()), Vector(5.0, 0.0, i.toDouble()))
+            grid.addLine(Vector(i.toDouble(), 0.0, -5.0, 1.0), Vector(i.toDouble(), 0.0, 5.0, 1.0))
+            grid.addLine(Vector(-5.0, 0.0, i.toDouble(), 1.0), Vector(5.0, 0.0, i.toDouble(), 1.0))
         }
         grid.addToParentSpatial(renderer.rootSpatial)
     }

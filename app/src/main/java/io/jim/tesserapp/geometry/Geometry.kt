@@ -2,22 +2,18 @@ package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.Vector
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
 
 /**
  * A spatial object, containing geometry info and having a color.
  */
 open class Geometry(
 
-        dimension: Int,
-
         /**
          * Color of this geometry.
          */
         val color: Color
 
-) : Spatial(dimension) {
+) : Spatial() {
 
     /**
      * List of points.
@@ -34,7 +30,6 @@ open class Geometry(
      * The actual lines are drawn from indices to these points.
      */
     fun addPoints(vararg p: Vector) {
-        assertTrue("Point must match geometry dimension", p.all { it.dimension == dimension })
         points += p
     }
 
@@ -51,7 +46,6 @@ open class Geometry(
      * counterparts.
      */
     fun extrude(direction: Vector) {
-        assertEquals("Extrude vector must match geometry dimension", dimension, direction.dimension)
         val size = points.size
         points += points.map { it + direction }
         lines += lines.map { Pair(it.first + size, it.second + size) }

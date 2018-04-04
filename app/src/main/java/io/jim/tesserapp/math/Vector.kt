@@ -1,75 +1,59 @@
 package io.jim.tesserapp.math
 
-import junit.framework.Assert
-import java.lang.Math.*
+import java.lang.Math.sqrt
 
 /**
- * A homogeneous vector, but does not store the homogeneous component, as that component is
- * implicitly given by the subclass used.
+ * 4 dimensional vector.
  */
-data class Vector(val dimension: Int, private val components: ArrayList<Double> = ArrayList(dimension)) : Iterable<Double>, Indexable<Double> {
+data class Vector(
 
-    companion object {
-        var counter = 0
-    }
+        /**
+         * The X component.
+         */
+        var x: Double,
+
+        /**
+         * The Y component.
+         */
+        var y: Double,
+
+        /**
+         * The Z component.
+         */
+        var z: Double,
+
+        /**
+         * The W component.
+         */
+        var w: Double)
+
+    : Indexable<Double> {
 
     /**
-     * Initialize remaining components to 0.
+     * Set the component at the given [index] to a given [value].
      */
-    init {
-        for (i in 0 until dimension - components.size) components.add(0.0)
-        //println("Create vector #$counter")
-        counter++
-    }
-
-    /**
-     * Creates a vector from the given [components].
-     * The vector dimension is determined from the count of components.
-     */
-    constructor(vararg components: Double) : this(components.size, ArrayList(components.toList()))
-
-    /**
-     * Creates a vector without allocating a dedicated component list.
-     * Constructing two vectors using this constructor using the same list results in two
-     * different vectors, using the same shared component data.
-     */
-    private constructor(componentList: ArrayList<Double>) : this(componentList.size, componentList)
-
-    constructor(p: SphericalCoordinate) : this(
-            cos(p.phi) * sin(p.theta) * p.r,
-            sin(p.phi) * sin(p.theta) * p.r,
-            cos(p.theta) * p.r)
-
-
-    override operator fun iterator() = components.iterator()
-
     override operator fun set(index: Int, value: Double) {
-        components[index] = value
+        when (index) {
+            0 -> x = value
+            1 -> y = value
+            2 -> z = value
+            3 -> w = value
+            else -> throw IndexOutOfBoundsException("4D vector has no ${index}th component")
+        }
     }
-
-    override operator fun get(index: Int): Double {
-        return components[index]
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other !is Vector) return false
-        return zip(other) { a, b -> a == b }.all { it }
-    }
-
-    override fun hashCode(): Int {
-        return components.hashCode()
-    }
-
-    var x: Double by IndexAlias(0)
-    var y: Double by IndexAlias(1)
-    var z: Double by IndexAlias(2)
-    var q: Double by IndexAlias(3)
 
     /**
-     * Checks whether two vector have the same count of components.
+     * Return the component at the given [index].
      */
-    infix fun compatible(v: Vector) =
-            dimension == v.dimension
+    override operator fun get(index: Int): Double {
+        return when (index) {
+            0 -> x
+            1 -> y
+            2 -> z
+            3 -> w
+            else -> throw IndexOutOfBoundsException("4D vector has no ${index}th component")
+        }
+    }
 
     /**
      * Represent this vector as a string.
@@ -77,7 +61,10 @@ data class Vector(val dimension: Int, private val components: ArrayList<Double> 
     override fun toString(): String {
         val sb = StringBuilder()
         sb.append('(')
-        components.forEach { component -> sb.append(Format.decimalFormat.format(component)).append('|') }
+        sb.append(decimalFormat.format(x)).append('|')
+        sb.append(decimalFormat.format(y)).append('|')
+        sb.append(decimalFormat.format(z)).append('|')
+        sb.append(decimalFormat.format(w))
         sb.setCharAt(sb.length - 1, ')')
         return sb.toString()
     }
@@ -86,86 +73,76 @@ data class Vector(val dimension: Int, private val components: ArrayList<Double> 
      * Compute this vector's length.
      */
     val length
-        get() = sqrt(components.map { it * it }.sum())
+        get() = sqrt(this * this)
 
     /**
      * Scalar this and [v].
      */
-    operator fun times(v: Vector) =
-            components.zip(v.components) { a, b -> a * b }.sum()
+    operator fun times(v: Vector) = x * v.x + y * v.y + z * v.z + w * v.w
 
     /**
      * Normalize this vector.
      */
     fun normalize() = this.apply {
-        val l = 1.0 / length
-        for (i in 0 until dimension) {
-            components[i] *= l
-        }
+        val oneOverLength = 1.0 / length
+        x *= oneOverLength
+        y *= oneOverLength
+        z *= oneOverLength
+        w *= oneOverLength
     }
 
     /**
      * Add [v] added to this v.
      */
     operator fun plus(v: Vector) =
-            Vector(ArrayList(zip(v) { a, b -> a + b }))
+            Vector(x + v.x, y + v.y, z + v.z, w + v.w)
 
     /**
      * Subtract [v] from this vector.
      */
     operator fun minus(v: Vector) =
-            Vector(ArrayList(zip(v) { a, b -> a - b }))
+            Vector(x - v.x, y - v.y, z - v.z, w - v.w)
 
     /**
      * Scales this by [scale].
      */
     operator fun times(scale: Double) =
-            Vector(ArrayList(map { it * scale }))
+            Vector(x * scale, y * scale, z * scale, w * scale)
 
     /**
      * Divides this vector through [divisor].
      */
     operator fun div(divisor: Double) =
-            Vector(ArrayList(map { it / divisor }))
-
-    infix fun applyDirection(rhs: Matrix) =
-            Vector(ArrayList<Double>().also {
-                Assert.assertTrue(rhs compatible this)
-                // Ignore last matrix row, since directions are not translated:
-                for (c in 0 until dimension) {
-                    it.add((0 until dimension).map { i -> rhs[i][c] * this[i] }.sum())
-                }
-            })
-
-    infix fun applyPoint(rhs: Matrix) =
-            Vector(ArrayList<Double>().also { list ->
-                Assert.assertTrue("Vector and matrix must be compatible", rhs compatible this)
-
-                for (c in 0..dimension) {
-                    list.add((0..dimension).map { i -> rhs[i][c] * if (i < dimension) this[i] else 1.0 }.sum())
-                }
-
-                // Perspective division:
-                if (list.last() != 0.0) {
-                    list.forEachIndexed { index, d -> list[index] = d / list.last() }
-                }
-                list.removeAt(dimension)
-            })
+            Vector(x / divisor, y / divisor, z / divisor, w / divisor)
 
     /**
-     * Compute the vector product of this direction and [v].
-     * Does only work if both vectors are three dimensional.
+     * Return a vector, resulting from the multiplication of this and a [rhs] matrix.
      */
-    infix fun cross(v: Vector): Vector {
-        Assert.assertTrue("Cross product works only in 3D", dimension >= 3 && v.dimension >= 3)
-        return Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x)
+    operator fun times(rhs: Matrix) = Vector(0.0, 0.0, 0.0, 0.0).also { result ->
+        for (c in 0..3) {
+            for (i in 0 until 4) {
+                result[c] += this[i] * rhs[i][c]
+            }
+        }
     }
 
     /**
-     * Invert this vector.
+     * Divides every component by this vector's w component.
      */
-    operator fun unaryMinus() = this.apply {
-        forEachIndexed { index, d -> this[index] = -d }
+    fun perspectiveDivide() {
+        val oneOverW = 1.0 / w
+        x *= oneOverW
+        y *= oneOverW
+        z *= oneOverW
+        w = 1.0
+    }
+
+    /**
+     * Compute the vector product of this direction and [v].
+     * This totally ignores the w component.
+     */
+    infix fun cross(v: Vector): Vector {
+        return Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x, 0.0)
     }
 
 }

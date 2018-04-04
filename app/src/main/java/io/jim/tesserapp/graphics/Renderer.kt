@@ -18,14 +18,14 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
     /**
      * The root for every spatial.
      */
-    val rootSpatial = Spatial(3)
+    val rootSpatial = Spatial()
 
     private val maxLineVertices = maxLines * 2
     private lateinit var shader: Shader
     private lateinit var geometryBuffer: GeometryBuffer
     private var rebuildGeometryBuffers = true
     private val clearColor = Color(context, android.R.color.background_light)
-    private val viewMatrix = Matrix(3)
+    private val viewMatrix = Matrix()
     private val modelMatrixArray = FloatArray(16 * maxLineVertices)
 
     /**
@@ -41,7 +41,7 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
         shader = Shader()
         geometryBuffer = GeometryBuffer(maxLineVertices)
 
-        shader.uploadProjectionMatrix(Matrix(3).perspective(0.1, 100.0))
+        shader.uploadProjectionMatrix(Matrix().perspective(0.1, 100.0))
 
         // Rebuild geometry buffers upon spatial hierarchy change:
         Spatial.addChildrenChangedListener { rebuildGeometryBuffers = true }
@@ -53,8 +53,8 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
         viewMatrix.multiplicationFrom(
-                Matrix(3).lookAt(Vector(4.0, 0.0, 0.0), Vector(3), Vector(0.0, 1.0, 0.0)),
-                Matrix(3).scale(Vector(1.0, width.toDouble() / height, 1.0)))
+                Matrix().lookAt(Vector(4.0, 0.0, 0.0, 1.0), Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 1.0, 0.0, 1.0)),
+                Matrix().scale(Vector(1.0, width.toDouble() / height, 1.0, 1.0)))
         shader.uploadViewMatrix(viewMatrix)
     }
 
