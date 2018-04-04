@@ -240,6 +240,17 @@ data class MatrixBuffer(private val maxMatrices: Int) {
     }
 
     /**
+     * Copy the matrix at [source] to matrix at [destination].
+     */
+    fun copy(destination: Int, source: Int) {
+        forEachColumn { r ->
+            forEachColumn { c ->
+                this[destination, r, c] = this[source, r, c]
+            }
+        }
+    }
+
+    /**
      * Prints the matrix at [matrix].
      */
     @Suppress("unused")

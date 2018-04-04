@@ -12,7 +12,7 @@ class GeometryUnitTest {
 
     @Test
     fun extruding() {
-        val geometry = Lines(Color(0f))
+        val geometry = Lines("Test", Color(0f))
         geometry.addLine(Vector(1.0, 1.0, 0.0, 1.0), Vector(2.0, 2.0, 0.0, 1.0))
         geometry.extrude(Vector(0.0, 0.0, 1.0, 0.0))
         assertEquals(4, geometry.points.size)

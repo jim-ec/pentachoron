@@ -22,6 +22,24 @@ class MatrixBufferUnitTest {
     }
 
     @Test
+    fun copy() {
+        buffer.space(1,
+                Vector(1.0, 2.0, 3.0, 4.0),
+                Vector(5.0, 6.0, 7.0, 8.0),
+                Vector(9.0, 10.0, 11.0, 12.0),
+                Vector(13.0, 14.0, 15.0, 16.0))
+
+        buffer.copy(2, 1)
+
+        buffer.multiply(Vector(1.0, 2.0, 3.0, 4.0), 2).apply {
+            assertEquals(90.0, x, 0.1)
+            assertEquals(100.0, y, 0.1)
+            assertEquals(110.0, z, 0.1)
+            assertEquals(120.0, w, 0.1)
+        }
+    }
+
+    @Test
     fun space() {
         buffer.space(1,
                 Vector(1.0, 2.0, 3.0, 4.0),
@@ -175,4 +193,5 @@ class MatrixBufferUnitTest {
             assertTrue(z < 0.0)
         }
     }
+
 }
