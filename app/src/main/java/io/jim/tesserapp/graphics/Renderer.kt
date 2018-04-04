@@ -13,20 +13,25 @@ import javax.microedition.khronos.opengles.GL10
 /**
  * Actually renders to OpenGL.
  */
-class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
+class Renderer(context: Context) : GLSurfaceView.Renderer {
 
     /**
      * The root for every spatial.
      */
     val rootSpatial = Spatial()
 
-    private val maxLineVertices = maxLines * 2
     private lateinit var shader: Shader
     private lateinit var geometryBuffer: GeometryBuffer
     private var rebuildGeometryBuffers = true
     private val clearColor = Color(context, android.R.color.background_light)
     private val viewMatrix = Matrix()
-    private val modelMatrixArray = FloatArray(16 * maxLineVertices)
+    private val modelMatrixArray = FloatArray(16 * MAX_MODELS)
+
+    companion object {
+        private const val MAX_MODELS = 10
+        private const val MAX_VERTICES = 1000
+        private const val MAX_INDICES = 1000
+    }
 
     /**
      * Initialize data.
@@ -38,8 +43,8 @@ class Renderer(maxLines: Int, context: Context) : GLSurfaceView.Renderer {
         glEnable(GL_MULTISAMPLE)
         glLineWidth(4f)
 
-        shader = Shader()
-        geometryBuffer = GeometryBuffer(maxLineVertices)
+        shader = Shader(MAX_MODELS)
+        geometryBuffer = GeometryBuffer(MAX_VERTICES, MAX_INDICES)
 
         shader.uploadProjectionMatrix(Matrix().perspective(0.1, 100.0))
 

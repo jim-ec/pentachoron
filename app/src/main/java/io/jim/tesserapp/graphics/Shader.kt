@@ -7,47 +7,8 @@ import junit.framework.Assert.assertTrue
 /**
  * A shader pipeline with a vertex shader, fragment shader an locations of all attributes and
  * uniforms.
- * TODO: Add maxModel parameter
  */
-class Shader {
-
-    companion object {
-
-        private const val VERTEX_SHADER_SOURCE = """
-            uniform mat4 P;
-            uniform mat4 V;
-            uniform mat4 M[100];
-
-            attribute vec3 position;
-            attribute vec3 color;
-            attribute float modelIndex;
-
-            varying vec3 vColor;
-
-            void main() {
-                gl_Position = P * V * M[int(modelIndex)] * vec4(position, 1.0);
-                vColor = color;
-            }
-        """
-
-        private const val FRAGMENT_SHADER_SOURCE = """
-            varying mediump vec3 vColor;
-
-            void main() {
-                gl_FragColor = vec4(vColor, 1.0);
-            }
-        """
-
-    }
-
-    private val vertexShader = glCreateShader(GL_VERTEX_SHADER)
-    private val fragmentShader = glCreateShader(GL_FRAGMENT_SHADER)
-    private val program = glCreateProgram()
-    private val modelMatrixLocation: Int
-    private val viewMatrixLocation: Int
-    private val projectionMatrixLocation: Int
-    private val projectionMatrixArray = FloatArray(16)
-    private val viewMatrixArray = FloatArray(16)
+class Shader(maxModels: Int) {
 
     /**
      * GLSL location of position attribute.
@@ -65,6 +26,40 @@ class Shader {
      */
     val modelIndexAttributeLocation: Int
 
+    private val vertexShader = glCreateShader(GL_VERTEX_SHADER)
+    private val fragmentShader = glCreateShader(GL_FRAGMENT_SHADER)
+    private val program = glCreateProgram()
+    private val modelMatrixLocation: Int
+    private val viewMatrixLocation: Int
+    private val projectionMatrixLocation: Int
+    private val projectionMatrixArray = FloatArray(16)
+    private val viewMatrixArray = FloatArray(16)
+
+    private val vertexShaderSource = """
+            uniform mat4 P;
+            uniform mat4 V;
+            uniform mat4 M[$maxModels];
+
+            attribute vec3 position;
+            attribute vec3 color;
+            attribute float modelIndex;
+
+            varying vec3 vColor;
+
+            void main() {
+                gl_Position = P * V * M[int(modelIndex)] * vec4(position, 1.0);
+                vColor = color;
+            }
+        """
+
+    private val fragmentShaderSource = """
+            varying mediump vec3 vColor;
+
+            void main() {
+                gl_FragColor = vec4(vColor, 1.0);
+            }
+        """
+
     init {
         assertTrue(vertexShader >= 0)
         assertTrue(fragmentShader >= 0)
@@ -73,7 +68,7 @@ class Shader {
         val status = IntArray(1)
 
         vertexShader.also {
-            glShaderSource(it, VERTEX_SHADER_SOURCE)
+            glShaderSource(it, vertexShaderSource)
             glCompileShader(it)
             glGetShaderiv(it, GL_COMPILE_STATUS, status, 0)
             if (GL_TRUE != status[0]) {
@@ -82,7 +77,7 @@ class Shader {
         }
 
         fragmentShader.also {
-            glShaderSource(it, FRAGMENT_SHADER_SOURCE)
+            glShaderSource(it, fragmentShaderSource)
             glCompileShader(it)
             glGetShaderiv(it, GL_COMPILE_STATUS, status, 0)
             if (GL_TRUE != status[0]) {

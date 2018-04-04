@@ -7,9 +7,9 @@ import io.jim.tesserapp.math.Matrix
 /**
  * A geometry buffer, responsible for vertex and index data.
  */
-class GeometryBuffer(maxIndices: Int) {
+class GeometryBuffer(maxVertices: Int, maxIndices: Int) {
 
-    private val vertexBuffer = VertexBuffer(maxIndices)
+    private val vertexBuffer = VertexBuffer(maxVertices)
     private val indexBuffer = IndexBuffer(maxIndices)
     private val geometryRegistry = ArrayList<GeometryEntry>()
 
