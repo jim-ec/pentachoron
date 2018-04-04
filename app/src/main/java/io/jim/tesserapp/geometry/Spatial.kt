@@ -16,6 +16,11 @@ open class Spatial(
 ) : Iterable<Spatial> {
 
     /**
+     * Reference to model matrix buffer.
+     */
+    lateinit var buffer: Array<Matrix>
+
+    /**
      * Offset of model matrix.
      * A value of -1 indicates that this spatial is not attached to the root object and therefore
      * does not own a registered model matrix.
@@ -23,9 +28,16 @@ open class Spatial(
     var offset = -1
 
     /**
-     * Reference to model matrix buffer.
+     * Reference to global model matrix buffer.
      */
-    lateinit var buffer: Array<Matrix>
+    lateinit var globalModelMatrixBuffer: Array<Matrix>
+
+    /**
+     * Offset of global model matrix.
+     * A value of -1 indicates that this spatial is not attached to the root object and therefore
+     * does not own a registered global model matrix.
+     */
+    var globalModelMatrixOffset = -1
 
     private val children = ArrayList<Spatial>()
     private var parent: Spatial? = null
@@ -35,14 +47,13 @@ open class Spatial(
         /**
          * Count of matrices needed for one spatial.
          */
-        const val MATRICES_PER_SPATIAL = 6
+        const val MATRICES_PER_SPATIAL = 5
 
-        private const val GLOBAL_MATRIX = 0
-        private const val LOCAL_MATRIX = 1
-        private const val ROTATION_MATRIX = 2
-        private const val ROTATION_ZX_MATRIX = 3
-        private const val ROTATION_YX_MATRIX = 4
-        private const val TRANSLATION_MATRIX = 5
+        private const val LOCAL_MATRIX = 0
+        private const val ROTATION_MATRIX = 1
+        private const val ROTATION_ZX_MATRIX = 2
+        private const val ROTATION_YX_MATRIX = 3
+        private const val TRANSLATION_MATRIX = 4
 
         private val onMatrixChangedListeners = ArrayList<() -> Unit>()
         private val onChildrenChangedListeners = ArrayList<() -> Unit>()
@@ -73,7 +84,7 @@ open class Spatial(
      * The global transform.
      */
     fun modelMatrix(): Matrix {
-        return if (null != parent) buffer[offset + GLOBAL_MATRIX] else buffer[offset + LOCAL_MATRIX]
+        return if (null != parent) globalModelMatrixBuffer[globalModelMatrixOffset] else buffer[offset + LOCAL_MATRIX]
     }
 
     /**
@@ -86,7 +97,7 @@ open class Spatial(
         buffer[offset + LOCAL_MATRIX].multiplicationFrom(buffer[offset + ROTATION_MATRIX], buffer[offset + TRANSLATION_MATRIX])
 
         if (null != parent) {
-            buffer[offset + GLOBAL_MATRIX].multiplicationFrom(
+            globalModelMatrixBuffer[globalModelMatrixOffset].multiplicationFrom(
                     buffer[offset + LOCAL_MATRIX],
                     parent!!.modelMatrix())
         }

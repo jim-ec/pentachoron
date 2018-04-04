@@ -9,10 +9,21 @@ import io.jim.tesserapp.math.Matrix
  */
 class GeometryBuffer(maxModels: Int, maxVertices: Int, maxIndices: Int) {
 
+    /**
+     * Array with global model matrices.
+     * These matrices are actually uploaded to the uniforms.
+     */
+    val globalModelMatrices = Array(maxModels) { Matrix() }
+
+    /**
+     * Actual count of valid global model matrices.
+     */
+    var globalModelMatrixCount = 0
+
     private val vertexBuffer = VertexBuffer(maxVertices)
     private val indexBuffer = IndexBuffer(maxIndices)
     private val geometryRegistry = ArrayList<GeometryEntry>()
-    private val modelMatrices = Array(maxModels * Spatial.MATRICES_PER_SPATIAL) { Matrix() }
+    private val modelMatrices = Array(maxModels * (Spatial.MATRICES_PER_SPATIAL + 1)) { Matrix() }
 
     private data class GeometryEntry(
             val geometry: Geometry,
@@ -38,43 +49,41 @@ class GeometryBuffer(maxModels: Int, maxVertices: Int, maxIndices: Int) {
 
         var geometryIndex = 0
         var modelMatrixOffset = 0
+        globalModelMatrixCount = 0
 
-        rootSpatial.forEachRecursive { geometry ->
+        rootSpatial.forEachRecursive { spatial ->
 
             // Register model matrix for this spatial:
-            geometry.buffer = modelMatrices
-            geometry.offset = modelMatrixOffset
+            spatial.buffer = modelMatrices
+            spatial.offset = modelMatrixOffset + 1
 
-            if (geometry is Geometry) {
+            if (spatial is Geometry) {
 
-                for (point in geometry.points) {
-                    vertexBuffer.appendVertex(point, geometry.color, geometryIndex)
+                spatial.globalModelMatrixBuffer = globalModelMatrices
+                spatial.globalModelMatrixOffset = globalModelMatrixCount++
+
+                for (point in spatial.points) {
+                    vertexBuffer.appendVertex(point, spatial.color, geometryIndex)
                 }
 
-                val offset = indexBuffer.recordGeometry(geometry)
+                val offset = indexBuffer.recordGeometry(spatial)
                 geometryRegistry +=
-                        GeometryEntry(geometry, offset, geometry.lines.size * 2)
+                        GeometryEntry(spatial, offset, spatial.lines.size * 2)
 
                 geometryIndex++
             }
+            else {
+
+                spatial.globalModelMatrixBuffer = modelMatrices
+                spatial.globalModelMatrixOffset = modelMatrixOffset
+
+            }
 
             modelMatrixOffset += Spatial.MATRICES_PER_SPATIAL
+
         }
 
         indexBuffer.endRecording()
-    }
-
-    /**
-     * Call a function for each stored geometry.
-     * The function [f] gets the following parameters:
-     *  - geometry: The actual geometry.
-     *  - indexOffset: The position within this index buffer the current geometry's indices begin.
-     *  - indexCount: The count of the current geometry's indices.
-     */
-    fun forEachGeometry(f: (modelMatrix: Matrix) -> Unit) {
-        geometryRegistry.forEach { (geometry) ->
-            f(geometry.modelMatrix())
-        }
     }
 
     /**
