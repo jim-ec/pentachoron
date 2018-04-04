@@ -7,13 +7,15 @@ import io.jim.tesserapp.math.Matrix
 /**
  * A geometry buffer, responsible for vertex and index data.
  */
-class GeometryBuffer(maxModels: Int, maxVertices: Int, maxIndices: Int) {
+class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: Int) {
 
     /**
-     * Array with global model matrices.
-     * These matrices are actually uploaded to the uniforms.
+     * Model matrix bulk buffer.
+     * The global model matrices of geometry which is actually drawn occupies the front memory.
+     * The rear memory section holds global model matrices of non-geometry spatial, as well as
+     * local and temporary matrices (translation and rotation).
      */
-    val globalModelMatrices = Array(maxModels) { Matrix() }
+    val modelMatrices = Array(maxModels * (1 + Spatial.MATRICES_PER_SPATIAL + 1)) { Matrix() }
 
     /**
      * Actual count of valid global model matrices.
@@ -23,7 +25,6 @@ class GeometryBuffer(maxModels: Int, maxVertices: Int, maxIndices: Int) {
     private val vertexBuffer = VertexBuffer(maxVertices)
     private val indexBuffer = IndexBuffer(maxIndices)
     private val geometryRegistry = ArrayList<GeometryEntry>()
-    private val modelMatrices = Array(maxModels * (Spatial.MATRICES_PER_SPATIAL + 1)) { Matrix() }
 
     private data class GeometryEntry(
             val geometry: Geometry,
@@ -48,7 +49,7 @@ class GeometryBuffer(maxModels: Int, maxVertices: Int, maxIndices: Int) {
         indexBuffer.startRecording()
 
         var geometryIndex = 0
-        var modelMatrixOffset = 0
+        var modelMatrixOffset = maxModels
         globalModelMatrixCount = 0
 
         rootSpatial.forEachRecursive { spatial ->
@@ -59,7 +60,6 @@ class GeometryBuffer(maxModels: Int, maxVertices: Int, maxIndices: Int) {
 
             if (spatial is Geometry) {
 
-                spatial.globalModelMatrixBuffer = globalModelMatrices
                 spatial.globalModelMatrixOffset = globalModelMatrixCount++
 
                 for (point in spatial.points) {
@@ -74,7 +74,6 @@ class GeometryBuffer(maxModels: Int, maxVertices: Int, maxIndices: Int) {
             }
             else {
 
-                spatial.globalModelMatrixBuffer = modelMatrices
                 spatial.globalModelMatrixOffset = modelMatrixOffset
 
             }

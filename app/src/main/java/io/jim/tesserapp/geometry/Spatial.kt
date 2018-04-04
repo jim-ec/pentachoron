@@ -28,11 +28,6 @@ open class Spatial(
     var offset = -1
 
     /**
-     * Reference to global model matrix buffer.
-     */
-    lateinit var globalModelMatrixBuffer: Array<Matrix>
-
-    /**
      * Offset of global model matrix.
      * A value of -1 indicates that this spatial is not attached to the root object and therefore
      * does not own a registered global model matrix.
@@ -84,7 +79,7 @@ open class Spatial(
      * The global transform.
      */
     fun modelMatrix(): Matrix {
-        return if (null != parent) globalModelMatrixBuffer[globalModelMatrixOffset] else buffer[offset + LOCAL_MATRIX]
+        return if (null != parent) buffer[globalModelMatrixOffset] else buffer[offset + LOCAL_MATRIX]
     }
 
     /**
@@ -97,7 +92,7 @@ open class Spatial(
         buffer[offset + LOCAL_MATRIX].multiplicationFrom(buffer[offset + ROTATION_MATRIX], buffer[offset + TRANSLATION_MATRIX])
 
         if (null != parent) {
-            globalModelMatrixBuffer[globalModelMatrixOffset].multiplicationFrom(
+            buffer[globalModelMatrixOffset].multiplicationFrom(
                     buffer[offset + LOCAL_MATRIX],
                     parent!!.modelMatrix())
         }

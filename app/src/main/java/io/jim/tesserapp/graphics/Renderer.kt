@@ -28,7 +28,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     private val modelMatrixArray = FloatArray(16 * MAX_MODELS)
 
     companion object {
-        private const val MAX_MODELS = 10
+        private const val MAX_MODELS = 4
         private const val MAX_VERTICES = 1000
         private const val MAX_INDICES = 1000
     }
@@ -83,7 +83,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         // Fetch model matrices:
         var modelMatrixOffset = 0
         for (i in 0 until geometryBuffer.globalModelMatrixCount) {
-            geometryBuffer.globalModelMatrices[i].storeToFloatArray(modelMatrixArray, modelMatrixOffset)
+            geometryBuffer.modelMatrices[i].storeToFloatArray(modelMatrixArray, modelMatrixOffset)
             modelMatrixOffset += 16
         }
         shader.uploadModelMatrixArray(modelMatrixArray, modelMatrixOffset / 16)
