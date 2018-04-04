@@ -49,14 +49,14 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         }
 
         // Create axis:
-        val axis = Lines(Color(context, R.color.colorPrimary))
+        val axis = Lines("Axis", Color(context, R.color.colorPrimary))
         axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(1.0, 0.0, 0.0, 1.0))
         axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 1.0, 0.0, 1.0))
         axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 0.0, 1.0, 1.0))
         axis.addToParentSpatial(renderer.rootSpatial)
 
         // Create cube:
-        cube = Quadrilateral(Vector(1.0, 1.0, 1.0, 1.0),
+        cube = Quadrilateral("Cube", Vector(1.0, 1.0, 1.0, 1.0),
                 Vector(-1.0, 1.0, 1.0, 1.0),
                 Vector(-1.0, -1.0, 1.0, 1.0),
                 Vector(1.0, -1.0, 1.0, 1.0),
@@ -66,7 +66,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         cube.addToParentSpatial(renderer.rootSpatial)
 
         // Create grid:
-        grid = Lines(Color(context, R.color.colorGrid))
+        grid = Lines("Grid", Color(context, R.color.colorGrid))
         for (i in -5..5) {
             grid.addLine(Vector(i.toDouble(), 0.0, -5.0, 1.0), Vector(i.toDouble(), 0.0, 5.0, 1.0))
             grid.addLine(Vector(-5.0, 0.0, i.toDouble(), 1.0), Vector(5.0, 0.0, i.toDouble(), 1.0))

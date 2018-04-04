@@ -6,20 +6,43 @@ import io.jim.tesserapp.math.Vector
 /**
  * A spatial object with no geometry but just transformation and child spatial data.
  */
-open class Spatial : Iterable<Spatial> {
+open class Spatial(
 
-    private val global = Matrix()
-    private val local = Matrix()
-    private val rotation = Matrix()
+        /**
+         * This spatial's name.
+         */
+        val name: String
 
-    private val rotationZX = Matrix()
-    private val rotationYX = Matrix()
-    private val translation = Matrix()
+) : Iterable<Spatial> {
+
+    /**
+     * Offset of model matrix.
+     * A value of -1 indicates that this spatial is not attached to the root object and therefore
+     * does not own a registered model matrix.
+     */
+    var offset = -1
+
+    /**
+     * Reference to model matrix buffer.
+     */
+    lateinit var buffer: Array<Matrix>
 
     private val children = ArrayList<Spatial>()
     private var parent: Spatial? = null
 
     companion object {
+
+        /**
+         * Count of matrices needed for one spatial.
+         */
+        const val MATRICES_PER_SPATIAL = 6
+
+        private const val GLOBAL_MATRIX = 0
+        private const val LOCAL_MATRIX = 1
+        private const val ROTATION_MATRIX = 2
+        private const val ROTATION_ZX_MATRIX = 3
+        private const val ROTATION_YX_MATRIX = 4
+        private const val TRANSLATION_MATRIX = 5
 
         private val onMatrixChangedListeners = ArrayList<() -> Unit>()
         private val onChildrenChangedListeners = ArrayList<() -> Unit>()
@@ -41,29 +64,48 @@ open class Spatial : Iterable<Spatial> {
     }
 
     /**
+     * Becomes true if model matrices needs to be re-calculated.
+     */
+    var rebuildModelMatrices = false
+        private set
+
+    /**
      * The global transform.
      */
     fun modelMatrix(): Matrix {
-        return if (null != parent) global else local
+        return if (null != parent) buffer[offset + GLOBAL_MATRIX] else buffer[offset + LOCAL_MATRIX]
     }
 
-    private fun computeLocal() {
-        rotation.multiplicationFrom(rotationZX, rotationYX)
-        local.multiplicationFrom(rotation, translation)
+    /**
+     * Recomputes all model matrices recursively.
+     */
+    fun computeLocal() {
+        if (!rebuildModelMatrices) return
+
+        buffer[offset + ROTATION_MATRIX].multiplicationFrom(buffer[offset + ROTATION_ZX_MATRIX], buffer[offset + ROTATION_YX_MATRIX])
+        buffer[offset + LOCAL_MATRIX].multiplicationFrom(buffer[offset + ROTATION_MATRIX], buffer[offset + TRANSLATION_MATRIX])
 
         if (null != parent) {
-            global.multiplicationFrom(local, parent!!.modelMatrix())
+            buffer[offset + GLOBAL_MATRIX].multiplicationFrom(
+                    buffer[offset + LOCAL_MATRIX],
+                    parent!!.modelMatrix())
         }
 
-        children.forEach(Spatial::computeLocal)
+        rebuildModelMatrices = true
+        children.forEach { spatial -> spatial.computeLocal() }
+    }
+
+    private fun requestRebuildModelMatrices() {
+        rebuildModelMatrices = true
+        parent?.requestRebuildModelMatrices()
     }
 
     /**
      * Rotate the spatial in the zx plane around [theta].
      */
     fun rotationZX(theta: Double) {
-        rotationZX.rotation(2, 0, theta)
-        computeLocal()
+        buffer[offset + ROTATION_ZX_MATRIX].rotation(2, 0, theta)
+        requestRebuildModelMatrices()
         onMatrixChangedListeners.forEach { it() }
     }
 
@@ -71,8 +113,8 @@ open class Spatial : Iterable<Spatial> {
      * Rotate the spatial in the yx plane around [theta].
      */
     fun rotationYX(theta: Double) {
-        rotationYX.rotation(1, 0, theta)
-        computeLocal()
+        buffer[offset + ROTATION_YX_MATRIX].rotation(1, 0, theta)
+        requestRebuildModelMatrices()
         onMatrixChangedListeners.forEach { it() }
     }
 
@@ -80,8 +122,8 @@ open class Spatial : Iterable<Spatial> {
      * Translate the spatial by [v].
      */
     fun translate(v: Vector) {
-        translation.translation(v)
-        computeLocal()
+        buffer[offset + TRANSLATION_MATRIX].translation(v)
+        requestRebuildModelMatrices()
         onMatrixChangedListeners.forEach { it() }
     }
 
@@ -100,7 +142,7 @@ open class Spatial : Iterable<Spatial> {
         spatial.children.add(this)
 
         // Re-compute global transform:
-        computeLocal()
+        requestRebuildModelMatrices()
 
         // Fire children changed listener recursively:
         onChildrenChangedListeners.forEach { it() }
@@ -124,10 +166,14 @@ open class Spatial : Iterable<Spatial> {
      * Invoke [f] for each spatial, recursively.
      */
     fun forEachRecursive(f: (Spatial) -> Unit) {
+        f(this)
         this.forEach { child ->
-            f(child)
             child.forEachRecursive(f)
         }
+    }
+
+    override fun toString(): String {
+        return "$name: ${modelMatrix()}"
     }
 
 }

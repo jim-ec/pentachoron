@@ -18,7 +18,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     /**
      * The root for every spatial.
      */
-    val rootSpatial = Spatial()
+    val rootSpatial = Spatial("Root")
 
     private lateinit var shader: Shader
     private lateinit var geometryBuffer: GeometryBuffer
@@ -44,7 +44,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         glLineWidth(4f)
 
         shader = Shader(MAX_MODELS)
-        geometryBuffer = GeometryBuffer(MAX_VERTICES, MAX_INDICES)
+        geometryBuffer = GeometryBuffer(MAX_MODELS, MAX_VERTICES, MAX_INDICES)
 
         shader.uploadProjectionMatrix(Matrix().perspective(0.1, 100.0))
 
@@ -74,15 +74,17 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
             rebuildGeometryBuffers = false
         }
 
+        if (rootSpatial.rebuildModelMatrices) {
+            rootSpatial.computeLocal()
+        }
+
         geometryBuffer.bind(shader)
 
         // Fetch model matrices:
         var modelMatrixOffset = 0
-        var modelIndex = 0
         geometryBuffer.forEachGeometry { modelMatrix ->
             modelMatrix.storeToFloatArray(modelMatrixArray, modelMatrixOffset)
             modelMatrixOffset += 16
-            modelIndex++
         }
         shader.uploadModelMatrixArray(modelMatrixArray, modelMatrixOffset / 16)
 

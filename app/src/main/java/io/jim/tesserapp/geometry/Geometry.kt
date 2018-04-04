@@ -8,12 +8,14 @@ import io.jim.tesserapp.math.Vector
  */
 open class Geometry(
 
+        name: String,
+
         /**
          * Color of this geometry.
          */
         val color: Color
 
-) : Spatial() {
+) : Spatial(name) {
 
     /**
      * List of points.

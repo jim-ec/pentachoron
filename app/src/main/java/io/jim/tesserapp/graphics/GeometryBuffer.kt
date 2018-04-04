@@ -7,15 +7,15 @@ import io.jim.tesserapp.math.Matrix
 /**
  * A geometry buffer, responsible for vertex and index data.
  */
-class GeometryBuffer(maxVertices: Int, maxIndices: Int) {
+class GeometryBuffer(maxModels: Int, maxVertices: Int, maxIndices: Int) {
 
     private val vertexBuffer = VertexBuffer(maxVertices)
     private val indexBuffer = IndexBuffer(maxIndices)
     private val geometryRegistry = ArrayList<GeometryEntry>()
+    private val modelMatrices = Array(maxModels * Spatial.MATRICES_PER_SPATIAL) { Matrix() }
 
     private data class GeometryEntry(
             val geometry: Geometry,
-            val geometryIndex: Int,
             val indexOffset: Int,
             val indexCount: Int)
 
@@ -37,8 +37,14 @@ class GeometryBuffer(maxVertices: Int, maxIndices: Int) {
         indexBuffer.startRecording()
 
         var geometryIndex = 0
+        var modelMatrixOffset = 0
 
         rootSpatial.forEachRecursive { geometry ->
+
+            // Register model matrix for this spatial:
+            geometry.buffer = modelMatrices
+            geometry.offset = modelMatrixOffset
+
             if (geometry is Geometry) {
 
                 for (point in geometry.points) {
@@ -47,10 +53,12 @@ class GeometryBuffer(maxVertices: Int, maxIndices: Int) {
 
                 val offset = indexBuffer.recordGeometry(geometry)
                 geometryRegistry +=
-                        GeometryEntry(geometry, geometryIndex, offset, geometry.lines.size * 2)
+                        GeometryEntry(geometry, offset, geometry.lines.size * 2)
 
                 geometryIndex++
             }
+
+            modelMatrixOffset += Spatial.MATRICES_PER_SPATIAL
         }
 
         indexBuffer.endRecording()

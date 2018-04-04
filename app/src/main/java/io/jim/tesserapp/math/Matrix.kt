@@ -21,6 +21,16 @@ data class Matrix(private val rows: ArrayList<Vector> = ArrayList())
     }
 
     /**
+     * Load the identity matrix.
+     */
+    fun identity() {
+        rows[0] = Vector(1.0, 0.0, 0.0, 0.0)
+        rows[1] = Vector(0.0, 1.0, 0.0, 0.0)
+        rows[2] = Vector(0.0, 0.0, 1.0, 0.0)
+        rows[3] = Vector(0.0, 0.0, 0.0, 1.0)
+    }
+
+    /**
      * Return the row at the given [index]
      */
     override operator fun get(index: Int): Vector {
