@@ -76,25 +76,25 @@ open class Spatial(
         private set
 
     /**
-     * The global transform.
-     */
-    fun modelMatrix(): Matrix {
-        return if (null != parent) buffer[globalModelMatrixOffset] else buffer[offset + LOCAL_MATRIX]
-    }
-
-    /**
      * Recomputes all model matrices recursively.
      */
     fun computeLocal() {
         if (!rebuildModelMatrices) return
 
+        // Rotation:
         buffer[offset + ROTATION_MATRIX].multiplicationFrom(buffer[offset + ROTATION_ZX_MATRIX], buffer[offset + ROTATION_YX_MATRIX])
+
+        // Local:
         buffer[offset + LOCAL_MATRIX].multiplicationFrom(buffer[offset + ROTATION_MATRIX], buffer[offset + TRANSLATION_MATRIX])
 
+        // Global:
         if (null != parent) {
             buffer[globalModelMatrixOffset].multiplicationFrom(
                     buffer[offset + LOCAL_MATRIX],
-                    parent!!.modelMatrix())
+                    parent!!.buffer[parent!!.globalModelMatrixOffset])
+        }
+        else {
+            buffer[globalModelMatrixOffset] = buffer[offset + LOCAL_MATRIX].copy()
         }
 
         rebuildModelMatrices = true
@@ -179,7 +179,7 @@ open class Spatial(
     }
 
     override fun toString(): String {
-        return "$name: ${modelMatrix()}"
+        return "$name: ${buffer[LOCAL_MATRIX]}"
     }
 
 }
