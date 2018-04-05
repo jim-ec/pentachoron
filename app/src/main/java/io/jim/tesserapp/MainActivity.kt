@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import io.jim.tesserapp.gui.ControllerView
 import io.jim.tesserapp.gui.CoordinateSystemView
-import kotlin.math.PI
+import io.jim.tesserapp.math.Vector
 
 /**
  * Main activity.
@@ -24,8 +24,16 @@ class MainActivity : AppCompatActivity() {
         coordinateSystemView = findViewById(R.id.coordinateSystemView)
         controllerView = findViewById(R.id.controllerView)
 
-        controllerView.rotationXZListener = fun(rotation: Float) {
-            coordinateSystemView.cube.rotationZX(rotation * PI.toFloat())
+        controllerView.rotationControlXZ.listeners += fun(rotation: Float) {
+            coordinateSystemView.cube.rotationZX(rotation)
+        }
+
+        controllerView.rotationControlXY.listeners += fun(rotation: Float) {
+            coordinateSystemView.cube.rotationYX(rotation)
+        }
+
+        controllerView.translationControlX.listeners += fun(translationX: Float) {
+            coordinateSystemView.cube.translate(Vector(translationX, 0f, 0f, 1f))
         }
 
         controllerView.renderGridOptionChangedListener = fun(enable: Boolean) {
