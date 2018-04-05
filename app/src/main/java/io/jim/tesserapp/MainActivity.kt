@@ -26,24 +26,33 @@ class MainActivity : AppCompatActivity() {
 
 
         controllerView.cameraControlDistance.listeners += fun(distance: Float) {
-            coordinateSystemView.renderer.cameraDistance = distance
-            coordinateSystemView.requestRender()
+            synchronized(coordinateSystemView.renderer.sharedRenderData) {
+                coordinateSystemView.renderer.sharedRenderData.cameraDistance = distance
+            }
         }
 
         controllerView.rotationControlXZ.listeners += fun(rotation: Float) {
-            coordinateSystemView.cube.rotationZX(rotation)
+            synchronized(coordinateSystemView.renderer.sharedRenderData) {
+                coordinateSystemView.cube.rotationZX(rotation)
+            }
         }
 
         controllerView.rotationControlXY.listeners += fun(rotation: Float) {
-            coordinateSystemView.cube.rotationYX(rotation)
+            synchronized(coordinateSystemView.renderer.sharedRenderData) {
+                coordinateSystemView.cube.rotationYX(rotation)
+            }
         }
 
         controllerView.translationControlX.listeners += fun(translationX: Float) {
-            coordinateSystemView.cube.translate(Vector(translationX, 0f, 0f, 1f))
+            synchronized(coordinateSystemView.renderer.sharedRenderData) {
+                coordinateSystemView.cube.translate(Vector(translationX, 0f, 0f, 1f))
+            }
         }
 
         controllerView.renderGridOptionChangedListener = fun(enable: Boolean) {
-            coordinateSystemView.enableGrid(enable)
+            synchronized(coordinateSystemView.renderer.sharedRenderData) {
+                coordinateSystemView.enableGrid(enable)
+            }
         }
     }
 }

@@ -49,7 +49,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         axis.addLine(Vector(0f, 0f, 0f, 1f), Vector(1f, 0f, 0f, 1f), Color(context, R.color.colorAxisX))
         axis.addLine(Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f), Color(context, R.color.colorAxisY))
         axis.addLine(Vector(0f, 0f, 0f, 1f), Vector(0f, 0f, 1f, 1f), Color(context, R.color.colorAxisZ))
-        axis.addToParentGeometry(renderer.rootGeometry)
+        axis.addToParentGeometry(renderer.sharedRenderData.rootGeometry)
 
         // Create grid:
         grid = Lines("Grid", Color(context, R.color.colorGrid))
@@ -69,7 +69,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
                 Vector(1f, -1f, 1f, 1f),
                 Color(context, R.color.colorAccent)
         )
-        cube.addToParentGeometry(renderer.rootGeometry)
+        cube.addToParentGeometry(renderer.sharedRenderData.rootGeometry)
         cube.extrude(Vector(0f, 0f, -2f, 0f))
 
         //Handler().postDelayed({
@@ -95,8 +95,11 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
                 val dy = event.y - touchStartPosition.y
                 rotation.x += dx
                 rotation.y += dy
-                renderer.rootGeometry.rotationZX(rotation.x * TOUCH_ROTATION_SENSITIVITY)
-                renderer.rootGeometry.rotationYX(rotation.y * TOUCH_ROTATION_SENSITIVITY)
+
+                synchronized(renderer.sharedRenderData) {
+                    renderer.sharedRenderData.rootGeometry.rotationZX(rotation.x * TOUCH_ROTATION_SENSITIVITY)
+                    renderer.sharedRenderData.rootGeometry.rotationYX(rotation.y * TOUCH_ROTATION_SENSITIVITY)
+                }
 
                 touchStartPosition.x = event.x
                 touchStartPosition.y = event.y
@@ -119,9 +122,10 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     override fun performClick(): Boolean {
         super.performClick()
 
-        renderer.rootGeometry.rotationYX(0f)
-        renderer.rootGeometry.rotationZX(0f)
-        requestRender()
+        synchronized(renderer.sharedRenderData) {
+            renderer.sharedRenderData.rootGeometry.rotationZX(0f)
+            renderer.sharedRenderData.rootGeometry.rotationYX(0f)
+        }
 
         return true
     }
@@ -130,11 +134,13 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
      * Enable or disable grid rendering.
      */
     fun enableGrid(enable: Boolean) {
-        if (enable) {
-            grid.addToParentGeometry(renderer.rootGeometry)
-        }
-        else {
-            grid.releaseFromParentGeometry()
+        synchronized(renderer.sharedRenderData) {
+            if (enable) {
+                grid.addToParentGeometry(renderer.sharedRenderData.rootGeometry)
+            }
+            else {
+                grid.releaseFromParentGeometry()
+            }
         }
     }
 

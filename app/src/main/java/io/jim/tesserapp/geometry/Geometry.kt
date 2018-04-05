@@ -99,17 +99,13 @@ open class Geometry(
          *
          * This is really useful to reduces vertex re-uploaded during many geometrical structure
          * changes at once.
-         *
-         * Calls to [geometrical] are cross-thread synchronized.
          */
         inline fun geometrical(f: () -> Unit) {
-            synchronized(Geometry) {
-                geometricalCounter++
-                f()
-                geometricalCounter--
-                if (0 == geometricalCounter) {
-                    onGeometryChangedListeners.fire()
-                }
+            geometricalCounter++
+            f()
+            geometricalCounter--
+            if (0 == geometricalCounter) {
+                onGeometryChangedListeners.fire()
             }
         }
 
@@ -214,59 +210,51 @@ open class Geometry(
      * since that is guaranteed to already be computed.
      */
     fun computeModelMatricesRecursively() {
-        synchronized(Geometry) {
 
-            val globalMemory = globalMemory ?: throw NotRegisteredIntoMatrixBufferException()
+        val globalMemory = globalMemory ?: throw NotRegisteredIntoMatrixBufferException()
 
-            // Rotation:
-            localMemory.multiply(lhs = ROTATION_ZX_MATRIX, rhs = ROTATION_YX_MATRIX, matrix = ROTATION_MATRIX)
+        // Rotation:
+        localMemory.multiply(lhs = ROTATION_ZX_MATRIX, rhs = ROTATION_YX_MATRIX, matrix = ROTATION_MATRIX)
 
-            // Local:
-            localMemory.multiply(lhs = ROTATION_MATRIX, rhs = TRANSLATION_MATRIX, matrix = LOCAL_MATRIX)
+        // Local:
+        localMemory.multiply(lhs = ROTATION_MATRIX, rhs = TRANSLATION_MATRIX, matrix = LOCAL_MATRIX)
 
-            // Global:
-            if (null != parent) {
-                // This geometry has a parent, therefore we need to multiply the local matrix
-                // to the parent's global matrix:
-                globalMemory.multiply(
-                        lhs = LOCAL_MATRIX, lhsMemorySpace = localMemory,
-                        rhsMemorySpace = parent!!.globalMemory
-                                ?: throw NotRegisteredIntoMatrixBufferException())
-            }
-            else {
-                // This geometry has no parent, therefore the local matrix equals the global one:
-                globalMemory.copy(source = LOCAL_MATRIX, sourceMemorySpace = localMemory)
-            }
-
-            children.forEach { it.computeModelMatricesRecursively() }
+        // Global:
+        if (null != parent) {
+            // This geometry has a parent, therefore we need to multiply the local matrix
+            // to the parent's global matrix:
+            globalMemory.multiply(
+                    lhs = LOCAL_MATRIX, lhsMemorySpace = localMemory,
+                    rhsMemorySpace = parent!!.globalMemory
+                            ?: throw NotRegisteredIntoMatrixBufferException())
         }
+        else {
+            // This geometry has no parent, therefore the local matrix equals the global one:
+            globalMemory.copy(source = LOCAL_MATRIX, sourceMemorySpace = localMemory)
+        }
+
+        children.forEach { it.computeModelMatricesRecursively() }
     }
 
     /**
      * Rotate in the zx plane around [theta].
      */
     fun rotationZX(theta: Float) {
-        synchronized(Geometry) {
-            localMemory.rotation(ROTATION_ZX_MATRIX, 2, 0, theta)
-        }
+        localMemory.rotation(ROTATION_ZX_MATRIX, 2, 0, theta)
     }
 
     /**
      * Rotate in the yx plane around [theta].
      */
     fun rotationYX(theta: Float) {
-        synchronized(Geometry) {
-            localMemory.rotation(ROTATION_YX_MATRIX, 1, 0, theta)
-        }
+        localMemory.rotation(ROTATION_YX_MATRIX, 1, 0, theta)
     }
 
     /**
      * Translate by [v].
      */
     fun translate(v: Vector) {
-        synchronized(Geometry) {
-            localMemory.translation(TRANSLATION_MATRIX, v)
-        }
+        localMemory.translation(TRANSLATION_MATRIX, v)
     }
 
     /**
@@ -274,19 +262,17 @@ open class Geometry(
      * This does not change the local transform, but rather the global one.
      */
     fun addToParentGeometry(parentGeometry: Geometry) {
-        synchronized(Geometry) {
-            if (parent == parentGeometry) return
+        if (parent == parentGeometry) return
 
-            // Release from former parent:
-            parent?.children?.remove(this)
+        // Release from former parent:
+        parent?.children?.remove(this)
 
-            // Re-parent to new geometry:
-            parent = parentGeometry
-            parentGeometry.children.add(this)
+        // Re-parent to new geometry:
+        parent = parentGeometry
+        parentGeometry.children.add(this)
 
-            // Fire children changed listener recursively:
-            onHierarchyChangedListeners.fire()
-        }
+        // Fire children changed listener recursively:
+        onHierarchyChangedListeners.fire()
     }
 
     /**
@@ -294,13 +280,11 @@ open class Geometry(
      * This does not change the local transform, but rather the global one.
      */
     fun releaseFromParentGeometry() {
-        synchronized(Geometry) {
-            parent?.children?.remove(this)
-            parent = null
+        parent?.children?.remove(this)
+        parent = null
 
-            // Fire children changed listener recursively:
-            onHierarchyChangedListeners.fire()
-        }
+        // Fire children changed listener recursively:
+        onHierarchyChangedListeners.fire()
     }
 
     /**

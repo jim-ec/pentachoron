@@ -5,6 +5,7 @@ import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.graphics.GeometryManager
+import io.jim.tesserapp.graphics.SharedRenderData
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 import javax.microedition.khronos.egl.EGLConfig
@@ -16,10 +17,12 @@ import javax.microedition.khronos.opengles.GL10
 class Renderer(context: Context) : GLSurfaceView.Renderer {
 
     /**
-     * Root geometry of this renderer.
+     * Render data shared across this render thread an others.
      */
-    val rootGeometry
-        get() = geometryManager.rootGeometry
+    val sharedRenderData = SharedRenderData(
+            GeometryManager(MAX_MODELS, MAX_VERTICES),
+            4f
+    )
 
     private val clearColor = Color(context, android.R.color.background_light)
     private val viewMatrix = MatrixBuffer(3)
@@ -28,14 +31,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
     private var viewportAspectRation = 1f
-    private val geometryManager = GeometryManager(MAX_MODELS, MAX_VERTICES)
     private var lastRenderMillis = 0L
-
-    /**
-     * Distance of camera position from center.
-     */
-    var cameraDistance = 4f
-
 
     companion object {
         private const val MAX_MODELS = 100
@@ -85,28 +81,31 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
 
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        // Recompute view matrix:
-        viewMatrixMemory.apply {
-            lookAt(1, Vector(cameraDistance, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
-            scale(2, Vector(1f, viewportAspectRation, 1f, 1f))
-            multiply(1, 2, 0)
-            shader.uploadViewMatrix(viewMatrix)
+        synchronized(sharedRenderData) {
+            // Recompute view matrix:
+            viewMatrixMemory.apply {
+                lookAt(1, Vector(sharedRenderData.cameraDistance, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
+                scale(2, Vector(1f, viewportAspectRation, 1f, 1f))
+                multiply(1, 2, 0)
+                shader.uploadViewMatrix(viewMatrix)
+            }
+
+            // Upload model matrices:
+            sharedRenderData.geometryManager.computeModelMatrices()
+            shader.uploadModelMatrixBuffer(
+                    sharedRenderData.geometryManager.modelMatrixBuffer.modelMatrixBuffer,
+                    sharedRenderData.geometryManager.modelMatrixBuffer.activeGeometries)
+
+            // Recompute geometry vertices:
+            if (sharedRenderData.geometryManager.verticesUpdated) {
+                vertexBuffer.bind(shader, sharedRenderData.geometryManager.vertexBuffer)
+                sharedRenderData.geometryManager.verticesUpdated = false
+            }
+
+            // Draw actual geometry:
+            glDrawArrays(GL_LINES, 0, sharedRenderData.geometryManager.vertexBuffer.activeEntries)
+
         }
-
-        // Upload model matrices:
-        geometryManager.computeModelMatrices()
-        shader.uploadModelMatrixBuffer(
-                geometryManager.modelMatrixBuffer.modelMatrixBuffer,
-                geometryManager.modelMatrixBuffer.activeGeometries)
-
-        // Recompute geometry vertices:
-        if (geometryManager.verticesUpdated) {
-            vertexBuffer.bind(shader, geometryManager.vertexBuffer)
-            geometryManager.verticesUpdated = false
-        }
-
-        // Draw actual geometry:
-        glDrawArrays(GL_LINES, 0, geometryManager.vertexBuffer.activeEntries)
     }
 
 }
