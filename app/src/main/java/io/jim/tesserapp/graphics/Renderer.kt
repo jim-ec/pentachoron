@@ -4,6 +4,7 @@ import android.content.Context
 import android.opengl.GLES10.GL_MULTISAMPLE
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
+import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.Spatial
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
@@ -49,8 +50,9 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         projectionMatrix.perspective2D(0, 0.1f, 100f)
         shader.uploadProjectionMatrix(projectionMatrix)
 
-        // Rebuild geometry buffers upon spatial hierarchy change:
+        // Rebuild geometry buffers upon spatial hierarchy or geometry change:
         Spatial.addChildrenChangedListener { rebuildGeometryBuffers = true }
+        Geometry.addGeometryChangedListener { rebuildGeometryBuffers = true }
     }
 
     /**

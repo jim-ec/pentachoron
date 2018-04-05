@@ -27,12 +27,28 @@ open class Geometry(
      */
     val lines = ArrayList<Pair<Int, Int>>()
 
+    companion object {
+
+        /**
+         * Register a new geometry listener.
+         *
+         * Note that the listener is invoked every time a single point or line is added.
+         */
+        fun addGeometryChangedListener(f: () -> Unit) {
+            onGeometryChangedListener.add(f)
+        }
+
+        private val onGeometryChangedListener = ArrayList<() -> Unit>()
+
+    }
+
     /**
      * Add a series of points.
      * The actual lines are drawn from indices to these points.
      */
     fun addPoints(vararg p: Vector) {
         points += p
+        onGeometryChangedListener.forEach { it() }
     }
 
     /**
@@ -40,6 +56,7 @@ open class Geometry(
      */
     fun addLine(a: Int, b: Int) {
         lines += Pair(a, b)
+        onGeometryChangedListener.forEach { it() }
     }
 
     /**
