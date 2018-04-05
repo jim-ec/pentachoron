@@ -90,8 +90,8 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
         rootGeometry.forEachRecursive { geometry ->
             geometry.vertexPoints.forEach {
                 vertexBuffer += listOf(
-                        it.x.toFloat(), it.y.toFloat(), it.z.toFloat(),
-                        geometry.color.red, geometry.color.green, geometry.color.blue,
+                        it.position.x.toFloat(), it.position.y.toFloat(), it.position.z.toFloat(),
+                        it.color.red, it.color.green, it.color.blue,
                         geometry.modelIndex.toFloat())
             }
         }

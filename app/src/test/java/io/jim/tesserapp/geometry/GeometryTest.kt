@@ -61,9 +61,9 @@ class GeometryTest {
             addLine(Vector(1.0, 1.0, 0.0, 1.0), Vector(2.0, 2.0, 0.0, 1.0))
             extrude(Vector(0.0, 0.0, 1.0, 0.0))
 
-            assertEquals(4, points.size)
+            assertEquals(4, vertices.size)
             assertEquals(4, lines.size)
-            assertEquals(1.0, points.last().z, 0.1)
+            assertEquals(1.0, vertices.last().position.z, 0.1)
         }
     }
 
@@ -73,7 +73,7 @@ class GeometryTest {
             addLine(Vector(1.0, 1.0, 0.0, 1.0), Vector(2.0, 2.0, 0.0, 1.0))
             clearLines()
 
-            assertEquals(0, points.size)
+            assertEquals(0, vertices.size)
             assertEquals(0, lines.size)
         }
     }
@@ -87,14 +87,14 @@ class GeometryTest {
         Quadrilateral("Test", a, b, c, d, Color.BLACK).apply {
             val resolvedIndices = vertexPoints
             assertEquals(8, resolvedIndices.size)
-            assertEquals(a, resolvedIndices[0], 0.1)
-            assertEquals(b, resolvedIndices[1], 0.1)
-            assertEquals(b, resolvedIndices[2], 0.1)
-            assertEquals(c, resolvedIndices[3], 0.1)
-            assertEquals(c, resolvedIndices[4], 0.1)
-            assertEquals(d, resolvedIndices[5], 0.1)
-            assertEquals(d, resolvedIndices[6], 0.1)
-            assertEquals(a, resolvedIndices[7], 0.1)
+            assertEquals(a, resolvedIndices[0].position, 0.1)
+            assertEquals(b, resolvedIndices[1].position, 0.1)
+            assertEquals(b, resolvedIndices[2].position, 0.1)
+            assertEquals(c, resolvedIndices[3].position, 0.1)
+            assertEquals(c, resolvedIndices[4].position, 0.1)
+            assertEquals(d, resolvedIndices[5].position, 0.1)
+            assertEquals(d, resolvedIndices[6].position, 0.1)
+            assertEquals(a, resolvedIndices[7].position, 0.1)
         }
     }
 

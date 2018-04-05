@@ -42,7 +42,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
 
         // Create axis:
         val axis = Lines("Axis", Color(context, R.color.colorPrimary))
-        axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(1.0, 0.0, 0.0, 1.0))
+        axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(1.0, 0.0, 0.0, 1.0), Color(0f, 1f, 0f))
         axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 1.0, 0.0, 1.0))
         axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 0.0, 1.0, 1.0))
         axis.addToParentGeometry(renderer.rootGeometry)
@@ -119,14 +119,14 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     /**
      * Clicks rewind camera position to default.
      */
-    override fun performClick() = let {
+    override fun performClick(): Boolean {
         super.performClick()
 
         renderer.rootGeometry.rotationYX(0.0)
         renderer.rootGeometry.rotationZX(0.0)
         requestRender()
 
-        true
+        return true
     }
 
     /**

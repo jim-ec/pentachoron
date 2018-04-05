@@ -1,6 +1,7 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
+import io.jim.tesserapp.graphics.Vertex
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.util.ListenerList
@@ -25,10 +26,9 @@ open class Geometry(
         /**
          * Color of this geometry.
          */
-        val color: Color = Color.BLACK
+        val baseColor: Color = Color.BLACK
 
 ) {
-
 
     /**
      * Memory section this geometry can store its global matrix.
@@ -44,12 +44,12 @@ open class Geometry(
         : Exception("Geometry not registered into matrix buffer")
 
     /**
-     * List of points.
+     * List of vertices.
      */
-    val points = ArrayList<Vector>()
+    val vertices = ArrayList<Vertex>()
 
     /**
-     * List of lines, represented by indices to two points.
+     * List of lines, represented by indices to two vertices.
      */
     val lines = ArrayList<Pair<Int, Int>>()
 
@@ -61,12 +61,12 @@ open class Geometry(
         get() = globalMemory?.offset ?: throw NotRegisteredIntoMatrixBufferException()
 
     /**
-     * List of points, but with resolved indices.
+     * List of vertices, but with resolved indices.
      * This is intended to be used for drawing without indices.
      */
-    val vertexPoints: List<Vector>
+    val vertexPoints: List<Vertex>
         get() = let {
-            lines.flatMap { (first, second) -> listOf(points[first], points[second]) }
+            lines.flatMap { (first, second) -> listOf(vertices[first], vertices[second]) }
         }
 
     private val children = ArrayList<Geometry>()
@@ -133,12 +133,12 @@ open class Geometry(
     }
 
     /**
-     * Add a series of points.
-     * The actual lines are drawn from indices to these points.
+     * Add a series of vertices.
+     * The actual lines are drawn from indices to these vertices.
      */
-    protected fun addPoints(vararg p: Vector) {
+    protected fun addPoint(position: Vector, color: Color = baseColor) {
         geometrical {
-            points += p
+            vertices += Vertex(position, color)
         }
     }
 
@@ -156,7 +156,7 @@ open class Geometry(
      */
     protected fun clearPoints() {
         geometrical {
-            points.clear()
+            vertices.clear()
             lines.clear()
         }
     }
@@ -168,8 +168,8 @@ open class Geometry(
      */
     fun extrude(direction: Vector) {
         geometrical {
-            val size = points.size
-            points += points.map { it + direction }
+            val size = vertices.size
+            vertices += vertices.map { Vertex(it.position + direction, it.color) }
             lines += lines.map { Pair(it.first + size, it.second + size) }
             for (i in 0 until size) {
                 addLine(i, i + size)
