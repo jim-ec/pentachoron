@@ -24,14 +24,14 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     val cube: Geometry
 
     private val renderer = Renderer(context)
-    private val touchStartPosition = Vector(0.0, 0.0, 0.0, 0.0)
-    private val rotation = Vector(0.0, 0.0, 0.0, 0.0)
+    private val touchStartPosition = Vector(0f, 0f, 0f, 0f)
+    private val rotation = Vector(0f, 0f, 0f, 0f)
     private var touchStartTime = 0L
     private val grid: Lines
 
     companion object {
         private const val CLICK_TIME_MS = 100L
-        private const val TOUCH_ROTATION_SENSITIVITY = 0.005
+        private const val TOUCH_ROTATION_SENSITIVITY = 0.005f
     }
 
     init {
@@ -42,34 +42,34 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
 
         // Create axis:
         val axis = Lines("Axis")
-        axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(1.0, 0.0, 0.0, 1.0), Color(context, R.color.colorAxisX))
-        axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 1.0, 0.0, 1.0), Color(context, R.color.colorAxisY))
-        axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 0.0, 1.0, 1.0), Color(context, R.color.colorAxisZ))
+        axis.addLine(Vector(0f, 0f, 0f, 1f), Vector(1f, 0f, 0f, 1f), Color(context, R.color.colorAxisX))
+        axis.addLine(Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f), Color(context, R.color.colorAxisY))
+        axis.addLine(Vector(0f, 0f, 0f, 1f), Vector(0f, 0f, 1f, 1f), Color(context, R.color.colorAxisZ))
         axis.addToParentGeometry(renderer.rootGeometry)
 
         // Create grid:
         grid = Lines("Grid", Color(context, R.color.colorGrid))
         Geometry.geometrical {
             for (i in -5..5) {
-                grid.addLine(Vector(i.toDouble(), 0.0, -5.0, 1.0), Vector(i.toDouble(), 0.0, 5.0, 1.0))
-                grid.addLine(Vector(-5.0, 0.0, i.toDouble(), 1.0), Vector(5.0, 0.0, i.toDouble(), 1.0))
+                grid.addLine(Vector(i.toFloat(), 0f, -5f, 1f), Vector(i.toFloat(), 0f, 5f, 1f))
+                grid.addLine(Vector(-5f, 0f, i.toFloat(), 1f), Vector(5f, 0f, i.toFloat(), 1f))
             }
         }
         enableGrid(true)
 
         // Create cube:
 
-        cube = Quadrilateral("Cube", Vector(1.0, 1.0, 1.0, 1.0),
-                Vector(-1.0, 1.0, 1.0, 1.0),
-                Vector(-1.0, -1.0, 1.0, 1.0),
-                Vector(1.0, -1.0, 1.0, 1.0),
+        cube = Quadrilateral("Cube", Vector(1f, 1f, 1f, 1f),
+                Vector(-1f, 1f, 1f, 1f),
+                Vector(-1f, -1f, 1f, 1f),
+                Vector(1f, -1f, 1f, 1f),
                 Color(context, R.color.colorAccent)
         )
         cube.addToParentGeometry(renderer.rootGeometry)
-        cube.extrude(Vector(0.0, 0.0, -2.0, 0.0))
+        cube.extrude(Vector(0f, 0f, -2f, 0f))
 
         //Handler().postDelayed({
-        //    cube.extrude(Vector(0.0, 0.0, -2.0, 0.0))
+        //    cube.extrude(Vector(0f, 0f, -2f, 0f))
         //}, 3000)
 
         // Render scene upon every graphical change:
@@ -85,32 +85,30 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
      */
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (null == event) return false
-        val x = event.x.toDouble()
-        val y = event.y.toDouble()
 
         return when {
             event.action == ACTION_DOWN -> {
-                touchStartPosition.x = x
-                touchStartPosition.y = y
+                touchStartPosition.x = event.x
+                touchStartPosition.y = event.y
                 touchStartTime = System.currentTimeMillis()
                 true
             }
             event.action == ACTION_MOVE -> {
-                val dx = x - touchStartPosition.x
-                val dy = y - touchStartPosition.y
+                val dx = event.x - touchStartPosition.x
+                val dy = event.y - touchStartPosition.y
                 rotation.x += dx
                 rotation.y += dy
                 renderer.rootGeometry.rotationZX(rotation.x * TOUCH_ROTATION_SENSITIVITY)
                 renderer.rootGeometry.rotationYX(rotation.y * TOUCH_ROTATION_SENSITIVITY)
 
-                touchStartPosition.x = x
-                touchStartPosition.y = y
+                touchStartPosition.x = event.x
+                touchStartPosition.y = event.y
                 true
             }
             event.action == ACTION_UP
                     && System.currentTimeMillis() - touchStartTime < CLICK_TIME_MS -> {
-                rotation.x = 0.0
-                rotation.y = 0.0
+                rotation.x = 0f
+                rotation.y = 0f
                 performClick()
                 true
             }
@@ -124,8 +122,8 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     override fun performClick(): Boolean {
         super.performClick()
 
-        renderer.rootGeometry.rotationYX(0.0)
-        renderer.rootGeometry.rotationZX(0.0)
+        renderer.rootGeometry.rotationYX(0f)
+        renderer.rootGeometry.rotationZX(0f)
         requestRender()
 
         return true

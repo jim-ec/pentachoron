@@ -36,59 +36,59 @@ class GeometryTest {
         register(geometry)
         geometry.addToParentGeometry(root)
 
-        root.rotationYX(PI / 2)
-        geometry.translate(Vector(0.0, 1.0, 0.0, 1.0))
+        root.rotationYX(PI.toFloat() / 2)
+        geometry.translate(Vector(0f, 1f, 0f, 1f))
         root.computeModelMatricesRecursively()
 
-        root.globalMemory!!.multiply(lhs = Vector(0.0, 1.0, 0.0, 1.0)).apply {
-            assertEquals(1.0, x, 0.1)
-            assertEquals(0.0, y, 0.1)
-            assertEquals(0.0, z, 0.1)
-            assertEquals(1.0, w, 0.1)
+        root.globalMemory!!.multiply(lhs = Vector(0f, 1f, 0f, 1f)).apply {
+            assertEquals(1f, x, 0.1f)
+            assertEquals(0f, y, 0.1f)
+            assertEquals(0f, z, 0.1f)
+            assertEquals(1f, w, 0.1f)
         }
 
-        geometry.globalMemory!!.multiply(lhs = Vector(0.0, 1.0, 0.0, 1.0)).apply {
-            assertEquals(2.0, x, 0.1)
-            assertEquals(0.0, y, 0.1)
-            assertEquals(0.0, z, 0.1)
-            assertEquals(1.0, w, 0.1)
+        geometry.globalMemory!!.multiply(lhs = Vector(0f, 1f, 0f, 1f)).apply {
+            assertEquals(2f, x, 0.1f)
+            assertEquals(0f, y, 0.1f)
+            assertEquals(0f, z, 0.1f)
+            assertEquals(1f, w, 0.1f)
         }
     }
 
     @Test
     fun extruding() {
         Lines("Test", Color.BLACK).apply {
-            addLine(Vector(1.0, 1.0, 0.0, 1.0), Vector(2.0, 2.0, 0.0, 1.0))
-            extrude(Vector(0.0, 0.0, 1.0, 0.0))
+            addLine(Vector(1f, 1f, 0f, 1f), Vector(2f, 2f, 0f, 1f))
+            extrude(Vector(0f, 0f, 1f, 0f))
         }
     }
 
     @Test
     fun clearLines() {
         Lines("Test", Color.BLACK).apply {
-            addLine(Vector(1.0, 1.0, 0.0, 1.0), Vector(2.0, 2.0, 0.0, 1.0))
+            addLine(Vector(1f, 1f, 0f, 1f), Vector(2f, 2f, 0f, 1f))
             clearLines()
         }
     }
 
     @Test
     fun vertexPoints() {
-        val a = Vector(0.0, 0.0, 0.0, 0.0)
-        val b = Vector(1.0, 0.0, 0.0, 0.0)
-        val c = Vector(1.0, 1.0, 0.0, 0.0)
-        val d = Vector(0.0, 1.0, 0.0, 0.0)
+        val a = Vector(0f, 0f, 0f, 0f)
+        val b = Vector(1f, 0f, 0f, 0f)
+        val c = Vector(1f, 1f, 0f, 0f)
+        val d = Vector(0f, 1f, 0f, 0f)
         Quadrilateral("Test", a, b, c, d, Color.BLACK).apply {
             register(this)
             vertices.also {
                 assertEquals(8, it.size)
-                assertEquals(a, it[0].position, 0.1)
-                assertEquals(b, it[1].position, 0.1)
-                assertEquals(b, it[2].position, 0.1)
-                assertEquals(c, it[3].position, 0.1)
-                assertEquals(c, it[4].position, 0.1)
-                assertEquals(d, it[5].position, 0.1)
-                assertEquals(d, it[6].position, 0.1)
-                assertEquals(a, it[7].position, 0.1)
+                assertEquals(a, it[0].position, 0.1f)
+                assertEquals(b, it[1].position, 0.1f)
+                assertEquals(b, it[2].position, 0.1f)
+                assertEquals(c, it[3].position, 0.1f)
+                assertEquals(c, it[4].position, 0.1f)
+                assertEquals(d, it[5].position, 0.1f)
+                assertEquals(d, it[6].position, 0.1f)
+                assertEquals(a, it[7].position, 0.1f)
             }
         }
     }

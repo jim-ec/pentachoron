@@ -24,7 +24,7 @@ class MatrixBufferTest {
 
     @Test
     fun identity() {
-        memory.rotation(1, 0, 2, PI)
+        memory.rotation(1, 0, 2, PI.toFloat())
         memory.identity(1)
         for (row in 0 until MatrixBuffer.MATRIX_COLUMNS) {
             for (col in 0 until MatrixBuffer.MATRIX_COLUMNS) {
@@ -36,18 +36,18 @@ class MatrixBufferTest {
     @Test
     fun copy() {
         memory.space(1,
-                Vector(1.0, 2.0, 3.0, 4.0),
-                Vector(5.0, 6.0, 7.0, 8.0),
-                Vector(9.0, 10.0, 11.0, 12.0),
-                Vector(13.0, 14.0, 15.0, 16.0))
+                Vector(1f, 2f, 3f, 4f),
+                Vector(5f, 6f, 7f, 8f),
+                Vector(9f, 10f, 11f, 12f),
+                Vector(13f, 14f, 15f, 16f))
 
         memory.copy(2, 1)
 
-        memory.multiply(Vector(1.0, 2.0, 3.0, 4.0), 2).apply {
-            assertEquals(90.0, x, 0.1)
-            assertEquals(100.0, y, 0.1)
-            assertEquals(110.0, z, 0.1)
-            assertEquals(120.0, w, 0.1)
+        memory.multiply(Vector(1f, 2f, 3f, 4f), 2).apply {
+            assertEquals(90f, x, 0.1f)
+            assertEquals(100f, y, 0.1f)
+            assertEquals(110f, z, 0.1f)
+            assertEquals(120f, w, 0.1f)
         }
     }
 
@@ -56,50 +56,50 @@ class MatrixBufferTest {
         val otherBuffer = MatrixBuffer(3)
 
         otherBuffer.MemorySpace(1, 2).space(1,
-                Vector(1.0, 2.0, 3.0, 4.0),
-                Vector(5.0, 6.0, 7.0, 8.0),
-                Vector(9.0, 10.0, 11.0, 12.0),
-                Vector(13.0, 14.0, 15.0, 16.0))
+                Vector(1f, 2f, 3f, 4f),
+                Vector(5f, 6f, 7f, 8f),
+                Vector(9f, 10f, 11f, 12f),
+                Vector(13f, 14f, 15f, 16f))
 
         memory.copy(2, 0, otherBuffer.MemorySpace(2, 1))
 
-        memory.multiply(Vector(1.0, 2.0, 3.0, 4.0), 2).apply {
-            assertEquals(90.0, x, 0.1)
-            assertEquals(100.0, y, 0.1)
-            assertEquals(110.0, z, 0.1)
-            assertEquals(120.0, w, 0.1)
+        memory.multiply(Vector(1f, 2f, 3f, 4f), 2).apply {
+            assertEquals(90f, x, 0.1f)
+            assertEquals(100f, y, 0.1f)
+            assertEquals(110f, z, 0.1f)
+            assertEquals(120f, w, 0.1f)
         }
     }
 
     @Test
     fun space() {
         memory.space(1,
-                Vector(1.0, 2.0, 3.0, 4.0),
-                Vector(5.0, 6.0, 7.0, 8.0),
-                Vector(9.0, 10.0, 11.0, 12.0),
-                Vector(13.0, 14.0, 15.0, 16.0))
+                Vector(1f, 2f, 3f, 4f),
+                Vector(5f, 6f, 7f, 8f),
+                Vector(9f, 10f, 11f, 12f),
+                Vector(13f, 14f, 15f, 16f))
 
-        memory.multiply(Vector(1.0, 2.0, 3.0, 4.0), 1).apply {
-            assertEquals(90.0, x, 0.1)
-            assertEquals(100.0, y, 0.1)
-            assertEquals(110.0, z, 0.1)
-            assertEquals(120.0, w, 0.1)
+        memory.multiply(Vector(1f, 2f, 3f, 4f), 1).apply {
+            assertEquals(90f, x, 0.1f)
+            assertEquals(100f, y, 0.1f)
+            assertEquals(110f, z, 0.1f)
+            assertEquals(120f, w, 0.1f)
         }
     }
 
     @Test
     fun multiplyMatrices() {
         memory.space(0,
-                Vector(2.0, 3.0, 0.0, 0.0),
-                Vector(4.0, 5.0, 0.0, 0.0),
-                Vector(0.0, 0.0, 0.0, 0.0),
-                Vector(0.0, 0.0, 0.0, 0.0))
+                Vector(2f, 3f, 0f, 0f),
+                Vector(4f, 5f, 0f, 0f),
+                Vector(0f, 0f, 0f, 0f),
+                Vector(0f, 0f, 0f, 0f))
 
         memory.space(1,
-                Vector(6.0, 7.0, 0.0, 0.0),
-                Vector(8.0, 9.0, 0.0, 0.0),
-                Vector(0.0, 0.0, 0.0, 0.0),
-                Vector(0.0, 0.0, 0.0, 0.0))
+                Vector(6f, 7f, 0f, 0f),
+                Vector(8f, 9f, 0f, 0f),
+                Vector(0f, 0f, 0f, 0f),
+                Vector(0f, 0f, 0f, 0f))
 
         memory.multiply(0, 1, 2)
         assertEquals(2f * 6 + 3 * 8, memory[2, 0, 0], 0.1f)
@@ -110,52 +110,52 @@ class MatrixBufferTest {
 
     @Test
     fun scale() {
-        memory.scale(1, Vector(1.0, 2.0, 3.0, 4.0))
-        memory.multiply(Vector(1.0, 2.0, 3.0, 4.0), 1).apply {
-            assertEquals(1.0, x, 0.1)
-            assertEquals(4.0, y, 0.1)
-            assertEquals(9.0, z, 0.1)
-            assertEquals(16.0, w, 0.1)
+        memory.scale(1, Vector(1f, 2f, 3f, 4f))
+        memory.multiply(Vector(1f, 2f, 3f, 4f), 1).apply {
+            assertEquals(1f, x, 0.1f)
+            assertEquals(4f, y, 0.1f)
+            assertEquals(9f, z, 0.1f)
+            assertEquals(16f, w, 0.1f)
         }
     }
 
     @Test
     fun rotation() {
-        memory.rotation(2, 1, 3, PI / 2)
-        memory.multiply(Vector(0.0, 3.0, 0.0, 5.0), 2).apply {
-            assertEquals(0.0, x, 0.1)
-            assertEquals(-5.0, y, 0.1)
-            assertEquals(0.0, z, 0.1)
-            assertEquals(3.0, w, 0.1)
+        memory.rotation(2, 1, 3, PI.toFloat() / 2)
+        memory.multiply(Vector(0f, 3f, 0f, 5f), 2).apply {
+            assertEquals(0f, x, 0.1f)
+            assertEquals(-5f, y, 0.1f)
+            assertEquals(0f, z, 0.1f)
+            assertEquals(3f, w, 0.1f)
         }
     }
 
     @Test
     fun translation() {
-        memory.translation(2, Vector(1.0, 2.0, 3.0, 1.0))
-        memory.multiply(Vector(1.0, 2.0, 3.0, 1.0), 2).apply {
-            assertEquals(2.0, x, 0.1)
-            assertEquals(4.0, y, 0.1)
-            assertEquals(6.0, z, 0.1)
-            assertEquals(1.0, w, 0.1)
+        memory.translation(2, Vector(1f, 2f, 3f, 1f))
+        memory.multiply(Vector(1f, 2f, 3f, 1f), 2).apply {
+            assertEquals(2f, x, 0.1f)
+            assertEquals(4f, y, 0.1f)
+            assertEquals(6f, z, 0.1f)
+            assertEquals(1f, w, 0.1f)
         }
     }
 
     @Test
     fun transpose() {
         memory.space(1,
-                Vector(1.0, 5.0, 9.0, 13.0),
-                Vector(2.0, 6.0, 10.0, 14.0),
-                Vector(3.0, 7.0, 11.0, 15.0),
-                Vector(4.0, 8.0, 12.0, 16.0))
+                Vector(1f, 5f, 9f, 13f),
+                Vector(2f, 6f, 10f, 14f),
+                Vector(3f, 7f, 11f, 15f),
+                Vector(4f, 8f, 12f, 16f))
 
         memory.transpose(1)
 
-        memory.multiply(Vector(1.0, 2.0, 3.0, 4.0), 1).apply {
-            assertEquals(90.0, x, 0.1)
-            assertEquals(100.0, y, 0.1)
-            assertEquals(110.0, z, 0.1)
-            assertEquals(120.0, w, 0.1)
+        memory.multiply(Vector(1f, 2f, 3f, 4f), 1).apply {
+            assertEquals(90f, x, 0.1f)
+            assertEquals(100f, y, 0.1f)
+            assertEquals(110f, z, 0.1f)
+            assertEquals(120f, w, 0.1f)
         }
     }
 
@@ -163,57 +163,57 @@ class MatrixBufferTest {
     fun perspective2D() {
         memory.perspective2D(0, 5f, 10f)
 
-        memory.multiply(Vector(2.0, 3.0, -10.0, 1.0), 0).apply {
+        memory.multiply(Vector(2f, 3f, -10f, 1f), 0).apply {
             perspectiveDivide()
-            assertEquals(1.0, z, 0.1)
-            assertEquals(2.0 / 10.0, x, 0.1)
-            assertEquals(3.0 / 10.0, y, 0.1)
+            assertEquals(1f, z, 0.1f)
+            assertEquals(2f / 10f, x, 0.1f)
+            assertEquals(3f / 10f, y, 0.1f)
         }
 
-        memory.multiply(Vector(2.0, 3.0, -5.0, 1.0), 0).apply {
+        memory.multiply(Vector(2f, 3f, -5f, 1f), 0).apply {
             perspectiveDivide()
-            assertEquals(0.0, z, 0.1)
-            assertEquals(2.0 / 5.0, x, 0.1)
-            assertEquals(3.0 / 5.0, y, 0.1)
+            assertEquals(0f, z, 0.1f)
+            assertEquals(2f / 5f, x, 0.1f)
+            assertEquals(3f / 5f, y, 0.1f)
         }
 
-        memory.multiply(Vector(2.0, 3.0, -7.0, 1.0), 0).apply {
+        memory.multiply(Vector(2f, 3f, -7f, 1f), 0).apply {
             perspectiveDivide()
-            assertTrue(0.0 < z && z < 1.0)
-            assertEquals(2.0 / 7.0, x, 0.1)
-            assertEquals(3.0 / 7.0, y, 0.1)
+            assertTrue(0f < z && z < 1f)
+            assertEquals(2f / 7f, x, 0.1f)
+            assertEquals(3f / 7f, y, 0.1f)
         }
 
-        memory.multiply(Vector(2.0, 3.0, -2.0, 1.0), 0).apply {
+        memory.multiply(Vector(2f, 3f, -2f, 1f), 0).apply {
             perspectiveDivide()
-            Assert.assertTrue(z < 0.0)
-            assertEquals(2.0 / 2.0, x, 0.1)
-            assertEquals(3.0 / 2.0, y, 0.1)
+            Assert.assertTrue(z < 0f)
+            assertEquals(2f / 2f, x, 0.1f)
+            assertEquals(3f / 2f, y, 0.1f)
         }
     }
 
     @Test
     fun lookAt() {
         memory.lookAt(0,
-                Vector(2.0, 2.0, 2.0, 1.0),
-                Vector(0.0, 0.0, 0.0, 1.0),
-                Vector(0.0, 1.0, 0.0, 0.0)
+                Vector(2f, 2f, 2f, 1f),
+                Vector(0f, 0f, 0f, 1f),
+                Vector(0f, 1f, 0f, 0f)
         )
 
         // Check that all matrix axis are perpendicular to each other:
-        assertEquals(0.0, memory[0, MatrixBuffer.FORWARD_ROW] * memory[0, MatrixBuffer.RIGHT_ROW], 0.1)
-        assertEquals(0.0, memory[0, MatrixBuffer.RIGHT_ROW] * memory[0, MatrixBuffer.UP_ROW], 0.1)
-        assertEquals(0.0, memory[0, MatrixBuffer.UP_ROW] * memory[0, MatrixBuffer.FORWARD_ROW], 0.1)
+        assertEquals(0f, memory[0, MatrixBuffer.FORWARD_ROW] * memory[0, MatrixBuffer.RIGHT_ROW], 0.1f)
+        assertEquals(0f, memory[0, MatrixBuffer.RIGHT_ROW] * memory[0, MatrixBuffer.UP_ROW], 0.1f)
+        assertEquals(0f, memory[0, MatrixBuffer.UP_ROW] * memory[0, MatrixBuffer.FORWARD_ROW], 0.1f)
 
         // Check the all matrix axis are unit vectors:
-        assertEquals(1.0, memory[0, MatrixBuffer.FORWARD_ROW].length, 0.1)
-        assertEquals(1.0, memory[0, MatrixBuffer.RIGHT_ROW].length, 0.1)
-        assertEquals(1.0, memory[0, MatrixBuffer.UP_ROW].length, 0.1)
+        assertEquals(1f, memory[0, MatrixBuffer.FORWARD_ROW].length, 0.1f)
+        assertEquals(1f, memory[0, MatrixBuffer.RIGHT_ROW].length, 0.1f)
+        assertEquals(1f, memory[0, MatrixBuffer.UP_ROW].length, 0.1f)
 
-        memory.multiply(Vector(0.0, 0.0, 0.0, 1.0), 0).apply {
-            assertEquals(0.0, x, 0.1)
-            assertEquals(0.0, y, 0.1)
-            assertTrue(z < 0.0)
+        memory.multiply(Vector(0f, 0f, 0f, 1f), 0).apply {
+            assertEquals(0f, x, 0.1f)
+            assertEquals(0f, y, 0.1f)
+            assertTrue(z < 0f)
         }
     }
 

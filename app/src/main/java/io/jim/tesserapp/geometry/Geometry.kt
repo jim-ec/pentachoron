@@ -245,7 +245,7 @@ open class Geometry(
     /**
      * Rotate in the zx plane around [theta].
      */
-    fun rotationZX(theta: Double) {
+    fun rotationZX(theta: Float) {
         synchronized(Geometry) {
             localMemory.rotation(ROTATION_ZX_MATRIX, 2, 0, theta)
             onMatrixChangedListeners.fire()
@@ -255,7 +255,7 @@ open class Geometry(
     /**
      * Rotate in the yx plane around [theta].
      */
-    fun rotationYX(theta: Double) {
+    fun rotationYX(theta: Float) {
         synchronized(Geometry) {
             localMemory.rotation(ROTATION_YX_MATRIX, 1, 0, theta)
             onMatrixChangedListeners.fire()

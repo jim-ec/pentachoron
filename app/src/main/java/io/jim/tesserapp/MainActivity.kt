@@ -24,8 +24,8 @@ class MainActivity : AppCompatActivity() {
         coordinateSystemView = findViewById(R.id.coordinateSystemView)
         controllerView = findViewById(R.id.controllerView)
 
-        controllerView.rotationXZListener = fun(rotation: Double) {
-            coordinateSystemView.cube.rotationZX(rotation * PI)
+        controllerView.rotationXZListener = fun(rotation: Float) {
+            coordinateSystemView.cube.rotationZX(rotation * PI.toFloat())
         }
 
         controllerView.renderGridOptionChangedListener = fun(enable: Boolean) {

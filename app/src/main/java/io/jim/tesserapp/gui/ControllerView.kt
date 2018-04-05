@@ -21,7 +21,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
     /**
      * Fired when xy rotation changed.
      */
-    lateinit var rotationXZListener: (Double) -> Unit
+    lateinit var rotationXZListener: (Float) -> Unit
 
     /**
      * Fire when render grid option changed.
@@ -32,12 +32,12 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         View.inflate(context, R.layout.view_controller, this)
 
         valueRotationXZ = findViewById(R.id.valueRotationXZ)
-        formatValueTextView(valueRotationXZ, 0.0)
+        formatValueTextView(valueRotationXZ, 0f)
         seekerRotationXZ = findViewById(R.id.seekerRotationXZ)
         seekerRotationXZ.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
 
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val radiansOverPi = 2 * progress.toDouble() / seekerRotationXZ.max
+                val radiansOverPi = 2 * progress.toFloat() / seekerRotationXZ.max
                 formatValueTextView(valueRotationXZ, radiansOverPi)
                 rotationXZListener(radiansOverPi)
             }
@@ -52,7 +52,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         }
     }
 
-    private fun formatValueTextView(view: TextView, radiansOverPi: Double) {
+    private fun formatValueTextView(view: TextView, radiansOverPi: Float) {
         view.text = String.format(context.getString(R.string.transform_rotation_value),
                 radiansOverPi, radiansOverPi * 180.0)
     }

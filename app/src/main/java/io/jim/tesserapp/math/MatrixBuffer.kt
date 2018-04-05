@@ -78,7 +78,7 @@ class MatrixBuffer(
         operator fun set(matrix: Int, row: Int, value: Vector) {
             checkMatrixIndex(matrix)
             for (i in 0 until MATRIX_COLUMNS) {
-                array[(offset + matrix) * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + i] = value[i].toFloat()
+                array[(offset + matrix) * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + i] = value[i]
             }
         }
 
@@ -97,10 +97,10 @@ class MatrixBuffer(
         operator fun get(matrix: Int, row: Int): Vector {
             checkMatrixIndex(matrix)
             return Vector(
-                    array[(offset + matrix) * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 0].toDouble(),
-                    array[(offset + matrix) * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 1].toDouble(),
-                    array[(offset + matrix) * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 2].toDouble(),
-                    array[(offset + matrix) * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 3].toDouble()
+                    array[(offset + matrix) * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 0],
+                    array[(offset + matrix) * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 1],
+                    array[(offset + matrix) * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 2],
+                    array[(offset + matrix) * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 3]
             )
         }
 
@@ -134,7 +134,7 @@ class MatrixBuffer(
          */
         fun scale(matrix: Int, v: Vector) {
             forEachColumn { i ->
-                this[matrix, i, i] = v[i].toFloat()
+                this[matrix, i, i] = v[i]
             }
         }
 
@@ -142,11 +142,11 @@ class MatrixBuffer(
          * Load a rotation matrix into [matrix].
          * The rotation takes place on the given [a]-[b]-plane, the angle is defined in [radians].
          */
-        fun rotation(matrix: Int, a: Int, b: Int, radians: Double) {
-            this[matrix, a, a] = cos(radians).toFloat()
-            this[matrix, a, b] = sin(radians).toFloat()
-            this[matrix, b, a] = -sin(radians).toFloat()
-            this[matrix, b, b] = cos(radians).toFloat()
+        fun rotation(matrix: Int, a: Int, b: Int, radians: Float) {
+            this[matrix, a, a] = cos(radians)
+            this[matrix, a, b] = sin(radians)
+            this[matrix, b, a] = -sin(radians)
+            this[matrix, b, b] = cos(radians)
         }
 
         /**
@@ -228,14 +228,14 @@ class MatrixBuffer(
          * @return The result vector, which is equal to [result] if not null.
          */
         fun multiply(lhs: Vector, rhs: Int = 0, result: Vector? = null): Vector {
-            val v = result ?: Vector(0.0, 0.0, 0.0, 0.0)
+            val v = result ?: Vector(0f, 0f, 0f, 0f)
             var sum: Float
             forEachColumn { c ->
                 sum = 0f
                 forEachColumn { i ->
-                    sum += lhs[i].toFloat() * this[rhs, i, c]
+                    sum += lhs[i] * this[rhs, i, c]
                 }
-                v[c] = sum.toDouble()
+                v[c] = sum
             }
             return v
         }

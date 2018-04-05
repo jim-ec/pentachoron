@@ -1,6 +1,6 @@
 package io.jim.tesserapp.math
 
-import java.lang.Math.sqrt
+import kotlin.math.sqrt
 
 /**
  * 4 dimensional vector.
@@ -10,27 +10,27 @@ data class Vector(
         /**
          * The X component.
          */
-        var x: Double,
+        var x: Float,
 
         /**
          * The Y component.
          */
-        var y: Double,
+        var y: Float,
 
         /**
          * The Z component.
          */
-        var z: Double,
+        var z: Float,
 
         /**
          * The W component.
          */
-        var w: Double) {
+        var w: Float) {
 
     /**
      * Set the component at the given [index] to a given [value].
      */
-    operator fun set(index: Int, value: Double) {
+    operator fun set(index: Int, value: Float) {
         when (index) {
             0 -> x = value
             1 -> y = value
@@ -80,7 +80,7 @@ data class Vector(
      * Normalize this vector.
      */
     fun normalize() = apply {
-        val oneOverLength = 1.0 / length
+        val oneOverLength = 1f / length
         x *= oneOverLength
         y *= oneOverLength
         z *= oneOverLength
@@ -102,24 +102,24 @@ data class Vector(
     /**
      * Scales this by [scale].
      */
-    operator fun times(scale: Double) =
+    operator fun times(scale: Float) =
             Vector(x * scale, y * scale, z * scale, w * scale)
 
     /**
      * Divides this vector through [divisor].
      */
-    operator fun div(divisor: Double) =
+    operator fun div(divisor: Float) =
             Vector(x / divisor, y / divisor, z / divisor, w / divisor)
 
     /**
      * Divides every component by this vector's w component.
      */
     fun perspectiveDivide() {
-        val oneOverW = 1.0 / w
+        val oneOverW = 1f / w
         x *= oneOverW
         y *= oneOverW
         z *= oneOverW
-        w = 1.0
+        w = 1f
     }
 
     /**
@@ -127,6 +127,6 @@ data class Vector(
      * This totally ignores the w component.
      */
     infix fun cross(v: Vector) =
-            Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x, 0.0)
+            Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x, 0f)
 
 }

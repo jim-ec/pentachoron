@@ -2,6 +2,7 @@ package io.jim.tesserapp.math
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import kotlin.math.sqrt
 
 /**
  * Vector unit test.
@@ -10,89 +11,89 @@ class VectorTest {
 
     @Test
     fun construction() {
-        Vector(1.0, 2.0, 5.0, 4.0).apply {
-            assertEquals(1.0, x, 0.1)
-            assertEquals(2.0, y, 0.1)
-            assertEquals(5.0, z, 0.1)
-            assertEquals(4.0, w, 0.1)
+        Vector(1f, 2f, 5f, 4f).apply {
+            assertEquals(1f, x, 0.1f)
+            assertEquals(2f, y, 0.1f)
+            assertEquals(5f, z, 0.1f)
+            assertEquals(4f, w, 0.1f)
 
-            assertEquals(1.0, x, 0.1)
-            assertEquals(2.0, y, 0.1)
-            assertEquals(5.0, z, 0.1)
-            assertEquals(4.0, w, 0.1)
+            assertEquals(1f, x, 0.1f)
+            assertEquals(2f, y, 0.1f)
+            assertEquals(5f, z, 0.1f)
+            assertEquals(4f, w, 0.1f)
         }
     }
 
     @Test
     fun addition() {
-        val v = Vector(1.0, 2.0, 5.0, 0.0)
-        val u = Vector(3.0, 1.0, 4.0, 1.0)
+        val v = Vector(1f, 2f, 5f, 0f)
+        val u = Vector(3f, 1f, 4f, 1f)
 
         val w: Vector = v + u
 
-        assertEquals(4.0, w.x, 0.1)
-        assertEquals(3.0, w.y, 0.1)
-        assertEquals(9.0, w.z, 0.1)
-        assertEquals(1.0, w.w, 0.1)
+        assertEquals(4f, w.x, 0.1f)
+        assertEquals(3f, w.y, 0.1f)
+        assertEquals(9f, w.z, 0.1f)
+        assertEquals(1f, w.w, 0.1f)
     }
 
     @Test
     fun subtraction() {
-        val v = Vector(3.0, 1.0, 4.0, 1.0)
-        val u = Vector(1.0, 2.0, 5.0, 2.0)
+        val v = Vector(3f, 1f, 4f, 1f)
+        val u = Vector(1f, 2f, 5f, 2f)
         val w: Vector = v - u
 
-        assertEquals(2.0, w.x, 0.1)
-        assertEquals(-1.0, w.y, 0.1)
-        assertEquals(-1.0, w.z, 0.1)
-        assertEquals(-1.0, w.w, 0.1)
+        assertEquals(2f, w.x, 0.1f)
+        assertEquals(-1f, w.y, 0.1f)
+        assertEquals(-1f, w.z, 0.1f)
+        assertEquals(-1f, w.w, 0.1f)
     }
 
     @Test
     fun scalarMultiplication() {
-        val v = Vector(3.0, 1.0, 4.0, 0.0)
-        val u = Vector(1.0, 2.0, 5.0, 3.0)
-        assertEquals(25.0, v * u, 0.1)
+        val v = Vector(3f, 1f, 4f, 0f)
+        val u = Vector(1f, 2f, 5f, 3f)
+        assertEquals(25f, v * u, 0.1f)
     }
 
     @Test
     fun division() {
-        (Vector(3.0, 1.0, 4.0, 0.0) / 2.0).apply {
-            assertEquals(1.5, x, 0.1)
-            assertEquals(0.5, y, 0.1)
-            assertEquals(2.0, z, 0.1)
-            assertEquals(0.0, w, 0.1)
+        (Vector(3f, 1f, 4f, 0f) / 2f).apply {
+            assertEquals(1.5f, x, 0.1f)
+            assertEquals(0.5f, y, 0.1f)
+            assertEquals(2f, z, 0.1f)
+            assertEquals(0f, w, 0.1f)
         }
     }
 
     @Test
     fun scale() {
-        (Vector(3.0, 1.0, 4.0, 4.0) * 2.0).apply {
-            assertEquals(6.0, x, 0.1)
-            assertEquals(2.0, y, 0.1)
-            assertEquals(8.0, z, 0.1)
-            assertEquals(8.0, w, 0.1)
+        (Vector(3f, 1f, 4f, 4f) * 2f).apply {
+            assertEquals(6f, x, 0.1f)
+            assertEquals(2f, y, 0.1f)
+            assertEquals(8f, z, 0.1f)
+            assertEquals(8f, w, 0.1f)
         }
     }
 
     @Test
     fun cross() {
-        (Vector(3.0, 1.0, 4.0, 1.0) cross Vector(1.0, 2.0, 5.0, 1.0)).apply {
-            assertEquals(-3.0, x, 0.1)
-            assertEquals(-11.0, y, 0.1)
-            assertEquals(5.0, z, 0.1)
-            assertEquals(0.0, w, 0.1)
+        (Vector(3f, 1f, 4f, 1f) cross Vector(1f, 2f, 5f, 1f)).apply {
+            assertEquals(-3f, x, 0.1f)
+            assertEquals(-11f, y, 0.1f)
+            assertEquals(5f, z, 0.1f)
+            assertEquals(0f, w, 0.1f)
         }
     }
 
     @Test
     fun length() {
-        assertEquals(Math.sqrt(26.0), Vector(3.0, 1.0, 4.0, 0.0).length, 0.01)
+        assertEquals(sqrt(26f), Vector(3f, 1f, 4f, 0f).length, 0.1f)
     }
 
     @Test
     fun normalized() {
-        assertEquals(1.0, Vector(3.0, 1.0, 4.0, 5.0).normalize().length, 0.1)
+        assertEquals(1f, Vector(3f, 1f, 4f, 5f).normalize().length, 0.1f)
     }
 
 }

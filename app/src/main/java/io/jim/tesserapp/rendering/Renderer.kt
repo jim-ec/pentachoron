@@ -61,8 +61,8 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         glViewport(0, 0, width, height)
 
         viewMatrix.MemorySpace().apply {
-            lookAt(1, Vector(4.0, 0.0, 0.0, 1.0), Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 1.0, 0.0, 1.0))
-            scale(2, Vector(1.0, width.toDouble() / height, 1.0, 1.0))
+            lookAt(1, Vector(4f, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
+            scale(2, Vector(1f, width.toFloat() / height, 1f, 1f))
             multiply(1, 2, 0)
         }
 
