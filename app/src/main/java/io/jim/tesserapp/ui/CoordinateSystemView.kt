@@ -1,4 +1,4 @@
-package io.jim.tesserapp.gui
+package io.jim.tesserapp.ui
 
 import android.content.Context
 import android.opengl.GLSurfaceView

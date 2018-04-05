@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         android:layout_weight="2">
 
-        <io.jim.tesserapp.gui.CoordinateSystemView
+        <io.jim.tesserapp.ui.CoordinateSystemView
             android:id="@+id/coordinateSystemView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -24,12 +24,12 @@
         android:layout_marginTop="8dp"
         android:layout_weight="1">
 
-        <io.jim.tesserapp.gui.ControllerView
+        <io.jim.tesserapp.ui.ControllerView
             android:id="@+id/controllerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        </io.jim.tesserapp.gui.ControllerView>
+        </io.jim.tesserapp.ui.ControllerView>
 
     </ScrollView>
 

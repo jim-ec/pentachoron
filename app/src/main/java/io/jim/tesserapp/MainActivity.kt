@@ -2,9 +2,9 @@ package io.jim.tesserapp
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import io.jim.tesserapp.gui.ControllerView
-import io.jim.tesserapp.gui.CoordinateSystemView
 import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.ui.ControllerView
+import io.jim.tesserapp.ui.CoordinateSystemView
 
 /**
  * Main activity.
