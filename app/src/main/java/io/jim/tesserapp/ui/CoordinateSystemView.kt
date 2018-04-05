@@ -42,7 +42,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         setEGLContextClientVersion(2)
         setRenderer(renderer)
         debugFlags = DEBUG_CHECK_GL_ERROR
-        renderMode = RENDERMODE_WHEN_DIRTY
+        renderMode = RENDERMODE_CONTINUOUSLY
 
         // Create axis:
         val axis = Lines("Axis")
@@ -75,13 +75,6 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         //Handler().postDelayed({
         //    cube.extrude(Vector(0f, 0f, -2f, 0f))
         //}, 3000)
-
-        // Render scene upon every graphical change:
-        Geometry.onMatrixChangedListeners += ::requestRender
-        Geometry.onHierarchyChangedListeners += ::requestRender
-        Geometry.onGeometryChangedListeners += ::requestRender
-
-        requestRender()
     }
 
     /**

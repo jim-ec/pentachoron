@@ -37,11 +37,6 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
      */
     val onVertexBufferUpdated = ListenerList()
 
-    /**
-     * Listeners are fired when model matrix data was changed in buffer.
-     */
-    val onModelMatrixBufferUpdated = ListenerList()
-
     private var geometries = HashSet<Geometry>()
 
     companion object {
@@ -77,11 +72,10 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
             }
 
             uploadVertexData()
-            uploadModelMatrixData()
+            computeModelMatrices()
         }
 
         Geometry.onGeometryChangedListeners += ::uploadVertexData
-        Geometry.onMatrixChangedListeners += ::uploadModelMatrixData
     }
 
     private fun uploadVertexData() {
@@ -96,9 +90,11 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
         onVertexBufferUpdated.fire()
     }
 
-    private fun uploadModelMatrixData() {
+    /**
+     * Recomputes model matrices.
+     */
+    fun computeModelMatrices() {
         rootGeometry.computeModelMatricesRecursively()
-        onModelMatrixBufferUpdated.fire()
     }
 
 }
