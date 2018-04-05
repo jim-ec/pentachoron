@@ -4,14 +4,14 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.ui.ControllerView
-import io.jim.tesserapp.ui.CoordinateSystemView
+import io.jim.tesserapp.ui.CubeView
 
 /**
  * Main activity.
  */
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var coordinateSystemView: CoordinateSystemView
+    private lateinit var cubeView: CubeView
     private lateinit var controllerView: ControllerView
 
     /**
@@ -21,37 +21,36 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        coordinateSystemView = findViewById(R.id.coordinateSystemView)
+        cubeView = findViewById(R.id.cubeView)
         controllerView = findViewById(R.id.controllerView)
 
-
         controllerView.cameraControlDistance.listeners += fun(distance: Float) {
-            synchronized(coordinateSystemView.renderer.sharedRenderData) {
-                coordinateSystemView.renderer.sharedRenderData.cameraDistance = distance
+            synchronized(cubeView.coordinateSystemView.sharedRenderData) {
+                cubeView.coordinateSystemView.sharedRenderData.cameraDistance = distance
             }
         }
 
         controllerView.rotationControlXZ.listeners += fun(rotation: Float) {
-            synchronized(coordinateSystemView.renderer.sharedRenderData) {
-                coordinateSystemView.cube.rotationZX(rotation)
+            synchronized(cubeView.coordinateSystemView.sharedRenderData) {
+                cubeView.cube.rotationZX(rotation)
             }
         }
 
         controllerView.rotationControlXY.listeners += fun(rotation: Float) {
-            synchronized(coordinateSystemView.renderer.sharedRenderData) {
-                coordinateSystemView.cube.rotationYX(rotation)
+            synchronized(cubeView.coordinateSystemView.sharedRenderData) {
+                cubeView.cube.rotationYX(rotation)
             }
         }
 
         controllerView.translationControlX.listeners += fun(translationX: Float) {
-            synchronized(coordinateSystemView.renderer.sharedRenderData) {
-                coordinateSystemView.cube.translate(Vector(translationX, 0f, 0f, 1f))
+            synchronized(cubeView.coordinateSystemView.sharedRenderData) {
+                cubeView.cube.translate(Vector(translationX, 0f, 0f, 1f))
             }
         }
 
         controllerView.renderGridOptionChangedListener = fun(enable: Boolean) {
-            synchronized(coordinateSystemView.renderer.sharedRenderData) {
-                coordinateSystemView.enableGrid(enable)
+            synchronized(cubeView.coordinateSystemView.sharedRenderData) {
+                cubeView.coordinateSystemView.enableGrid(enable)
             }
         }
     }

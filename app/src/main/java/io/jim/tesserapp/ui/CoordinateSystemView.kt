@@ -8,7 +8,6 @@ import android.view.MotionEvent.*
 import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.Lines
-import io.jim.tesserapp.geometry.Quadrilateral
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.rendering.Renderer
@@ -19,14 +18,14 @@ import io.jim.tesserapp.rendering.Renderer
 class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceView(context, attrs) {
 
     /**
-     * Controllable demonstration geometry.
-     */
-    val cube: Geometry
-
-    /**
      * Renderer.
      */
     val renderer = Renderer(context)
+
+    /**
+     * Render data shared across render and other threads.
+     */
+    val sharedRenderData = renderer.sharedRenderData
 
     private val touchStartPosition = Vector(0f, 0f, 0f, 0f)
     private val rotation = Vector(0f, 0f, 0f, 0f)
@@ -72,17 +71,6 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
             }
         }
         enableGrid(true)
-
-        // Create cube:
-        cube = Quadrilateral("Cube", Vector(1f, 1f, 1f, 1f),
-                Vector(-1f, 1f, 1f, 1f),
-                Vector(-1f, -1f, 1f, 1f),
-                Vector(1f, -1f, 1f, 1f),
-                Color(context, R.color.colorAccent)
-        ).apply {
-            addToParentGeometry(renderer.sharedRenderData.rootGeometry)
-            extrude(Vector(0f, 0f, -2f, 0f))
-        }
     }
 
     /**
