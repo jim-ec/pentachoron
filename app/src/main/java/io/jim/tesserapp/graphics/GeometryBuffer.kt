@@ -78,7 +78,7 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
 
             }
 
-            modelMatrixOffset += Spatial.MATRICES_PER_SPATIAL
+            modelMatrixOffset += Spatial.MATRICES_PER_SPATIAL + 1
 
         }
 

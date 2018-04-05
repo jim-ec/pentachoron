@@ -55,6 +55,14 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 0.0, 1.0, 1.0))
         axis.addToParentSpatial(renderer.rootSpatial)
 
+        // Create grid:
+        grid = Lines("Grid", Color(context, R.color.colorGrid))
+        grid.addToParentSpatial(renderer.rootSpatial)
+        for (i in -5..5) {
+            grid.addLine(Vector(i.toDouble(), 0.0, -5.0, 1.0), Vector(i.toDouble(), 0.0, 5.0, 1.0))
+            grid.addLine(Vector(-5.0, 0.0, i.toDouble(), 1.0), Vector(5.0, 0.0, i.toDouble(), 1.0))
+        }
+
         // Create cube:
         cube = Quadrilateral("Cube", Vector(1.0, 1.0, 1.0, 1.0),
                 Vector(-1.0, 1.0, 1.0, 1.0),
@@ -64,14 +72,6 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         )
         cube.extrude(Vector(0.0, 0.0, -2.0, 0.0))
         cube.addToParentSpatial(renderer.rootSpatial)
-
-        // Create grid:
-        grid = Lines("Grid", Color(context, R.color.colorGrid))
-        for (i in -5..5) {
-            grid.addLine(Vector(i.toDouble(), 0.0, -5.0, 1.0), Vector(i.toDouble(), 0.0, 5.0, 1.0))
-            grid.addLine(Vector(-5.0, 0.0, i.toDouble(), 1.0), Vector(5.0, 0.0, i.toDouble(), 1.0))
-        }
-        grid.addToParentSpatial(renderer.rootSpatial)
     }
 
     /**
@@ -131,7 +131,8 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     fun enableGrid(enable: Boolean) {
         if (enable) {
             grid.addToParentSpatial(renderer.rootSpatial)
-        } else {
+        }
+        else {
             grid.releaseFromParentSpatial()
         }
     }

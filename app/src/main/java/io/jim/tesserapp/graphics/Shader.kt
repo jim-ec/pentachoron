@@ -1,7 +1,6 @@
 package io.jim.tesserapp.graphics
 
 import android.opengl.GLES20.*
-import io.jim.tesserapp.math.Matrix
 import io.jim.tesserapp.math.MatrixBuffer
 import junit.framework.Assert.assertTrue
 
@@ -33,8 +32,6 @@ class Shader(maxModels: Int) {
     private val modelMatrixLocation: Int
     private val viewMatrixLocation: Int
     private val projectionMatrixLocation: Int
-    private val projectionMatrixArray = FloatArray(16)
-    private val viewMatrixArray = FloatArray(16)
 
     private val vertexShaderSource = """
             uniform mat4 P;
@@ -125,19 +122,17 @@ class Shader(maxModels: Int) {
     }
 
     /**
-     * Upload the view [matrix] to the uniform.
+     * Upload the first matrix in [buffer] to the view matrix uniform.
      */
-    fun uploadViewMatrix(matrix: Matrix) {
-        matrix.storeToFloatArray(viewMatrixArray, 0)
-        glUniformMatrix4fv(viewMatrixLocation, 1, false, viewMatrixArray, 0)
+    fun uploadViewMatrix(buffer: MatrixBuffer) {
+        glUniformMatrix4fv(viewMatrixLocation, 1, false, buffer.array, 0)
     }
 
     /**
-     * Upload the projection [matrix] to the uniform.
+     * Upload the first matrix in [buffer] to the projection matrix uniform.
      */
-    fun uploadProjectionMatrix(matrix: Matrix) {
-        matrix.storeToFloatArray(projectionMatrixArray, 0)
-        glUniformMatrix4fv(projectionMatrixLocation, 1, false, projectionMatrixArray, 0)
+    fun uploadProjectionMatrix(buffer: MatrixBuffer) {
+        glUniformMatrix4fv(projectionMatrixLocation, 1, false, buffer.array, 0)
     }
 
 }

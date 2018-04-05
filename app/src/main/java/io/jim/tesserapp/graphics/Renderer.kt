@@ -5,7 +5,7 @@ import android.opengl.GLES10.GL_MULTISAMPLE
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.Spatial
-import io.jim.tesserapp.math.Matrix
+import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -24,10 +24,11 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     private lateinit var geometryBuffer: GeometryBuffer
     private var rebuildGeometryBuffers = true
     private val clearColor = Color(context, android.R.color.background_light)
-    private val viewMatrix = Matrix()
+    private val viewMatrix = MatrixBuffer(3)
+    private val projectionMatrix = MatrixBuffer(1)
 
     companion object {
-        private const val MAX_MODELS = 4
+        private const val MAX_MODELS = 100
         private const val MAX_VERTICES = 1000
         private const val MAX_INDICES = 1000
     }
@@ -45,7 +46,8 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         shader = Shader(MAX_MODELS)
         geometryBuffer = GeometryBuffer(MAX_MODELS, MAX_VERTICES, MAX_INDICES)
 
-        shader.uploadProjectionMatrix(Matrix().perspective(0.1, 100.0))
+        projectionMatrix.perspective(0, 0.1f, 100f)
+        shader.uploadProjectionMatrix(projectionMatrix)
 
         // Rebuild geometry buffers upon spatial hierarchy change:
         Spatial.addChildrenChangedListener { rebuildGeometryBuffers = true }
@@ -56,9 +58,11 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
      */
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
-        viewMatrix.multiplicationFrom(
-                Matrix().lookAt(Vector(4.0, 0.0, 0.0, 1.0), Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 1.0, 0.0, 1.0)),
-                Matrix().scale(Vector(1.0, width.toDouble() / height, 1.0, 1.0)))
+
+        viewMatrix.lookAt(1, Vector(4.0, 0.0, 0.0, 1.0), Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 1.0, 0.0, 1.0))
+        viewMatrix.scale(2, Vector(1.0, width.toDouble() / height, 1.0, 1.0))
+        viewMatrix.multiply(1, 2, 0)
+
         shader.uploadViewMatrix(viewMatrix)
     }
 
@@ -74,7 +78,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         }
 
         if (rootSpatial.rebuildModelMatrices) {
-            rootSpatial.computeLocal()
+            rootSpatial.computeModelMatricesRecursively()
         }
 
         geometryBuffer.bind(shader)

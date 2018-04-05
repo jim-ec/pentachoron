@@ -78,7 +78,7 @@ open class Spatial(
     /**
      * Recomputes all model matrices recursively.
      */
-    fun computeLocal() {
+    fun computeModelMatricesRecursively() {
         if (!rebuildModelMatrices) return
 
         // Rotation:
@@ -99,7 +99,7 @@ open class Spatial(
         }
 
         rebuildModelMatrices = true
-        children.forEach { spatial -> spatial.computeLocal() }
+        children.forEach { spatial -> spatial.computeModelMatricesRecursively() }
     }
 
     private fun requestRebuildModelMatrices() {
