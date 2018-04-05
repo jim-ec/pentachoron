@@ -299,24 +299,4 @@ open class Geometry(
 
     override fun toString() = name
 
-    /**
-     * Return a string representation, including all children.
-     */
-    @Suppress("unused")
-    fun toStringRecursive() = let {
-        val sb = StringBuilder()
-        toStringRecursive(0, sb)
-        sb.toString()
-    }
-
-    private fun toStringRecursive(indent: Int, sb: StringBuilder) {
-        for (i in 0 until indent) {
-            sb.append(" -> ")
-        }
-        sb.append(this).append('\n')
-        children.forEach {
-            it.toStringRecursive(indent + 1, sb)
-        }
-    }
-
 }
