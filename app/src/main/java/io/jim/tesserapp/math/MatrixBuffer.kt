@@ -251,6 +251,18 @@ data class MatrixBuffer(private val maxMatrices: Int) {
     }
 
     /**
+     *
+     */
+    @Deprecated("Upload directly without allocating an additional array")
+    fun asFloatArray(matrix: Int, array: FloatArray, offset: Int) {
+        forEachColumn { r ->
+            forEachColumn { c ->
+                array[offset + r * MATRIX_COLUMNS + c] = this[matrix, r, c]
+            }
+        }
+    }
+
+    /**
      * Prints the matrix at [matrix].
      */
     @Suppress("unused")

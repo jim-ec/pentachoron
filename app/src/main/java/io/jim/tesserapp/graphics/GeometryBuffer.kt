@@ -2,7 +2,7 @@ package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.Spatial
-import io.jim.tesserapp.math.Matrix
+import io.jim.tesserapp.math.MatrixBuffer
 
 /**
  * A geometry buffer, responsible for vertex and index data.
@@ -15,7 +15,7 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
      * The rear memory section holds global model matrices of non-geometry spatial, as well as
      * local and temporary matrices (translation and rotation).
      */
-    val modelMatrices = Array(maxModels * (1 + Spatial.MATRICES_PER_SPATIAL + 1)) { Matrix() }
+    val modelMatrices = MatrixBuffer(maxModels * (1 + Spatial.MATRICES_PER_SPATIAL + 1))
 
     /**
      * Actual count of valid global model matrices.

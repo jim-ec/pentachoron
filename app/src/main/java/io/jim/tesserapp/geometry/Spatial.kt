@@ -1,6 +1,6 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.math.Matrix
+import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 
 /**
@@ -18,7 +18,7 @@ open class Spatial(
     /**
      * Reference to model matrix buffer.
      */
-    lateinit var buffer: Array<Matrix>
+    lateinit var buffer: MatrixBuffer
 
     /**
      * Offset of model matrix.
@@ -82,19 +82,20 @@ open class Spatial(
         if (!rebuildModelMatrices) return
 
         // Rotation:
-        buffer[offset + ROTATION_MATRIX].multiplicationFrom(buffer[offset + ROTATION_ZX_MATRIX], buffer[offset + ROTATION_YX_MATRIX])
+        buffer.multiply(offset + ROTATION_ZX_MATRIX, offset + ROTATION_YX_MATRIX,
+                offset + ROTATION_MATRIX)
 
         // Local:
-        buffer[offset + LOCAL_MATRIX].multiplicationFrom(buffer[offset + ROTATION_MATRIX], buffer[offset + TRANSLATION_MATRIX])
+        buffer.multiply(offset + ROTATION_MATRIX, offset + TRANSLATION_MATRIX,
+                offset + LOCAL_MATRIX)
 
         // Global:
         if (null != parent) {
-            buffer[globalModelMatrixOffset].multiplicationFrom(
-                    buffer[offset + LOCAL_MATRIX],
-                    buffer[parent!!.globalModelMatrixOffset])
+            buffer.multiply(offset + LOCAL_MATRIX, parent!!.globalModelMatrixOffset,
+                    globalModelMatrixOffset)
         }
         else {
-            buffer[globalModelMatrixOffset] = buffer[offset + LOCAL_MATRIX].copy()
+            buffer.copy(globalModelMatrixOffset, offset + LOCAL_MATRIX)
         }
 
         rebuildModelMatrices = true
@@ -110,7 +111,7 @@ open class Spatial(
      * Rotate the spatial in the zx plane around [theta].
      */
     fun rotationZX(theta: Double) {
-        buffer[offset + ROTATION_ZX_MATRIX].rotation(2, 0, theta)
+        buffer.rotation(offset + ROTATION_ZX_MATRIX, 2, 0, theta)
         requestRebuildModelMatrices()
         onMatrixChangedListeners.forEach { it() }
     }
@@ -119,7 +120,7 @@ open class Spatial(
      * Rotate the spatial in the yx plane around [theta].
      */
     fun rotationYX(theta: Double) {
-        buffer[offset + ROTATION_YX_MATRIX].rotation(1, 0, theta)
+        buffer.rotation(offset + ROTATION_YX_MATRIX, 1, 0, theta)
         requestRebuildModelMatrices()
         onMatrixChangedListeners.forEach { it() }
     }
@@ -128,7 +129,7 @@ open class Spatial(
      * Translate the spatial by [v].
      */
     fun translate(v: Vector) {
-        buffer[offset + TRANSLATION_MATRIX].translation(v)
+        buffer.translation(offset + TRANSLATION_MATRIX, v)
         requestRebuildModelMatrices()
         onMatrixChangedListeners.forEach { it() }
     }
@@ -179,7 +180,7 @@ open class Spatial(
     }
 
     override fun toString(): String {
-        return "$name: ${buffer[LOCAL_MATRIX]}"
+        return "$name: ${buffer.toString(LOCAL_MATRIX)}"
     }
 
 }

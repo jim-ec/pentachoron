@@ -83,7 +83,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         // Fetch model matrices:
         var modelMatrixOffset = 0
         for (i in 0 until geometryBuffer.globalModelMatrixCount) {
-            geometryBuffer.modelMatrices[i].storeToFloatArray(modelMatrixArray, modelMatrixOffset)
+            geometryBuffer.modelMatrices.asFloatArray(i, modelMatrixArray, modelMatrixOffset)
             modelMatrixOffset += 16
         }
         shader.uploadModelMatrixArray(modelMatrixArray, modelMatrixOffset / 16)
