@@ -87,11 +87,6 @@ open class Geometry(
         val onHierarchyChangedListeners = ListenerList()
 
         /**
-         * Added listeners are fired when matrix data, i.e. transform, of one entity changed.
-         */
-        val onMatrixChangedListeners = ListenerList()
-
-        /**
          * Listeners are fired every time a single point or line is added.
          */
         val onGeometryChangedListeners = ListenerList()
@@ -248,7 +243,6 @@ open class Geometry(
     fun rotationZX(theta: Float) {
         synchronized(Geometry) {
             localMemory.rotation(ROTATION_ZX_MATRIX, 2, 0, theta)
-            onMatrixChangedListeners.fire()
         }
     }
 
@@ -258,7 +252,6 @@ open class Geometry(
     fun rotationYX(theta: Float) {
         synchronized(Geometry) {
             localMemory.rotation(ROTATION_YX_MATRIX, 1, 0, theta)
-            onMatrixChangedListeners.fire()
         }
     }
 
@@ -268,7 +261,6 @@ open class Geometry(
     fun translate(v: Vector) {
         synchronized(Geometry) {
             localMemory.translation(TRANSLATION_MATRIX, v)
-            onMatrixChangedListeners.fire()
         }
     }
 

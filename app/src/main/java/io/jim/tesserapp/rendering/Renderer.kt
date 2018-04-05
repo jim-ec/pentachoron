@@ -9,7 +9,6 @@ import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
-import kotlin.properties.Delegates
 
 /**
  * Actually renders to OpenGL.
@@ -29,7 +28,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
     private var uploadVertexBuffer = true
-    private var viewportAspectRation: Float by Delegates.observable(1f) { _, _, _ -> computeViewMatrix() }
+    private var viewportAspectRation = 1f
     private val geometryManager = GeometryManager(MAX_MODELS, MAX_VERTICES).apply {
         onVertexBufferUpdated += { uploadVertexBuffer = true }
     }
@@ -38,7 +37,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     /**
      * Distance of camera position from center.
      */
-    var cameraDistance: Float by Delegates.observable(4f) { _, _, _ -> computeViewMatrix() }
+    var cameraDistance = 4f
 
 
     companion object {
@@ -65,14 +64,6 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         shader.uploadProjectionMatrix(projectionMatrix)
     }
 
-    private fun computeViewMatrix() {
-        viewMatrixMemory.apply {
-            lookAt(1, Vector(cameraDistance, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
-            scale(2, Vector(1f, viewportAspectRation, 1f, 1f))
-            multiply(1, 2, 0)
-        }
-    }
-
     /**
      * Construct view matrix.
      */
@@ -97,13 +88,21 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
 
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        shader.uploadViewMatrix(viewMatrix)
+        // Recompute view matrix:
+        viewMatrixMemory.apply {
+            lookAt(1, Vector(cameraDistance, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
+            scale(2, Vector(1f, viewportAspectRation, 1f, 1f))
+            multiply(1, 2, 0)
+            shader.uploadViewMatrix(viewMatrix)
+        }
 
+        // Upload model matrices:
         geometryManager.computeModelMatrices()
         shader.uploadModelMatrixBuffer(
                 geometryManager.modelMatrixBuffer.modelMatrixBuffer,
                 geometryManager.modelMatrixBuffer.activeGeometries)
 
+        // Recompute geometry vertices:
         if (uploadVertexBuffer) {
             vertexBuffer.bind(shader, geometryManager.vertexBuffer)
             uploadVertexBuffer = false
