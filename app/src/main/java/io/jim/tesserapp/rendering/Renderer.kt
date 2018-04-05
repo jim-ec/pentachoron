@@ -82,7 +82,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
 
         if (uploadModelMatrixBuffer) {
             //println("Upload model matrix data")
-            shader.uploadModelMatrixBuffer(geometryManager.modelMatrixBuffer.globalBuffer, geometryManager.modelMatrixBuffer.activeGeometries)
+            shader.uploadModelMatrixBuffer(geometryManager.modelMatrixBuffer.modelMatrixBuffer, geometryManager.modelMatrixBuffer.activeGeometries)
             uploadModelMatrixBuffer = false
         }
 
