@@ -20,8 +20,8 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
      * Vertex buffer.
      * Buffer data is updated automatically upon geometrical change.
      */
-    val vertexBuffer = FillUpBuffer<Vertex>(maxVertices,
-            FillUpBuffer.Layout(
+    val vertexBuffer = FloatLayoutBuffer<Vertex>(maxVertices,
+            FloatLayoutBuffer.Layout(
                     COMPONENTS_PER_POSITION,
                     COMPONENTS_PER_COLOR,
                     COMPONENTS_PER_MODEL_INDEX))

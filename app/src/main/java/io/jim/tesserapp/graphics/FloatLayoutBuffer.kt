@@ -8,7 +8,7 @@ import java.nio.ByteOrder
  *
  * Data entries are structured with layouts, rather than being raw floats.
  */
-data class FillUpBuffer<in T : Iterable<Float>>(
+data class FloatLayoutBuffer<in T : Iterable<Float>>(
 
         /**
          * Maximum capacity of entries.

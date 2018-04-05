@@ -3,11 +3,11 @@ package io.jim.tesserapp.graphics
 import junit.framework.Assert.assertEquals
 import org.junit.Test
 
-class FillUpBufferTest {
+class FloatLayoutBufferTest {
 
     private val ranges = listOf(1, 2, 3)
-    private val layout = FillUpBuffer.Layout(ranges)
-    private val buffer = FillUpBuffer<List<Float>>(10, layout)
+    private val layout = FloatLayoutBuffer.Layout(ranges)
+    private val buffer = FloatLayoutBuffer<List<Float>>(10, layout)
 
     @Test
     fun layout() {
@@ -45,7 +45,7 @@ class FillUpBufferTest {
         assertEquals(1, buffer.activeEntries)
     }
 
-    @Test(expected = FillUpBuffer.InvalidEntryLayout::class)
+    @Test(expected = FloatLayoutBuffer.InvalidEntryLayout::class)
     fun invalidEntryAdd() {
         buffer += listOf(1f, 5f, 6f)
     }
@@ -58,7 +58,7 @@ class FillUpBufferTest {
         }
     }
 
-    @Test(expected = FillUpBuffer.OverflowException::class)
+    @Test(expected = FloatLayoutBuffer.OverflowException::class)
     fun overflow() {
         for (i in 0..10) {
             buffer += listOf(1f, 2f, 2f, 3f, 3f, 3f)
