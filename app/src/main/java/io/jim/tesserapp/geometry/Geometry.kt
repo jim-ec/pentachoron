@@ -4,6 +4,7 @@ import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.util.ListenerList
+import kotlin.math.max
 
 /**
  * A geometrical structure consisting of vertices.
@@ -115,7 +116,7 @@ open class Geometry(
          *
          * Calls to [geometrical] are cross-thread synchronized.
          */
-        fun geometrical(f: () -> Unit) {
+        inline fun geometrical(f: () -> Unit) {
             synchronized(Geometry) {
                 geometricalCounter++
                 f()
@@ -126,7 +127,15 @@ open class Geometry(
             }
         }
 
-        private var geometricalCounter = 0
+        /**
+         * Every time this counter reaches 0, geometry change listeners are fired.
+         * The counter can never be negative, and is incremented/decremented automatically
+         * on calls to [geometrical].
+         */
+        var geometricalCounter = 0
+            set(value) {
+                field = max(value, 0)
+            }
 
     }
 
