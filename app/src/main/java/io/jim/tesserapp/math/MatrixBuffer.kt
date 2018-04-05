@@ -150,23 +150,16 @@ data class MatrixBuffer(private val maxMatrices: Int) {
 
     /**
      * Load a 3D to 2D perspective matrix into [matrix].
-     */
-    fun perspective(matrix: Int) {
-        this[matrix, 2, 3] = -1.0f
-        this[matrix, 3, 3] = 0.0f
-    }
-
-    /**
-     * Load a 3D to 2D perspective matrix into [matrix].
      * The z component gets remapping between a near and far value.
      * @param near Near plane. If Vector lies on that plane (negated), it will be projected to 0.
      * @param far Far plane. If Vector lies on that plane (negated), it will be projected to 1.
      */
-    fun perspective(matrix: Int, near: Float, far: Float) {
-        perspective(matrix)
+    fun perspective2D(matrix: Int, near: Float, far: Float) {
         Assert.assertTrue(near > 0.0)
         Assert.assertTrue(far > 0.0)
         Assert.assertTrue(far > near)
+        this[matrix, 2, 3] = -1.0f
+        this[matrix, 3, 3] = 0.0f
         this[matrix, 2, 2] = -far / (far - near)
         this[matrix, 3, 2] = -(far * near) / (far - near)
     }

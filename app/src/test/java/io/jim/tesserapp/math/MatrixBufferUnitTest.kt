@@ -128,17 +128,8 @@ class MatrixBufferUnitTest {
     }
 
     @Test
-    fun perspective() {
-        buffer.perspective(0)
-        buffer.multiply(Vector(2.0, 3.0, -10.0, 1.0), 0).apply {
-            perspectiveDivide()
-            assertEquals(0.2, x, 0.1)
-        }
-    }
-
-    @Test
-    fun perspective_withNearFarPlanes() {
-        buffer.perspective(0, 5f, 10f)
+    fun perspective2D() {
+        buffer.perspective2D(0, 5f, 10f)
 
         buffer.multiply(Vector(2.0, 3.0, -10.0, 1.0), 0).apply {
             perspectiveDivide()

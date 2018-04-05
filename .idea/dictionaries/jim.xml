@@ -6,6 +6,8 @@
       <w>lowp</w>
       <w>mediump</w>
       <w>noninfringement</w>
+      <w>shaders</w>
+      <w>spatials</w>
       <w>tesser</w>
       <w>tesserapp</w>
       <w>verts</w>

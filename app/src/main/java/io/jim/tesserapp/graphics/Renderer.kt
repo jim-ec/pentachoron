@@ -46,7 +46,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         shader = Shader(MAX_MODELS)
         geometryBuffer = GeometryBuffer(MAX_MODELS, MAX_VERTICES, MAX_INDICES)
 
-        projectionMatrix.perspective(0, 0.1f, 100f)
+        projectionMatrix.perspective2D(0, 0.1f, 100f)
         shader.uploadProjectionMatrix(projectionMatrix)
 
         // Rebuild geometry buffers upon spatial hierarchy change:
@@ -72,14 +72,18 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
+        // If geometry structure changes, we need to rebuild all buffers.
+        // This is a costly operation, but usually not often performed.
         if (rebuildGeometryBuffers) {
             geometryBuffer.recordGeometries(rootSpatial)
             rebuildGeometryBuffers = false
         }
 
-        if (rootSpatial.rebuildModelMatrices) {
-            rootSpatial.computeModelMatricesRecursively()
-        }
+        // Recompute global model matrices.
+        // Since render is only requested when data is changed, and geometry which is not
+        // transformed often is not expected in large chunks, we can simply re-compute all
+        // global model matrices:
+        rootSpatial.computeModelMatricesRecursively()
 
         geometryBuffer.bind(shader)
 
@@ -87,7 +91,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         shader.uploadModelMatrixBuffer(geometryBuffer.modelMatrices, geometryBuffer.globalModelMatrixCount)
 
         // Draw actual geometry:
-        glDrawElements(GL_LINES, geometryBuffer.indexCount(), GL_UNSIGNED_INT, 0)
+        glDrawElements(GL_LINES, geometryBuffer.indexCount, GL_UNSIGNED_INT, 0)
     }
 
 }

@@ -21,18 +21,34 @@ open class Spatial(
     lateinit var buffer: MatrixBuffer
 
     /**
-     * Offset of model matrix.
+     * Offset of memory section belonging to this particular spatial within the matrix buffer.
+     *
      * A value of -1 indicates that this spatial is not attached to the root object and therefore
      * does not own a registered model matrix.
+     *
+     * Local and temporary matrices like translation are guaranteed to occupy the same, contiguous
+     * section of memory. Therefore we don't need to store offsets for each individual matrix but
+     * rather add offset constants to a single base offset to reach individual matrices.
      */
     var offset = -1
+
+    private val matrixLocal get() = offset + LOCAL_MATRIX
+    private val matrixRotation get() = offset + ROTATION_MATRIX
+    private val matrixRotationZX get() = offset + ROTATION_ZX_MATRIX
+    private val matrixRotationYX get() = offset + ROTATION_YX_MATRIX
+    private val matrixTranslation get() = offset + TRANSLATION_MATRIX
 
     /**
      * Offset of global model matrix.
      * A value of -1 indicates that this spatial is not attached to the root object and therefore
      * does not own a registered global model matrix.
+     *
+     * Unlike all the other matrices, the global matrix need not to lie in the same contiguous
+     * memory section within the matrix buffer. This is because all the global model matrices
+     * belonging to actually drawn geometry is kept in a separate memory section, optimized
+     * for fast uniform array upload.
      */
-    var globalModelMatrixOffset = -1
+    var matrixGlobal = -1
 
     private val children = ArrayList<Spatial>()
     private var parent: Spatial? = null
@@ -70,49 +86,39 @@ open class Spatial(
     }
 
     /**
-     * Becomes true if model matrices needs to be re-calculated.
-     */
-    var rebuildModelMatrices = false
-        private set
-
-    /**
      * Recomputes all model matrices recursively.
+     *
+     * Since this recursive function computes model matrices for its children after it's done
+     * with its one global matrix, it can safely access its parent's global model matrix,
+     * since that is guaranteed to already be computed.
      */
     fun computeModelMatricesRecursively() {
-        if (!rebuildModelMatrices) return
 
         // Rotation:
-        buffer.multiply(offset + ROTATION_ZX_MATRIX, offset + ROTATION_YX_MATRIX,
-                offset + ROTATION_MATRIX)
+        buffer.multiply(matrixRotationZX, matrixRotationYX, matrixRotation)
 
         // Local:
-        buffer.multiply(offset + ROTATION_MATRIX, offset + TRANSLATION_MATRIX,
-                offset + LOCAL_MATRIX)
+        buffer.multiply(matrixRotation, matrixTranslation, matrixLocal)
 
         // Global:
         if (null != parent) {
-            buffer.multiply(offset + LOCAL_MATRIX, parent!!.globalModelMatrixOffset,
-                    globalModelMatrixOffset)
+            // This spatial has a parent, therefore we need to multiply the local matrix
+            // to the parent's global matrix:
+            buffer.multiply(matrixLocal, parent!!.matrixGlobal, matrixGlobal)
         }
         else {
-            buffer.copy(globalModelMatrixOffset, offset + LOCAL_MATRIX)
+            // This spatial has no parent, therefore the local matrix equals the global one:
+            buffer.copy(matrixGlobal, matrixLocal)
         }
 
-        rebuildModelMatrices = true
         children.forEach { spatial -> spatial.computeModelMatricesRecursively() }
-    }
-
-    private fun requestRebuildModelMatrices() {
-        rebuildModelMatrices = true
-        parent?.requestRebuildModelMatrices()
     }
 
     /**
      * Rotate the spatial in the zx plane around [theta].
      */
     fun rotationZX(theta: Double) {
-        buffer.rotation(offset + ROTATION_ZX_MATRIX, 2, 0, theta)
-        requestRebuildModelMatrices()
+        buffer.rotation(matrixRotationZX, 2, 0, theta)
         onMatrixChangedListeners.forEach { it() }
     }
 
@@ -120,8 +126,7 @@ open class Spatial(
      * Rotate the spatial in the yx plane around [theta].
      */
     fun rotationYX(theta: Double) {
-        buffer.rotation(offset + ROTATION_YX_MATRIX, 1, 0, theta)
-        requestRebuildModelMatrices()
+        buffer.rotation(matrixRotationYX, 1, 0, theta)
         onMatrixChangedListeners.forEach { it() }
     }
 
@@ -129,8 +134,7 @@ open class Spatial(
      * Translate the spatial by [v].
      */
     fun translate(v: Vector) {
-        buffer.translation(offset + TRANSLATION_MATRIX, v)
-        requestRebuildModelMatrices()
+        buffer.translation(matrixTranslation, v)
         onMatrixChangedListeners.forEach { it() }
     }
 
@@ -147,9 +151,6 @@ open class Spatial(
         // Re-parent to new spatial:
         parent = spatial
         spatial.children.add(this)
-
-        // Re-compute global transform:
-        requestRebuildModelMatrices()
 
         // Fire children changed listener recursively:
         onChildrenChangedListeners.forEach { it() }
