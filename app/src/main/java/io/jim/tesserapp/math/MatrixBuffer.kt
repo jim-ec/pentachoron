@@ -40,6 +40,8 @@ data class MatrixBuffer(private val maxMatrices: Int) {
          * Row index of base vector, relative to matrix offset.
          */
         const val BASE_ROW = 3
+
+        private val forEachColumnRange = 0 until MATRIX_COLUMNS
     }
 
     /**
@@ -54,14 +56,14 @@ data class MatrixBuffer(private val maxMatrices: Int) {
         }
     }
 
-    private fun forEachMatrix(f: (matrix: Int) -> Unit) {
+    private inline fun forEachMatrix(f: (matrix: Int) -> Unit) {
         for (i in 0 until maxMatrices) {
             f(i)
         }
     }
 
-    private fun forEachColumn(f: (row: Int) -> Unit) {
-        for (i in 0 until MATRIX_COLUMNS) {
+    private inline fun forEachColumn(f: (row: Int) -> Unit) {
+        for (i in forEachColumnRange) {
             f(i)
         }
     }

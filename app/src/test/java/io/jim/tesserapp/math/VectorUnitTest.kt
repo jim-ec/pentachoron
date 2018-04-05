@@ -11,10 +11,10 @@ class VectorUnitTest {
     @Test
     fun construction() {
         Vector(1.0, 2.0, 5.0, 4.0).apply {
-            assertEquals(1.0, this[0], 0.1)
-            assertEquals(2.0, this[1], 0.1)
-            assertEquals(5.0, this[2], 0.1)
-            assertEquals(4.0, this[3], 0.1)
+            assertEquals(1.0, this.x, 0.1)
+            assertEquals(2.0, this.y, 0.1)
+            assertEquals(5.0, this.z, 0.1)
+            assertEquals(4.0, this.w, 0.1)
 
             assertEquals(1.0, x, 0.1)
             assertEquals(2.0, y, 0.1)
@@ -30,10 +30,10 @@ class VectorUnitTest {
 
         val w: Vector = v + u
 
-        assertEquals(4.0, w[0], 0.1)
-        assertEquals(3.0, w[1], 0.1)
-        assertEquals(9.0, w[2], 0.1)
-        assertEquals(1.0, w[3], 0.1)
+        assertEquals(4.0, w.x, 0.1)
+        assertEquals(3.0, w.y, 0.1)
+        assertEquals(9.0, w.z, 0.1)
+        assertEquals(1.0, w.w, 0.1)
     }
 
     @Test
@@ -42,10 +42,10 @@ class VectorUnitTest {
         val u = Vector(1.0, 2.0, 5.0, 2.0)
         val w: Vector = v - u
 
-        assertEquals(2.0, w[0], 0.1)
-        assertEquals(-1.0, w[1], 0.1)
-        assertEquals(-1.0, w[2], 0.1)
-        assertEquals(-1.0, w[3], 0.1)
+        assertEquals(2.0, w.x, 0.1)
+        assertEquals(-1.0, w.y, 0.1)
+        assertEquals(-1.0, w.z, 0.1)
+        assertEquals(-1.0, w.w, 0.1)
     }
 
     @Test

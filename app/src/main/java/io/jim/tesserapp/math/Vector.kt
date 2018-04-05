@@ -25,14 +25,12 @@ data class Vector(
         /**
          * The W component.
          */
-        var w: Double)
-
-    : Indexable<Double> {
+        var w: Double) {
 
     /**
      * Set the component at the given [index] to a given [value].
      */
-    override operator fun set(index: Int, value: Double) {
+    operator fun set(index: Int, value: Double) {
         when (index) {
             0 -> x = value
             1 -> y = value
@@ -45,7 +43,7 @@ data class Vector(
     /**
      * Return the component at the given [index].
      */
-    override operator fun get(index: Int): Double {
+    operator fun get(index: Int): Double {
         return when (index) {
             0 -> x
             1 -> y
@@ -114,17 +112,6 @@ data class Vector(
      */
     operator fun div(divisor: Double) =
             Vector(x / divisor, y / divisor, z / divisor, w / divisor)
-
-    /**
-     * Return a vector, resulting from the multiplication of this and a [rhs] matrix.
-     */
-    operator fun times(rhs: Matrix) = Vector(0.0, 0.0, 0.0, 0.0).also { result ->
-        for (c in 0..3) {
-            for (i in 0 until 4) {
-                result[c] += this[i] * rhs[i][c]
-            }
-        }
-    }
 
     /**
      * Divides every component by this vector's w component.
