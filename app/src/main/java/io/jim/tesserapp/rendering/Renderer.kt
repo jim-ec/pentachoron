@@ -31,14 +31,10 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
     private var viewportAspectRation = 1f
-    private var lastRenderMillis = 0L
 
     companion object {
         private const val MAX_MODELS = 100
         private const val MAX_VERTICES = 1000
-
-        private const val FPS = 50
-        private const val MIN_MILLIS_PER_FRAME = 1000L / FPS
     }
 
     /**
@@ -69,16 +65,6 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
      * Draw a single frame.
      */
     override fun onDrawFrame(gl: GL10?) {
-        System.currentTimeMillis().also {
-            if (it - lastRenderMillis < MIN_MILLIS_PER_FRAME) {
-                // Skip frame, as too little time has passed
-                return
-            }
-            else {
-                lastRenderMillis = it
-            }
-        }
-
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
         synchronized(sharedRenderData) {
