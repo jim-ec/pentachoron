@@ -105,8 +105,8 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
                 touchStartPosition.y = y
                 true
             }
-            event.action == ACTION_UP && System.currentTimeMillis() -
-                    touchStartTime < CLICK_TIME_MS -> {
+            event.action == ACTION_UP
+                    && System.currentTimeMillis() - touchStartTime < CLICK_TIME_MS -> {
                 rotation.x = 0.0
                 rotation.y = 0.0
                 performClick()

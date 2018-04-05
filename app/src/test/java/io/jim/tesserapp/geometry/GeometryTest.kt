@@ -68,6 +68,17 @@ class GeometryTest {
     }
 
     @Test
+    fun clearLines() {
+        Lines("Test", Color.BLACK).apply {
+            addLine(Vector(1.0, 1.0, 0.0, 1.0), Vector(2.0, 2.0, 0.0, 1.0))
+            clearLines()
+
+            assertEquals(0, points.size)
+            assertEquals(0, lines.size)
+        }
+    }
+
+    @Test
     fun vertexPoints() {
         val a = Vector(0.0, 0.0, 0.0, 0.0)
         val b = Vector(1.0, 0.0, 0.0, 0.0)

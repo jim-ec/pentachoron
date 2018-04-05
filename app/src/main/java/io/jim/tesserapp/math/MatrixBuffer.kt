@@ -85,18 +85,18 @@ class MatrixBuffer(
         /**
          * Return a float from a matrix. Index [matrix] is in virtual memory space.
          */
-        operator fun get(matrix: Int, row: Int, column: Int) = let {
+        operator fun get(matrix: Int, row: Int, column: Int): Float {
             checkMatrixIndex(matrix)
-            array[(offset + matrix) * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + column]
+            return array[(offset + matrix) * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + column]
         }
 
         /**
          * Return the vector at [matrix] and [row].
          * Allocates a new Vector object.
          */
-        operator fun get(matrix: Int, row: Int) = let {
+        operator fun get(matrix: Int, row: Int): Vector {
             checkMatrixIndex(matrix)
-            Vector(
+            return Vector(
                     array[(offset + matrix) * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 0].toDouble(),
                     array[(offset + matrix) * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 1].toDouble(),
                     array[(offset + matrix) * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 2].toDouble(),
@@ -227,7 +227,7 @@ class MatrixBuffer(
          * If [result] is null, it will be allocated.
          * @return The result vector, which is equal to [result] if not null.
          */
-        fun multiply(lhs: Vector, rhs: Int = 0, result: Vector? = null) = let {
+        fun multiply(lhs: Vector, rhs: Int = 0, result: Vector? = null): Vector {
             val v = result ?: Vector(0.0, 0.0, 0.0, 0.0)
             var sum: Float
             forEachColumn { c ->
@@ -237,7 +237,7 @@ class MatrixBuffer(
                 }
                 v[c] = sum.toDouble()
             }
-            v
+            return v
         }
 
         /**
@@ -275,33 +275,29 @@ class MatrixBuffer(
             }
         }
 
+        override fun toString() =
+                "Memory at $offset spanning over $range ${if (range > 1) "matrices" else "matrix"}:\n"
+
         /**
-         * Prints the matrix at [matrix].
+         * Prints the whole matrix buffer into a string.
          */
         @Suppress("unused")
-        fun toString(matrix: Int, stringBuilder: StringBuilder? = null) = let {
-            val sb = stringBuilder ?: StringBuilder()
-            sb.append("[ ")
-            forEachColumn { r ->
-                forEachColumn { c ->
-                    sb.append(decimalFormat.format(this[matrix, r, c]))
-                    if (c < 3) sb.append(", ")
-                }
-                if (r < 3) sb.append(" | ")
-            }
-            sb.append(" ]")
-            sb.toString()
-        }
-
-        override fun toString() = let {
-            val sb = StringBuilder("Memory at $offset spanning over $range ${if (range > 1) "matrices" else "matrix"}:\n")
+        fun joinToString(indent: Int): String {
+            val sb = StringBuilder()
             val digits = log10(range.toDouble()).toInt() + 1
-            for (i in 0 until range) {
-                sb.append("  #%${digits}d: ".format(i))
-                toString(i, sb)
-                sb.append('\n')
+            for (matrix in 0 until range) {
+                for (ind in 0 until 4 * indent) sb.append(' ')
+                sb.append("#%${digits}d: [ ".format(matrix))
+                forEachColumn { r ->
+                    forEachColumn { c ->
+                        sb.append(decimalFormat.format(this[matrix, r, c]))
+                        if (c < 3) sb.append(", ")
+                    }
+                    if (r < 3) sb.append(" | ")
+                }
+                sb.append(" ]\n")
             }
-            sb.toString()
+            return sb.toString()
         }
     }
 

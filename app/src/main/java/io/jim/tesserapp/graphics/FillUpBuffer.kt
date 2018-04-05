@@ -130,10 +130,10 @@ data class FillUpBuffer(
      *
      * @return Count of bytes this buffer hold before rewinding.
      */
-    fun rewind() = let {
+    fun rewind(): Int {
         val pos = floatBuffer.position()
         floatBuffer.rewind()
-        pos * FLOAT_BYTE_LENGTH
+        return pos * FLOAT_BYTE_LENGTH
     }
 
 }
