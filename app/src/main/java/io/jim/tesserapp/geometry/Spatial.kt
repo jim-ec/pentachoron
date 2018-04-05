@@ -97,8 +97,6 @@ open class Spatial(
     fun computeModelMatricesRecursively() {
         assertTrue("Spatial must be registered to a matrix buffer", buffer != null)
 
-        println("Compute matrix of '$name' into global matrix at offset $matrixGlobal")
-
         // Rotation:
         buffer?.multiply(matrixRotationZX, matrixRotationYX, matrixRotation)
 

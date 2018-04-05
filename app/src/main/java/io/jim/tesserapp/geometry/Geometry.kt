@@ -2,6 +2,7 @@ package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.Vector
+import kotlin.properties.Delegates
 
 /**
  * A spatial object, containing geometry info and having a color.
@@ -27,16 +28,25 @@ open class Geometry(
      */
     val lines = ArrayList<Pair<Int, Int>>()
 
+    /**
+     * If not visible, this geometry is not drawn.
+     * A change in visibility is considered as a geometry change, and therefore fires all
+     * listeners from [onGeometryChangedListeners]
+     */
+    var visible: Boolean by Delegates.observable(true) { _, _, _ ->
+        onGeometryChangedListeners.forEach { it() }
+    }
+
     companion object {
 
         /**
          * Listener [f] is fired every time a single point or line is added.
          */
         fun addGeometryChangedListener(f: () -> Unit) {
-            onGeometryChangedListener.add(f)
+            onGeometryChangedListeners.add(f)
         }
 
-        private val onGeometryChangedListener = ArrayList<() -> Unit>()
+        private val onGeometryChangedListeners = ArrayList<() -> Unit>()
 
     }
 
@@ -46,7 +56,7 @@ open class Geometry(
      */
     fun addPoints(vararg p: Vector) {
         points += p
-        onGeometryChangedListener.forEach { it() }
+        onGeometryChangedListeners.forEach { it() }
     }
 
     /**
@@ -54,7 +64,7 @@ open class Geometry(
      */
     fun addLine(a: Int, b: Int) {
         lines += Pair(a, b)
-        onGeometryChangedListener.forEach { it() }
+        onGeometryChangedListeners.forEach { it() }
     }
 
     /**

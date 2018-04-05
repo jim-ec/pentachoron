@@ -26,7 +26,7 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
      * Global model matrices which are kept in the rear memory section, i.e. not uploaded,
      * are kept in front of the spatial owned matrices.
      */
-    val modelMatrices = MatrixBuffer(maxModels * (1 + Spatial.LOCAL_MATRICES_PER_SPATIAL + 1))
+    var modelMatrices = MatrixBuffer(maxModels * (1 + Spatial.LOCAL_MATRICES_PER_SPATIAL + 1))
 
     /**
      * Actual count of valid global model matrices.
@@ -44,6 +44,7 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
 
     private val vertexBuffer = VertexBuffer(maxVertices)
     private val indexBuffer = IndexBuffer(maxIndices)
+    private var modelCount = 0
 
     /**
      * Bind the geometry buffers and re-instructs vertex attribute pointers of [shader].
@@ -57,14 +58,20 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
      * Store the geometries, whose root is denoted by [rootSpatial], into the vertex and index
      * buffers.
      *
-     * Recording firstly loads identity matrices into all matrix slots, so no spatials can use old
-     * local matrices of another spatial, which held that slot before re-recording.
+     * Matrix data of spatials already registered to this buffer is preserved if enabled by
+     * [preserveMatrixData]. Otherwise, all matrices are reset to the identity matrix.
      */
-    fun recordGeometries(rootSpatial: Spatial) {
+    fun recordGeometries(rootSpatial: Spatial, preserveMatrixData: Boolean) {
 
-        // Flush matrix buffer:
-        for (i in 0 until modelMatrices.maxMatrices) {
-            modelMatrices.identity(i)
+        modelCount = 0
+
+        val newBuffer = if (preserveMatrixData)
+            MatrixBuffer(modelMatrices.maxMatrices)
+        else modelMatrices.also {
+            // Flush matrix buffer:
+            for (i in 0 until modelMatrices.maxMatrices) {
+                modelMatrices.identity(i)
+            }
         }
 
         indexBuffer.startRecording()
@@ -77,22 +84,23 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
 
         rootSpatial.forEachRecursive { spatial ->
 
+            val loadOldMatrixData = preserveMatrixData && spatial.buffer == modelMatrices
+            val oldMatrixOffset = spatial.matrixOffset
+
             // Associate the spatial matrix buffer to the one owned by this instance:
-            spatial.buffer = modelMatrices
+            spatial.buffer = newBuffer
 
             // Set offset of spatial where it can store its matrices.
             // Since the first matrix slot is eventually used as the global matrix,
             // the spatial gets only slots behind the first one:
             spatial.matrixOffset = modelMatrixOffset + 1
 
-            if (spatial is Geometry) {
+            if (spatial is Geometry && spatial.visible) {
 
                 // This geometry is actually drawn an therefore gets a global model matrix slot
                 // in the front memory section.
                 // The count of matrices stored there is controlled by geometryModelMatrixCount:
                 spatial.matrixGlobal = geometryModelMatrixCount
-
-                println("Spatial [${spatial.name}] get model index $geometryModelMatrixCount")
 
                 // Copy all vertices from geometry into vertex buffer:
                 for (point in spatial.points) {
@@ -114,14 +122,57 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
 
             }
 
+            // Load old matrix data from this buffer into new one:
+            // We don't need to copy the global matrix, since that is completely computed from
+            // the local ones:
+            if (loadOldMatrixData) {
+                for (i in 0 until Spatial.LOCAL_MATRICES_PER_SPATIAL) {
+                    newBuffer.copy(spatial.matrixOffset + i, oldMatrixOffset + i, modelMatrices)
+                }
+            }
+
             // We increase the offset by the count of matrix slots consumed per spatial plus
             // one, which is the global matrix for non-geometry spatials:
             modelMatrixOffset += Spatial.LOCAL_MATRICES_PER_SPATIAL + 1
+
+            modelCount++
 
         }
 
         indexBuffer.endRecording()
 
+        modelMatrices = newBuffer
+
+    }
+
+    override fun toString(): String {
+        val sb = StringBuilder()
+        sb.append("Geometry buffer with $modelCount of $maxModels models\n")
+
+        sb.append("$geometryModelMatrixCount of $maxModels geometry model matrices:\n")
+
+        for (i in 0 until maxModels) {
+            sb.append("  Global [$i] #$i: ").append(modelMatrices.toString(i)).append('\n')
+        }
+
+        sb.append("$modelCount * ${Spatial.LOCAL_MATRICES_PER_SPATIAL + 1} = " +
+                "${modelCount * (Spatial.LOCAL_MATRICES_PER_SPATIAL + 1)} local model matrices\n")
+
+        for (m in 0 until maxModels) {
+            sb.append("  Global [$m] " +
+                    "#${maxModels + m * (1 + Spatial.LOCAL_MATRICES_PER_SPATIAL)}:     ")
+
+            sb.append(modelMatrices.toString(maxModels + m * (1 + Spatial.LOCAL_MATRICES_PER_SPATIAL))).append('\n')
+
+            for (i in 0 until Spatial.LOCAL_MATRICES_PER_SPATIAL) {
+                sb.append("    Local [$m][$i] " +
+                        "#${maxModels + m * (1 + Spatial.LOCAL_MATRICES_PER_SPATIAL) + 1 + i}: ")
+
+                sb.append(modelMatrices.toString(maxModels + m * (1 + Spatial.LOCAL_MATRICES_PER_SPATIAL) + 1 + i)).append('\n')
+            }
+        }
+
+        return sb.toString()
     }
 
 }

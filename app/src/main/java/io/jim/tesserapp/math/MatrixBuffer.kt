@@ -250,21 +250,16 @@ data class MatrixBuffer(
      * Copy the matrix at [source] to matrix at [destination].
      */
     fun copy(destination: Int, source: Int) {
-        forEachColumn { r ->
-            forEachColumn { c ->
-                this[destination, r, c] = this[source, r, c]
-            }
-        }
+        copy(destination, source, this)
     }
 
     /**
-     *
+     * Copy the matrix at [source] inside [buffer] to matrix at [destination].
      */
-    @Deprecated("Upload directly without allocating an additional array")
-    fun asFloatArray(matrix: Int, array: FloatArray, offset: Int) {
+    fun copy(destination: Int, source: Int, buffer: MatrixBuffer) {
         forEachColumn { r ->
             forEachColumn { c ->
-                array[offset + r * MATRIX_COLUMNS + c] = this[matrix, r, c]
+                this[destination, r, c] = buffer[source, r, c]
             }
         }
     }

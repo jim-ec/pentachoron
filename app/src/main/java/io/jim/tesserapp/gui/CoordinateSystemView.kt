@@ -132,12 +132,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
      * Enable or disable grid rendering.
      */
     fun enableGrid(enable: Boolean) {
-        if (enable) {
-            grid.addToParentSpatial(renderer.rootSpatial)
-        }
-        else {
-            grid.releaseFromParentSpatial()
-        }
+        grid.visible = enable
     }
 
 }

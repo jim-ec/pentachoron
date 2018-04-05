@@ -77,7 +77,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         // If geometry structure changes, we need to rebuild all buffers.
         // This is a costly operation, but usually not often performed.
         if (rebuildGeometryBuffers) {
-            geometryBuffer.recordGeometries(rootSpatial)
+            geometryBuffer.recordGeometries(rootSpatial, true)
             rebuildGeometryBuffers = false
         }
 
@@ -85,7 +85,6 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         // Since render is only requested when data is changed, and geometry which is not
         // transformed often is not expected in large chunks, we can simply re-compute all
         // global model matrices:
-        println("Dispatch model matrix computation:")
         rootSpatial.computeModelMatricesRecursively()
 
         geometryBuffer.bind(shader)
