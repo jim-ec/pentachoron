@@ -25,7 +25,6 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     private var rebuildGeometryBuffers = true
     private val clearColor = Color(context, android.R.color.background_light)
     private val viewMatrix = Matrix()
-    private val modelMatrixArray = FloatArray(16 * MAX_MODELS)
 
     companion object {
         private const val MAX_MODELS = 4
@@ -80,13 +79,8 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
 
         geometryBuffer.bind(shader)
 
-        // Fetch model matrices:
-        var modelMatrixOffset = 0
-        for (i in 0 until geometryBuffer.globalModelMatrixCount) {
-            geometryBuffer.modelMatrices.asFloatArray(i, modelMatrixArray, modelMatrixOffset)
-            modelMatrixOffset += 16
-        }
-        shader.uploadModelMatrixArray(modelMatrixArray, modelMatrixOffset / 16)
+        // Re-upload global model matrices:
+        shader.uploadModelMatrixBuffer(geometryBuffer.modelMatrices, geometryBuffer.globalModelMatrixCount)
 
         // Draw actual geometry:
         glDrawElements(GL_LINES, geometryBuffer.indexCount(), GL_UNSIGNED_INT, 0)

@@ -42,7 +42,7 @@ data class IndexBuffer(private val maxIndices: Int) {
      * Bind this index buffer to the GL_ELEMENT_ARRAY_BUFFER target.
      */
     fun bind() {
-        assertFalse("Index buffer is currently recording", recording)
+        assertFalse("Index array is currently recording", recording)
         intBuffer.rewind()
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle)
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, maxIndices * INDEX_BYTE_LENGTH, intBuffer,
@@ -53,7 +53,7 @@ data class IndexBuffer(private val maxIndices: Int) {
      * Start recording new indices. Any previously hold data is discarded.
      */
     fun startRecording() {
-        assertFalse("Index buffer is already recording", recording)
+        assertFalse("Index array is already recording", recording)
         globalIndicesOffset = 0
         globalIndex = 0
         globalIndexCounter = 0
@@ -65,7 +65,7 @@ data class IndexBuffer(private val maxIndices: Int) {
      * You cannot add new indices unless you re-record the buffer using startRecording().
      */
     fun endRecording() {
-        assertTrue("Index buffer is not recording", recording)
+        assertTrue("Index array is not recording", recording)
         recording = false
     }
 
@@ -74,7 +74,7 @@ data class IndexBuffer(private val maxIndices: Int) {
      * @return Index offset for this geometry.
      */
     fun recordGeometry(geometry: Geometry): Int {
-        assertTrue("Index buffer is not recording", recording)
+        assertTrue("Index array is not recording", recording)
 
         for ((first, second) in geometry.lines) {
             appendIndex(first)

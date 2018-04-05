@@ -42,7 +42,10 @@ data class MatrixBuffer(private val maxMatrices: Int) {
         const val BASE_ROW = 3
     }
 
-    private val buffer = FloatArray(maxMatrices * MATRIX_COMPONENTS)
+    /**
+     * The underlying float array.
+     */
+    val array = FloatArray(maxMatrices * MATRIX_COMPONENTS)
 
     init {
         // Initialize all matrices to identity matrices:
@@ -67,13 +70,13 @@ data class MatrixBuffer(private val maxMatrices: Int) {
      * Return the float at [matrix], [row] and [column].
      */
     operator fun get(matrix: Int, row: Int, column: Int) =
-            buffer[matrix * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + column]
+            array[matrix * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + column]
 
     /**
      * Set the float at [matrix], [row] and [column] to [value].
      */
     private operator fun set(matrix: Int, row: Int, column: Int, value: Float) {
-        buffer[matrix * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + column] = value
+        array[matrix * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + column] = value
     }
 
     /**
@@ -82,10 +85,10 @@ data class MatrixBuffer(private val maxMatrices: Int) {
      */
     operator fun get(matrix: Int, row: Int) =
             Vector(
-                    buffer[matrix * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 0].toDouble(),
-                    buffer[matrix * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 1].toDouble(),
-                    buffer[matrix * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 2].toDouble(),
-                    buffer[matrix * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 3].toDouble()
+                    array[matrix * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 0].toDouble(),
+                    array[matrix * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 1].toDouble(),
+                    array[matrix * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 2].toDouble(),
+                    array[matrix * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + 3].toDouble()
             )
 
     /**
@@ -93,7 +96,7 @@ data class MatrixBuffer(private val maxMatrices: Int) {
      */
     operator fun set(matrix: Int, row: Int, value: Vector) {
         for (i in 0 until MATRIX_COLUMNS) {
-            buffer[matrix * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + i] = value[i].toFloat()
+            array[matrix * MATRIX_COMPONENTS + row * MATRIX_COLUMNS + i] = value[i].toFloat()
         }
     }
 

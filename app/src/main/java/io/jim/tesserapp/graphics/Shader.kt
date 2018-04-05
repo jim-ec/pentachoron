@@ -2,6 +2,7 @@ package io.jim.tesserapp.graphics
 
 import android.opengl.GLES20.*
 import io.jim.tesserapp.math.Matrix
+import io.jim.tesserapp.math.MatrixBuffer
 import junit.framework.Assert.assertTrue
 
 /**
@@ -117,13 +118,10 @@ class Shader(maxModels: Int) {
     }
 
     /**
-     * Upload the complete model matrix [array] to the uniform array.
-     * The count of actually uploaded matrices is given in [matrixCount],
-     * since the count of actually drawn models might differ from the maximum.
-     * TODO: Remove matrixCount parameter when using matrix buffers.
+     * Upload the first [matrixCount] matrices from [buffer] into the model matrix uniform array.
      */
-    fun uploadModelMatrixArray(array: FloatArray, matrixCount: Int) {
-        glUniformMatrix4fv(modelMatrixLocation, matrixCount, false, array, 0)
+    fun uploadModelMatrixBuffer(buffer: MatrixBuffer, matrixCount: Int) {
+        glUniformMatrix4fv(modelMatrixLocation, matrixCount, false, buffer.array, 0)
     }
 
     /**
