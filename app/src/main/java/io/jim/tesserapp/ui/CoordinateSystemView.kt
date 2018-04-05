@@ -45,46 +45,44 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         renderMode = RENDERMODE_CONTINUOUSLY
 
         // Create axis:
-        val axis = Lines("Axis")
-        axis.addLine(Vector(0f, 0f, 0f, 1f), Vector(1f, 0f, 0f, 1f), Color(context, R.color.colorAxisX))
-        axis.addLine(Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f), Color(context, R.color.colorAxisY))
-        axis.addLine(Vector(0f, 0f, 0f, 1f), Vector(0f, 0f, 1f, 1f), Color(context, R.color.colorAxisZ))
-        axis.addToParentGeometry(renderer.sharedRenderData.rootGeometry)
+        Lines("Axis").apply {
+            addLine(Vector(0f, 0f, 0f, 1f), Vector(1f, 0f, 0f, 1f), Color(context, R.color.colorAxisX))
+            addLine(Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f), Color(context, R.color.colorAxisY))
+            addLine(Vector(0f, 0f, 0f, 1f), Vector(0f, 0f, 1f, 1f), Color(context, R.color.colorAxisZ))
+            addToParentGeometry(renderer.sharedRenderData.rootGeometry)
+        }
 
         // Create grid:
-        grid = Lines("Grid", Color(context, R.color.colorGrid))
-        Geometry.geometrical {
-            for (i in -5..-1) {
-                grid.addLine(Vector(i.toFloat(), 0f, -5f, 1f), Vector(i.toFloat(), 0f, 5f, 1f))
-                grid.addLine(Vector(-5f, 0f, i.toFloat(), 1f), Vector(5f, 0f, i.toFloat(), 1f))
-            }
-            for (i in 1..5) {
-                grid.addLine(Vector(i.toFloat(), 0f, -5f, 1f), Vector(i.toFloat(), 0f, 5f, 1f))
-                grid.addLine(Vector(-5f, 0f, i.toFloat(), 1f), Vector(5f, 0f, i.toFloat(), 1f))
-            }
+        grid = Lines("Grid", Color(context, R.color.colorGrid)).apply {
+            Geometry.geometrical {
+                for (i in -5..-1) {
+                    addLine(Vector(i.toFloat(), 0f, -5f, 1f), Vector(i.toFloat(), 0f, 5f, 1f))
+                    addLine(Vector(-5f, 0f, i.toFloat(), 1f), Vector(5f, 0f, i.toFloat(), 1f))
+                }
+                for (i in 1..5) {
+                    addLine(Vector(i.toFloat(), 0f, -5f, 1f), Vector(i.toFloat(), 0f, 5f, 1f))
+                    addLine(Vector(-5f, 0f, i.toFloat(), 1f), Vector(5f, 0f, i.toFloat(), 1f))
+                }
 
-            grid.addLine(Vector(-5f, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f))
-            grid.addLine(Vector(1f, 0f, 0f, 1f), Vector(5f, 0f, 0f, 1f))
+                addLine(Vector(-5f, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f))
+                addLine(Vector(1f, 0f, 0f, 1f), Vector(5f, 0f, 0f, 1f))
 
-            grid.addLine(Vector(0f, 0f, -5f, 1f), Vector(0f, 0f, 0f, 1f))
-            grid.addLine(Vector(0f, 0f, 1f, 1f), Vector(0f, 0f, 5f, 1f))
+                addLine(Vector(0f, 0f, -5f, 1f), Vector(0f, 0f, 0f, 1f))
+                addLine(Vector(0f, 0f, 1f, 1f), Vector(0f, 0f, 5f, 1f))
+            }
         }
         enableGrid(true)
 
         // Create cube:
-
         cube = Quadrilateral("Cube", Vector(1f, 1f, 1f, 1f),
                 Vector(-1f, 1f, 1f, 1f),
                 Vector(-1f, -1f, 1f, 1f),
                 Vector(1f, -1f, 1f, 1f),
                 Color(context, R.color.colorAccent)
-        )
-        cube.addToParentGeometry(renderer.sharedRenderData.rootGeometry)
-        cube.extrude(Vector(0f, 0f, -2f, 0f))
-
-        //Handler().postDelayed({
-        //    cube.extrude(Vector(0f, 0f, -2f, 0f))
-        //}, 3000)
+        ).apply {
+            addToParentGeometry(renderer.sharedRenderData.rootGeometry)
+            extrude(Vector(0f, 0f, -2f, 0f))
+        }
     }
 
     /**
