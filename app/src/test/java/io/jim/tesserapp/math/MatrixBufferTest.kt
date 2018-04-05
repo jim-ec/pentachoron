@@ -6,7 +6,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import kotlin.math.PI
 
-class MatrixBufferUnitTest {
+class MatrixBufferTest {
 
     private val buffer = MatrixBuffer(3)
 

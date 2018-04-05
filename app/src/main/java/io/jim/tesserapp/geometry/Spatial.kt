@@ -2,6 +2,7 @@ package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
+import junit.framework.Assert.assertTrue
 
 /**
  * A spatial object with no geometry but just transformation and child spatial data.
@@ -13,12 +14,12 @@ open class Spatial(
          */
         val name: String
 
-) : Iterable<Spatial> {
+) {
 
     /**
      * Reference to model matrix buffer.
      */
-    lateinit var buffer: MatrixBuffer
+    var buffer: MatrixBuffer? = null
 
     /**
      * Offset of memory section belonging to this particular spatial within the matrix buffer.
@@ -30,7 +31,7 @@ open class Spatial(
      * section of memory. Therefore we don't need to store offsets for each individual matrix but
      * rather add offset constants to a single base offset to reach individual matrices.
      */
-    var offset = -1
+    var matrixOffset = -1
 
     /**
      * Offset of global model matrix.
@@ -46,18 +47,20 @@ open class Spatial(
 
     private val children = ArrayList<Spatial>()
     private var parent: Spatial? = null
-    private val matrixLocal get() = offset + LOCAL_MATRIX
-    private val matrixRotation get() = offset + ROTATION_MATRIX
-    private val matrixRotationZX get() = offset + ROTATION_ZX_MATRIX
-    private val matrixRotationYX get() = offset + ROTATION_YX_MATRIX
-    private val matrixTranslation get() = offset + TRANSLATION_MATRIX
+    private val matrixLocal get() = matrixOffset + LOCAL_MATRIX
+    private val matrixRotation get() = matrixOffset + ROTATION_MATRIX
+    private val matrixRotationZX get() = matrixOffset + ROTATION_ZX_MATRIX
+    private val matrixRotationYX get() = matrixOffset + ROTATION_YX_MATRIX
+    private val matrixTranslation get() = matrixOffset + TRANSLATION_MATRIX
 
     companion object {
 
         /**
          * Count of matrices needed for one spatial.
+         * This does not take the global matrix into account, since geometry buffers might
+         * store them in a different memory section, see [io.jim.tesserapp.graphics.GeometryBuffer].
          */
-        const val MATRICES_PER_SPATIAL = 5
+        const val LOCAL_MATRICES_PER_SPATIAL = 5
 
         private const val LOCAL_MATRIX = 0
         private const val ROTATION_MATRIX = 1
@@ -69,14 +72,14 @@ open class Spatial(
         private val onHierarchyChangedListeners = ArrayList<() -> Unit>()
 
         /**
-         * Add a listener to when the transform data is changed.
+         * Listener [f] is fired when matrix data is changed.
          */
         fun addMatrixChangedListener(f: () -> Unit) {
             onMatrixChangedListeners.add(f)
         }
 
         /**
-         * Add a listener to when the hierarchical parent-children data is changed.
+         * Listener [f] is fired when the hierarchical parent-children data is changed.
          */
         fun addHierarchyChangedListener(f: () -> Unit) {
             onHierarchyChangedListeners.add(f)
@@ -92,24 +95,25 @@ open class Spatial(
      * since that is guaranteed to already be computed.
      */
     fun computeModelMatricesRecursively() {
+        assertTrue("Spatial must be registered to a matrix buffer", buffer != null)
 
         println("Compute matrix of '$name' into global matrix at offset $matrixGlobal")
 
         // Rotation:
-        buffer.multiply(matrixRotationZX, matrixRotationYX, matrixRotation)
+        buffer?.multiply(matrixRotationZX, matrixRotationYX, matrixRotation)
 
         // Local:
-        buffer.multiply(matrixRotation, matrixTranslation, matrixLocal)
+        buffer?.multiply(matrixRotation, matrixTranslation, matrixLocal)
 
         // Global:
         if (null != parent) {
             // This spatial has a parent, therefore we need to multiply the local matrix
             // to the parent's global matrix:
-            buffer.multiply(matrixLocal, parent!!.matrixGlobal, matrixGlobal)
+            buffer?.multiply(matrixLocal, parent!!.matrixGlobal, matrixGlobal)
         }
         else {
             // This spatial has no parent, therefore the local matrix equals the global one:
-            buffer.copy(matrixGlobal, matrixLocal)
+            buffer?.copy(matrixGlobal, matrixLocal)
         }
 
         children.forEach { spatial -> spatial.computeModelMatricesRecursively() }
@@ -119,7 +123,8 @@ open class Spatial(
      * Rotate the spatial in the zx plane around [theta].
      */
     fun rotationZX(theta: Double) {
-        buffer.rotation(matrixRotationZX, 2, 0, theta)
+        assertTrue("Spatial must be registered to a matrix buffer", buffer != null)
+        buffer?.rotation(matrixRotationZX, 2, 0, theta)
         onMatrixChangedListeners.forEach { it() }
     }
 
@@ -127,7 +132,8 @@ open class Spatial(
      * Rotate the spatial in the yx plane around [theta].
      */
     fun rotationYX(theta: Double) {
-        buffer.rotation(matrixRotationYX, 1, 0, theta)
+        assertTrue("Spatial must be registered to a matrix buffer", buffer != null)
+        buffer?.rotation(matrixRotationYX, 1, 0, theta)
         onMatrixChangedListeners.forEach { it() }
     }
 
@@ -135,7 +141,8 @@ open class Spatial(
      * Translate the spatial by [v].
      */
     fun translate(v: Vector) {
-        buffer.translation(matrixTranslation, v)
+        assertTrue("Spatial must be registered to a matrix buffer", buffer != null)
+        buffer?.translation(matrixTranslation, v)
         onMatrixChangedListeners.forEach { it() }
     }
 
@@ -169,20 +176,18 @@ open class Spatial(
         onHierarchyChangedListeners.forEach { it() }
     }
 
-    override fun iterator() = children.iterator()
-
     /**
      * Invoke [f] for each spatial, recursively.
      */
     fun forEachRecursive(f: (Spatial) -> Unit) {
         f(this)
-        this.forEach { child ->
+        children.forEach { child ->
             child.forEachRecursive(f)
         }
     }
 
     override fun toString(): String {
-        return if (::buffer.isInitialized) "$name: ${buffer.toString(LOCAL_MATRIX)}" else name
+        return if (buffer != null) "$name: ${buffer!!.toString(LOCAL_MATRIX)}" else name
     }
 
     /**

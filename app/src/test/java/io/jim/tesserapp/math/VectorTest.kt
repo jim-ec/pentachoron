@@ -6,7 +6,7 @@ import org.junit.Test
 /**
  * Vector unit test.
  */
-class VectorUnitTest {
+class VectorTest {
 
     @Test
     fun construction() {

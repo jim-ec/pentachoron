@@ -30,9 +30,7 @@ open class Geometry(
     companion object {
 
         /**
-         * Register a new geometry listener.
-         *
-         * Note that the listener is invoked every time a single point or line is added.
+         * Listener [f] is fired every time a single point or line is added.
          */
         fun addGeometryChangedListener(f: () -> Unit) {
             onGeometryChangedListener.add(f)

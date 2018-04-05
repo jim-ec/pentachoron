@@ -7,7 +7,14 @@ import kotlin.math.sin
 /**
  * A bulk buffer storing 4x4 matrices as raw floats.
  */
-data class MatrixBuffer(private val maxMatrices: Int) {
+data class MatrixBuffer(
+
+        /**
+         * Maximum count of matrices this buffer can store.
+         */
+        val maxMatrices: Int
+
+) {
 
     companion object {
 

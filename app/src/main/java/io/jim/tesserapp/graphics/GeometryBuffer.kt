@@ -21,12 +21,12 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
      *
      * How exactly that rear section is laid out per spatial is defined by the [Spatial] class,
      * not by the [GeometryBuffer]. Spatials only specify how many matrices they need at least
-     * in [Spatial.MATRICES_PER_SPATIAL], without counting the global matrix at all.
+     * in [Spatial.LOCAL_MATRICES_PER_SPATIAL], without counting the global matrix at all.
      *
      * Global model matrices which are kept in the rear memory section, i.e. not uploaded,
      * are kept in front of the spatial owned matrices.
      */
-    val modelMatrices = MatrixBuffer(maxModels * (1 + Spatial.MATRICES_PER_SPATIAL + 1))
+    val modelMatrices = MatrixBuffer(maxModels * (1 + Spatial.LOCAL_MATRICES_PER_SPATIAL + 1))
 
     /**
      * Actual count of valid global model matrices.
@@ -56,8 +56,16 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
     /**
      * Store the geometries, whose root is denoted by [rootSpatial], into the vertex and index
      * buffers.
+     *
+     * Recording firstly loads identity matrices into all matrix slots, so no spatials can use old
+     * local matrices of another spatial, which held that slot before re-recording.
      */
     fun recordGeometries(rootSpatial: Spatial) {
+
+        // Flush matrix buffer:
+        for (i in 0 until modelMatrices.maxMatrices) {
+            modelMatrices.identity(i)
+        }
 
         indexBuffer.startRecording()
 
@@ -75,7 +83,7 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
             // Set offset of spatial where it can store its matrices.
             // Since the first matrix slot is eventually used as the global matrix,
             // the spatial gets only slots behind the first one:
-            spatial.offset = modelMatrixOffset + 1
+            spatial.matrixOffset = modelMatrixOffset + 1
 
             if (spatial is Geometry) {
 
@@ -108,7 +116,7 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
 
             // We increase the offset by the count of matrix slots consumed per spatial plus
             // one, which is the global matrix for non-geometry spatials:
-            modelMatrixOffset += Spatial.MATRICES_PER_SPATIAL + 1
+            modelMatrixOffset += Spatial.LOCAL_MATRICES_PER_SPATIAL + 1
 
         }
 

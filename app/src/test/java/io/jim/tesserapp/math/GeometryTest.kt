@@ -8,7 +8,7 @@ import org.junit.Test
 /**
  * Geometry unit test.
  */
-class GeometryUnitTest {
+class GeometryTest {
 
     @Test
     fun extruding() {
