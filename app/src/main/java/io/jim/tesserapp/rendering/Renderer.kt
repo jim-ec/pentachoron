@@ -27,11 +27,8 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     private val projectionMatrix = MatrixBuffer(1)
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
-    private var uploadVertexBuffer = true
     private var viewportAspectRation = 1f
-    private val geometryManager = GeometryManager(MAX_MODELS, MAX_VERTICES).apply {
-        onVertexBufferUpdated += { uploadVertexBuffer = true }
-    }
+    private val geometryManager = GeometryManager(MAX_MODELS, MAX_VERTICES)
     private var lastRenderMillis = 0L
 
     /**
@@ -103,9 +100,9 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
                 geometryManager.modelMatrixBuffer.activeGeometries)
 
         // Recompute geometry vertices:
-        if (uploadVertexBuffer) {
+        if (geometryManager.verticesUpdated) {
             vertexBuffer.bind(shader, geometryManager.vertexBuffer)
-            uploadVertexBuffer = false
+            geometryManager.verticesUpdated = false
         }
 
         // Draw actual geometry:

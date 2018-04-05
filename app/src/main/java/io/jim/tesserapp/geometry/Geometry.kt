@@ -119,7 +119,8 @@ open class Geometry(
          * on calls to [geometrical].
          */
         @Suppress("MemberVisibilityCanBePrivate")
-        var geometricalCounter = 0
+        @PublishedApi
+        internal var geometricalCounter = 0
             set(value) {
                 field = max(value, 0)
             }
@@ -151,7 +152,9 @@ open class Geometry(
      */
     @Suppress("unused", "MemberVisibilityCanBePrivate")
     fun colorizeLine(lineIndex: Int, color: Color) {
-        lines[lineIndex].color = color
+        geometrical {
+            lines[lineIndex].color = color
+        }
     }
 
     /**
@@ -160,7 +163,9 @@ open class Geometry(
      */
     @Suppress("unused", "MemberVisibilityCanBePrivate")
     fun decolorizeLine(lineIndex: Int) {
-        colorizeLine(lineIndex, baseColor)
+        geometrical {
+            colorizeLine(lineIndex, baseColor)
+        }
     }
 
     /**

@@ -1,7 +1,6 @@
 package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.util.ListenerList
 
 /**
  * Manages a geometry tree, while providing backing buffers for vertex and matrix data.
@@ -33,9 +32,9 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
     val rootGeometry = Geometry("Root")
 
     /**
-     * Listeners are fired when vertex data was changed in buffer.
+     * Set to false if vertex buffer was re-written and needs to be uploaded to the GPU.
      */
-    val onVertexBufferUpdated = ListenerList()
+    var verticesUpdated = true
 
     private var geometries = HashSet<Geometry>()
 
@@ -86,8 +85,7 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
                 vertexBuffer += it
             }
         }
-
-        onVertexBufferUpdated.fire()
+        verticesUpdated = true
     }
 
     /**
