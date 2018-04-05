@@ -72,12 +72,12 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
                 addAll(geometries)
                 removeAll(currentGeometries)
             }.forEach { removedGeometry ->
-                //geometries.remove(removedGeometry)
-                TODO("Implement geometry removal ($removedGeometry removed)")
-                //modelMatrixBuffer -= removedGeometry
+                geometries.remove(removedGeometry)
+                modelMatrixBuffer -= removedGeometry
             }
 
             uploadVertexData()
+            uploadModelMatrixData()
         }
 
         Geometry.onGeometryChangedListeners += ::uploadVertexData
@@ -86,7 +86,6 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
 
     private fun uploadVertexData() {
         // Rewrite vertex buffer:
-        println("Upload vertex data")
         vertexBuffer.rewind()
         rootGeometry.forEachRecursive { geometry ->
             geometry.vertexPoints.forEach {

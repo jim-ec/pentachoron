@@ -49,7 +49,12 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
 
         // Create grid:
         grid = Lines("Grid", Color(context, R.color.colorGrid))
-        grid.addToParentGeometry(renderer.rootGeometry)
+        Geometry.geometrical {
+            for (i in -5..5) {
+                grid.addLine(Vector(i.toDouble(), 0.0, -5.0, 1.0), Vector(i.toDouble(), 0.0, 5.0, 1.0))
+                grid.addLine(Vector(-5.0, 0.0, i.toDouble(), 1.0), Vector(5.0, 0.0, i.toDouble(), 1.0))
+            }
+        }
         enableGrid(true)
 
         // Create cube:
@@ -129,15 +134,10 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
      */
     fun enableGrid(enable: Boolean) {
         if (enable) {
-            Geometry.geometrical {
-                for (i in -5..5) {
-                    grid.addLine(Vector(i.toDouble(), 0.0, -5.0, 1.0), Vector(i.toDouble(), 0.0, 5.0, 1.0))
-                    grid.addLine(Vector(-5.0, 0.0, i.toDouble(), 1.0), Vector(5.0, 0.0, i.toDouble(), 1.0))
-                }
-            }
+            grid.addToParentGeometry(renderer.rootGeometry)
         }
         else {
-            grid.clearLines()
+            grid.releaseFromParentGeometry()
         }
     }
 
