@@ -24,6 +24,12 @@ class MainActivity : AppCompatActivity() {
         coordinateSystemView = findViewById(R.id.coordinateSystemView)
         controllerView = findViewById(R.id.controllerView)
 
+
+        controllerView.cameraControlDistance.listeners += fun(distance: Float) {
+            coordinateSystemView.renderer.cameraDistance = distance
+            coordinateSystemView.requestRender()
+        }
+
         controllerView.rotationControlXZ.listeners += fun(rotation: Float) {
             coordinateSystemView.cube.rotationZX(rotation)
         }

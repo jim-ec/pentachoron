@@ -3,7 +3,12 @@ package io.jim.tesserapp.util
 /**
  * Provide a list for listeners.
  */
-class ListenerListParam<T> {
+class ListenerListParam<T>(
+        /**
+         * Fired when a new listener is added.
+         */
+        val onAddedListener: (newListener: (T) -> Unit) -> Unit = {}
+) {
 
     private val listeners = ArrayList<(T) -> Unit>()
 
@@ -12,6 +17,7 @@ class ListenerListParam<T> {
      */
     operator fun plusAssign(listener: (T) -> Unit) {
         listeners += listener
+        onAddedListener(listener)
     }
 
     /**

@@ -9,6 +9,7 @@ import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.properties.Delegates
 
 /**
  * Actually renders to OpenGL.
@@ -23,15 +24,23 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
 
     private val clearColor = Color(context, android.R.color.background_light)
     private val viewMatrix = MatrixBuffer(3)
+    private val viewMatrixMemory = viewMatrix.MemorySpace()
     private val projectionMatrix = MatrixBuffer(1)
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
     private var uploadVertexBuffer = true
     private var uploadModelMatrixBuffer = true
+    private var viewportAspectRation: Float by Delegates.observable(1f) { _, _, _ -> computeViewMatrix() }
     private val geometryManager = GeometryManager(MAX_MODELS, MAX_VERTICES).apply {
         onVertexBufferUpdated += { uploadVertexBuffer = true }
         onModelMatrixBufferUpdated += { uploadModelMatrixBuffer = true }
     }
+
+    /**
+     * Distance of camera position from center.
+     */
+    var cameraDistance: Float by Delegates.observable(4f) { _, _, _ -> computeViewMatrix() }
+
 
     companion object {
         private const val MAX_MODELS = 100
@@ -54,19 +63,20 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         shader.uploadProjectionMatrix(projectionMatrix)
     }
 
+    private fun computeViewMatrix() {
+        viewMatrixMemory.apply {
+            lookAt(1, Vector(cameraDistance, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
+            scale(2, Vector(1f, viewportAspectRation, 1f, 1f))
+            multiply(1, 2, 0)
+        }
+    }
+
     /**
      * Construct view matrix.
      */
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
-
-        viewMatrix.MemorySpace().apply {
-            lookAt(1, Vector(4f, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
-            scale(2, Vector(1f, width.toFloat() / height, 1f, 1f))
-            multiply(1, 2, 0)
-        }
-
-        shader.uploadViewMatrix(viewMatrix)
+        viewportAspectRation = width.toFloat() / height.toFloat()
     }
 
     /**
@@ -74,6 +84,8 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
      */
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
+
+        shader.uploadViewMatrix(viewMatrix)
 
         if (uploadVertexBuffer) {
             vertexBuffer.bind(shader, geometryManager.vertexBuffer)

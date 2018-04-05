@@ -187,6 +187,10 @@ class MatrixBuffer(
             this[matrix, FORWARD_ROW] = forward
             this[matrix, RIGHT_ROW] = right
             this[matrix, UP_ROW] = (forward cross right).normalize()
+            this[matrix, BASE_ROW, 0] = 0f
+            this[matrix, BASE_ROW, 1] = 0f
+            this[matrix, BASE_ROW, 2] = 0f
+            this[matrix, BASE_ROW, 3] = 1f
 
             transpose(matrix)
 
