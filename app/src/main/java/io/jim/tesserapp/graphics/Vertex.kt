@@ -15,6 +15,21 @@ data class Vertex(
         /**
          * Color of vertex.
          */
-        val color: Color
+        val color: Color,
 
-)
+        /**
+         * Index of model matrix for this vertex.
+         */
+        private val modelIndex: Int
+
+) : Iterable<Float> {
+
+    private val floats = listOf(
+            position.x.toFloat(), position.y.toFloat(), position.z.toFloat(),
+            color.red, color.green, color.blue,
+            modelIndex.toFloat()
+    )
+
+    override operator fun iterator() = floats.iterator()
+
+}

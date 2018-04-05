@@ -35,24 +35,6 @@ open class Geometry(
      */
     var globalMemory: MatrixBuffer.MemorySpace? = null
 
-    private val localMemory = MatrixBuffer(LOCAL_MATRICES_PER_GEOMETRY).MemorySpace()
-
-    /**
-     * Thrown when trying to transform the geometry while not registered into a matrix buffer.
-     */
-    inner class NotRegisteredIntoMatrixBufferException
-        : Exception("Geometry not registered into matrix buffer")
-
-    /**
-     * List of vertices.
-     */
-    val vertices = ArrayList<Vertex>()
-
-    /**
-     * List of lines, represented by indices to two vertices.
-     */
-    val lines = ArrayList<Pair<Int, Int>>()
-
     /**
      * Model index of this geometry.
      * Is only knowable after is has been registered into a model matrix buffer.
@@ -60,17 +42,34 @@ open class Geometry(
     val modelIndex
         get() = globalMemory?.offset ?: throw NotRegisteredIntoMatrixBufferException()
 
-    /**
-     * List of vertices, but with resolved indices.
-     * This is intended to be used for drawing without indices.
-     */
-    val vertexPoints: List<Vertex>
-        get() = let {
-            lines.flatMap { (first, second) -> listOf(vertices[first], vertices[second]) }
-        }
-
+    private val localMemory = MatrixBuffer(LOCAL_MATRICES_PER_GEOMETRY).MemorySpace()
+    private val positions = ArrayList<Vector>()
+    private val lines = ArrayList<LineIndices>()
     private val children = ArrayList<Geometry>()
     private var parent: Geometry? = null
+
+    private data class LineIndices(var a: Int, var b: Int, var color: Color)
+
+    /**
+     * List of vertices, with resolved indices.
+     * The list might get invalidated over time.
+     * To query vertex points, this geometry must be registered firstly into a matrix buffer.
+     */
+    val vertices: List<Vertex>
+        get() = let {
+            lines.flatMap {
+                listOf(
+                        Vertex(positions[it.a], it.color, modelIndex),
+                        Vertex(positions[it.b], it.color, modelIndex)
+                )
+            }
+        }
+
+    /**
+     * Thrown when trying to transform the geometry while not registered into a matrix buffer.
+     */
+    inner class NotRegisteredIntoMatrixBufferException
+        : Exception("Geometry $this not registered into matrix buffer")
 
     companion object {
 
@@ -136,27 +135,45 @@ open class Geometry(
      * Add a series of vertices.
      * The actual lines are drawn from indices to these vertices.
      */
-    protected fun addPoint(position: Vector, color: Color = baseColor) {
+    protected fun addPosition(position: Vector) {
         geometrical {
-            vertices += Vertex(position, color)
+            positions += position
         }
     }
 
     /**
      * Add a lines from point [a] to point [b].
      */
-    protected fun addLine(a: Int, b: Int) {
+    protected fun addLine(a: Int, b: Int, color: Color = baseColor) {
         geometrical {
-            lines += Pair(a, b)
+            lines += LineIndices(a, b, color)
         }
+    }
+
+    /**
+     * Colorize the [lineIndex]th line to [color].
+     * @throws IndexOutOfBoundsException If index is out of bounds.
+     */
+    @Suppress("unused", "MemberVisibilityCanBePrivate")
+    fun colorizeLine(lineIndex: Int, color: Color) {
+        lines[lineIndex].color = color
+    }
+
+    /**
+     * Colorize the [lineIndex]th line to [baseColor].
+     * @throws IndexOutOfBoundsException If index is out of bounds.
+     */
+    @Suppress("unused", "MemberVisibilityCanBePrivate")
+    fun decolorizeLine(lineIndex: Int) {
+        colorizeLine(lineIndex, baseColor)
     }
 
     /**
      * Remove all geometry data.
      */
-    protected fun clearPoints() {
+    protected fun clearGeometry() {
         geometrical {
-            vertices.clear()
+            positions.clear()
             lines.clear()
         }
     }
@@ -165,14 +182,26 @@ open class Geometry(
      * Extrudes the whole geometry in the given [direction].
      * This works by duplicating the whole geometry and then connecting all point duplicate
      * counterparts.
+     * @param keepColors The generated copy will have matching colors to the line set it originated from.
+     * @param connectorColor Color of the lines connecting the original and generated lines.
      */
-    fun extrude(direction: Vector) {
+    fun extrude(
+            direction: Vector,
+            keepColors: Boolean = false,
+            connectorColor: Color = baseColor
+    ) {
         geometrical {
-            val size = vertices.size
-            vertices += vertices.map { Vertex(it.position + direction, it.color) }
-            lines += lines.map { Pair(it.first + size, it.second + size) }
+            val size = positions.size
+            positions += positions.map { it + direction }
+            lines += lines.map {
+                LineIndices(
+                        it.a + size,
+                        it.b + size,
+                        if (keepColors) it.color else baseColor
+                )
+            }
             for (i in 0 until size) {
-                addLine(i, i + size)
+                addLine(i, i + size, connectorColor)
             }
         }
     }

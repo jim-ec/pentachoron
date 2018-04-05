@@ -3,6 +3,7 @@ package io.jim.tesserapp.rendering
 import android.opengl.GLES20.*
 import io.jim.tesserapp.graphics.FillUpBuffer
 import io.jim.tesserapp.graphics.GeometryManager
+import io.jim.tesserapp.graphics.Vertex
 
 /**
  * Uploads buffer data to an OpenGL vertex buffer.
@@ -18,7 +19,7 @@ class VertexBuffer {
     /**
      * Bind the vertex buffer and instruct the vertex attribute pointer a the given [shader].
      */
-    fun bind(shader: Shader, backingBuffer: FillUpBuffer) {
+    fun bind(shader: Shader, backingBuffer: FillUpBuffer<Vertex>) {
         val bytes = backingBuffer.rewind()
         glBindBuffer(GL_ARRAY_BUFFER, handle)
         glBufferData(GL_ARRAY_BUFFER, bytes, backingBuffer.floatBuffer, GL_STATIC_DRAW)

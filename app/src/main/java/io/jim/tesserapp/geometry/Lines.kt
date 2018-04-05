@@ -6,7 +6,7 @@ import io.jim.tesserapp.math.Vector
 /**
  * A geometry containing a list of lines.
  */
-class Lines(name: String, baseColor: Color) : Geometry(name, baseColor) {
+class Lines(name: String, baseColor: Color = Color.BLACK) : Geometry(name, baseColor) {
 
     private var index = 0
 
@@ -15,9 +15,9 @@ class Lines(name: String, baseColor: Color) : Geometry(name, baseColor) {
      */
     fun addLine(a: Vector, b: Vector, color: Color = baseColor) {
         geometrical {
-            addPoint(a, color)
-            addPoint(b, color)
-            addLine(index++, index++)
+            addPosition(a)
+            addPosition(b)
+            addLine(index++, index++, color)
         }
     }
 
@@ -26,7 +26,7 @@ class Lines(name: String, baseColor: Color) : Geometry(name, baseColor) {
      */
     fun clearLines() {
         geometrical {
-            clearPoints()
+            clearGeometry()
             index = 0
         }
     }

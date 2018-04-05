@@ -8,7 +8,7 @@ import java.nio.ByteOrder
  *
  * Data entries are structured with layouts, rather than being raw floats.
  */
-data class FillUpBuffer(
+data class FillUpBuffer<in T : Iterable<Float>>(
 
         /**
          * Maximum capacity of entries.
@@ -89,13 +89,13 @@ data class FillUpBuffer(
     /**
      * Thrown when data is given which does not match the buffer layout.
      */
-    inner class InvalidEntryLayout(wrongLength: Int)
-        : Exception("Invalid entry added: $wrongLength floats given, but ${layout.size} floats needed")
+    class InvalidEntryLayout(wrongLength: Int, neededLength: Int)
+        : Exception("Invalid entry added: $wrongLength floats given, but $neededLength floats needed")
 
     /**
      * Thrown upon buffer overflow.
      */
-    inner class OverflowException
+    class OverflowException(capacity: Int)
         : Exception("Buffer overflow, at most $capacity can be stored")
 
     /**
@@ -106,20 +106,23 @@ data class FillUpBuffer(
      * @throws InvalidEntryLayout If data length does not match layout size.
      * @throws OverflowException If no more data can be added.
      */
-    operator fun plusAssign(data: List<Float>) {
-        if (layout.size != data.size)
-            throw InvalidEntryLayout(data.size)
+    operator fun plusAssign(data: T) {
 
         if (floatBuffer.position() + layout.size > floatBuffer.capacity())
-            throw OverflowException()
+            throw OverflowException(capacity)
 
         if (floatBuffer.position() == 0) {
             activeEntries = 0
         }
 
+        var dataCounter = 0
         data.forEach {
             floatBuffer.put(it)
+            dataCounter++
         }
+        if (layout.size != dataCounter)
+            throw InvalidEntryLayout(dataCounter, layout.size)
+
         activeEntries++
     }
 

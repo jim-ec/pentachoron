@@ -23,7 +23,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
      */
     val cube: Geometry
 
-    private val renderer = Renderer(context)//RendererOld(context)
+    private val renderer = Renderer(context)
     private val touchStartPosition = Vector(0.0, 0.0, 0.0, 0.0)
     private val rotation = Vector(0.0, 0.0, 0.0, 0.0)
     private var touchStartTime = 0L
@@ -41,10 +41,10 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         renderMode = RENDERMODE_WHEN_DIRTY
 
         // Create axis:
-        val axis = Lines("Axis", Color(context, R.color.colorPrimary))
-        axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(1.0, 0.0, 0.0, 1.0), Color(0f, 1f, 0f))
-        axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 1.0, 0.0, 1.0))
-        axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 0.0, 1.0, 1.0))
+        val axis = Lines("Axis")
+        axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(1.0, 0.0, 0.0, 1.0), Color(context, R.color.colorAxisX))
+        axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 1.0, 0.0, 1.0), Color(context, R.color.colorAxisY))
+        axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 0.0, 1.0, 1.0), Color(context, R.color.colorAxisZ))
         axis.addToParentGeometry(renderer.rootGeometry)
 
         // Create grid:
@@ -58,6 +58,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         enableGrid(true)
 
         // Create cube:
+
         cube = Quadrilateral("Cube", Vector(1.0, 1.0, 1.0, 1.0),
                 Vector(-1.0, 1.0, 1.0, 1.0),
                 Vector(-1.0, -1.0, 1.0, 1.0),
@@ -66,6 +67,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         )
         cube.addToParentGeometry(renderer.rootGeometry)
         cube.extrude(Vector(0.0, 0.0, -2.0, 0.0))
+
         //Handler().postDelayed({
         //    cube.extrude(Vector(0.0, 0.0, -2.0, 0.0))
         //}, 3000)

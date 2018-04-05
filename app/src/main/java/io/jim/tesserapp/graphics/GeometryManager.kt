@@ -20,7 +20,7 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
      * Vertex buffer.
      * Buffer data is updated automatically upon geometrical change.
      */
-    val vertexBuffer = FillUpBuffer(maxVertices,
+    val vertexBuffer = FillUpBuffer<Vertex>(maxVertices,
             FillUpBuffer.Layout(
                     COMPONENTS_PER_POSITION,
                     COMPONENTS_PER_COLOR,
@@ -88,11 +88,8 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
         // Rewrite vertex buffer:
         vertexBuffer.rewind()
         rootGeometry.forEachRecursive { geometry ->
-            geometry.vertexPoints.forEach {
-                vertexBuffer += listOf(
-                        it.position.x.toFloat(), it.position.y.toFloat(), it.position.z.toFloat(),
-                        it.color.red, it.color.green, it.color.blue,
-                        geometry.modelIndex.toFloat())
+            geometry.vertices.forEach {
+                vertexBuffer += it
             }
         }
 

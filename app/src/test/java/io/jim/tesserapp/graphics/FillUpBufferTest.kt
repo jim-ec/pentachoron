@@ -7,7 +7,7 @@ class FillUpBufferTest {
 
     private val ranges = listOf(1, 2, 3)
     private val layout = FillUpBuffer.Layout(ranges)
-    private val buffer = FillUpBuffer(10, layout)
+    private val buffer = FillUpBuffer<List<Float>>(10, layout)
 
     @Test
     fun layout() {
