@@ -51,7 +51,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         shader.uploadProjectionMatrix(projectionMatrix)
 
         // Rebuild geometry buffers upon spatial hierarchy or geometry change:
-        Spatial.addChildrenChangedListener { rebuildGeometryBuffers = true }
+        Spatial.addHierarchyChangedListener { rebuildGeometryBuffers = true }
         Geometry.addGeometryChangedListener { rebuildGeometryBuffers = true }
     }
 
@@ -85,6 +85,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         // Since render is only requested when data is changed, and geometry which is not
         // transformed often is not expected in large chunks, we can simply re-compute all
         // global model matrices:
+        println("Dispatch model matrix computation:")
         rootSpatial.computeModelMatricesRecursively()
 
         geometryBuffer.bind(shader)

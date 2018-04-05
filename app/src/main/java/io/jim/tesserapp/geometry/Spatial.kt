@@ -67,7 +67,7 @@ open class Spatial(
         private const val TRANSLATION_MATRIX = 4
 
         private val onMatrixChangedListeners = ArrayList<() -> Unit>()
-        private val onChildrenChangedListeners = ArrayList<() -> Unit>()
+        private val onHierarchyChangedListeners = ArrayList<() -> Unit>()
 
         /**
          * Add a listener to when the transform data is changed.
@@ -79,8 +79,8 @@ open class Spatial(
         /**
          * Add a listener to when the hierarchical parent-children data is changed.
          */
-        fun addChildrenChangedListener(f: () -> Unit) {
-            onChildrenChangedListeners.add(f)
+        fun addHierarchyChangedListener(f: () -> Unit) {
+            onHierarchyChangedListeners.add(f)
         }
 
     }
@@ -93,6 +93,8 @@ open class Spatial(
      * since that is guaranteed to already be computed.
      */
     fun computeModelMatricesRecursively() {
+
+        println("Compute matrix of '$name' into global matrix at offset $matrixGlobal")
 
         // Rotation:
         buffer.multiply(matrixRotationZX, matrixRotationYX, matrixRotation)
@@ -153,7 +155,7 @@ open class Spatial(
         spatial.children.add(this)
 
         // Fire children changed listener recursively:
-        onChildrenChangedListeners.forEach { it() }
+        onHierarchyChangedListeners.forEach { it() }
     }
 
     /**
@@ -165,7 +167,7 @@ open class Spatial(
         parent = null
 
         // Fire children changed listener recursively:
-        onChildrenChangedListeners.forEach { it() }
+        onHierarchyChangedListeners.forEach { it() }
     }
 
     override fun iterator() = children.iterator()
@@ -181,7 +183,25 @@ open class Spatial(
     }
 
     override fun toString(): String {
-        return "$name: ${buffer.toString(LOCAL_MATRIX)}"
+        return if (::buffer.isInitialized) "$name: ${buffer.toString(LOCAL_MATRIX)}" else name
+    }
+
+    /**
+     * Return spatial in a string representation, including all children.
+     */
+    @Suppress("unused")
+    fun toStringRecursive() = StringBuilder().also { sb ->
+        toStringRecursive(0, sb)
+    }.toString()
+
+    private fun toStringRecursive(indent: Int, sb: StringBuilder) {
+        for (i in 0 until indent) {
+            sb.append(" -> ")
+        }
+        sb.append(this).append('\n')
+        children.forEach {
+            it.toStringRecursive(indent + 1, sb)
+        }
     }
 
 }

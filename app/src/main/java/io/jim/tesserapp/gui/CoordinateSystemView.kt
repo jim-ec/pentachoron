@@ -2,7 +2,6 @@ package io.jim.tesserapp.gui
 
 import android.content.Context
 import android.opengl.GLSurfaceView
-import android.os.Handler
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.*
@@ -37,15 +36,10 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     }
 
     init {
-        debugFlags = DEBUG_CHECK_GL_ERROR
-        renderMode = RENDERMODE_WHEN_DIRTY
         setEGLContextClientVersion(2)
         setRenderer(renderer)
-
-        // Render scene upon every graphical change:
-        Spatial.addMatrixChangedListener { requestRender() }
-        Spatial.addChildrenChangedListener { requestRender() }
-        Geometry.addGeometryChangedListener { requestRender() }
+        debugFlags = DEBUG_CHECK_GL_ERROR
+        renderMode = RENDERMODE_WHEN_DIRTY
 
         // Create axis:
         val axis = Lines("Axis", Color(context, R.color.colorPrimary))
@@ -70,9 +64,16 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
                 Color(context, R.color.colorAccent)
         )
         cube.addToParentSpatial(renderer.rootSpatial)
-        Handler().postDelayed({
-            cube.extrude(Vector(0.0, 0.0, -2.0, 0.0))
-        }, 3000)
+        //Handler().postDelayed({
+        //    cube.extrude(Vector(0.0, 0.0, -2.0, 0.0))
+        //}, 3000)
+
+        // Render scene upon every graphical change:
+        Spatial.addMatrixChangedListener { requestRender() }
+        Spatial.addHierarchyChangedListener { requestRender() }
+        Geometry.addGeometryChangedListener { requestRender() }
+
+        requestRender()
     }
 
     /**

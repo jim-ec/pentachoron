@@ -22,6 +22,17 @@ class MatrixBufferUnitTest {
     }
 
     @Test
+    fun identity() {
+        buffer.rotation(1, 0, 2, PI)
+        buffer.identity(1)
+        for (row in 0 until MatrixBuffer.MATRIX_COLUMNS) {
+            for (col in 0 until MatrixBuffer.MATRIX_COLUMNS) {
+                assertEquals(if (row == col) 1f else 0f, buffer[1, row, col], 0.1f)
+            }
+        }
+    }
+
+    @Test
     fun copy() {
         buffer.space(1,
                 Vector(1.0, 2.0, 3.0, 4.0),

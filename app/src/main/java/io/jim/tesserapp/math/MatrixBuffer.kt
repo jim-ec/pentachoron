@@ -103,11 +103,13 @@ data class MatrixBuffer(private val maxMatrices: Int) {
     }
 
     /**
-     * Load the identity matrix.
+     * Load the identity into [matrix].
      */
-    private fun identity(matrix: Int) {
+    fun identity(matrix: Int) {
         forEachColumn { row ->
-            this[matrix, row, row] = 1.0f
+            forEachColumn { col ->
+                this[matrix, row, col] = if (row == col) 1f else 0f
+            }
         }
     }
 
