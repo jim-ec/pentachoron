@@ -36,4 +36,13 @@ data class Color(
     constructor(context: Context, @ColorRes resource: Int) :
             this(ContextCompat.getColor(context, resource))
 
+    companion object {
+
+        /**
+         * A black color constant.
+         */
+        val BLACK = Color(0f, 0f, 0f)
+
+    }
+
 }

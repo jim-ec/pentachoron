@@ -42,13 +42,18 @@ data class Entity internal constructor(
 
 ) : Iterable<Entity> {
 
+
+    /**
+     * Models belonging to this entity.
+     */
+    val models = ArrayList<Model>()
+
+    private val children = ArrayList<Entity>()
     private val matrixLocal get() = matrixOffset + LOCAL_MATRIX
     private val matrixRotation get() = matrixOffset + ROTATION_MATRIX
     private val matrixRotationZX get() = matrixOffset + ROTATION_ZX_MATRIX
     private val matrixRotationYX get() = matrixOffset + ROTATION_YX_MATRIX
     private val matrixTranslation get() = matrixOffset + TRANSLATION_MATRIX
-
-    private val children = ArrayList<Entity>()
 
     companion object {
 
@@ -162,7 +167,7 @@ data class Entity internal constructor(
 /**
  * Call each event listener in the list.
  */
-private fun java.util.ArrayList<() -> Unit>.fire() {
+fun java.util.ArrayList<() -> Unit>.fire() {
     forEach { it() }
 }
 
