@@ -16,6 +16,18 @@ data class MatrixBuffer(
 
 ) {
 
+    /**
+     * Construct a matrix buffer, whose maximum will be equal to the sum of all [sectionSizes].
+     * This constructor might be more readable if using the matrix buffer is a specific memory
+     * layout.
+     */
+    constructor(vararg sectionSizes: Int) : this(sectionSizes.sum())
+
+    /**
+     * The underlying float array.
+     */
+    val array = FloatArray(maxMatrices * MATRIX_COMPONENTS)
+
     companion object {
 
         /**
@@ -50,11 +62,6 @@ data class MatrixBuffer(
 
         private val forEachColumnRange = 0 until MATRIX_COLUMNS
     }
-
-    /**
-     * The underlying float array.
-     */
-    val array = FloatArray(maxMatrices * MATRIX_COMPONENTS)
 
     init {
         // Initialize all matrices to identity matrices:
