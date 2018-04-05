@@ -32,12 +32,6 @@ open class Spatial(
      */
     var offset = -1
 
-    private val matrixLocal get() = offset + LOCAL_MATRIX
-    private val matrixRotation get() = offset + ROTATION_MATRIX
-    private val matrixRotationZX get() = offset + ROTATION_ZX_MATRIX
-    private val matrixRotationYX get() = offset + ROTATION_YX_MATRIX
-    private val matrixTranslation get() = offset + TRANSLATION_MATRIX
-
     /**
      * Offset of global model matrix.
      * A value of -1 indicates that this spatial is not attached to the root object and therefore
@@ -52,6 +46,11 @@ open class Spatial(
 
     private val children = ArrayList<Spatial>()
     private var parent: Spatial? = null
+    private val matrixLocal get() = offset + LOCAL_MATRIX
+    private val matrixRotation get() = offset + ROTATION_MATRIX
+    private val matrixRotationZX get() = offset + ROTATION_ZX_MATRIX
+    private val matrixRotationYX get() = offset + ROTATION_YX_MATRIX
+    private val matrixTranslation get() = offset + TRANSLATION_MATRIX
 
     companion object {
 

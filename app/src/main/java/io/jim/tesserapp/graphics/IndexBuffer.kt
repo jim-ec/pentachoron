@@ -12,18 +12,14 @@ import java.nio.ByteOrder
  */
 data class IndexBuffer(private val maxIndices: Int) {
 
-    companion object {
-        private const val INDEX_BYTE_LENGTH = 4
-    }
-
     /**
      * The count of currently recorded indices.
      */
-    var globalIndexCounter = 0
+    var indexCounter = 0
+        private set
 
+    private var vertexCounter = 0
     private var recording = false
-    private var globalIndex = 0
-    private var globalIndicesOffset = 0
     private val handle = let {
         val status = IntArray(1)
         glGenBuffers(1, status, 0)
@@ -36,6 +32,10 @@ data class IndexBuffer(private val maxIndices: Int) {
         clear()
         while (position() < capacity()) put(0)
         rewind()
+    }
+
+    companion object {
+        private const val INDEX_BYTE_LENGTH = 4
     }
 
     /**
@@ -54,9 +54,8 @@ data class IndexBuffer(private val maxIndices: Int) {
      */
     fun startRecording() {
         assertFalse("Index array is already recording", recording)
-        globalIndicesOffset = 0
-        globalIndex = 0
-        globalIndexCounter = 0
+        vertexCounter = 0
+        indexCounter = 0
         recording = true
     }
 
@@ -71,9 +70,8 @@ data class IndexBuffer(private val maxIndices: Int) {
 
     /**
      * Add a [geometry] to this index buffer.
-     * @return Index offset for this geometry.
      */
-    fun recordGeometry(geometry: Geometry): Int {
+    fun recordGeometry(geometry: Geometry) {
         assertTrue("Index array is not recording", recording)
 
         for ((first, second) in geometry.lines) {
@@ -81,18 +79,24 @@ data class IndexBuffer(private val maxIndices: Int) {
             appendIndex(second)
         }
 
-        val ret = globalIndexCounter
-        globalIndexCounter += geometry.lines.size * 2
-        globalIndicesOffset += geometry.points.size
+        // Increase the global counter by the number of indices this geometry consumed:
+        indexCounter += geometry.lines.size * 2
 
-        return ret
+        // Increase the vertex counter by the number of vertices this geometry occupied.
+        // That's necessary since the next geometry's zeroth vertex actually lies
+        // after all vertices recorded at that time-point.
+        vertexCounter += geometry.points.size
     }
 
+    /**
+     * Append a new index. [index] is a geometry-local index, which is converted into a global
+     * index automatically. That depends on the count of vertices recorded at this time-point.
+     */
     private fun appendIndex(index: Int) {
         assertTrue("Insufficient memory to store vertex: pos=%d  cap=%d".format(
                 intBuffer.position(), intBuffer.capacity()),
                 intBuffer.position() < intBuffer.capacity())
-        intBuffer.put(globalIndicesOffset + index)
+        intBuffer.put(vertexCounter + index)
     }
 
 }

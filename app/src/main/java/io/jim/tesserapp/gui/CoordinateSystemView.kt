@@ -2,6 +2,7 @@ package io.jim.tesserapp.gui
 
 import android.content.Context
 import android.opengl.GLSurfaceView
+import android.os.Handler
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.*
@@ -64,9 +65,9 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
                 Color(context, R.color.colorAccent)
         )
         cube.addToParentSpatial(renderer.rootSpatial)
-        //Handler().postDelayed({
-        //    cube.extrude(Vector(0.0, 0.0, -2.0, 0.0))
-        //}, 3000)
+        Handler().postDelayed({
+            cube.extrude(Vector(0.0, 0.0, -2.0, 0.0))
+        }, 3000)
 
         // Render scene upon every graphical change:
         Spatial.addMatrixChangedListener { requestRender() }
