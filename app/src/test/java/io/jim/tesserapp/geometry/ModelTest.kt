@@ -1,5 +1,7 @@
 package io.jim.tesserapp.geometry
 
+import io.jim.tesserapp.entity.Line
+import io.jim.tesserapp.entity.Model
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.Vector
 import junit.framework.Assert.assertEquals

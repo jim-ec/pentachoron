@@ -1,4 +1,4 @@
-package io.jim.tesserapp.geometry
+package io.jim.tesserapp.entity
 
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
