@@ -1,5 +1,6 @@
 package io.jim.tesserapp.entity
 
+import io.jim.tesserapp.geometry.fire
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 import junit.framework.Assert.assertTrue
@@ -162,13 +163,6 @@ data class Entity internal constructor(
         onMatrixChangedListeners.fire()
     }
 
-}
-
-/**
- * Call each event listener in the list.
- */
-fun java.util.ArrayList<() -> Unit>.fire() {
-    forEach { it() }
 }
 
 /**

@@ -1,7 +1,5 @@
-package io.jim.tesserapp.geometry
+package io.jim.tesserapp.entity
 
-import io.jim.tesserapp.entity.EntityBuffer
-import io.jim.tesserapp.entity.NoSuchEntityException
 import io.jim.tesserapp.math.Vector
 import junit.framework.Assert.assertEquals
 import org.junit.Test

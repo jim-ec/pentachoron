@@ -1,5 +1,6 @@
 package io.jim.tesserapp.entity
 
+import io.jim.tesserapp.geometry.fire
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.Vector
 

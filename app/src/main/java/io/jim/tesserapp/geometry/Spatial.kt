@@ -123,7 +123,7 @@ open class Spatial(
     fun rotationZX(theta: Double) {
         assertTrue("Spatial must be registered to a matrix buffer", buffer != null)
         buffer?.rotation(matrixRotationZX, 2, 0, theta)
-        onMatrixChangedListeners.forEach { it() }
+        onMatrixChangedListeners.fire()
     }
 
     /**
@@ -132,7 +132,7 @@ open class Spatial(
     fun rotationYX(theta: Double) {
         assertTrue("Spatial must be registered to a matrix buffer", buffer != null)
         buffer?.rotation(matrixRotationYX, 1, 0, theta)
-        onMatrixChangedListeners.forEach { it() }
+        onMatrixChangedListeners.fire()
     }
 
     /**
@@ -141,7 +141,7 @@ open class Spatial(
     fun translate(v: Vector) {
         assertTrue("Spatial must be registered to a matrix buffer", buffer != null)
         buffer?.translation(matrixTranslation, v)
-        onMatrixChangedListeners.forEach { it() }
+        onMatrixChangedListeners.fire()
     }
 
     /**
@@ -159,7 +159,7 @@ open class Spatial(
         spatial.children.add(this)
 
         // Fire children changed listener recursively:
-        onHierarchyChangedListeners.forEach { it() }
+        onHierarchyChangedListeners.fire()
     }
 
     /**
@@ -171,7 +171,7 @@ open class Spatial(
         parent = null
 
         // Fire children changed listener recursively:
-        onHierarchyChangedListeners.forEach { it() }
+        onHierarchyChangedListeners.fire()
     }
 
     /**
@@ -206,4 +206,11 @@ open class Spatial(
         }
     }
 
+}
+
+/**
+ * Call each event listener in the list.
+ */
+fun java.util.ArrayList<() -> Unit>.fire() {
+    forEach { it() }
 }
