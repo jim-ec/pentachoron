@@ -6,9 +6,12 @@ import org.junit.Test
 
 class EntityBufferTest {
 
-    private val entityBuffer = EntityBuffer("Cube", "Label", "Axis")
+    private val entityBuffer = EntityBuffer(
+            Pair("Cube", Entity::class),
+            Pair("Label", Entity::class),
+            Pair("Axis", Entity::class))
+
     private val cube = entityBuffer["Cube"]
-    private val label = entityBuffer["Label"]
     private val axis = entityBuffer["Axis"]
 
     @Test
@@ -16,12 +19,12 @@ class EntityBufferTest {
         assertEquals(entityBuffer["Root"], entityBuffer.root)
     }
 
-    @Test(expected = NoSuchEntityException::class)
+    @Test(expected = EntityBuffer.NoSuchEntityException::class)
     fun throwOnGettingNonExistentEntity() {
         entityBuffer["Foo"]
     }
 
-    @Test(expected = NoSuchEntityException::class)
+    @Test(expected = Entity.NoSuchChildException::class)
     fun removeNonParentingChild() {
         cube.removeChild(axis)
     }

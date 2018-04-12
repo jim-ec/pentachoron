@@ -15,6 +15,11 @@ import junit.framework.Assert.assertTrue
 data class Entity internal constructor(
 
         /**
+         * Name of entity.
+         */
+        val name: String,
+
+        /**
          * Reference to model matrix buffer.
          */
         private val matrixBuffer: MatrixBuffer,
@@ -89,6 +94,11 @@ data class Entity internal constructor(
     }
 
     /**
+     * Thrown when trying to access a non-existent entity.
+     */
+    class NoSuchChildException(entity: Entity) : Exception("No child in entity: ${entity.name}")
+
+    /**
      * Add [children] to this entity.
      */
     fun addChildren(vararg children: Entity) {
@@ -102,7 +112,7 @@ data class Entity internal constructor(
      */
     fun removeChild(child: Entity) {
         assertTrue("Children must have same matrix buffer", matrixBuffer == child.matrixBuffer)
-        if (!children.remove(child)) throw NoSuchEntityException()
+        if (!children.remove(child)) throw NoSuchChildException(child)
         onHierarchyChangedListeners.fire()
     }
 
@@ -162,8 +172,3 @@ data class Entity internal constructor(
     }
 
 }
-
-/**
- * Thrown when trying to access a non-existent entity.
- */
-class NoSuchEntityException(name: String? = null) : Exception(if (null != name) "No such entity: $name" else "No such entity")
