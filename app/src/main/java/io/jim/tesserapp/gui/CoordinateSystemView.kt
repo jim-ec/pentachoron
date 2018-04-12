@@ -70,9 +70,9 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         }, 3000)
 
         // Render scene upon every graphical change:
-        Spatial.addMatrixChangedListener { requestRender() }
-        Spatial.addHierarchyChangedListener { requestRender() }
-        Geometry.addGeometryChangedListener { requestRender() }
+        Spatial.onMatrixChangedListeners += ::requestRender
+        Spatial.onHierarchyChangedListeners += ::requestRender
+        Geometry.onGeometryChangedListeners += ::requestRender
 
         requestRender()
     }

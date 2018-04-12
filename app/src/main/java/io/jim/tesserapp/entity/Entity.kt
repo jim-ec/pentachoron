@@ -1,6 +1,5 @@
 package io.jim.tesserapp.entity
 
-import io.jim.tesserapp.geometry.fire
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 import junit.framework.Assert.assertTrue
@@ -71,22 +70,21 @@ data class Entity internal constructor(
         internal const val ROTATION_YX_MATRIX = 3
         internal const val TRANSLATION_MATRIX = 4
 
-        private val onHierarchyChangedListeners = ArrayList<() -> Unit>()
-        private val onMatrixChangedListeners = ArrayList<() -> Unit>()
+        /**
+         * Added listeners are fired when hierarchical structure, i.e. parent-child relationships,
+         * changed.
+         */
+        val onHierarchyChangedListeners = ListenerList()
 
         /**
-         * Listener [f] is fired when the hierarchical parent-children data is changed.
+         * Added listeners are fired when matrix data, i.e. transform, of one entity changed.
          */
-        fun addHierarchyChangedListener(f: () -> Unit) {
-            onHierarchyChangedListeners.add(f)
-        }
+        val onMatrixChangedListeners = ListenerList()
 
         /**
-         * Listener [f] is fired when the matrix data due to transforming is changed.
+         * Added listeners are fired when model data of one entity changed.
          */
-        fun addMatrixChangedListener(f: () -> Unit) {
-            onMatrixChangedListeners.add(f)
-        }
+        val onModelChangedListeners = ListenerList()
 
     }
 

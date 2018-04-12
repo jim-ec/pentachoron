@@ -40,13 +40,9 @@ open class Geometry(
     companion object {
 
         /**
-         * Listener [f] is fired every time a single point or line is added.
+         * Listeners are fired every time a single point or line is added.
          */
-        fun addGeometryChangedListener(f: () -> Unit) {
-            onGeometryChangedListeners.add(f)
-        }
-
-        private val onGeometryChangedListeners = ArrayList<() -> Unit>()
+        val onGeometryChangedListeners = ArrayList<() -> Unit>()
 
     }
 

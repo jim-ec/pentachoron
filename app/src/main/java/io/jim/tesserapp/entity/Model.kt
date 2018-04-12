@@ -1,6 +1,5 @@
 package io.jim.tesserapp.entity
 
-import io.jim.tesserapp.geometry.fire
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.Vector
 
@@ -31,13 +30,9 @@ open class Model(
     companion object {
 
         /**
-         * Listener [f] is fired every time a single point or line is added.
+         * Listeners are fired every time a single point or line is added.
          */
-        fun addGeometryChangedListener(f: () -> Unit) {
-            onGeometryChangedListeners.add(f)
-        }
-
-        private val onGeometryChangedListeners = ArrayList<() -> Unit>()
+        val onGeometryChangedListeners = ListenerList()
 
     }
 

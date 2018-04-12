@@ -60,8 +60,8 @@ class EntityBuffer(vararg names: String) {
     )
 
     init {
-        Entity.addHierarchyChangedListener(::computeModelMatrices)
-        Entity.addMatrixChangedListener(::computeModelMatrices)
+        Entity.onHierarchyChangedListeners += ::computeModelMatrices
+        Entity.onMatrixChangedListeners += ::computeModelMatrices
     }
 
     /**

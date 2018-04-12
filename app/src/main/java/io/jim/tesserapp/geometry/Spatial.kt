@@ -1,5 +1,6 @@
 package io.jim.tesserapp.geometry
 
+import io.jim.tesserapp.entity.ListenerList
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 import junit.framework.Assert.assertTrue
@@ -68,22 +69,16 @@ open class Spatial(
         private const val ROTATION_YX_MATRIX = 3
         private const val TRANSLATION_MATRIX = 4
 
-        private val onMatrixChangedListeners = ArrayList<() -> Unit>()
-        private val onHierarchyChangedListeners = ArrayList<() -> Unit>()
+        /**
+         * Added listeners are fired when hierarchical structure, i.e. parent-child relationships,
+         * changed.
+         */
+        val onHierarchyChangedListeners = ListenerList()
 
         /**
-         * Listener [f] is fired when matrix data is changed.
+         * Added listeners are fired when matrix data, i.e. transform, of one entity changed.
          */
-        fun addMatrixChangedListener(f: () -> Unit) {
-            onMatrixChangedListeners.add(f)
-        }
-
-        /**
-         * Listener [f] is fired when the hierarchical parent-children data is changed.
-         */
-        fun addHierarchyChangedListener(f: () -> Unit) {
-            onHierarchyChangedListeners.add(f)
-        }
+        val onMatrixChangedListeners = ListenerList()
 
     }
 
@@ -206,11 +201,4 @@ open class Spatial(
         }
     }
 
-}
-
-/**
- * Call each event listener in the list.
- */
-fun java.util.ArrayList<() -> Unit>.fire() {
-    forEach { it() }
 }

@@ -51,8 +51,8 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         shader.uploadProjectionMatrix(projectionMatrix)
 
         // Rebuild geometry buffers upon spatial hierarchy or geometry change:
-        Spatial.addHierarchyChangedListener { rebuildGeometryBuffers = true }
-        Geometry.addGeometryChangedListener { rebuildGeometryBuffers = true }
+        Spatial.onHierarchyChangedListeners += { rebuildGeometryBuffers = true }
+        Geometry.onGeometryChangedListeners += { rebuildGeometryBuffers = true }
     }
 
     /**
