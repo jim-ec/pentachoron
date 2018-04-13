@@ -8,9 +8,10 @@ import org.junit.Test
 class EntityBufferTest {
 
     private val entityBuffer = EntityBuffer(
-            Triple("Label", Geometry::class, arrayOf(Color.BLACK, arrayOf<Vector>(), arrayOf<Line>())),
-            Triple("Cube", Geometry::class, arrayOf(Color.BLACK, arrayOf<Vector>(), arrayOf<Line>())),
-            Triple("Axis", Entity::class, arrayOf()))
+            Triple("Label", Geometry::class, listOf(Color.BLACK, arrayOf<Vector>(), arrayOf<Line>())),
+            Triple("Axis", Entity::class, listOf()),
+            Triple("Cube", ExtrudedGeometry::class, listOf(Color.BLACK, arrayOf<Vector>(), arrayOf<Line>(), Vector(0.0, 0.0, 1.0, 0.0)))
+    )
 
     private val cube = entityBuffer["Cube"]
     private val axis = entityBuffer["Axis"]
@@ -36,6 +37,7 @@ class EntityBufferTest {
         assertEquals(Entity::class, entityBuffer.root::class)
         assertEquals(Entity::class, axis::class)
         assertEquals(Geometry::class, label::class)
+        assertEquals(ExtrudedGeometry::class, cube::class)
     }
 
     @Test

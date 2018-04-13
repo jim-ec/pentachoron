@@ -14,6 +14,7 @@ class ExtrudedGeometry(
         points: Array<Vector>,
         lines: Array<Line>,
         direction: Vector,
+
         name: String,
         matrixBuffer: MatrixBuffer,
         matrixGlobal: Int,

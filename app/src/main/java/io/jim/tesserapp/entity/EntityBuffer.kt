@@ -8,7 +8,7 @@ import kotlin.reflect.full.primaryConstructor
  * Hold entities of constant count. The instances itself cannot change.
  * Transform and geometry data, as well as parent-child relation ships are dynamic.
  */
-class EntityBuffer(vararg entityInitializers: Triple<String, KClass<out Entity>, Array<Any>>) {
+class EntityBuffer(vararg entityInitializers: Triple<String, KClass<out Entity>, List<Any>>) {
 
     private val globalMatrixCount = entityInitializers.size + 1
 
@@ -48,7 +48,7 @@ class EntityBuffer(vararg entityInitializers: Triple<String, KClass<out Entity>,
                 val (name, c, args) = entityInitializers[index]
                 try {
                     (c.primaryConstructor?.call(
-                            *args,
+                            *args.toTypedArray(),
 
                             // The name of that entity:
                             name,
