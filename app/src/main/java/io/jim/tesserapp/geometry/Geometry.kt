@@ -1,5 +1,6 @@
 package io.jim.tesserapp.geometry
 
+import io.jim.tesserapp.entity.ListenerList
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.Vector
 import kotlin.properties.Delegates
@@ -34,7 +35,7 @@ open class Geometry(
      * listeners from [onGeometryChangedListeners]
      */
     var visible: Boolean by Delegates.observable(true) { _, _, _ ->
-        onGeometryChangedListeners.forEach { it() }
+        onGeometryChangedListeners.fire()
     }
 
     companion object {
@@ -42,7 +43,7 @@ open class Geometry(
         /**
          * Listeners are fired every time a single point or line is added.
          */
-        val onGeometryChangedListeners = ArrayList<() -> Unit>()
+        val onGeometryChangedListeners = ListenerList()
 
     }
 
@@ -52,7 +53,7 @@ open class Geometry(
      */
     fun addPoints(vararg p: Vector) {
         points += p
-        onGeometryChangedListeners.forEach { it() }
+        onGeometryChangedListeners.fire()
     }
 
     /**
@@ -60,7 +61,7 @@ open class Geometry(
      */
     fun addLine(a: Int, b: Int) {
         lines += Pair(a, b)
-        onGeometryChangedListeners.forEach { it() }
+        onGeometryChangedListeners.fire()
     }
 
     /**
