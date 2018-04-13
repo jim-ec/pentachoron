@@ -20,11 +20,6 @@ open class Entity internal constructor(
         val name: String,
 
         /**
-         * Name of entity.
-         */
-        val name: String,
-
-        /**
          * Reference to model matrix buffer.
          */
         private val matrixBuffer: MatrixBuffer,
