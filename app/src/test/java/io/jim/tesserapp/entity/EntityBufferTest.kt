@@ -1,5 +1,6 @@
 package io.jim.tesserapp.entity
 
+import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.Vector
 import junit.framework.Assert.assertEquals
 import org.junit.Test
@@ -7,12 +8,13 @@ import org.junit.Test
 class EntityBufferTest {
 
     private val entityBuffer = EntityBuffer(
-            Pair("Cube", Entity::class),
-            Pair("Label", Entity::class),
-            Pair("Axis", Entity::class))
+            Triple("Label", Geometry::class, arrayOf(Color.BLACK, arrayOf<Vector>(), arrayOf<Line>())),
+            Triple("Cube", Geometry::class, arrayOf(Color.BLACK, arrayOf<Vector>(), arrayOf<Line>())),
+            Triple("Axis", Entity::class, arrayOf()))
 
     private val cube = entityBuffer["Cube"]
     private val axis = entityBuffer["Axis"]
+    private val label = entityBuffer["Label"]
 
     @Test
     fun implicitRootEntity() {
@@ -27,6 +29,13 @@ class EntityBufferTest {
     @Test(expected = Entity.NoSuchChildException::class)
     fun removeNonParentingChild() {
         cube.removeChild(axis)
+    }
+
+    @Test
+    fun correctClasses() {
+        assertEquals(Entity::class, entityBuffer.root::class)
+        assertEquals(Entity::class, axis::class)
+        assertEquals(Geometry::class, label::class)
     }
 
     @Test

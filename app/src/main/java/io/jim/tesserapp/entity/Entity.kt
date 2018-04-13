@@ -12,7 +12,7 @@ import junit.framework.Assert.assertTrue
  *
  * Entities are not intended to be constructed by the user, but instead by the [EntityBuffer].
  */
-data class Entity internal constructor(
+open class Entity internal constructor(
 
         /**
          * Name of entity.
@@ -47,12 +47,6 @@ data class Entity internal constructor(
 
 ) : Iterable<Entity> {
 
-
-    /**
-     * Models belonging to this entity.
-     */
-    val models = ArrayList<Model>()
-
     private val children = ArrayList<Entity>()
     private val matrixLocal get() = matrixOffset + LOCAL_MATRIX
     private val matrixRotation get() = matrixOffset + ROTATION_MATRIX
@@ -85,11 +79,6 @@ data class Entity internal constructor(
          * Added listeners are fired when matrix data, i.e. transform, of one entity changed.
          */
         val onMatrixChangedListeners = ListenerList()
-
-        /**
-         * Added listeners are fired when model data of one entity changed.
-         */
-        val onModelChangedListeners = ListenerList()
 
     }
 

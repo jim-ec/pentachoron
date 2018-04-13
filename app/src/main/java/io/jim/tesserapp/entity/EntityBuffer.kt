@@ -8,7 +8,7 @@ import kotlin.reflect.full.primaryConstructor
  * Hold entities of constant count. The instances itself cannot change.
  * Transform and geometry data, as well as parent-child relation ships are dynamic.
  */
-class EntityBuffer(vararg entityInitializers: Pair<String, KClass<Entity>>) {
+class EntityBuffer(vararg entityInitializers: Triple<String, KClass<out Entity>, Array<Any>>) {
 
     private val globalMatrixCount = entityInitializers.size + 1
 
@@ -27,6 +27,15 @@ class EntityBuffer(vararg entityInitializers: Pair<String, KClass<Entity>>) {
     val root = Entity("Root", matrixBuffer, 0, globalMatrixCount)
 
     /**
+     * Thrown when unable to construct an entity.
+     */
+    class CannotConstructEntityException(
+            name: String,
+            c: KClass<out Entity>,
+            argumentException: IllegalArgumentException
+    ) : IllegalArgumentException("Cannot construct entity '$name' (${c.simpleName}): ${argumentException.message}")
+
+    /**
      * Map of each name to its entity.
      */
     private val entities = arrayOf(
@@ -36,27 +45,34 @@ class EntityBuffer(vararg entityInitializers: Pair<String, KClass<Entity>>) {
 
             // Add all the names to newly created entities:
             *(Array(entityInitializers.size) { index ->
-                val (name, c) = entityInitializers[index]
-                (c.primaryConstructor?.call(
-                        // The name of that entity:
-                        name,
+                val (name, c, args) = entityInitializers[index]
+                try {
+                    (c.primaryConstructor?.call(
+                            *args,
 
-                        // Create one parented entity for each given name:
-                        // All entities are bound to this' geometry buffer:
-                        matrixBuffer,
+                            // The name of that entity:
+                            name,
 
-                        // Compute offset for local matrices:
-                        globalMatrixCount + index * Entity.LOCAL_MATRICES_PER_SPATIAL,
+                            // Create one parented entity for each given name:
+                            // All entities are bound to this' geometry buffer:
+                            matrixBuffer,
 
-                        // Compute offset for global matrix:
-                        index + 1
-                )
-                        ?: throw Exception("Entity type ${c.simpleName} has no primary constructor")
-                        ).also {
+                            // Compute offset for local matrices:
+                            globalMatrixCount + index * Entity.LOCAL_MATRICES_PER_SPATIAL,
 
-                    // And add it to the root:
-                    root.addChildren(it)
+                            // Compute offset for global matrix:
+                            index + 1
 
+                    )
+                            ?: throw Exception("Entity type ${c.simpleName} has no primary constructor")
+                            ).also {
+
+                        // And add it to the root:
+                        root.addChildren(it)
+
+                    }
+                } catch (e: IllegalArgumentException) {
+                    throw CannotConstructEntityException(name, c, e)
                 }
             })
     )
