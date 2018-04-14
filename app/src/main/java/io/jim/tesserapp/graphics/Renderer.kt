@@ -77,8 +77,11 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         // If geometry structure changes, we need to rebuild all buffers.
         // This is a costly operation, but usually not often performed.
         if (rebuildGeometryBuffers) {
-            geometryBuffer.recordGeometries(rootSpatial, true)
-            rebuildGeometryBuffers = false
+            synchronized(Geometry) {
+                println("Rebuild geometry buffers")
+                geometryBuffer.recordGeometries(rootSpatial, true)
+                rebuildGeometryBuffers = false
+            }
         }
 
         // Recompute global model matrices.

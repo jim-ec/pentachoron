@@ -52,16 +52,31 @@ open class Geometry(
      * The actual lines are drawn from indices to these points.
      */
     fun addPoints(vararg p: Vector) {
-        points += p
-        onGeometryChangedListeners.fire()
+        synchronized(Geometry) {
+            points += p
+            onGeometryChangedListeners.fire()
+        }
     }
 
     /**
      * Add a lines from point [a] to point [b].
      */
     fun addLine(a: Int, b: Int) {
-        lines += Pair(a, b)
-        onGeometryChangedListeners.fire()
+        synchronized(Geometry) {
+            lines += Pair(a, b)
+            onGeometryChangedListeners.fire()
+        }
+    }
+
+    /**
+     * Remove all geometry data.
+     */
+    fun clearPoints() {
+        synchronized(Geometry) {
+            points.clear()
+            lines.clear()
+            onGeometryChangedListeners.fire()
+        }
     }
 
     /**
@@ -70,11 +85,13 @@ open class Geometry(
      * counterparts.
      */
     fun extrude(direction: Vector) {
-        val size = points.size
-        points += points.map { it + direction }
-        lines += lines.map { Pair(it.first + size, it.second + size) }
-        for (i in 0 until size) {
-            addLine(i, i + size)
+        synchronized(Geometry) {
+            val size = points.size
+            points += points.map { it + direction }
+            lines += lines.map { Pair(it.first + size, it.second + size) }
+            for (i in 0 until size) {
+                addLine(i, i + size)
+            }
         }
     }
 

@@ -103,6 +103,7 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
                 spatial.matrixGlobal = geometryModelMatrixCount
 
                 // Copy all vertices from geometry into vertex buffer:
+                println("Geometry ${spatial.name} uploads ${spatial.points.size} vertices")
                 for (point in spatial.points) {
                     vertexBuffer.appendVertex(point, spatial.color, geometryModelMatrixCount)
                 }

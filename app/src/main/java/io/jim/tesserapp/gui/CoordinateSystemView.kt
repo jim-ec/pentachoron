@@ -70,9 +70,18 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         }, 3000)
 
         // Render scene upon every graphical change:
-        Spatial.onMatrixChangedListeners += ::requestRender
-        Spatial.onHierarchyChangedListeners += ::requestRender
-        Geometry.onGeometryChangedListeners += ::requestRender
+        Spatial.onMatrixChangedListeners += {
+            println("Matrix data changed")
+            requestRender()
+        }
+        Spatial.onHierarchyChangedListeners += {
+            println("Hierarchy changed")
+            requestRender()
+        }
+        Geometry.onGeometryChangedListeners += {
+            println("Geometry changed")
+            requestRender()
+        }
 
         requestRender()
     }
@@ -133,6 +142,19 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
      */
     fun enableGrid(enable: Boolean) {
         grid.visible = enable
+        /*
+                println("Enable grid: $enable")
+        if (enable) {
+            for (i in -1..1) {
+                println("Add lines #$i")
+                grid.addLine(Vector(i.toDouble(), 0.0, -5.0, 1.0), Vector(i.toDouble(), 0.0, 5.0, 1.0))
+                grid.addLine(Vector(-5.0, 0.0, i.toDouble(), 1.0), Vector(5.0, 0.0, i.toDouble(), 1.0))
+            }
+        }
+        else {
+            grid.clearPoints()
+        }
+         */
     }
 
 }
