@@ -1,8 +1,8 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.entity.ListenerList
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.util.ListenerList
 import junit.framework.Assert.assertTrue
 
 /**

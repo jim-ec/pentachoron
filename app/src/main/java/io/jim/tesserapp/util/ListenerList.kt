@@ -1,4 +1,4 @@
-package io.jim.tesserapp.entity
+package io.jim.tesserapp.util
 
 /**
  * Provide a list for listeners.
