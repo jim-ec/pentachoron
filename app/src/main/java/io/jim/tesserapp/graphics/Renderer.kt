@@ -19,7 +19,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     /**
      * The root for every spatial.
      */
-    val rootSpatial = Spatial("Root")
+    val rootSpatial = Geometry("Root")
 
     private lateinit var shader: Shader
     private lateinit var geometryBuffer: GeometryBuffer

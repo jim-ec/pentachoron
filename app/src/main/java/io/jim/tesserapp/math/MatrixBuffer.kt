@@ -17,13 +17,6 @@ data class MatrixBuffer(
 ) {
 
     /**
-     * Construct a matrix buffer, whose maximum will be equal to the sum of all [sectionSizes].
-     * This constructor might be more readable if using the matrix buffer is a specific memory
-     * layout.
-     */
-    constructor(vararg sectionSizes: Int) : this(sectionSizes.sum())
-
-    /**
      * The underlying float array.
      */
     val array = FloatArray(maxMatrices * MATRIX_COMPONENTS)
@@ -188,7 +181,7 @@ data class MatrixBuffer(
      * @param target Target position. W component should be 1.
      * @param refUp Target position. W component should be 0.
      */
-    fun lookAt(matrix: Int, eye: Vector, target: Vector, refUp: Vector) = this.apply {
+    fun lookAt(matrix: Int, eye: Vector, target: Vector, refUp: Vector) = apply {
 
         val forward = (eye - target).normalize()
         val right = (refUp cross forward).normalize()

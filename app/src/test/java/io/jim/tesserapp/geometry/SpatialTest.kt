@@ -1,6 +1,5 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 import junit.framework.Assert.assertEquals
@@ -34,8 +33,8 @@ class SpatialTest {
     @Test
     fun computeModelMatricesRecursively() {
 
-        val root = Spatial("Root")
-        val geometry = Geometry("Geometry", Color(0f))
+        val root = Geometry("Root")
+        val geometry = Geometry("Geometry")
 
         register(root)
         register(geometry)

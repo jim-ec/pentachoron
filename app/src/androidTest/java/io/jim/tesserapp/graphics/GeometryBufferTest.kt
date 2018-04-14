@@ -14,31 +14,31 @@ class GeometryBufferTest {
 
     @Test
     fun init() {
-        val rotationSpatial = Spatial("Rotation Spatial")
-        val translationSpatial = Geometry("Translation Geometry", Color(0f))
+        val rotationGeometry = Geometry("Rotation")
+        val translationGeometry = Geometry("Translation")
 
-        translationSpatial.addToParentSpatial(rotationSpatial)
-        geometryBuffer.recordGeometries(rotationSpatial, true)
+        translationGeometry.addToParentSpatial(rotationGeometry)
+        geometryBuffer.recordGeometries(rotationGeometry, true)
 
-        // Geometry buffer should have registered both spatials:
-        assertEquals(rotationSpatial.matrixOffset, maxModels + 1)
-        assertEquals(rotationSpatial.matrixGlobal, maxModels)
-        assertEquals(translationSpatial.matrixOffset, maxModels + 1 + Spatial.LOCAL_MATRICES_PER_SPATIAL + 1)
-        assertEquals(translationSpatial.matrixGlobal, 0)
+        // Geometry buffer should have registered both geometries:
+        assertEquals(rotationGeometry.matrixOffset, maxModels + 1)
+        assertEquals(rotationGeometry.matrixGlobal, maxModels)
+        assertEquals(translationGeometry.matrixOffset, maxModels + 1 + Spatial.LOCAL_MATRICES_PER_SPATIAL + 1)
+        assertEquals(translationGeometry.matrixGlobal, 0)
 
         // Create some transform matrices and compute global matrices:
-        rotationSpatial.rotationYX(PI / 2) // [ 0 -1 0 0 | 1 0 0 0 | 0 0 1 0 | 0 0 0 1 ]
-        translationSpatial.translate(Vector(0.0, 1.0, 0.0, 1.0))
-        rotationSpatial.computeModelMatricesRecursively()
+        rotationGeometry.rotationYX(PI / 2) // [ 0 -1 0 0 | 1 0 0 0 | 0 0 1 0 | 0 0 0 1 ]
+        translationGeometry.translate(Vector(0.0, 1.0, 0.0, 1.0))
+        rotationGeometry.computeModelMatricesRecursively()
 
         // Apply points to the global matrix from the geometry buffer:
-        geometryBuffer.modelMatrices.multiply(Vector(0.0, 1.0, 0.0, 1.0), rotationSpatial.matrixGlobal).apply {
+        geometryBuffer.modelMatrices.multiply(Vector(0.0, 1.0, 0.0, 1.0), rotationGeometry.matrixGlobal).apply {
             assertEquals(1.0, x, 0.1)
             assertEquals(0.0, y, 0.1)
             assertEquals(0.0, z, 0.1)
             assertEquals(1.0, w, 0.1)
         }
-        geometryBuffer.modelMatrices.multiply(Vector(0.0, 1.0, 0.0, 1.0), translationSpatial.matrixGlobal).apply {
+        geometryBuffer.modelMatrices.multiply(Vector(0.0, 1.0, 0.0, 1.0), translationGeometry.matrixGlobal).apply {
             assertEquals(2.0, x, 0.1)
             assertEquals(0.0, y, 0.1)
             assertEquals(0.0, z, 0.1)
@@ -46,22 +46,22 @@ class GeometryBufferTest {
         }
 
         // Release child from parent, offset data should stay:
-        translationSpatial.releaseFromParentSpatial()
-        assertEquals(translationSpatial.matrixOffset, maxModels + 1 + Spatial.LOCAL_MATRICES_PER_SPATIAL + 1)
-        assertEquals(translationSpatial.matrixGlobal, 0)
+        translationGeometry.releaseFromParentSpatial()
+        assertEquals(translationGeometry.matrixOffset, maxModels + 1 + Spatial.LOCAL_MATRICES_PER_SPATIAL + 1)
+        assertEquals(translationGeometry.matrixGlobal, 0)
 
         println(geometryBuffer)
 
-        // Re-record spatials, child should now occupy the very first slots:
-        geometryBuffer.recordGeometries(translationSpatial, true)
-        assertEquals(translationSpatial.matrixOffset, maxModels + 1)
-        assertEquals(translationSpatial.matrixGlobal, 0)
+        // Re-record geometries, child should now occupy the very first slots:
+        geometryBuffer.recordGeometries(translationGeometry, true)
+        assertEquals(translationGeometry.matrixOffset, maxModels + 1)
+        assertEquals(translationGeometry.matrixGlobal, 0)
 
         println(geometryBuffer)
 
         // Recompute global matrix.
         // Translation matrix should be preserved, although the matrix location changed:
-        translationSpatial.computeModelMatricesRecursively()
+        translationGeometry.computeModelMatricesRecursively()
 
         assertEquals(1.0f, geometryBuffer.modelMatrices[0, 0, 0], 0.1f)
         assertEquals(0.0f, geometryBuffer.modelMatrices[0, 0, 1], 0.1f)
@@ -83,7 +83,7 @@ class GeometryBufferTest {
         assertEquals(0.0f, geometryBuffer.modelMatrices[0, 3, 2], 0.1f)
         assertEquals(1.0f, geometryBuffer.modelMatrices[0, 3, 3], 0.1f)
 
-        geometryBuffer.modelMatrices.multiply(Vector(0.0, 1.0, 0.0, 1.0), translationSpatial.matrixGlobal).apply {
+        geometryBuffer.modelMatrices.multiply(Vector(0.0, 1.0, 0.0, 1.0), translationGeometry.matrixGlobal).apply {
             assertEquals(0.0, x, 0.1)
             assertEquals(2.0, y, 0.1)
             assertEquals(0.0, z, 0.1)

@@ -15,7 +15,7 @@ open class Geometry(
         /**
          * Color of this geometry.
          */
-        val color: Color
+        val color: Color = Color.BLACK
 
 ) : Spatial(name) {
 
