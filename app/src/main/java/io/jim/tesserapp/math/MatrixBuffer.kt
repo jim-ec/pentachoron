@@ -187,12 +187,25 @@ class MatrixBuffer(
          * Multiply the two matrices [lhs] and [rhs] into [matrix].
          */
         fun multiply(lhs: Int, rhs: Int, matrix: Int) {
+            multiply(lhs, this, rhs, this, matrix)
+        }
+
+        /**
+         * Cross-buffer multiplication.
+         *
+         * Multiplies [lhs], located in [lhsMemorySpace], and [rhs], located in [rhsMemorySpace],
+         * into [matrix].
+         */
+        fun multiply(
+                lhs: Int, lhsMemorySpace: MemorySpace,
+                rhs: Int, rhsMemorySpace: MemorySpace,
+                matrix: Int) {
             var sum: Float
             forEachColumn { r ->
                 forEachColumn { c ->
                     sum = 0f
                     forEachColumn { i ->
-                        sum += this[lhs, r, i] * this[rhs, i, c]
+                        sum += lhsMemorySpace[lhs, r, i] * rhsMemorySpace[rhs, i, c]
                     }
                     this[matrix, r, c] = sum
                 }

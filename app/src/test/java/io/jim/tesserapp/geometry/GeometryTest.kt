@@ -29,7 +29,7 @@ class GeometryTest {
 
     private fun register(geometry: Geometry) {
         Assert.assertTrue("No more  to register new geometry", matrixOffset < matrixBuffer.maxMatrices)
-        geometry.buffer = matrixBuffer
+        geometry.memory = matrixMemory
         geometry.matrixGlobal = matrixOffset
         geometry.matrixOffset = matrixOffset + 1
         matrixOffset += Geometry.LOCAL_MATRICES_PER_GEOMETRY

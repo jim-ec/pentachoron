@@ -19,6 +19,8 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
      */
     val modelMatrices = MatrixBuffer(maxModels * (1 + Geometry.LOCAL_MATRICES_PER_GEOMETRY))
 
+    private val modelMatrixMemory = modelMatrices.MemorySpace()
+
     /**
      * Actual count of valid global model matrices.
      *
@@ -72,7 +74,7 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
         rootGeometry.forEachRecursive {
 
             // Associate the geometry matrix buffer to the one owned by this instance:
-            it.buffer = modelMatrices
+            it.memory = modelMatrixMemory
 
             // Set offset of geometry where it can store its matrices.
             // Since the first matrix slot is eventually used as the global matrix,

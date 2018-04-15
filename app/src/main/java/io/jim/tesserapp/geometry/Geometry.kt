@@ -4,7 +4,6 @@ import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.util.ListenerList
-import junit.framework.Assert.assertTrue
 
 /**
  * A geometrical structure consisting of vertices.
@@ -24,9 +23,9 @@ open class Geometry(
 ) {
 
     /**
-     * Reference to model matrix buffer.
+     * Reference to model matrix memory.
      */
-    var buffer: MatrixBuffer? = null
+    lateinit var memory: MatrixBuffer.MemorySpace
 
     /**
      * Offset of memory section belonging to this particular geometry within the matrix buffer.
@@ -124,6 +123,7 @@ open class Geometry(
     /**
      * Remove all geometry data.
      */
+    @Suppress("unused")
     fun clearPoints() {
         synchronized(Geometry) {
             points.clear()
@@ -156,23 +156,22 @@ open class Geometry(
      * since that is guaranteed to already be computed.
      */
     fun computeModelMatricesRecursively() {
-        assertTrue("Geometry must be registered to a matrix buffer", buffer != null)
 
         // Rotation:
-        buffer?.MemorySpace()?.multiply(matrixRotationZX, matrixRotationYX, matrixRotation)
+        memory.multiply(matrixRotationZX, matrixRotationYX, matrixRotation)
 
         // Local:
-        buffer?.MemorySpace()?.multiply(matrixRotation, matrixTranslation, matrixLocal)
+        memory.multiply(matrixRotation, matrixTranslation, matrixLocal)
 
         // Global:
         if (null != parent) {
             // This geometry has a parent, therefore we need to multiply the local matrix
             // to the parent's global matrix:
-            buffer?.MemorySpace()?.multiply(matrixLocal, parent!!.matrixGlobal, matrixGlobal)
+            memory.multiply(matrixLocal, parent!!.matrixGlobal, matrixGlobal)
         }
         else {
             // This geometry has no parent, therefore the local matrix equals the global one:
-            buffer?.MemorySpace()?.copy(matrixGlobal, matrixLocal)
+            memory.copy(matrixGlobal, matrixLocal)
         }
 
         children.forEach { it.computeModelMatricesRecursively() }
@@ -182,8 +181,7 @@ open class Geometry(
      * Rotate in the zx plane around [theta].
      */
     fun rotationZX(theta: Double) {
-        assertTrue("Geometry must be registered to a matrix buffer", buffer != null)
-        buffer?.MemorySpace()?.rotation(matrixRotationZX, 2, 0, theta)
+        memory.rotation(matrixRotationZX, 2, 0, theta)
         onMatrixChangedListeners.fire()
     }
 
@@ -191,8 +189,7 @@ open class Geometry(
      * Rotate in the yx plane around [theta].
      */
     fun rotationYX(theta: Double) {
-        assertTrue("Geometry must be registered to a matrix buffer", buffer != null)
-        buffer?.MemorySpace()?.rotation(matrixRotationYX, 1, 0, theta)
+        memory.rotation(matrixRotationYX, 1, 0, theta)
         onMatrixChangedListeners.fire()
     }
 
@@ -200,8 +197,7 @@ open class Geometry(
      * Translate by [v].
      */
     fun translate(v: Vector) {
-        assertTrue("Geometry must be registered to a matrix buffer", buffer != null)
-        buffer?.MemorySpace()?.translation(matrixTranslation, v)
+        memory.translation(matrixTranslation, v)
         onMatrixChangedListeners.fire()
     }
 
@@ -245,9 +241,7 @@ open class Geometry(
         }
     }
 
-    override fun toString(): String {
-        return if (buffer != null) "$name: ${buffer!!.MemorySpace().toString(LOCAL_MATRIX)}" else name
-    }
+    override fun toString() = name
 
     /**
      * Return a string representation, including all children.
