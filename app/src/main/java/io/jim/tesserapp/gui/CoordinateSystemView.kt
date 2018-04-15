@@ -124,7 +124,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     }
 
     /**
-     * Clicks reset camera position to default.
+     * Clicks rewind camera position to default.
      */
     override fun performClick() = let {
         super.performClick()
