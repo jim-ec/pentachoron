@@ -1,6 +1,7 @@
-package io.jim.tesserapp.graphics
+package io.jim.tesserapp.rendering
 
 import android.opengl.GLES20.*
+import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.Vector
 import junit.framework.Assert.assertTrue
 import java.nio.ByteBuffer

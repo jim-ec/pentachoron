@@ -2,6 +2,7 @@ package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.rendering.GeometryBuffer
 import junit.framework.Assert.assertEquals
 import org.junit.Test
 import kotlin.math.PI

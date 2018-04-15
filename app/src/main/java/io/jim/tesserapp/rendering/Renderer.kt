@@ -1,9 +1,11 @@
-package io.jim.tesserapp.graphics
+package io.jim.tesserapp.rendering
 
+import android.R
 import android.content.Context
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 import javax.microedition.khronos.egl.EGLConfig
@@ -22,7 +24,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     private lateinit var shader: Shader
     private lateinit var geometryBuffer: GeometryBuffer
     private var rebuildGeometryBuffers = true
-    private val clearColor = Color(context, android.R.color.background_light)
+    private val clearColor = Color(context, R.color.background_light)
     private val viewMatrix = MatrixBuffer(3)
     private val projectionMatrix = MatrixBuffer(1)
 

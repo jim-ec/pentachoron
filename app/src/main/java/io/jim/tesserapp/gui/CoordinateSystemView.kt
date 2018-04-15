@@ -11,8 +11,8 @@ import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.Lines
 import io.jim.tesserapp.geometry.Quadrilateral
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.graphics.Renderer
 import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.rendering.Renderer
 
 /**
  * A view capable of rendering 3D geometry.

@@ -1,4 +1,4 @@
-package io.jim.tesserapp.graphics
+package io.jim.tesserapp.rendering
 
 import android.opengl.GLES20.*
 import io.jim.tesserapp.geometry.Geometry

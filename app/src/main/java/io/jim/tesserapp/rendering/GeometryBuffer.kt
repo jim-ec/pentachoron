@@ -1,4 +1,4 @@
-package io.jim.tesserapp.graphics
+package io.jim.tesserapp.rendering
 
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.math.MatrixBuffer
