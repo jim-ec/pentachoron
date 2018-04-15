@@ -10,7 +10,7 @@ class GeometryBufferTest {
 
     private val maxModels = 2
     private val geometryBuffer = GeometryBuffer(maxModels, 1000)
-    private val modelMatrixMemory = geometryBuffer.modelMatrixBuffer.MemorySpace()
+    private val modelMatrixMemory = geometryBuffer.localMatrixBuffer.MemorySpace()
 
     @Test
     fun init() {

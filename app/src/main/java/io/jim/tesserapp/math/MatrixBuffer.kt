@@ -30,13 +30,15 @@ class MatrixBuffer(
             /**
              * The matrix at which this memory space begins.
              */
-            val offset: Int = 0,
+            val offset: Int,
 
             /**
              * The count of matrices this memory space spans over.
              */
-            private val range: Int = maxMatrices - offset
+            private val range: Int
     ) {
+
+        constructor() : this(0, maxMatrices)
 
         init {
             assertTrue("Memory range out of bounds", offset >= 0 && offset + range <= maxMatrices)

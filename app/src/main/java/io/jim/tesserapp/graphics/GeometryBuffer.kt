@@ -2,32 +2,29 @@ package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.math.MatrixBuffer
+import junit.framework.Assert.assertTrue
 
 /**
  * A geometry buffer, responsible for vertex and index data.
  * How vertex, index and matrix data is laid out is completely up to this geometry buffer.
- *
- * TODO: Separate global and local matrix buffers.
  */
 class GeometryBuffer(private val maxModels: Int, maxVertices: Int) {
 
     /**
-     * Model matrix bulk buffer.
-     *
-     * While each geometry gets it own little memory space inside the matrix buffer where it has
-     * access to its local matrices, all global matrices are kept in the front section of the
-     * memory. That enables faster GPU uploads because the matrices don't have to be copied into
-     * a new buffer to be contiguous.
+     * Buffer storing local model matrices.
      */
-    val modelMatrixBuffer = MatrixBuffer(maxModels * (1 + Geometry.LOCAL_MATRICES_PER_GEOMETRY))
+    val localMatrixBuffer = MatrixBuffer(maxModels * Geometry.LOCAL_MATRICES_PER_GEOMETRY)
 
-    private val modelMatrixMemory = modelMatrixBuffer.MemorySpace()
+    /**
+     * Buffer storing global model matrices.
+     */
+    val globalMatrixBuffer = MatrixBuffer(maxModels)
 
     /**
      * Actual count of valid global model matrices.
      * This is the count of matrices actually uploaded to shaders.
      */
-    var geometryModelMatrixCount = 0
+    var activeGeometries = 0
         private set
 
     /**
@@ -37,7 +34,6 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int) {
         private set
 
     private val vertexBuffer = VertexBuffer(maxVertices)
-    private var modelCount = 0
 
     /**
      * Bind the geometry buffers and re-instructs vertex attribute pointers of [shader].
@@ -52,73 +48,38 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int) {
      */
     fun recordGeometries(rootGeometry: Geometry) {
 
-        modelCount = 0
-
-        modelMatrixBuffer.also {
-            // Flush matrix buffer (We currently need to do this, since the count an therefore the
-            // order of geometries could be changed):
-            for (i in 0 until modelMatrixBuffer.maxMatrices) {
-                modelMatrixMemory.identity(i)
+        // Flush matrix buffer (We currently need to do this, since the count an therefore the
+        // order of geometries could be changed):
+        globalMatrixBuffer.MemorySpace().also {
+            for (i in 0 until globalMatrixBuffer.maxMatrices) {
+                it.identity(i)
+            }
+        }
+        localMatrixBuffer.MemorySpace().also {
+            for (i in 0 until localMatrixBuffer.maxMatrices) {
+                it.identity(i)
             }
         }
 
-        // The section of memory where we store global matrices of drawn geometry, i.e. the start:
-        geometryModelMatrixCount = 0
-
-        // The section of memory where we store local matrices rather than global geometry matrices:
-        var modelMatrixOffset = maxModels
+        vertexCount = 0
+        activeGeometries = 0
 
         rootGeometry.forEachRecursive {
 
-            it.localMemory = modelMatrixBuffer.MemorySpace(modelMatrixOffset)
-            it.globalMemory = modelMatrixBuffer.MemorySpace(geometryModelMatrixCount)
+            assertTrue("Too many geometries are recorded", activeGeometries < maxModels)
+
+            it.localMemory = localMatrixBuffer.MemorySpace(activeGeometries * Geometry.LOCAL_MATRICES_PER_GEOMETRY, Geometry.LOCAL_MATRICES_PER_GEOMETRY)
+            it.globalMemory = globalMatrixBuffer.MemorySpace(activeGeometries, 1)
 
             // Copy all vertices from geometry into vertex buffer:
             println("Geometry ${it.name} uploads ${it.lines.size * 2} vertices")
             for (point in it.vertexPoints) {
-                vertexBuffer.appendVertex(point, it.color, geometryModelMatrixCount)
+                vertexBuffer.appendVertex(point, it.color, activeGeometries)
                 vertexCount++
             }
 
-            // Increment count of global model matrices, since this geometry used one:
-            geometryModelMatrixCount++
-
-            // We increase the offset by the count of matrix slots consumed per geometry:
-            modelMatrixOffset += Geometry.LOCAL_MATRICES_PER_GEOMETRY
-
-            modelCount++
-
+            activeGeometries++
         }
-    }
-
-    override fun toString() = let {
-        val sb = StringBuilder()
-        sb.append("Geometry buffer with $modelCount of $maxModels models\n")
-
-        sb.append("$geometryModelMatrixCount of $maxModels geometry model matrices:\n")
-
-        for (i in 0 until maxModels) {
-            sb.append("  Global [$i] #$i: ").append(modelMatrixMemory.toString(i)).append('\n')
-        }
-
-        sb.append("$modelCount * ${Geometry.LOCAL_MATRICES_PER_GEOMETRY} = " +
-                "${modelCount * Geometry.LOCAL_MATRICES_PER_GEOMETRY} local model matrices\n")
-
-        for (m in 0 until maxModels) {
-            sb.append("  Global [$m] " +
-                    "#${maxModels + m * Geometry.LOCAL_MATRICES_PER_GEOMETRY}:     ")
-
-            sb.append(modelMatrixMemory.toString(maxModels + m * Geometry.LOCAL_MATRICES_PER_GEOMETRY)).append('\n')
-
-            for (i in 0 until Geometry.LOCAL_MATRICES_PER_GEOMETRY) {
-                sb.append("    Local [$m][$i] " +
-                        "#${maxModels + m * Geometry.LOCAL_MATRICES_PER_GEOMETRY + 1 + i}: ")
-
-                sb.append(modelMatrixMemory.toString(maxModels + m * Geometry.LOCAL_MATRICES_PER_GEOMETRY + 1 + i)).append('\n')
-            }
-        }
-
-        sb.toString()
     }
 
 }

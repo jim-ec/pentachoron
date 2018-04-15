@@ -89,7 +89,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         geometryBuffer.bind(shader)
 
         // Re-upload global model matrices:
-        shader.uploadModelMatrixBuffer(geometryBuffer.modelMatrixBuffer, geometryBuffer.geometryModelMatrixCount)
+        shader.uploadModelMatrixBuffer(geometryBuffer.globalMatrixBuffer, geometryBuffer.activeGeometries)
 
         // Draw actual geometry:
         glDrawArrays(GL_LINES, 0, geometryBuffer.vertexCount)
