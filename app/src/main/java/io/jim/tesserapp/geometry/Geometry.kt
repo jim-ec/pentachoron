@@ -49,6 +49,13 @@ open class Geometry(
     val lines = ArrayList<Pair<Int, Int>>()
 
     /**
+     * Model index of this geometry.
+     * Is only knowable after is has been registered into a model matrix buffer.
+     */
+    val modelIndex
+        get() = globalMemory.offset
+
+    /**
      * List of points, but with resolved indices.
      * This is intended to be used for drawing without indices.
      */
@@ -65,7 +72,7 @@ open class Geometry(
         /**
          * Count of matrices needed for one geometry.
          * This does not take the global matrix into account, since geometry buffers might
-         * store them in a different memory section, see [io.jim.tesserapp.graphics.GeometryBuffer].
+         * store them in a different memory section.
          */
         const val LOCAL_MATRICES_PER_GEOMETRY = 5
 
@@ -236,6 +243,15 @@ open class Geometry(
             child.forEachRecursive(f)
         }
     }
+
+    /**
+     * Store the whole geometry into a vertex buffer.
+     */
+    /*fun storeIntoVertexBuffer(vertexBuffer: VertexBuffer) {
+        vertexPoints.forEach {
+            vertexBuffer.appendVertex(it, color, modelIndex)
+        }
+    }*/
 
     override fun toString() = name
 

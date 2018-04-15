@@ -1,6 +1,5 @@
 package io.jim.tesserapp.rendering
 
-import android.R
 import android.content.Context
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
@@ -22,9 +21,9 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     val rootGeometry = Geometry("Root")
 
     private lateinit var shader: Shader
-    private lateinit var geometryBuffer: GeometryBuffer
+    private lateinit var geometryBufferOld: GeometryBufferOld
     private var rebuildGeometryBuffers = true
-    private val clearColor = Color(context, R.color.background_light)
+    private val clearColor = Color(context, android.R.color.background_light)
     private val viewMatrix = MatrixBuffer(3)
     private val projectionMatrix = MatrixBuffer(1)
 
@@ -43,7 +42,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         glLineWidth(4f)
 
         shader = Shader(MAX_MODELS)
-        geometryBuffer = GeometryBuffer(MAX_MODELS, MAX_VERTICES)
+        geometryBufferOld = GeometryBufferOld(MAX_MODELS, MAX_VERTICES)
 
         projectionMatrix.MemorySpace().perspective2D(0, 0.1f, 100f)
         shader.uploadProjectionMatrix(projectionMatrix)
@@ -59,9 +58,11 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
 
-        viewMatrix.MemorySpace().lookAt(1, Vector(4.0, 0.0, 0.0, 1.0), Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 1.0, 0.0, 1.0))
-        viewMatrix.MemorySpace().scale(2, Vector(1.0, width.toDouble() / height, 1.0, 1.0))
-        viewMatrix.MemorySpace().multiply(1, 2, 0)
+        viewMatrix.MemorySpace().apply {
+            lookAt(1, Vector(4.0, 0.0, 0.0, 1.0), Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 1.0, 0.0, 1.0))
+            scale(2, Vector(1.0, width.toDouble() / height, 1.0, 1.0))
+            multiply(1, 2, 0)
+        }
 
         shader.uploadViewMatrix(viewMatrix)
     }
@@ -77,7 +78,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         if (rebuildGeometryBuffers) {
             synchronized(Geometry) {
                 println("Rebuild geometry buffers")
-                geometryBuffer.recordGeometries(rootGeometry)
+                geometryBufferOld.recordGeometries(rootGeometry)
                 rebuildGeometryBuffers = false
             }
         }
@@ -88,13 +89,13 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         // global model matrices:
         rootGeometry.computeModelMatricesRecursively()
 
-        geometryBuffer.bind(shader)
+        geometryBufferOld.bind(shader)
 
         // Re-upload global model matrices:
-        shader.uploadModelMatrixBuffer(geometryBuffer.globalMatrixBuffer, geometryBuffer.activeGeometries)
+        shader.uploadModelMatrixBuffer(geometryBufferOld.globalMatrixBuffer, geometryBufferOld.activeGeometries)
 
         // Draw actual geometry:
-        glDrawArrays(GL_LINES, 0, geometryBuffer.vertexCount)
+        glDrawArrays(GL_LINES, 0, geometryBufferOld.vertexCount)
     }
 
 }

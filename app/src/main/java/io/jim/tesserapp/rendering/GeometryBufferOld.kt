@@ -8,7 +8,7 @@ import junit.framework.Assert.assertTrue
  * A geometry buffer, responsible for vertex and index data.
  * How vertex, index and matrix data is laid out is completely up to this geometry buffer.
  */
-class GeometryBuffer(private val maxModels: Int, maxVertices: Int) {
+class GeometryBufferOld(private val maxModels: Int, maxVertices: Int) {
 
     /**
      * Buffer storing local model matrices.

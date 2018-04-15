@@ -2,15 +2,15 @@ package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.math.Vector
-import io.jim.tesserapp.rendering.GeometryBuffer
+import io.jim.tesserapp.rendering.GeometryBufferOld
 import junit.framework.Assert.assertEquals
 import org.junit.Test
 import kotlin.math.PI
 
-class GeometryBufferTest {
+class GeometryBufferOldTest {
 
     private val maxModels = 2
-    private val geometryBuffer = GeometryBuffer(maxModels, 1000)
+    private val geometryBuffer = GeometryBufferOld(maxModels, 1000)
     private val modelMatrixMemory = geometryBuffer.localMatrixBuffer.MemorySpace()
 
     @Test
