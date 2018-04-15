@@ -22,16 +22,14 @@ class GeometryTest {
      * as the local matrices.
      */
     private val matrixBuffer = MatrixBuffer(maxModels * (1 + Geometry.LOCAL_MATRICES_PER_GEOMETRY))
-    private val matrixMemory = matrixBuffer.MemorySpace()
 
     private var matrixOffset = 0
     private val geometries = ArrayList<Geometry>()
 
     private fun register(geometry: Geometry) {
         Assert.assertTrue("No more  to register new geometry", matrixOffset < matrixBuffer.maxMatrices)
-        geometry.memory = matrixMemory
-        geometry.matrixGlobal = matrixOffset
-        geometry.matrixOffset = matrixOffset + 1
+        geometry.localMemory = matrixBuffer.MemorySpace(matrixOffset + 1)
+        geometry.globalMemory = matrixBuffer.MemorySpace(matrixOffset)
         matrixOffset += Geometry.LOCAL_MATRICES_PER_GEOMETRY
     }
 
@@ -51,14 +49,14 @@ class GeometryTest {
         geometry.translate(Vector(0.0, 1.0, 0.0, 1.0))
         root.computeModelMatricesRecursively()
 
-        matrixMemory.multiply(Vector(0.0, 1.0, 0.0, 1.0), root.matrixGlobal).apply {
+        root.globalMemory.multiply(lhs = Vector(0.0, 1.0, 0.0, 1.0)).apply {
             Assert.assertEquals(1.0, x, 0.1)
             Assert.assertEquals(0.0, y, 0.1)
             Assert.assertEquals(0.0, z, 0.1)
             Assert.assertEquals(1.0, w, 0.1)
         }
 
-        matrixMemory.multiply(Vector(0.0, 1.0, 0.0, 1.0), geometry.matrixGlobal).apply {
+        geometry.globalMemory.multiply(lhs = Vector(0.0, 1.0, 0.0, 1.0)).apply {
             Assert.assertEquals(2.0, x, 0.1)
             Assert.assertEquals(0.0, y, 0.1)
             Assert.assertEquals(0.0, z, 0.1)

@@ -93,7 +93,7 @@ data class IndexBuffer(private val maxIndices: Int) {
      * index automatically. That depends on the count of vertices recorded at this time-point.
      */
     private fun appendIndex(index: Int) {
-        assertTrue("Insufficient memory to store vertex: pos=%d  cap=%d".format(
+        assertTrue("Insufficient localMemory to store vertex: pos=%d  cap=%d".format(
                 intBuffer.position(), intBuffer.capacity()),
                 intBuffer.position() < intBuffer.capacity())
         intBuffer.put(vertexCounter + index)

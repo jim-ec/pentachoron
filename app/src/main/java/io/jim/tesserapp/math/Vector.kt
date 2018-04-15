@@ -43,20 +43,18 @@ data class Vector(
     /**
      * Return the component at the given [index].
      */
-    operator fun get(index: Int): Double {
-        return when (index) {
-            0 -> x
-            1 -> y
-            2 -> z
-            3 -> w
-            else -> throw IndexOutOfBoundsException("4D vector has no ${index}th component")
-        }
+    operator fun get(index: Int) = when (index) {
+        0 -> x
+        1 -> y
+        2 -> z
+        3 -> w
+        else -> throw IndexOutOfBoundsException("4D vector has no ${index}th component")
     }
 
     /**
      * Represent this vector as a string.
      */
-    override fun toString(): String {
+    override fun toString() = let {
         val sb = StringBuilder()
         sb.append('(')
         sb.append(decimalFormat.format(x)).append('|')
@@ -64,7 +62,7 @@ data class Vector(
         sb.append(decimalFormat.format(z)).append('|')
         sb.append(decimalFormat.format(w))
         sb.setCharAt(sb.length - 1, ')')
-        return sb.toString()
+        sb.toString()
     }
 
     /**
@@ -128,8 +126,7 @@ data class Vector(
      * Compute the vector product of this direction and [v].
      * This totally ignores the w component.
      */
-    infix fun cross(v: Vector): Vector {
-        return Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x, 0.0)
-    }
+    infix fun cross(v: Vector) =
+            Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x, 0.0)
 
 }

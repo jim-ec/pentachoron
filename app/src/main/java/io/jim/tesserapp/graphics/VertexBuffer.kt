@@ -48,7 +48,7 @@ data class VertexBuffer(private val maxVertices: Int) {
      */
     fun appendVertex(position: Vector, color: Color, modelIndex: Int) {
         assertTrue(
-                "Insufficient memory to store vertex:  pos=%d(%d verts) cap=%d(%d verts) needed=%d"
+                "Insufficient localMemory to store vertex:  pos=%d(%d verts) cap=%d(%d verts) needed=%d"
                         .format(floatBuffer.position(),
                                 floatBuffer.position() / COMPONENTS_PER_VERTEX,
                                 floatBuffer.capacity(),

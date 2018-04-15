@@ -7,6 +7,12 @@ import io.jim.tesserapp.util.ListenerList
 
 /**
  * A geometrical structure consisting of vertices.
+ *
+ * Matrix data is not stored in this class, but instead, each geometry gets memory spaces, providing
+ * reserved memory section into a large matrix buffer to store matrix data.
+ *
+ * This implies that unless the geometry is registered into such a matrix buffer, you cannot
+ * transform or even query transformation at all.
  */
 open class Geometry(
 
@@ -23,31 +29,14 @@ open class Geometry(
 ) {
 
     /**
-     * Reference to model matrix memory.
+     * Memory section this geometry can store its local matrices.
      */
-    lateinit var memory: MatrixBuffer.MemorySpace
+    lateinit var localMemory: MatrixBuffer.MemorySpace
 
     /**
-     * Offset of memory section belonging to this particular geometry within the matrix buffer.
-     *
-     * A value of -1 indicates that this geometry is not attached to the root object and therefore
-     * does not own a registered model matrix.
-     *
-     * Local and temporary matrices like translation are guaranteed to occupy the same, contiguous
-     * section of memory. Therefore we don't need to store offsets for each individual matrix but
-     * rather add offset constants to a single base offset to reach individual matrices.
+     * Memory section this geometry can store its global matrix.
      */
-    var matrixOffset = -1
-
-    /**
-     * Offset of global model matrix.
-     * A value of -1 indicates that this geometry is not attached to the root object and therefore
-     * does not own a registered global model matrix.
-     *
-     * Unlike all the other matrices, the global matrix need not to lie in the same contiguous
-     * memory section within the matrix buffer.
-     */
-    var matrixGlobal = -1
+    lateinit var globalMemory: MatrixBuffer.MemorySpace
 
     /**
      * List of points.
@@ -61,11 +50,6 @@ open class Geometry(
 
     private val children = ArrayList<Geometry>()
     private var parent: Geometry? = null
-    private val matrixLocal get() = matrixOffset + Geometry.LOCAL_MATRIX
-    private val matrixRotation get() = matrixOffset + Geometry.ROTATION_MATRIX
-    private val matrixRotationZX get() = matrixOffset + Geometry.ROTATION_ZX_MATRIX
-    private val matrixRotationYX get() = matrixOffset + Geometry.ROTATION_YX_MATRIX
-    private val matrixTranslation get() = matrixOffset + Geometry.TRANSLATION_MATRIX
 
     companion object {
 
@@ -97,6 +81,7 @@ open class Geometry(
          * Listeners are fired every time a single point or line is added.
          */
         val onGeometryChangedListeners = ListenerList()
+
     }
 
     /**
@@ -158,20 +143,22 @@ open class Geometry(
     fun computeModelMatricesRecursively() {
 
         // Rotation:
-        memory.multiply(matrixRotationZX, matrixRotationYX, matrixRotation)
+        localMemory.multiply(lhs = ROTATION_ZX_MATRIX, rhs = ROTATION_YX_MATRIX, matrix = ROTATION_MATRIX)
 
         // Local:
-        memory.multiply(matrixRotation, matrixTranslation, matrixLocal)
+        localMemory.multiply(lhs = ROTATION_MATRIX, rhs = TRANSLATION_MATRIX, matrix = LOCAL_MATRIX)
 
         // Global:
         if (null != parent) {
             // This geometry has a parent, therefore we need to multiply the local matrix
             // to the parent's global matrix:
-            memory.multiply(matrixLocal, parent!!.matrixGlobal, matrixGlobal)
+            globalMemory.multiply(
+                    lhs = LOCAL_MATRIX, lhsMemorySpace = localMemory,
+                    rhsMemorySpace = parent!!.globalMemory)
         }
         else {
             // This geometry has no parent, therefore the local matrix equals the global one:
-            memory.copy(matrixGlobal, matrixLocal)
+            globalMemory.copy(source = LOCAL_MATRIX, sourceMemorySpace = localMemory)
         }
 
         children.forEach { it.computeModelMatricesRecursively() }
@@ -181,7 +168,7 @@ open class Geometry(
      * Rotate in the zx plane around [theta].
      */
     fun rotationZX(theta: Double) {
-        memory.rotation(matrixRotationZX, 2, 0, theta)
+        localMemory.rotation(ROTATION_ZX_MATRIX, 2, 0, theta)
         onMatrixChangedListeners.fire()
     }
 
@@ -189,7 +176,7 @@ open class Geometry(
      * Rotate in the yx plane around [theta].
      */
     fun rotationYX(theta: Double) {
-        memory.rotation(matrixRotationYX, 1, 0, theta)
+        localMemory.rotation(ROTATION_YX_MATRIX, 1, 0, theta)
         onMatrixChangedListeners.fire()
     }
 
@@ -197,7 +184,7 @@ open class Geometry(
      * Translate by [v].
      */
     fun translate(v: Vector) {
-        memory.translation(matrixTranslation, v)
+        localMemory.translation(TRANSLATION_MATRIX, v)
         onMatrixChangedListeners.fire()
     }
 
@@ -247,7 +234,8 @@ open class Geometry(
      * Return a string representation, including all children.
      */
     @Suppress("unused")
-    fun toStringRecursive() = StringBuilder().let { sb ->
+    fun toStringRecursive() = let {
+        val sb = StringBuilder()
         toStringRecursive(0, sb)
         sb.toString()
     }

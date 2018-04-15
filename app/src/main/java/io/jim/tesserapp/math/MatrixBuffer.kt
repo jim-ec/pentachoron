@@ -19,11 +19,6 @@ class MatrixBuffer(
 ) {
 
     /**
-     * This memory space is mapped to the whole global buffer memory.
-     */
-    val memory = MemorySpace(0, maxMatrices)
-
-    /**
      * Provides access to a matrix buffer, while the starting point and accessible range are both
      * well defined.
      *
@@ -35,7 +30,7 @@ class MatrixBuffer(
             /**
              * The matrix at which this memory space begins.
              */
-            private val offset: Int = 0,
+            val offset: Int = 0,
 
             /**
              * The count of matrices this memory space spans over.
@@ -186,7 +181,7 @@ class MatrixBuffer(
         /**
          * Multiply the two matrices [lhs] and [rhs] into [matrix].
          */
-        fun multiply(lhs: Int, rhs: Int, matrix: Int) {
+        fun multiply(lhs: Int = 0, rhs: Int = 0, matrix: Int = 0) {
             multiply(lhs, this, rhs, this, matrix)
         }
 
@@ -197,9 +192,9 @@ class MatrixBuffer(
          * into [matrix].
          */
         fun multiply(
-                lhs: Int, lhsMemorySpace: MemorySpace,
-                rhs: Int, rhsMemorySpace: MemorySpace,
-                matrix: Int) {
+                lhs: Int = 0, lhsMemorySpace: MemorySpace,
+                rhs: Int = 0, rhsMemorySpace: MemorySpace,
+                matrix: Int = 0) {
             var sum: Float
             forEachColumn { r ->
                 forEachColumn { c ->
@@ -217,7 +212,7 @@ class MatrixBuffer(
          * If [result] is null, it will be allocated.
          * @return The result vector, which is equal to [result] if not null.
          */
-        fun multiply(lhs: Vector, rhs: Int, result: Vector? = null): Vector {
+        fun multiply(lhs: Vector, rhs: Int = 0, result: Vector? = null) = let {
             val v = result ?: Vector(0.0, 0.0, 0.0, 0.0)
             var sum: Float
             forEachColumn { c ->
@@ -227,7 +222,7 @@ class MatrixBuffer(
                 }
                 v[c] = sum.toDouble()
             }
-            return v
+            v
         }
 
         /**
@@ -250,17 +245,17 @@ class MatrixBuffer(
         /**
          * Copy the matrix at [source] to matrix at [destination].
          */
-        fun copy(destination: Int, source: Int) {
+        fun copy(destination: Int = 0, source: Int = 0) {
             copy(destination, source, this)
         }
 
         /**
-         * Copy the matrix at [source] inside [memory] to matrix at [destination].
+         * Copy the matrix at [source] inside [sourceMemorySpace] to matrix at [destination].
          */
-        fun copy(destination: Int, source: Int, memory: MemorySpace) {
+        fun copy(destination: Int = 0, source: Int = 0, sourceMemorySpace: MemorySpace) {
             forEachColumn { r ->
                 forEachColumn { c ->
-                    this[destination, r, c] = memory[source, r, c]
+                    this[destination, r, c] = sourceMemorySpace[source, r, c]
                 }
             }
         }
@@ -269,7 +264,7 @@ class MatrixBuffer(
          * Prints the matrix at [matrix].
          */
         @Suppress("unused")
-        fun toString(matrix: Int, stringBuilder: StringBuilder? = null): String {
+        fun toString(matrix: Int, stringBuilder: StringBuilder? = null) = let {
             val sb = stringBuilder ?: StringBuilder()
             sb.append("[ ")
             forEachColumn { r ->
@@ -280,10 +275,10 @@ class MatrixBuffer(
                 if (r < 3) sb.append(" | ")
             }
             sb.append(" ]")
-            return sb.toString()
+            sb.toString()
         }
 
-        override fun toString(): String {
+        override fun toString() = let {
             val sb = StringBuilder("Memory at $offset spanning over $range ${if (range > 1) "matrices" else "matrix"}:\n")
             val digits = log10(range.toDouble()).toInt() + 1
             for (i in 0 until range) {
@@ -291,7 +286,7 @@ class MatrixBuffer(
                 toString(i, sb)
                 sb.append('\n')
             }
-            return sb.toString()
+            sb.toString()
         }
     }
 

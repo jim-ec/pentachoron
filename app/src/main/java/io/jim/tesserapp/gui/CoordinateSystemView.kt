@@ -93,47 +93,47 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         val x = event.x.toDouble()
         val y = event.y.toDouble()
 
-        if (event.action == ACTION_DOWN) {
-            touchStartPosition.x = x
-            touchStartPosition.y = y
-            touchStartTime = System.currentTimeMillis()
-            return true
+        return when {
+            event.action == ACTION_DOWN -> {
+                touchStartPosition.x = x
+                touchStartPosition.y = y
+                touchStartTime = System.currentTimeMillis()
+                true
+            }
+            event.action == ACTION_MOVE -> {
+                val dx = x - touchStartPosition.x
+                val dy = y - touchStartPosition.y
+                rotation.x += dx
+                rotation.y += dy
+                renderer.rootGeometry.rotationZX(rotation.x * TOUCH_ROTATION_SENSITIVITY)
+                renderer.rootGeometry.rotationYX(rotation.y * TOUCH_ROTATION_SENSITIVITY)
+
+                touchStartPosition.x = x
+                touchStartPosition.y = y
+                true
+            }
+            event.action == ACTION_UP && System.currentTimeMillis() -
+                    touchStartTime < CLICK_TIME_MS -> {
+                rotation.x = 0.0
+                rotation.y = 0.0
+                performClick()
+                true
+            }
+            else -> false
         }
-
-        if (event.action == ACTION_MOVE) {
-            val dx = x - touchStartPosition.x
-            val dy = y - touchStartPosition.y
-            rotation.x += dx
-            rotation.y += dy
-            renderer.rootGeometry.rotationZX(rotation.x * TOUCH_ROTATION_SENSITIVITY)
-            renderer.rootGeometry.rotationYX(rotation.y * TOUCH_ROTATION_SENSITIVITY)
-
-            touchStartPosition.x = x
-            touchStartPosition.y = y
-            return true
-        }
-
-        if (event.action == ACTION_UP && System.currentTimeMillis() -
-                touchStartTime < CLICK_TIME_MS) {
-            rotation.x = 0.0
-            rotation.y = 0.0
-            performClick()
-        }
-
-        return false
     }
 
     /**
      * Clicks reset camera position to default.
      */
-    override fun performClick(): Boolean {
+    override fun performClick() = let {
         super.performClick()
 
         renderer.rootGeometry.rotationYX(0.0)
         renderer.rootGeometry.rotationZX(0.0)
         requestRender()
 
-        return true
+        true
     }
 
     /**
@@ -141,6 +141,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
      */
     fun enableGrid(@Suppress("UNUSED_PARAMETER") enable: Boolean) {
         //grid.visible = enable
+        grid.clearPoints()
         /*
                 println("Enable grid: $enable")
         if (enable) {
