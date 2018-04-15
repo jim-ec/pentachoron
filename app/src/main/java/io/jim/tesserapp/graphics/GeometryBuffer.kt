@@ -13,20 +13,12 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
     /**
      * Model matrix bulk buffer.
      *
-     * The global model matrices of geometry which is actually drawn occupies the front memory,
-     * so it can be uploaded without any memory moves.
-     *
-     * The rear memory section holds global model matrices of non-geometry spatial, as well as
-     * all local and temporary matrices (translation and rotation).
-     *
-     * How exactly that rear section is laid out per spatial is defined by the [Spatial] class,
-     * not by the [GeometryBuffer]. Spatials only specify how many matrices they need at least
-     * in [Spatial.LOCAL_MATRICES_PER_SPATIAL], without counting the global matrix at all.
-     *
-     * Global model matrices which are kept in the rear memory section, i.e. not uploaded,
-     * are kept in front of the spatial owned matrices.
+     * While each geometry gets it own little memory space inside the matrix buffer where it has
+     * access to its local matrices, all global matrices are kept in the front section of the
+     * memory. That enables faster GPU uploads because the matrices don't have to be copied into
+     * a new buffer to be contiguous.
      */
-    var modelMatrices = MatrixBuffer(maxModels * (1 + Spatial.LOCAL_MATRICES_PER_SPATIAL + 1))
+    var modelMatrices = MatrixBuffer(maxModels * (1 + Spatial.LOCAL_MATRICES_PER_SPATIAL))
 
     /**
      * Actual count of valid global model matrices.
@@ -95,12 +87,12 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
             // the spatial gets only slots behind the first one:
             spatial.matrixOffset = modelMatrixOffset + 1
 
-            if (spatial is Geometry && spatial.visible) {
+            // This geometry is actually drawn an therefore gets a global model matrix slot
+            // in the front memory section.
+            // The count of matrices stored there is controlled by geometryModelMatrixCount:
+            spatial.matrixGlobal = geometryModelMatrixCount
 
-                // This geometry is actually drawn an therefore gets a global model matrix slot
-                // in the front memory section.
-                // The count of matrices stored there is controlled by geometryModelMatrixCount:
-                spatial.matrixGlobal = geometryModelMatrixCount
+            if (spatial is Geometry && spatial.visible) {
 
                 // Copy all vertices from geometry into vertex buffer:
                 println("Geometry ${spatial.name} uploads ${spatial.points.size} vertices")
@@ -113,15 +105,16 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
 
                 // Increment count of global model matrices, since this geometry used one:
                 geometryModelMatrixCount++
+
             }
-            else {
+            /* else {
 
                 // This spatial is not actually drawn, but still needs a slot to store its global
                 // model matrix somewhere. So we store it in the rear section in front of this
                 // spatials other local matrices:
                 spatial.matrixGlobal = modelMatrixOffset
 
-            }
+            } */
 
             // Load old matrix data from this buffer into new one:
             // We don't need to copy the global matrix, since that is completely computed from
