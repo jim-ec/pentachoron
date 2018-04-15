@@ -70,7 +70,7 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
         else modelMatrices.also {
             // Flush matrix buffer:
             for (i in 0 until modelMatrices.maxMatrices) {
-                modelMatrices.identity(i)
+                modelMatrices.memory.identity(i)
             }
         }
 
@@ -128,7 +128,7 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
             // the local ones:
             if (loadOldMatrixData) {
                 for (i in 0 until Spatial.LOCAL_MATRICES_PER_SPATIAL) {
-                    newBuffer.copy(spatial.matrixOffset + i, oldMatrixOffset + i, modelMatrices)
+                    newBuffer.memory.copy(spatial.matrixOffset + i, oldMatrixOffset + i, modelMatrices.MemorySpace())
                 }
             }
 
@@ -146,14 +146,14 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
 
     }
 
-    override fun toString(): String {
+    override fun toString() = let {
         val sb = StringBuilder()
         sb.append("Geometry buffer with $modelCount of $maxModels models\n")
 
         sb.append("$geometryModelMatrixCount of $maxModels geometry model matrices:\n")
 
         for (i in 0 until maxModels) {
-            sb.append("  Global [$i] #$i: ").append(modelMatrices.toString(i)).append('\n')
+            sb.append("  Global [$i] #$i: ").append(modelMatrices.memory.toString(i)).append('\n')
         }
 
         sb.append("$modelCount * ${Spatial.LOCAL_MATRICES_PER_SPATIAL + 1} = " +
@@ -163,17 +163,17 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
             sb.append("  Global [$m] " +
                     "#${maxModels + m * (1 + Spatial.LOCAL_MATRICES_PER_SPATIAL)}:     ")
 
-            sb.append(modelMatrices.toString(maxModels + m * (1 + Spatial.LOCAL_MATRICES_PER_SPATIAL))).append('\n')
+            sb.append(modelMatrices.memory.toString(maxModels + m * (1 + Spatial.LOCAL_MATRICES_PER_SPATIAL))).append('\n')
 
             for (i in 0 until Spatial.LOCAL_MATRICES_PER_SPATIAL) {
                 sb.append("    Local [$m][$i] " +
                         "#${maxModels + m * (1 + Spatial.LOCAL_MATRICES_PER_SPATIAL) + 1 + i}: ")
 
-                sb.append(modelMatrices.toString(maxModels + m * (1 + Spatial.LOCAL_MATRICES_PER_SPATIAL) + 1 + i)).append('\n')
+                sb.append(modelMatrices.memory.toString(maxModels + m * (1 + Spatial.LOCAL_MATRICES_PER_SPATIAL) + 1 + i)).append('\n')
             }
         }
 
-        return sb.toString()
+        sb.toString()
     }
 
 }

@@ -93,20 +93,20 @@ open class Spatial(
         assertTrue("Spatial must be registered to a matrix buffer", buffer != null)
 
         // Rotation:
-        buffer?.multiply(matrixRotationZX, matrixRotationYX, matrixRotation)
+        buffer?.MemorySpace()?.multiply(matrixRotationZX, matrixRotationYX, matrixRotation)
 
         // Local:
-        buffer?.multiply(matrixRotation, matrixTranslation, matrixLocal)
+        buffer?.MemorySpace()?.multiply(matrixRotation, matrixTranslation, matrixLocal)
 
         // Global:
         if (null != parent) {
             // This spatial has a parent, therefore we need to multiply the local matrix
             // to the parent's global matrix:
-            buffer?.multiply(matrixLocal, parent!!.matrixGlobal, matrixGlobal)
+            buffer?.MemorySpace()?.multiply(matrixLocal, parent!!.matrixGlobal, matrixGlobal)
         }
         else {
             // This spatial has no parent, therefore the local matrix equals the global one:
-            buffer?.copy(matrixGlobal, matrixLocal)
+            buffer?.MemorySpace()?.copy(matrixGlobal, matrixLocal)
         }
 
         children.forEach { spatial -> spatial.computeModelMatricesRecursively() }
@@ -117,7 +117,7 @@ open class Spatial(
      */
     fun rotationZX(theta: Double) {
         assertTrue("Spatial must be registered to a matrix buffer", buffer != null)
-        buffer?.rotation(matrixRotationZX, 2, 0, theta)
+        buffer?.MemorySpace()?.rotation(matrixRotationZX, 2, 0, theta)
         onMatrixChangedListeners.fire()
     }
 
@@ -126,7 +126,7 @@ open class Spatial(
      */
     fun rotationYX(theta: Double) {
         assertTrue("Spatial must be registered to a matrix buffer", buffer != null)
-        buffer?.rotation(matrixRotationYX, 1, 0, theta)
+        buffer?.MemorySpace()?.rotation(matrixRotationYX, 1, 0, theta)
         onMatrixChangedListeners.fire()
     }
 
@@ -135,7 +135,7 @@ open class Spatial(
      */
     fun translate(v: Vector) {
         assertTrue("Spatial must be registered to a matrix buffer", buffer != null)
-        buffer?.translation(matrixTranslation, v)
+        buffer?.MemorySpace()?.translation(matrixTranslation, v)
         onMatrixChangedListeners.fire()
     }
 
@@ -180,7 +180,7 @@ open class Spatial(
     }
 
     override fun toString(): String {
-        return if (buffer != null) "$name: ${buffer!!.toString(LOCAL_MATRIX)}" else name
+        return if (buffer != null) "$name: ${buffer!!.MemorySpace().toString(LOCAL_MATRIX)}" else name
     }
 
     /**

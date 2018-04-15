@@ -11,10 +11,10 @@ class VectorTest {
     @Test
     fun construction() {
         Vector(1.0, 2.0, 5.0, 4.0).apply {
-            assertEquals(1.0, this.x, 0.1)
-            assertEquals(2.0, this.y, 0.1)
-            assertEquals(5.0, this.z, 0.1)
-            assertEquals(4.0, this.w, 0.1)
+            assertEquals(1.0, x, 0.1)
+            assertEquals(2.0, y, 0.1)
+            assertEquals(5.0, z, 0.1)
+            assertEquals(4.0, w, 0.1)
 
             assertEquals(1.0, x, 0.1)
             assertEquals(2.0, y, 0.1)

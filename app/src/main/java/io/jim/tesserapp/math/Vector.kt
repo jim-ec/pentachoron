@@ -81,7 +81,7 @@ data class Vector(
     /**
      * Normalize this vector.
      */
-    fun normalize() = this.apply {
+    fun normalize() = apply {
         val oneOverLength = 1.0 / length
         x *= oneOverLength
         y *= oneOverLength

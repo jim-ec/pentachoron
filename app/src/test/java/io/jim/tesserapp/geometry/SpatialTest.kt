@@ -18,6 +18,7 @@ class SpatialTest {
      * as the local matrices.
      */
     private val matrixBuffer = MatrixBuffer(maxModels * (1 + Spatial.LOCAL_MATRICES_PER_SPATIAL))
+    private val matrixMemory = matrixBuffer.MemorySpace()
 
     private var matrixOffset = 0
     private val spatials = ArrayList<Spatial>()
@@ -46,14 +47,14 @@ class SpatialTest {
         geometry.translate(Vector(0.0, 1.0, 0.0, 1.0))
         root.computeModelMatricesRecursively()
 
-        matrixBuffer.multiply(Vector(0.0, 1.0, 0.0, 1.0), root.matrixGlobal).apply {
+        matrixMemory.multiply(Vector(0.0, 1.0, 0.0, 1.0), root.matrixGlobal).apply {
             assertEquals(1.0, x, 0.1)
             assertEquals(0.0, y, 0.1)
             assertEquals(0.0, z, 0.1)
             assertEquals(1.0, w, 0.1)
         }
 
-        matrixBuffer.multiply(Vector(0.0, 1.0, 0.0, 1.0), geometry.matrixGlobal).apply {
+        matrixMemory.multiply(Vector(0.0, 1.0, 0.0, 1.0), geometry.matrixGlobal).apply {
             assertEquals(2.0, x, 0.1)
             assertEquals(0.0, y, 0.1)
             assertEquals(0.0, z, 0.1)

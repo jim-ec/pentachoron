@@ -1,7 +1,6 @@
 package io.jim.tesserapp.graphics
 
 import android.content.Context
-import android.opengl.GLES10.GL_MULTISAMPLE
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.Geometry
@@ -41,13 +40,12 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         glClearColor(clearColor.red, clearColor.green, clearColor.blue, 1.0f)
         glDisable(GL_CULL_FACE)
         glEnable(GL_DEPTH_TEST)
-        glEnable(GL_MULTISAMPLE)
         glLineWidth(4f)
 
         shader = Shader(MAX_MODELS)
         geometryBuffer = GeometryBuffer(MAX_MODELS, MAX_VERTICES, MAX_INDICES)
 
-        projectionMatrix.perspective2D(0, 0.1f, 100f)
+        projectionMatrix.MemorySpace().perspective2D(0, 0.1f, 100f)
         shader.uploadProjectionMatrix(projectionMatrix)
 
         // Rebuild geometry buffers upon spatial hierarchy or geometry change:
@@ -61,9 +59,9 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
 
-        viewMatrix.lookAt(1, Vector(4.0, 0.0, 0.0, 1.0), Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 1.0, 0.0, 1.0))
-        viewMatrix.scale(2, Vector(1.0, width.toDouble() / height, 1.0, 1.0))
-        viewMatrix.multiply(1, 2, 0)
+        viewMatrix.MemorySpace().lookAt(1, Vector(4.0, 0.0, 0.0, 1.0), Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 1.0, 0.0, 1.0))
+        viewMatrix.MemorySpace().scale(2, Vector(1.0, width.toDouble() / height, 1.0, 1.0))
+        viewMatrix.MemorySpace().multiply(1, 2, 0)
 
         shader.uploadViewMatrix(viewMatrix)
     }
