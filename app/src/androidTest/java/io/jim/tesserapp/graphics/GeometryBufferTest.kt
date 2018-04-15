@@ -9,7 +9,7 @@ import kotlin.math.PI
 class GeometryBufferTest {
 
     private val maxModels = 2
-    private val geometryBuffer = GeometryBuffer(maxModels, 1000, 1000)
+    private val geometryBuffer = GeometryBuffer(maxModels, 1000)
     private val modelMatrixMemory = geometryBuffer.modelMatrixBuffer.MemorySpace()
 
     @Test

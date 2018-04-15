@@ -3,8 +3,9 @@ package io.jim.tesserapp.geometry
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
-import junit.framework.Assert
+import io.jim.tesserapp.util.assertEquals
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import kotlin.math.PI
 
@@ -17,32 +18,24 @@ class GeometryTest {
         private const val maxModels = 10
     }
 
-    /**
-     * We simply store the global model matrices in the same contiguous memory section
-     * as the local matrices.
-     */
-    private val matrixBuffer = MatrixBuffer(maxModels * (1 + Geometry.LOCAL_MATRICES_PER_GEOMETRY))
-
-    private var matrixOffset = 0
-    private val geometries = ArrayList<Geometry>()
+    private val localBuffer = MatrixBuffer(maxModels * Geometry.LOCAL_MATRICES_PER_GEOMETRY)
+    private val globalBuffer = MatrixBuffer(maxModels)
+    private var activeGeometries = 0
 
     private fun register(geometry: Geometry) {
-        Assert.assertTrue("No more  to register new geometry", matrixOffset < matrixBuffer.maxMatrices)
-        geometry.localMemory = matrixBuffer.MemorySpace(matrixOffset + 1)
-        geometry.globalMemory = matrixBuffer.MemorySpace(matrixOffset)
-        matrixOffset += Geometry.LOCAL_MATRICES_PER_GEOMETRY
+        assertTrue("No more  to register new geometry", activeGeometries < maxModels)
+        geometry.localMemory = localBuffer.MemorySpace(activeGeometries * Geometry.LOCAL_MATRICES_PER_GEOMETRY)
+        geometry.globalMemory = globalBuffer.MemorySpace(activeGeometries)
+        activeGeometries++
     }
 
     @Test
     fun computeModelMatricesRecursively() {
-
         val root = Geometry("Root")
         val geometry = Geometry("Geometry")
 
         register(root)
         register(geometry)
-        geometries.add(root)
-        geometries.add(geometry)
         geometry.addToParentGeometry(root)
 
         root.rotationYX(PI / 2)
@@ -50,28 +43,51 @@ class GeometryTest {
         root.computeModelMatricesRecursively()
 
         root.globalMemory.multiply(lhs = Vector(0.0, 1.0, 0.0, 1.0)).apply {
-            Assert.assertEquals(1.0, x, 0.1)
-            Assert.assertEquals(0.0, y, 0.1)
-            Assert.assertEquals(0.0, z, 0.1)
-            Assert.assertEquals(1.0, w, 0.1)
+            assertEquals(1.0, x, 0.1)
+            assertEquals(0.0, y, 0.1)
+            assertEquals(0.0, z, 0.1)
+            assertEquals(1.0, w, 0.1)
         }
 
         geometry.globalMemory.multiply(lhs = Vector(0.0, 1.0, 0.0, 1.0)).apply {
-            Assert.assertEquals(2.0, x, 0.1)
-            Assert.assertEquals(0.0, y, 0.1)
-            Assert.assertEquals(0.0, z, 0.1)
-            Assert.assertEquals(1.0, w, 0.1)
+            assertEquals(2.0, x, 0.1)
+            assertEquals(0.0, y, 0.1)
+            assertEquals(0.0, z, 0.1)
+            assertEquals(1.0, w, 0.1)
         }
     }
 
     @Test
     fun extruding() {
-        val geometry = Lines("Test", Color(0f))
-        geometry.addLine(Vector(1.0, 1.0, 0.0, 1.0), Vector(2.0, 2.0, 0.0, 1.0))
-        geometry.extrude(Vector(0.0, 0.0, 1.0, 0.0))
-        assertEquals(4, geometry.points.size)
-        assertEquals(4, geometry.lines.size)
-        assertEquals(1.0, geometry.points.last().z, 0.1)
+        Lines("Test", Color.BLACK).apply {
+            addLine(Vector(1.0, 1.0, 0.0, 1.0), Vector(2.0, 2.0, 0.0, 1.0))
+            extrude(Vector(0.0, 0.0, 1.0, 0.0))
+
+            assertEquals(4, points.size)
+            assertEquals(4, lines.size)
+            assertEquals(1.0, points.last().z, 0.1)
+        }
+    }
+
+    @Test
+    fun vertexPoints() {
+        val a = Vector(0.0, 0.0, 0.0, 0.0)
+        val b = Vector(1.0, 0.0, 0.0, 0.0)
+        val c = Vector(1.0, 1.0, 0.0, 0.0)
+        val d = Vector(0.0, 1.0, 0.0, 0.0)
+        Quadrilateral("Test", a, b, c, d, Color.BLACK).apply {
+            val resolvedIndices = vertexPoints
+            assertEquals(8, resolvedIndices.size)
+            assertEquals(a, resolvedIndices[0], 0.1)
+            assertEquals(b, resolvedIndices[1], 0.1)
+            assertEquals(b, resolvedIndices[2], 0.1)
+            assertEquals(c, resolvedIndices[3], 0.1)
+            assertEquals(c, resolvedIndices[4], 0.1)
+            assertEquals(d, resolvedIndices[5], 0.1)
+            assertEquals(d, resolvedIndices[6], 0.1)
+            assertEquals(a, resolvedIndices[7], 0.1)
+        }
     }
 
 }
+

@@ -6,8 +6,10 @@ import io.jim.tesserapp.math.MatrixBuffer
 /**
  * A geometry buffer, responsible for vertex and index data.
  * How vertex, index and matrix data is laid out is completely up to this geometry buffer.
+ *
+ * TODO: Separate global and local matrix buffers.
  */
-class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: Int) {
+class GeometryBuffer(private val maxModels: Int, maxVertices: Int) {
 
     /**
      * Model matrix bulk buffer.
@@ -31,11 +33,10 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
     /**
      * Return the count of indices actually stored and needed to be drawn.
      */
-    val indexCount
-        get() = indexBuffer.indexCounter
+    var vertexCount = 0
+        private set
 
     private val vertexBuffer = VertexBuffer(maxVertices)
-    private val indexBuffer = IndexBuffer(maxIndices)
     private var modelCount = 0
 
     /**
@@ -43,7 +44,6 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
      */
     fun bind(shader: Shader) {
         vertexBuffer.bind(shader)
-        indexBuffer.bind()
     }
 
     /**
@@ -62,8 +62,6 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
             }
         }
 
-        indexBuffer.startRecording()
-
         // The section of memory where we store global matrices of drawn geometry, i.e. the start:
         geometryModelMatrixCount = 0
 
@@ -76,13 +74,11 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
             it.globalMemory = modelMatrixBuffer.MemorySpace(geometryModelMatrixCount)
 
             // Copy all vertices from geometry into vertex buffer:
-            println("Geometry ${it.name} uploads ${it.points.size} vertices")
-            for (point in it.points) {
+            println("Geometry ${it.name} uploads ${it.lines.size * 2} vertices")
+            for (point in it.vertexPoints) {
                 vertexBuffer.appendVertex(point, it.color, geometryModelMatrixCount)
+                vertexCount++
             }
-
-            // Copy indices into index buffer:
-            indexBuffer.recordGeometry(it)
 
             // Increment count of global model matrices, since this geometry used one:
             geometryModelMatrixCount++
@@ -93,8 +89,6 @@ class GeometryBuffer(private val maxModels: Int, maxVertices: Int, maxIndices: I
             modelCount++
 
         }
-
-        indexBuffer.endRecording()
     }
 
     override fun toString() = let {

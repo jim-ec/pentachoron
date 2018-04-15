@@ -48,6 +48,15 @@ open class Geometry(
      */
     val lines = ArrayList<Pair<Int, Int>>()
 
+    /**
+     * List of points, but with resolved indices.
+     * This is intended to be used for drawing without indices.
+     */
+    val vertexPoints: List<Vector>
+        get() = let {
+            lines.flatMap { (first, second) -> listOf(points[first], points[second]) }
+        }
+
     private val children = ArrayList<Geometry>()
     private var parent: Geometry? = null
 
@@ -88,7 +97,7 @@ open class Geometry(
      * Add a series of points.
      * The actual lines are drawn from indices to these points.
      */
-    fun addPoints(vararg p: Vector) {
+    protected fun addPoints(vararg p: Vector) {
         synchronized(Geometry) {
             points += p
             onGeometryChangedListeners.fire()
@@ -98,7 +107,7 @@ open class Geometry(
     /**
      * Add a lines from point [a] to point [b].
      */
-    fun addLine(a: Int, b: Int) {
+    protected fun addLine(a: Int, b: Int) {
         synchronized(Geometry) {
             lines += Pair(a, b)
             onGeometryChangedListeners.fire()

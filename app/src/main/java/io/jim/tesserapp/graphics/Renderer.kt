@@ -29,7 +29,6 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     companion object {
         private const val MAX_MODELS = 100
         private const val MAX_VERTICES = 1000
-        private const val MAX_INDICES = 1000
     }
 
     /**
@@ -42,7 +41,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         glLineWidth(4f)
 
         shader = Shader(MAX_MODELS)
-        geometryBuffer = GeometryBuffer(MAX_MODELS, MAX_VERTICES, MAX_INDICES)
+        geometryBuffer = GeometryBuffer(MAX_MODELS, MAX_VERTICES)
 
         projectionMatrix.MemorySpace().perspective2D(0, 0.1f, 100f)
         shader.uploadProjectionMatrix(projectionMatrix)
@@ -93,7 +92,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         shader.uploadModelMatrixBuffer(geometryBuffer.modelMatrixBuffer, geometryBuffer.geometryModelMatrixCount)
 
         // Draw actual geometry:
-        glDrawElements(GL_LINES, geometryBuffer.indexCount, GL_UNSIGNED_INT, 0)
+        glDrawArrays(GL_LINES, 0, geometryBuffer.vertexCount)
     }
 
 }
