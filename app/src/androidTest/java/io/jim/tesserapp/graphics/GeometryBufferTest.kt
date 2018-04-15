@@ -19,7 +19,7 @@ class GeometryBufferTest {
         val translationGeometry = Geometry("Translation")
 
         translationGeometry.addToParentSpatial(rotationGeometry)
-        geometryBuffer.recordGeometries(rotationGeometry, true)
+        geometryBuffer.recordGeometries(rotationGeometry)
 
         // Geometry buffer should have registered both geometries:
         assertEquals(rotationGeometry.matrixOffset, maxModels + 1)
@@ -51,14 +51,10 @@ class GeometryBufferTest {
         assertEquals(translationGeometry.matrixOffset, maxModels + 1 + Spatial.LOCAL_MATRICES_PER_SPATIAL + 1)
         assertEquals(translationGeometry.matrixGlobal, 0)
 
-        println(geometryBuffer)
-
         // Re-record geometries, child should now occupy the very first slots:
-        geometryBuffer.recordGeometries(translationGeometry, true)
+        geometryBuffer.recordGeometries(translationGeometry)
         assertEquals(translationGeometry.matrixOffset, maxModels + 1)
         assertEquals(translationGeometry.matrixGlobal, 0)
-
-        println(geometryBuffer)
 
         // Recompute global matrix.
         // Translation matrix should be preserved, although the matrix location changed:

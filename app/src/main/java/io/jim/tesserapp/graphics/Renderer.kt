@@ -77,7 +77,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         if (rebuildGeometryBuffers) {
             synchronized(Geometry) {
                 println("Rebuild geometry buffers")
-                geometryBuffer.recordGeometries(rootSpatial, true)
+                geometryBuffer.recordGeometries(rootSpatial)
                 rebuildGeometryBuffers = false
             }
         }

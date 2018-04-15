@@ -28,7 +28,7 @@ class SpatialTest {
         spatial.buffer = matrixBuffer
         spatial.matrixGlobal = matrixOffset
         spatial.matrixOffset = matrixOffset + 1
-        matrixOffset += 1 + Spatial.LOCAL_MATRICES_PER_SPATIAL
+        matrixOffset += Spatial.LOCAL_MATRICES_PER_SPATIAL
     }
 
     @Test
