@@ -1,8 +1,12 @@
 <component name="ProjectDictionaryState">
   <dictionary name="Jim">
     <words>
+      <w>glsl</w>
+      <w>mediump</w>
       <w>shaders</w>
       <w>spatials</w>
+      <w>tesserapp</w>
+      <w>verts</w>
     </words>
   </dictionary>
 </component>

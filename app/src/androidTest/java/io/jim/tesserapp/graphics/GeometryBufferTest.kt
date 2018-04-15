@@ -1,7 +1,6 @@
 package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.geometry.Spatial
 import io.jim.tesserapp.math.Vector
 import junit.framework.Assert.assertEquals
 import org.junit.Test
@@ -18,13 +17,13 @@ class GeometryBufferTest {
         val rotationGeometry = Geometry("Rotation")
         val translationGeometry = Geometry("Translation")
 
-        translationGeometry.addToParentSpatial(rotationGeometry)
+        translationGeometry.addToParentGeometry(rotationGeometry)
         geometryBuffer.recordGeometries(rotationGeometry)
 
         // Geometry buffer should have registered both geometries:
         assertEquals(rotationGeometry.matrixOffset, maxModels + 1)
         assertEquals(rotationGeometry.matrixGlobal, maxModels)
-        assertEquals(translationGeometry.matrixOffset, maxModels + 1 + Spatial.LOCAL_MATRICES_PER_SPATIAL + 1)
+        assertEquals(translationGeometry.matrixOffset, maxModels + 1 + Geometry.LOCAL_MATRICES_PER_GEOMETRY + 1)
         assertEquals(translationGeometry.matrixGlobal, 0)
 
         // Create some transform matrices and compute global matrices:
@@ -47,8 +46,8 @@ class GeometryBufferTest {
         }
 
         // Release child from parent, offset data should stay:
-        translationGeometry.releaseFromParentSpatial()
-        assertEquals(translationGeometry.matrixOffset, maxModels + 1 + Spatial.LOCAL_MATRICES_PER_SPATIAL + 1)
+        translationGeometry.releaseFromParentGeometry()
+        assertEquals(translationGeometry.matrixOffset, maxModels + 1 + Geometry.LOCAL_MATRICES_PER_GEOMETRY + 1)
         assertEquals(translationGeometry.matrixGlobal, 0)
 
         // Re-record geometries, child should now occupy the very first slots:

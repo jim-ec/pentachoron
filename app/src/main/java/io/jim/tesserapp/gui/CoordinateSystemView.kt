@@ -10,7 +10,6 @@ import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.Lines
 import io.jim.tesserapp.geometry.Quadrilateral
-import io.jim.tesserapp.geometry.Spatial
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.graphics.Renderer
 import io.jim.tesserapp.math.Vector
@@ -47,11 +46,11 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(1.0, 0.0, 0.0, 1.0))
         axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 1.0, 0.0, 1.0))
         axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 0.0, 1.0, 1.0))
-        axis.addToParentSpatial(renderer.rootSpatial)
+        axis.addToParentGeometry(renderer.rootGeometry)
 
         // Create grid:
         grid = Lines("Grid", Color(context, R.color.colorGrid))
-        grid.addToParentSpatial(renderer.rootSpatial)
+        grid.addToParentGeometry(renderer.rootGeometry)
         for (i in -5..5) {
             grid.addLine(Vector(i.toDouble(), 0.0, -5.0, 1.0), Vector(i.toDouble(), 0.0, 5.0, 1.0))
             grid.addLine(Vector(-5.0, 0.0, i.toDouble(), 1.0), Vector(5.0, 0.0, i.toDouble(), 1.0))
@@ -64,17 +63,17 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
                 Vector(1.0, -1.0, 1.0, 1.0),
                 Color(context, R.color.colorAccent)
         )
-        cube.addToParentSpatial(renderer.rootSpatial)
+        cube.addToParentGeometry(renderer.rootGeometry)
         Handler().postDelayed({
             cube.extrude(Vector(0.0, 0.0, -2.0, 0.0))
         }, 3000)
 
         // Render scene upon every graphical change:
-        Spatial.onMatrixChangedListeners += {
+        Geometry.onMatrixChangedListeners += {
             println("Matrix data changed")
             requestRender()
         }
-        Spatial.onHierarchyChangedListeners += {
+        Geometry.onHierarchyChangedListeners += {
             println("Hierarchy changed")
             requestRender()
         }
@@ -106,8 +105,8 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
             val dy = y - touchStartPosition.y
             rotation.x += dx
             rotation.y += dy
-            renderer.rootSpatial.rotationZX(rotation.x * TOUCH_ROTATION_SENSITIVITY)
-            renderer.rootSpatial.rotationYX(rotation.y * TOUCH_ROTATION_SENSITIVITY)
+            renderer.rootGeometry.rotationZX(rotation.x * TOUCH_ROTATION_SENSITIVITY)
+            renderer.rootGeometry.rotationYX(rotation.y * TOUCH_ROTATION_SENSITIVITY)
 
             touchStartPosition.x = x
             touchStartPosition.y = y
@@ -130,8 +129,8 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     override fun performClick(): Boolean {
         super.performClick()
 
-        renderer.rootSpatial.rotationYX(0.0)
-        renderer.rootSpatial.rotationZX(0.0)
+        renderer.rootGeometry.rotationYX(0.0)
+        renderer.rootGeometry.rotationZX(0.0)
         requestRender()
 
         return true
@@ -140,8 +139,8 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     /**
      * Enable or disable grid rendering.
      */
-    fun enableGrid(enable: Boolean) {
-        grid.visible = enable
+    fun enableGrid(@Suppress("UNUSED_PARAMETER") enable: Boolean) {
+        //grid.visible = enable
         /*
                 println("Enable grid: $enable")
         if (enable) {

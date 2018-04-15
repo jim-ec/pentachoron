@@ -4,7 +4,6 @@ import android.content.Context
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.geometry.Spatial
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 import javax.microedition.khronos.egl.EGLConfig
@@ -16,9 +15,9 @@ import javax.microedition.khronos.opengles.GL10
 class Renderer(context: Context) : GLSurfaceView.Renderer {
 
     /**
-     * The root for every spatial.
+     * The root for every geometry.
      */
-    val rootSpatial = Geometry("Root")
+    val rootGeometry = Geometry("Root")
 
     private lateinit var shader: Shader
     private lateinit var geometryBuffer: GeometryBuffer
@@ -48,8 +47,8 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         projectionMatrix.MemorySpace().perspective2D(0, 0.1f, 100f)
         shader.uploadProjectionMatrix(projectionMatrix)
 
-        // Rebuild geometry buffers upon spatial hierarchy or geometry change:
-        Spatial.onHierarchyChangedListeners += { rebuildGeometryBuffers = true }
+        // Rebuild geometry buffers upon hierarchy or geometry change:
+        Geometry.onHierarchyChangedListeners += { rebuildGeometryBuffers = true }
         Geometry.onGeometryChangedListeners += { rebuildGeometryBuffers = true }
     }
 
@@ -77,7 +76,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         if (rebuildGeometryBuffers) {
             synchronized(Geometry) {
                 println("Rebuild geometry buffers")
-                geometryBuffer.recordGeometries(rootSpatial)
+                geometryBuffer.recordGeometries(rootGeometry)
                 rebuildGeometryBuffers = false
             }
         }
@@ -86,7 +85,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         // Since render is only requested when data is changed, and geometry which is not
         // transformed often is not expected in large chunks, we can simply re-compute all
         // global model matrices:
-        rootSpatial.computeModelMatricesRecursively()
+        rootGeometry.computeModelMatricesRecursively()
 
         geometryBuffer.bind(shader)
 
