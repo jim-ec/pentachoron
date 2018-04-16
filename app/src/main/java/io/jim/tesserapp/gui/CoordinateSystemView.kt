@@ -28,7 +28,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     private val touchStartPosition = Vector(0.0, 0.0, 0.0, 0.0)
     private val rotation = Vector(0.0, 0.0, 0.0, 0.0)
     private var touchStartTime = 0L
-    private val grid: Lines
+    //private val grid: Lines
 
     companion object {
         private const val CLICK_TIME_MS = 100L
@@ -42,6 +42,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         renderMode = RENDERMODE_WHEN_DIRTY
 
         // Create axis:
+        println("VIEW: Add axis")
         val axis = Lines("Axis", Color(context, R.color.colorPrimary))
         axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(1.0, 0.0, 0.0, 1.0))
         axis.addLine(Vector(0.0, 0.0, 0.0, 1.0), Vector(0.0, 1.0, 0.0, 1.0))
@@ -49,7 +50,8 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         axis.addToParentGeometry(renderer.rootGeometry)
 
         // Create grid:
-        grid = Lines("Grid", Color(context, R.color.colorGrid))
+        println("VIEW: Add grid")
+        val grid = Lines("Grid", Color(context, R.color.colorGrid))
         grid.addToParentGeometry(renderer.rootGeometry)
         for (i in -5..5) {
             grid.addLine(Vector(i.toDouble(), 0.0, -5.0, 1.0), Vector(i.toDouble(), 0.0, 5.0, 1.0))
@@ -57,6 +59,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         }
 
         // Create cube:
+        println("VIEW: Add cube")
         cube = Quadrilateral("Cube", Vector(1.0, 1.0, 1.0, 1.0),
                 Vector(-1.0, 1.0, 1.0, 1.0),
                 Vector(-1.0, -1.0, 1.0, 1.0),
@@ -68,17 +71,26 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
             cube.extrude(Vector(0.0, 0.0, -2.0, 0.0))
         }, 3000)
 
+        /*val geometry = Lines("Axis", Color(context, R.color.colorAccent))
+        geometry.addLine(Vector(0.0, 0.0, 0.0, 0.0), Vector(1.0, 0.0, 0.0, 0.0))
+        geometry.addToParentGeometry(renderer.rootGeometry)
+
+        Handler().postDelayed({
+            println("EXTRUDE:")
+            geometry.extrude(Vector(0.0, 0.0, -2.0, 0.0))
+        }, 3000)*/
+
         // Render scene upon every graphical change:
         Geometry.onMatrixChangedListeners += {
-            println("Matrix data changed")
+            //println("Matrix data changed")
             requestRender()
         }
         Geometry.onHierarchyChangedListeners += {
-            println("Hierarchy changed")
+            println("VIEW: Hierarchy changed")
             requestRender()
         }
         Geometry.onGeometryChangedListeners += {
-            println("Geometry changed")
+            println("VIEW: Geometry changed")
             requestRender()
         }
 
@@ -141,7 +153,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
      */
     fun enableGrid(@Suppress("UNUSED_PARAMETER") enable: Boolean) {
         //grid.visible = enable
-        grid.clearPoints()
+        //grid.clearPoints()
         /*
                 println("Enable grid: $enable")
         if (enable) {

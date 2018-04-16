@@ -1,7 +1,5 @@
 package io.jim.tesserapp.graphics
 
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -70,9 +68,17 @@ data class FillUpBuffer(
     }
 
     /**
+     * Count of currently added entries.
+     * The count is not reset by [rewind], but instead by the next call to [plusAssign] after
+     * calling [rewind].
+     */
+    var activeEntries = 0
+        private set
+
+    /**
      * Total length of this buffer in bytes, regardless how much data has been recorded until now.
      */
-    val byteLength = capacity * layout.size * FLOAT_BYTE_LENGTH
+    val byteCapacity = capacity * layout.size * FLOAT_BYTE_LENGTH
 
     /**
      * Get a single float from an [entry].
@@ -81,24 +87,40 @@ data class FillUpBuffer(
     operator fun get(entry: Int, subIndex: Int = 0) = floatBuffer[entry * layout.size + subIndex]
 
     /**
+     * Thrown when data is given which does not match the buffer layout.
+     */
+    inner class InvalidEntryLayout(wrongLength: Int)
+        : Exception("Invalid entry added: $wrongLength floats given, but ${layout.size} floats needed")
+
+    /**
+     * Thrown upon buffer overflow.
+     */
+    inner class OverflowException
+        : Exception("Buffer overflow, at most $capacity can be stored")
+
+    /**
      * Appends data to the buffer.
      *
      * The count of floats must match with the total size of the layout given earlier.
+     *
+     * @throws InvalidEntryLayout If data length does not match layout size.
+     * @throws OverflowException If no more data can be added.
      */
     operator fun plusAssign(data: List<Float>) {
-        assertEquals("Data length must match layout", layout.size, data.size)
-        assertTrue(("Insufficient localMemory to store vertex:  " +
-                "stored=%d (%d float) capacity=%d (%d floats) needed=%d floats")
-                .format(floatBuffer.position() / layout.size,
-                        floatBuffer.position(),
-                        floatBuffer.capacity() / layout.size,
-                        floatBuffer.capacity(),
-                        layout.size),
-                floatBuffer.position() + layout.size <= floatBuffer.capacity())
+        if (layout.size != data.size)
+            throw InvalidEntryLayout(data.size)
+
+        if (floatBuffer.position() + layout.size > floatBuffer.capacity())
+            throw OverflowException()
+
+        if (floatBuffer.position() == 0) {
+            activeEntries = 0
+        }
 
         data.forEach {
             floatBuffer.put(it)
         }
+        activeEntries++
     }
 
     /**

@@ -46,7 +46,7 @@ data class VertexBufferBacking(private val maxVertices: Int) {
     fun bind(shader: Shader) {
         memory.rewind()
         glBindBuffer(GL_ARRAY_BUFFER, handle)
-        glBufferData(GL_ARRAY_BUFFER, memory.byteLength, memory.floatBuffer, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, memory.byteCapacity, memory.floatBuffer, GL_STATIC_DRAW)
 
         // Position attribute:
         glEnableVertexAttribArray(shader.positionAttributeLocation)

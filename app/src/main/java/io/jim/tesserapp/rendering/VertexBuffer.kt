@@ -19,9 +19,10 @@ class VertexBuffer {
      * Bind the vertex buffer and instruct the vertex attribute pointer a the given [shader].
      */
     fun bind(shader: Shader, backingBuffer: FillUpBuffer) {
+        println("Upload ${backingBuffer.activeEntries} vertices")
         backingBuffer.rewind()
         glBindBuffer(GL_ARRAY_BUFFER, handle)
-        glBufferData(GL_ARRAY_BUFFER, backingBuffer.byteLength, backingBuffer.floatBuffer, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, backingBuffer.byteCapacity, backingBuffer.floatBuffer, GL_STATIC_DRAW)
 
         val (colorOffset, modelIndexOffset) = backingBuffer.layout.byteRanges
 

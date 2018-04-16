@@ -24,8 +24,8 @@ class GeometryTest {
 
     private fun register(geometry: Geometry) {
         assertTrue("No more  to register new geometry", activeGeometries < maxModels)
-        geometry.localMemory = localBuffer.MemorySpace(activeGeometries * Geometry.LOCAL_MATRICES_PER_GEOMETRY)
-        geometry.globalMemory = globalBuffer.MemorySpace(activeGeometries)
+        geometry.localMemory = localBuffer.MemorySpace(activeGeometries * Geometry.LOCAL_MATRICES_PER_GEOMETRY, Geometry.LOCAL_MATRICES_PER_GEOMETRY)
+        geometry.globalMemory = globalBuffer.MemorySpace(activeGeometries, 1)
         activeGeometries++
     }
 

@@ -1,6 +1,7 @@
 package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.util.ListenerList
 
 /**
  * Manages a geometry tree, while providing backing buffers for vertex and matrix data.
@@ -9,10 +10,32 @@ import io.jim.tesserapp.geometry.Geometry
  */
 class GeometryManager(maxGeometries: Int, maxVertices: Int) {
 
+    /**
+     * Model matrix buffer.
+     * When geometries are transformed, this buffer is updated automatically.
+     */
     val modelMatrixBuffer = ModelMatrixBuffer(maxGeometries)
-    val vertexBuffer = FillUpBuffer(maxVertices, FillUpBuffer.Layout(COMPONENTS_PER_POSITION, COMPONENTS_PER_COLOR, COMPONENTS_PER_MODEL_INDEX))
+
+    /**
+     * Vertex buffer.
+     * Buffer data is updated automatically upon geometrical change.
+     */
+    val vertexBuffer = FillUpBuffer(maxVertices,
+            FillUpBuffer.Layout(
+                    COMPONENTS_PER_POSITION,
+                    COMPONENTS_PER_COLOR,
+                    COMPONENTS_PER_MODEL_INDEX))
+
+    /**
+     * Root geometry of this manager.
+     * To register hierarchical structured geometries, add them to this root.
+     */
     val rootGeometry = Geometry("Root")
-    private val geometries = HashSet<Geometry>()
+
+    private var geometries = HashSet<Geometry>()
+
+    val onVertexBufferUpdated = ListenerList()
+    val onModelMatrixBufferUpdated = ListenerList()
 
     companion object {
         internal const val COMPONENTS_PER_POSITION = 3
@@ -22,6 +45,8 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
 
     init {
         Geometry.onHierarchyChangedListeners += {
+
+            println("Hierarchy changed:")
 
             // Get a set of all currently added geometries:
             val currentGeometries = HashSet<Geometry>().apply {
@@ -35,6 +60,7 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
             }.forEach { newGeometry ->
                 geometries.add(newGeometry)
                 modelMatrixBuffer += newGeometry
+                println("    $newGeometry added")
             }
 
             // Get a set of all removed geometries:
@@ -42,29 +68,46 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
                 addAll(geometries)
                 removeAll(currentGeometries)
             }.forEach { removedGeometry ->
-                geometries.remove(removedGeometry)
+                //geometries.remove(removedGeometry)
                 TODO("Implement geometry removal ($removedGeometry removed)")
                 //modelMatrixBuffer -= removedGeometry
             }
+
+            //geometries = currentGeometries
+            println("finished with hierarchy change, upload geometry:")
+
+            uploadVertexData()
         }
 
-        Geometry.onGeometryChangedListeners += {
+        Geometry.onGeometryChangedListeners += ::uploadVertexData
+        Geometry.onMatrixChangedListeners += ::uploadModelMatrixData
+    }
 
-            // Rewrite vertex buffer:
-            vertexBuffer.rewind()
-            rootGeometry.forEachRecursive { geometry ->
-                geometry.vertexPoints.forEach {
-                    vertexBuffer += listOf(
-                            it.x.toFloat(), it.y.toFloat(), it.z.toFloat(),
-                            geometry.color.red, geometry.color.green, geometry.color.blue,
-                            geometry.modelIndex.toFloat())
-                }
+    private fun uploadVertexData() {
+        println("Geometry changed:")
+
+        // Rewrite vertex buffer:
+        vertexBuffer.rewind()
+        rootGeometry.forEachRecursive { geometry ->
+            println("    $geometry uploads ${geometry.vertexPoints.size} vertices")
+            geometry.vertexPoints.forEach {
+                vertexBuffer += listOf(
+                        it.x.toFloat(), it.y.toFloat(), it.z.toFloat(),
+                        geometry.color.red, geometry.color.green, geometry.color.blue,
+                        geometry.modelIndex.toFloat())
             }
         }
 
-        Geometry.onMatrixChangedListeners += {
-            rootGeometry.computeModelMatricesRecursively()
-        }
+        onVertexBufferUpdated.fire()
+
+        println("finished with geometry change")
+    }
+
+    private fun uploadModelMatrixData() {
+        //println("Recompute model matrices")
+        rootGeometry.computeModelMatricesRecursively()
+        onModelMatrixBufferUpdated.fire()
+        //println("finished with model matrix change")
     }
 
 }

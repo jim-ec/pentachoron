@@ -15,15 +15,23 @@ import javax.microedition.khronos.opengles.GL10
  */
 class Renderer(context: Context) : GLSurfaceView.Renderer {
 
+    /**
+     * Root geometry of this renderer.
+     */
+    val rootGeometry
+        get() = geometryManager.rootGeometry
+
     private val clearColor = Color(context, android.R.color.background_light)
     private val viewMatrix = MatrixBuffer(3)
     private val projectionMatrix = MatrixBuffer(1)
-    private val geometryManager = GeometryManager(MAX_MODELS, MAX_VERTICES)
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
-
-    val rootGeometry
-        get() = geometryManager.rootGeometry
+    private var uploadVertexBuffer = true
+    private var uploadModelMatrixBuffer = true
+    private val geometryManager = GeometryManager(MAX_MODELS, MAX_VERTICES).apply {
+        onVertexBufferUpdated += { uploadVertexBuffer = true }
+        onModelMatrixBufferUpdated += { uploadModelMatrixBuffer = true }
+    }
 
     companion object {
         private const val MAX_MODELS = 100
@@ -44,10 +52,6 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
 
         projectionMatrix.MemorySpace().perspective2D(0, 0.1f, 100f)
         shader.uploadProjectionMatrix(projectionMatrix)
-
-        // Rebuild geometry buffers upon hierarchy or geometry change:
-        //Geometry.onHierarchyChangedListeners += { rebuildGeometryBuffers = true }
-        //Geometry.onGeometryChangedListeners += { rebuildGeometryBuffers = true }
     }
 
     /**
@@ -71,10 +75,17 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        vertexBuffer.bind(shader, geometryManager.vertexBuffer)
+        if (uploadVertexBuffer) {
+            println("Upload vertex data")
+            vertexBuffer.bind(shader, geometryManager.vertexBuffer)
+            uploadVertexBuffer = false
+        }
 
-        // Re-upload global model matrices:
-        shader.uploadModelMatrixBuffer(geometryManager.modelMatrixBuffer.globalBuffer, geometryManager.modelMatrixBuffer.activeGeometries)
+        if (uploadModelMatrixBuffer) {
+            //println("Upload model matrix data")
+            shader.uploadModelMatrixBuffer(geometryManager.modelMatrixBuffer.globalBuffer, geometryManager.modelMatrixBuffer.activeGeometries)
+            uploadModelMatrixBuffer = false
+        }
 
         // Draw actual geometry:
         glDrawArrays(GL_LINES, 0, geometryManager.vertexBuffer.capacity)
