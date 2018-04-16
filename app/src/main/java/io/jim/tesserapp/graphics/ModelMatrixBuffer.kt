@@ -2,7 +2,6 @@ package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.math.MatrixBuffer
-import junit.framework.Assert.assertTrue
 
 /**
  * Store model matrices.
@@ -36,10 +35,26 @@ data class ModelMatrixBuffer(
      * Register [geometry] into the matrix buffer.
      */
     operator fun plusAssign(geometry: Geometry) {
-        assertTrue("Registration exceeds model matrix capacity", activeGeometries < maxGeometries)
-        geometry.localMemory = localBuffer.MemorySpace(activeGeometries * Geometry.LOCAL_MATRICES_PER_GEOMETRY, Geometry.LOCAL_MATRICES_PER_GEOMETRY)
+        if (activeGeometries >= maxGeometries)
+            throw Exception("Registration exceeds model matrix capacity")
+
+        geometry.localMemory = localBuffer.MemorySpace(
+                activeGeometries * Geometry.LOCAL_MATRICES_PER_GEOMETRY,
+                Geometry.LOCAL_MATRICES_PER_GEOMETRY)
+
         geometry.globalMemory = globalBuffer.MemorySpace(activeGeometries, 1)
+
         activeGeometries++
+    }
+
+    /**
+     * Unregister [geometry] from this matrix buffer.
+     */
+    operator fun minusAssign(geometry: Geometry) {
+        if (geometry.globalMemory != null || geometry.localMemory != null)
+            throw Exception("Geometry $geometry already registered")
+
+        TODO("Implement geometry removal: maybe keep matrix?")
     }
 
 }

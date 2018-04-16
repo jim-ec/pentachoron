@@ -128,6 +128,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
      * Enable or disable grid rendering.
      */
     fun enableGrid(enable: Boolean) {
+        // TODO: Don't upload data during grid creation, or move to GL thread ...
         if (enable) {
             for (i in -5..5) {
                 grid.addLine(Vector(i.toDouble(), 0.0, -5.0, 1.0), Vector(i.toDouble(), 0.0, 5.0, 1.0))
