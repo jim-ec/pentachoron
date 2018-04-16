@@ -76,7 +76,6 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
         if (uploadVertexBuffer) {
-            println("Upload vertex data")
             vertexBuffer.bind(shader, geometryManager.vertexBuffer)
             uploadVertexBuffer = false
         }

@@ -46,8 +46,6 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
     init {
         Geometry.onHierarchyChangedListeners += {
 
-            println("Hierarchy changed:")
-
             // Get a set of all currently added geometries:
             val currentGeometries = HashSet<Geometry>().apply {
                 rootGeometry.forEachRecursive { add(it) }
@@ -60,7 +58,6 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
             }.forEach { newGeometry ->
                 geometries.add(newGeometry)
                 modelMatrixBuffer += newGeometry
-                println("    $newGeometry added")
             }
 
             // Get a set of all removed geometries:
@@ -73,9 +70,6 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
                 //modelMatrixBuffer -= removedGeometry
             }
 
-            //geometries = currentGeometries
-            println("finished with hierarchy change, upload geometry:")
-
             uploadVertexData()
         }
 
@@ -84,12 +78,9 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
     }
 
     private fun uploadVertexData() {
-        println("Geometry changed:")
-
         // Rewrite vertex buffer:
         vertexBuffer.rewind()
         rootGeometry.forEachRecursive { geometry ->
-            println("    $geometry uploads ${geometry.vertexPoints.size} vertices")
             geometry.vertexPoints.forEach {
                 vertexBuffer += listOf(
                         it.x.toFloat(), it.y.toFloat(), it.z.toFloat(),
@@ -99,15 +90,11 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
         }
 
         onVertexBufferUpdated.fire()
-
-        println("finished with geometry change")
     }
 
     private fun uploadModelMatrixData() {
-        //println("Recompute model matrices")
         rootGeometry.computeModelMatricesRecursively()
         onModelMatrixBufferUpdated.fire()
-        //println("finished with model matrix change")
     }
 
 }
