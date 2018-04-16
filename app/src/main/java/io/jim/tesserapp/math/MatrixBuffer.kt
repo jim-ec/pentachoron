@@ -1,7 +1,5 @@
 package io.jim.tesserapp.math
 
-import junit.framework.Assert
-import junit.framework.Assert.assertTrue
 import kotlin.math.cos
 import kotlin.math.log10
 import kotlin.math.sin
@@ -40,14 +38,30 @@ class MatrixBuffer(
 
         constructor() : this(0, maxMatrices)
 
+        /**
+         * Thrown when invalid memory space is created.
+         */
+        inner class InvalidMemorySpaceException(msg: String)
+            : Exception("Invalid memory space (at $offset, ranging over $range matrices): $msg")
+
+        /**
+         * Thrown when invalid index was specified.
+         */
+        inner class InvalidIndexException(msg: String)
+            : Exception("Invalid index in memory space (at $offset, ranging over $range matrices): $msg")
+
         init {
-            assertTrue("Memory range out of bounds", offset >= 0 && offset + range <= maxMatrices)
-            assertTrue("Range must be positive", range >= 0)
+            if (offset < 0 || offset + range > maxMatrices)
+                throw InvalidMemorySpaceException("Memory range out of bounds")
+            if (range < 0)
+                throw InvalidMemorySpaceException("Range must be positive")
         }
 
         private fun checkMatrixIndex(matrix: Int) {
-            assertTrue("Index must be positive", matrix >= 0)
-            assertTrue("Index out of range", matrix < range)
+            if (matrix < 0)
+                throw InvalidIndexException("Index must be positive")
+            if (matrix >= range)
+                throw InvalidIndexException("Index out of range")
         }
 
         /**
@@ -149,9 +163,8 @@ class MatrixBuffer(
          * @param far Far plane. If Vector lies on that plane (negated), it will be projected to 1.
          */
         fun perspective2D(matrix: Int, near: Float, far: Float) {
-            Assert.assertTrue(near > 0.0)
-            Assert.assertTrue(far > 0.0)
-            Assert.assertTrue(far > near)
+            if (near <= 0.0 || far <= 0.0 || near > far)
+                throw Exception("Invalid near=$near or far=$far parameter")
             this[matrix, 2, 3] = -1.0f
             this[matrix, 3, 3] = 0.0f
             this[matrix, 2, 2] = -far / (far - near)

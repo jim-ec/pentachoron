@@ -2,7 +2,6 @@ package io.jim.tesserapp.rendering
 
 import android.opengl.GLES20.*
 import io.jim.tesserapp.math.MatrixBuffer
-import junit.framework.Assert.assertTrue
 
 /**
  * A shader pipeline with a vertex shader, fragment shader an locations of all attributes and
@@ -59,9 +58,9 @@ class Shader(maxModels: Int) {
         """
 
     init {
-        assertTrue(vertexShader >= 0)
-        assertTrue(fragmentShader >= 0)
-        assertTrue(program >= 0)
+        if (vertexShader < 0) throw Exception("Cannot create vertex shader")
+        if (fragmentShader < 0) throw Exception("Cannot create fragment shader")
+        if (program < 0) throw Exception("Cannot create shader program")
 
         val status = IntArray(1)
 
@@ -106,12 +105,12 @@ class Shader(maxModels: Int) {
         viewMatrixLocation = glGetUniformLocation(program, "V")
         projectionMatrixLocation = glGetUniformLocation(program, "P")
 
-        assertTrue(positionAttributeLocation >= 0)
-        assertTrue(colorAttributeLocation >= 0)
-        assertTrue(modelIndexAttributeLocation >= 0)
-        assertTrue(modelMatrixLocation >= 0)
-        assertTrue(viewMatrixLocation >= 0)
-        assertTrue(projectionMatrixLocation >= 0)
+        if (positionAttributeLocation < 0) throw Exception("Cannot locate position attribute")
+        if (colorAttributeLocation < 0) throw Exception("Cannot locate color attribute")
+        if (modelIndexAttributeLocation < 0) throw Exception("Cannot locate model index attribute")
+        if (modelMatrixLocation < 0) throw Exception("Cannot locate model matrix uniform")
+        if (viewMatrixLocation < 0) throw Exception("Cannot locate view matrix uniform")
+        if (projectionMatrixLocation < 0) throw Exception("Cannot locate projection matrix uniform")
     }
 
     /**
