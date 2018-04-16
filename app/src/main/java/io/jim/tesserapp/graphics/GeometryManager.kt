@@ -86,6 +86,7 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
 
     private fun uploadVertexData() {
         // Rewrite vertex buffer:
+        println("Upload vertex data")
         vertexBuffer.rewind()
         rootGeometry.forEachRecursive { geometry ->
             geometry.vertexPoints.forEach {

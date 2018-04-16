@@ -10,11 +10,13 @@ class Quadrilateral(name: String, a: Vector, b: Vector, c: Vector, d: Vector, co
     : Geometry(name, color) {
 
     init {
-        addPoints(a, b, c, d)
-        addLine(0, 1)
-        addLine(1, 2)
-        addLine(2, 3)
-        addLine(3, 0)
+        geometrical {
+            addPoints(a, b, c, d)
+            addLine(0, 1)
+            addLine(1, 2)
+            addLine(2, 3)
+            addLine(3, 0)
+        }
     }
 
 }

@@ -104,6 +104,30 @@ open class Geometry(
          */
         val onGeometryChangedListeners = ListenerList()
 
+        /**
+         * Vertex data is re-uploaded after the calling [f].
+         *
+         * Calls to [geometrical] can even be nested, and only after the outermost execution
+         * finished, the vertex data gets uploaded.
+         *
+         * This is really useful to reduces vertex re-uploaded during many geometrical structure
+         * changes at once.
+         *
+         * Calls to [geometrical] are cross-thread synchronized.
+         */
+        fun geometrical(f: () -> Unit) {
+            synchronized(Geometry) {
+                geometricalCounter++
+                f()
+                geometricalCounter--
+                if (0 == geometricalCounter) {
+                    onGeometryChangedListeners.fire()
+                }
+            }
+        }
+
+        private var geometricalCounter = 0
+
     }
 
     /**
@@ -111,9 +135,8 @@ open class Geometry(
      * The actual lines are drawn from indices to these points.
      */
     protected fun addPoints(vararg p: Vector) {
-        synchronized(Geometry) {
+        geometrical {
             points += p
-            onGeometryChangedListeners.fire()
         }
     }
 
@@ -121,9 +144,8 @@ open class Geometry(
      * Add a lines from point [a] to point [b].
      */
     protected fun addLine(a: Int, b: Int) {
-        synchronized(Geometry) {
+        geometrical {
             lines += Pair(a, b)
-            onGeometryChangedListeners.fire()
         }
     }
 
@@ -131,10 +153,9 @@ open class Geometry(
      * Remove all geometry data.
      */
     protected fun clearPoints() {
-        synchronized(Geometry) {
+        geometrical {
             points.clear()
             lines.clear()
-            onGeometryChangedListeners.fire()
         }
     }
 
@@ -144,7 +165,7 @@ open class Geometry(
      * counterparts.
      */
     fun extrude(direction: Vector) {
-        synchronized(Geometry) {
+        geometrical {
             val size = points.size
             points += points.map { it + direction }
             lines += lines.map { Pair(it.first + size, it.second + size) }
