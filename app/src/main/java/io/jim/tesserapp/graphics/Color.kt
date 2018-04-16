@@ -24,9 +24,6 @@ data class Color(
          */
         val blue: Float) {
 
-    constructor(greyScale: Float) :
-            this(greyScale, greyScale, greyScale)
-
     constructor(red: Int, green: Int, blue: Int) :
             this(red.toFloat() / 255f, green.toFloat() / 255f, blue.toFloat() / 255f)
 

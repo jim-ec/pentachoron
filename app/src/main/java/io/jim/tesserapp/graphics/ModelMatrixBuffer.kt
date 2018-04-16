@@ -11,10 +11,12 @@ import junit.framework.Assert.assertTrue
  * which is never changed, unless the geometry is unregistered.
  */
 data class ModelMatrixBuffer(
+
         /**
          * Maximum of individual geometries registrable into this buffer.
          */
         private val maxGeometries: Int
+
 ) {
 
     /**
