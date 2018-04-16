@@ -33,7 +33,7 @@ class GeometryBufferOld(private val maxModels: Int, maxVertices: Int) {
     var vertexCount = 0
         private set
 
-    private val vertexBuffer = VertexBuffer(maxVertices)
+    private val vertexBuffer = VertexBufferBacking(maxVertices)
 
     /**
      * Bind the geometry buffers and re-instructs vertex attribute pointers of [shader].

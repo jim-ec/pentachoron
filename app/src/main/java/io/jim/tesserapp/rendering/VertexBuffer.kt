@@ -1,20 +1,13 @@
 package io.jim.tesserapp.rendering
 
 import android.opengl.GLES20.*
-import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.graphics.FillUpBuffer
-import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.graphics.GeometryManager
 
 /**
- * Vertex buffer.
+ * Uploads buffer data to an OpenGL vertex buffer.
  */
-data class VertexBuffer(private val maxVertices: Int) {
-
-    companion object {
-        private const val COMPONENTS_PER_POSITION = 3
-        private const val COMPONENTS_PER_COLOR = 3
-        private const val COMPONENTS_PER_MODEL_INDEX = 1
-    }
+class VertexBuffer {
 
     private val handle = let {
         val status = IntArray(1)
@@ -22,40 +15,24 @@ data class VertexBuffer(private val maxVertices: Int) {
         status[0]
     }
 
-    private val memory = FillUpBuffer(maxVertices, FillUpBuffer.Layout(COMPONENTS_PER_POSITION, COMPONENTS_PER_COLOR, COMPONENTS_PER_MODEL_INDEX))
-
-    /**
-     * Add a vertex with a given attribute set of a [position], a [color] and its [modelIndex]
-     * into the model matrix array.
-     */
-    fun appendVertex(position: Vector, color: Color, modelIndex: Int) {
-        memory += listOf(
-                position.x.toFloat(),
-                position.y.toFloat(),
-                position.z.toFloat(),
-                color.red,
-                color.green,
-                color.blue,
-                modelIndex.toFloat()
-        )
-    }
-
     /**
      * Bind the vertex buffer and instruct the vertex attribute pointer a the given [shader].
      */
-    fun bind(shader: Shader) {
-        memory.rewind()
+    fun bind(shader: Shader, backingBuffer: FillUpBuffer) {
+        backingBuffer.rewind()
         glBindBuffer(GL_ARRAY_BUFFER, handle)
-        glBufferData(GL_ARRAY_BUFFER, memory.byteLength, memory.floatBuffer, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, backingBuffer.byteLength, backingBuffer.floatBuffer, GL_STATIC_DRAW)
+
+        val (colorOffset, modelIndexOffset) = backingBuffer.layout.byteRanges
 
         // Position attribute:
         glEnableVertexAttribArray(shader.positionAttributeLocation)
         glVertexAttribPointer(
                 shader.positionAttributeLocation,
-                COMPONENTS_PER_POSITION,
+                GeometryManager.COMPONENTS_PER_POSITION,
                 GL_FLOAT,
                 false,
-                memory.layout.byteLength,
+                backingBuffer.layout.byteLength,
                 0
         )
 
@@ -63,22 +40,24 @@ data class VertexBuffer(private val maxVertices: Int) {
         glEnableVertexAttribArray(shader.colorAttributeLocation)
         glVertexAttribPointer(
                 shader.colorAttributeLocation,
-                COMPONENTS_PER_COLOR,
+                GeometryManager.COMPONENTS_PER_COLOR,
                 GL_FLOAT,
                 false,
-                memory.layout.byteLength,
-                COMPONENTS_PER_POSITION * FillUpBuffer.FLOAT_BYTE_LENGTH
+                backingBuffer.layout.byteLength,
+                //GeometryManager.COMPONENTS_PER_POSITION * FillUpBuffer.FLOAT_BYTE_LENGTH
+                colorOffset
         )
 
         // Model index attribute:
         glEnableVertexAttribArray(shader.modelIndexAttributeLocation)
         glVertexAttribPointer(
                 shader.modelIndexAttributeLocation,
-                COMPONENTS_PER_MODEL_INDEX,
+                GeometryManager.COMPONENTS_PER_MODEL_INDEX,
                 GL_FLOAT,
                 false,
-                memory.layout.byteLength,
-                (COMPONENTS_PER_POSITION + COMPONENTS_PER_COLOR) * FillUpBuffer.FLOAT_BYTE_LENGTH
+                backingBuffer.layout.byteLength,
+                //(GeometryManager.COMPONENTS_PER_POSITION + GeometryManager.COMPONENTS_PER_COLOR) * FillUpBuffer.FLOAT_BYTE_LENGTH
+                colorOffset + modelIndexOffset
         )
     }
 

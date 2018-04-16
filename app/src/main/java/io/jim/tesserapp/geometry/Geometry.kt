@@ -244,15 +244,6 @@ open class Geometry(
         }
     }
 
-    /**
-     * Store the whole geometry into a vertex buffer.
-     */
-    /*fun storeIntoVertexBuffer(vertexBuffer: VertexBuffer) {
-        vertexPoints.forEach {
-            vertexBuffer.appendVertex(it, color, modelIndex)
-        }
-    }*/
-
     override fun toString() = name
 
     /**

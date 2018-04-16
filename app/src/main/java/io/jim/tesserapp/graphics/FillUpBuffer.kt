@@ -35,7 +35,12 @@ data class FillUpBuffer(
     /**
      * Each buffer entries is structured by such a layout.
      */
-    data class Layout(private val ranges: List<Int>) {
+    data class Layout(
+            /**
+             * Ranges of the layout.
+             */
+            private val ranges: List<Int>
+    ) {
         constructor(vararg ranges: Int) : this(ranges.toList())
 
         /**
@@ -47,6 +52,11 @@ data class FillUpBuffer(
          * Total size of one entry according to this layout, in bytes.
          */
         val byteLength = size * FLOAT_BYTE_LENGTH
+
+        /**
+         * Ranges, expressed in bytes.
+         */
+        val byteRanges = ranges.map { it * FLOAT_BYTE_LENGTH }
     }
 
     private val byteBuffer = ByteBuffer.allocateDirect(capacity * layout.size * FLOAT_BYTE_LENGTH).apply {
