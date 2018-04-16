@@ -2,7 +2,6 @@ package io.jim.tesserapp.gui
 
 import android.content.Context
 import android.opengl.GLSurfaceView
-import android.os.Handler
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.*
@@ -51,10 +50,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         // Create grid:
         grid = Lines("Grid", Color(context, R.color.colorGrid))
         grid.addToParentGeometry(renderer.rootGeometry)
-        for (i in -5..5) {
-            grid.addLine(Vector(i.toDouble(), 0.0, -5.0, 1.0), Vector(i.toDouble(), 0.0, 5.0, 1.0))
-            grid.addLine(Vector(-5.0, 0.0, i.toDouble(), 1.0), Vector(5.0, 0.0, i.toDouble(), 1.0))
-        }
+        enableGrid(true)
 
         // Create cube:
         cube = Quadrilateral("Cube", Vector(1.0, 1.0, 1.0, 1.0),
@@ -64,9 +60,10 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
                 Color(context, R.color.colorAccent)
         )
         cube.addToParentGeometry(renderer.rootGeometry)
-        Handler().postDelayed({
-            cube.extrude(Vector(0.0, 0.0, -2.0, 0.0))
-        }, 3000)
+        cube.extrude(Vector(0.0, 0.0, -2.0, 0.0))
+        //Handler().postDelayed({
+        //    cube.extrude(Vector(0.0, 0.0, -2.0, 0.0))
+        //}, 3000)
 
         // Render scene upon every graphical change:
         Geometry.onMatrixChangedListeners += ::requestRender
@@ -130,22 +127,16 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     /**
      * Enable or disable grid rendering.
      */
-    fun enableGrid(@Suppress("UNUSED_PARAMETER") enable: Boolean) {
-        //grid.visible = enable
-        //grid.clearPoints()
-        /*
-                println("Enable grid: $enable")
+    fun enableGrid(enable: Boolean) {
         if (enable) {
-            for (i in -1..1) {
-                println("Add lines #$i")
+            for (i in -5..5) {
                 grid.addLine(Vector(i.toDouble(), 0.0, -5.0, 1.0), Vector(i.toDouble(), 0.0, 5.0, 1.0))
                 grid.addLine(Vector(-5.0, 0.0, i.toDouble(), 1.0), Vector(5.0, 0.0, i.toDouble(), 1.0))
             }
         }
         else {
-            grid.clearPoints()
+            grid.clearLines()
         }
-         */
     }
 
 }

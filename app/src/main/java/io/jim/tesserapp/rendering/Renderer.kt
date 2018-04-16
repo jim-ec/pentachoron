@@ -87,7 +87,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         }
 
         // Draw actual geometry:
-        glDrawArrays(GL_LINES, 0, geometryManager.vertexBuffer.capacity)
+        glDrawArrays(GL_LINES, 0, geometryManager.vertexBuffer.activeEntries)
     }
 
 }

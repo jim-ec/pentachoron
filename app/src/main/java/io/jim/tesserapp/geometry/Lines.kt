@@ -18,4 +18,12 @@ class Lines(name: String, color: Color) : Geometry(name, color) {
         addLine(index++, index++)
     }
 
+    /**
+     * Remove all lines.
+     */
+    fun clearLines() {
+        clearPoints()
+        index = 0
+    }
+
 }

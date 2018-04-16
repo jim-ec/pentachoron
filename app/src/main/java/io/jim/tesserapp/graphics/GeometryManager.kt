@@ -32,10 +32,17 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
      */
     val rootGeometry = Geometry("Root")
 
-    private var geometries = HashSet<Geometry>()
-
+    /**
+     * Listeners are fired when vertex data was changed in buffer.
+     */
     val onVertexBufferUpdated = ListenerList()
+
+    /**
+     * Listeners are fired when model matrix data was changed in buffer.
+     */
     val onModelMatrixBufferUpdated = ListenerList()
+
+    private var geometries = HashSet<Geometry>()
 
     companion object {
         internal const val COMPONENTS_PER_POSITION = 3

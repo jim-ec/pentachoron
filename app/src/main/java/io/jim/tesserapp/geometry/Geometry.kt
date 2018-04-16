@@ -124,8 +124,7 @@ open class Geometry(
     /**
      * Remove all geometry data.
      */
-    @Suppress("unused")
-    fun clearPoints() {
+    protected fun clearPoints() {
         synchronized(Geometry) {
             points.clear()
             lines.clear()

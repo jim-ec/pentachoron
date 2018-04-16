@@ -127,9 +127,14 @@ data class FillUpBuffer(
      * Prepare the buffer for new data.
      *
      * This discards previously hold data.
+     *
+     * @return Count of bytes this buffer hold before rewinding.
      */
-    fun rewind() {
+    fun rewind() = let {
+        println("Rewind fill-up buffer, position was at ${floatBuffer.position()}, which was ${floatBuffer.position() / layout.size} entries")
+        val pos = floatBuffer.position()
         floatBuffer.rewind()
+        pos * FLOAT_BYTE_LENGTH
     }
 
 }
