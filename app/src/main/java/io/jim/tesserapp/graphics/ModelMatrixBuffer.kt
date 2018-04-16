@@ -17,18 +17,27 @@ data class ModelMatrixBuffer(
         private val maxGeometries: Int
 ) {
 
+    /**
+     * Buffer containing global model matrices.
+     */
+    val globalBuffer = MatrixBuffer(maxGeometries)
+
+    /**
+     * Count of active global model matrices.
+     * This is lower or equal to [maxGeometries].
+     */
+    var activeGeometries = 0
+
     private val localBuffer = MatrixBuffer(maxGeometries * Geometry.LOCAL_MATRICES_PER_GEOMETRY)
-    private val globalBuffer = MatrixBuffer(maxGeometries)
-    private var geometryCount = 0
 
     /**
      * Register [geometry] into the matrix buffer.
      */
     operator fun plusAssign(geometry: Geometry) {
-        assertTrue("Registration exceeds model matrix capacity", geometryCount < maxGeometries)
-        geometry.localMemory = localBuffer.MemorySpace(geometryCount * Geometry.LOCAL_MATRICES_PER_GEOMETRY, Geometry.LOCAL_MATRICES_PER_GEOMETRY)
-        geometry.globalMemory = globalBuffer.MemorySpace(geometryCount, 1)
-        geometryCount++
+        assertTrue("Registration exceeds model matrix capacity", activeGeometries < maxGeometries)
+        geometry.localMemory = localBuffer.MemorySpace(activeGeometries * Geometry.LOCAL_MATRICES_PER_GEOMETRY, Geometry.LOCAL_MATRICES_PER_GEOMETRY)
+        geometry.globalMemory = globalBuffer.MemorySpace(activeGeometries, 1)
+        activeGeometries++
     }
 
 }

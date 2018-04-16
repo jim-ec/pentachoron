@@ -15,7 +15,7 @@ data class FillUpBuffer(
         /**
          * Maximum capacity of entries.
          */
-        private val capacity: Int,
+        val capacity: Int,
 
         /**
          * Memory layout of a single entry.

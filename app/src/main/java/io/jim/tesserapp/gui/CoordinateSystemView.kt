@@ -24,7 +24,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
      */
     val cube: Geometry
 
-    private val renderer = Renderer(context)
+    private val renderer = Renderer(context)//RendererOld(context)
     private val touchStartPosition = Vector(0.0, 0.0, 0.0, 0.0)
     private val rotation = Vector(0.0, 0.0, 0.0, 0.0)
     private var touchStartTime = 0L

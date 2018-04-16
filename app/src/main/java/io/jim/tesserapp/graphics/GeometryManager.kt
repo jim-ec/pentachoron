@@ -9,9 +9,9 @@ import io.jim.tesserapp.geometry.Geometry
  */
 class GeometryManager(maxGeometries: Int, maxVertices: Int) {
 
-    private val modelMatrixBuffer = ModelMatrixBuffer(maxGeometries)
-    private val vertexBuffer = FillUpBuffer(maxVertices, FillUpBuffer.Layout(COMPONENTS_PER_POSITION, COMPONENTS_PER_COLOR, COMPONENTS_PER_MODEL_INDEX))
-    private val rootGeometry = Geometry("Root")
+    val modelMatrixBuffer = ModelMatrixBuffer(maxGeometries)
+    val vertexBuffer = FillUpBuffer(maxVertices, FillUpBuffer.Layout(COMPONENTS_PER_POSITION, COMPONENTS_PER_COLOR, COMPONENTS_PER_MODEL_INDEX))
+    val rootGeometry = Geometry("Root")
     private val geometries = HashSet<Geometry>()
 
     companion object {
@@ -55,11 +55,15 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
             rootGeometry.forEachRecursive { geometry ->
                 geometry.vertexPoints.forEach {
                     vertexBuffer += listOf(
-                            it.x.toFloat(), it.y.toFloat(), it.z.toFloat(), it.w.toFloat(),
+                            it.x.toFloat(), it.y.toFloat(), it.z.toFloat(),
                             geometry.color.red, geometry.color.green, geometry.color.blue,
                             geometry.modelIndex.toFloat())
                 }
             }
+        }
+
+        Geometry.onMatrixChangedListeners += {
+            rootGeometry.computeModelMatricesRecursively()
         }
     }
 
