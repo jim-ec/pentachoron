@@ -31,12 +31,18 @@ open class Geometry(
     /**
      * Memory section this geometry can store its local matrices.
      */
-    lateinit var localMemory: MatrixBuffer.MemorySpace
+    var localMemory: MatrixBuffer.MemorySpace? = null
 
     /**
      * Memory section this geometry can store its global matrix.
      */
-    lateinit var globalMemory: MatrixBuffer.MemorySpace
+    var globalMemory: MatrixBuffer.MemorySpace? = null
+
+    /**
+     * Thrown when trying to transform the geometry while not registered into a matrix buffer.
+     */
+    inner class NotRegisteredIntoMatrixBufferException
+        : Exception("Geometry not registered into matrix buffer")
 
     /**
      * List of points.
@@ -53,7 +59,7 @@ open class Geometry(
      * Is only knowable after is has been registered into a model matrix buffer.
      */
     val modelIndex
-        get() = globalMemory.offset
+        get() = globalMemory?.offset ?: throw NotRegisteredIntoMatrixBufferException()
 
     /**
      * List of points, but with resolved indices.
@@ -158,6 +164,9 @@ open class Geometry(
     fun computeModelMatricesRecursively() {
         synchronized(Geometry) {
 
+            val localMemory = localMemory ?: throw NotRegisteredIntoMatrixBufferException()
+            val globalMemory = globalMemory ?: throw NotRegisteredIntoMatrixBufferException()
+
             // Rotation:
             localMemory.multiply(lhs = ROTATION_ZX_MATRIX, rhs = ROTATION_YX_MATRIX, matrix = ROTATION_MATRIX)
 
@@ -170,7 +179,8 @@ open class Geometry(
                 // to the parent's global matrix:
                 globalMemory.multiply(
                         lhs = LOCAL_MATRIX, lhsMemorySpace = localMemory,
-                        rhsMemorySpace = parent!!.globalMemory)
+                        rhsMemorySpace = parent!!.globalMemory
+                                ?: throw NotRegisteredIntoMatrixBufferException())
             }
             else {
                 // This geometry has no parent, therefore the local matrix equals the global one:
@@ -186,7 +196,8 @@ open class Geometry(
      */
     fun rotationZX(theta: Double) {
         synchronized(Geometry) {
-            localMemory.rotation(ROTATION_ZX_MATRIX, 2, 0, theta)
+            localMemory?.rotation(ROTATION_ZX_MATRIX, 2, 0, theta)
+                    ?: throw NotRegisteredIntoMatrixBufferException()
             onMatrixChangedListeners.fire()
         }
     }
@@ -196,7 +207,8 @@ open class Geometry(
      */
     fun rotationYX(theta: Double) {
         synchronized(Geometry) {
-            localMemory.rotation(ROTATION_YX_MATRIX, 1, 0, theta)
+            localMemory?.rotation(ROTATION_YX_MATRIX, 1, 0, theta)
+                    ?: throw NotRegisteredIntoMatrixBufferException()
             onMatrixChangedListeners.fire()
         }
     }
@@ -206,7 +218,8 @@ open class Geometry(
      */
     fun translate(v: Vector) {
         synchronized(Geometry) {
-            localMemory.translation(TRANSLATION_MATRIX, v)
+            localMemory?.translation(TRANSLATION_MATRIX, v)
+                    ?: throw NotRegisteredIntoMatrixBufferException()
             onMatrixChangedListeners.fire()
         }
     }
