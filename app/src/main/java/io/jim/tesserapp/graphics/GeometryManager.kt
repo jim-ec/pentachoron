@@ -7,7 +7,7 @@ import io.jim.tesserapp.geometry.Geometry
  *
  * This geometry buffer is only responsible for raw data, without incorporating with OpenGL at all.
  */
-class GeometryManager(maxGeometries: Int, maxVertices: Int) {
+class GeometryManager(maxGeometries: Int) {
 
     /**
      * Model matrix buffer.
@@ -19,7 +19,7 @@ class GeometryManager(maxGeometries: Int, maxVertices: Int) {
      * Vertex buffer.
      * Buffer data is updated automatically upon geometrical change.
      */
-    val vertexBuffer = FloatLayoutBuffer<Vertex>(maxVertices,
+    val vertexBuffer = FloatLayoutBuffer<Vertex>(10,
             FloatLayoutBuffer.Layout(
                     COMPONENTS_PER_POSITION,
                     COMPONENTS_PER_COLOR,

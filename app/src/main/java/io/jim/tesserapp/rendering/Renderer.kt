@@ -20,7 +20,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
      * Render data shared across this render thread an others.
      */
     val sharedRenderData = SharedRenderData(
-            GeometryManager(MAX_MODELS, MAX_VERTICES),
+            GeometryManager(MAX_MODELS),
             4f
     )
 
@@ -34,7 +34,6 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
 
     companion object {
         private const val MAX_MODELS = 100
-        private const val MAX_VERTICES = 1000
     }
 
     /**

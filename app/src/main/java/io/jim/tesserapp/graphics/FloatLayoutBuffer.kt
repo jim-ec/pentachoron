@@ -2,18 +2,24 @@ package io.jim.tesserapp.graphics
 
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.nio.FloatBuffer
 
 /**
  * Buffer which is filled with data.
  *
  * Data entries are structured with layouts, rather than being raw floats.
+ *
+ * The buffer itself is resizable.
+ * As soon as you put more data in it via [plusAssign] when it can hold,
+ * the buffer will resize by [initialCapacity] entries.
  */
-data class FloatLayoutBuffer<in T : Iterable<Float>>(
+class FloatLayoutBuffer<in T : Iterable<Float>>(
 
         /**
-         * Maximum capacity of entries.
+         * Initial maximum capacity of entries.
+         * Buffer re-allocations will resize the buffer by this value.
          */
-        val capacity: Int,
+        private val initialCapacity: Int,
 
         /**
          * Memory layout of a single entry.
@@ -44,12 +50,12 @@ data class FloatLayoutBuffer<in T : Iterable<Float>>(
         /**
          * Total size of one entry according to this layout.
          */
-        val size = ranges.sum()
+        val floatLength = ranges.sum()
 
         /**
          * Total size of one entry according to this layout, in bytes.
          */
-        val byteLength = size * FLOAT_BYTE_LENGTH
+        val byteLength = floatLength * FLOAT_BYTE_LENGTH
 
         /**
          * Ranges, expressed in bytes.
@@ -57,14 +63,48 @@ data class FloatLayoutBuffer<in T : Iterable<Float>>(
         val byteRanges = ranges.map { it * FLOAT_BYTE_LENGTH }
     }
 
-    private val byteBuffer = ByteBuffer.allocateDirect(capacity * layout.size * FLOAT_BYTE_LENGTH).apply {
-        order(ByteOrder.nativeOrder())
+    private lateinit var byteBuffer: ByteBuffer
+    internal lateinit var floatBuffer: FloatBuffer
+
+    /**
+     * Count of maximum entries.
+     */
+    var capacity = 0
+
+    init {
+        if (initialCapacity <= 0)
+            throw RuntimeException("Initial size must be greater than 0")
+        increaseMemory()
     }
 
-    internal val floatBuffer = byteBuffer.asFloatBuffer().apply {
-        clear()
-        while (position() < capacity()) put(0f)
-        rewind()
+    /**
+     * Increase the internal memory size by the original [initialCapacity].
+     * Buffer position of [floatBuffer] is preserved, if [floatBuffer] was already allocated.
+     */
+    private fun increaseMemory() {
+
+        // Remember last position if float-buffer was previously initialized:
+        val oldPosition = if (::floatBuffer.isInitialized) floatBuffer.position() else 0
+
+        // Increase capacity, this value is used when allocating memory:
+        capacity += initialCapacity
+
+        // Allocate buffer:
+        val newByteBuffer = ByteBuffer.allocateDirect(
+                capacity * layout.floatLength * FLOAT_BYTE_LENGTH
+        ).order(ByteOrder.nativeOrder())
+
+        if (::byteBuffer.isInitialized) {
+            // Copy content from old byte-buffer:
+            for (i in 0 until byteBuffer.capacity()) {
+                newByteBuffer.put(i, byteBuffer[i])
+            }
+        }
+
+        byteBuffer = newByteBuffer
+
+        floatBuffer = byteBuffer.asFloatBuffer()
+        floatBuffer.position(oldPosition)
     }
 
     /**
@@ -78,13 +118,13 @@ data class FloatLayoutBuffer<in T : Iterable<Float>>(
     /**
      * Total length of this buffer in bytes, regardless how much data has been recorded until now.
      */
-    val byteCapacity = capacity * layout.size * FLOAT_BYTE_LENGTH
+    val byteCapacity = capacity * layout.floatLength * FLOAT_BYTE_LENGTH
 
     /**
      * Get a single float from an [entry].
      * @param subIndex Denotes a single float within that entry.
      */
-    operator fun get(entry: Int, subIndex: Int = 0) = floatBuffer[entry * layout.size + subIndex]
+    operator fun get(entry: Int, subIndex: Int = 0) = floatBuffer[entry * layout.floatLength + subIndex]
 
     /**
      * Thrown when data is given which does not match the buffer layout.
@@ -93,23 +133,18 @@ data class FloatLayoutBuffer<in T : Iterable<Float>>(
         : Exception("Invalid entry added: $wrongLength floats given, but $neededLength floats needed")
 
     /**
-     * Thrown upon buffer overflow.
-     */
-    class OverflowException(capacity: Int)
-        : Exception("Buffer overflow, at most $capacity can be stored")
-
-    /**
      * Appends data to the buffer.
      *
      * The count of floats must match with the total size of the layout given earlier.
      *
      * @throws InvalidEntryLayout If data length does not match layout size.
-     * @throws OverflowException If no more data can be added.
      */
     operator fun plusAssign(data: T) {
 
-        if (floatBuffer.position() + layout.size > floatBuffer.capacity())
-            throw OverflowException(capacity)
+        if (floatBuffer.position() + layout.floatLength > floatBuffer.capacity()) {
+            // Re-allocate buffer:
+            increaseMemory()
+        }
 
         if (floatBuffer.position() == 0) {
             activeEntries = 0
@@ -120,8 +155,8 @@ data class FloatLayoutBuffer<in T : Iterable<Float>>(
             floatBuffer.put(it)
             dataCounter++
         }
-        if (layout.size != dataCounter)
-            throw InvalidEntryLayout(dataCounter, layout.size)
+        if (layout.floatLength != dataCounter)
+            throw InvalidEntryLayout(dataCounter, layout.floatLength)
 
         activeEntries++
     }
