@@ -51,6 +51,16 @@ open class Geometry(
     private data class LineIndices(var a: Int, var b: Int, var color: Color)
 
     /**
+     * Rotation around the x, y and z axis.
+     */
+    var rotation = Vector(0f, 0f, 0f, 0f)
+
+    /**
+     * Translation.
+     */
+    var translate = Vector(0f, 0f, 0f, 1f)
+
+    /**
      * List of vertices, with resolved indices.
      * The list might get invalidated over time.
      * To query vertex points, this geometry must be registered firstly into a matrix buffer.
@@ -214,7 +224,12 @@ open class Geometry(
         val globalMemory = globalMemory ?: throw NotRegisteredIntoMatrixBufferException()
 
         // Rotation:
+        localMemory.rotation(ROTATION_Y_MATRIX, 2, 0, rotation.y)
+        localMemory.rotation(ROTATION_Z_MATRIX, 0, 1, rotation.z)
         localMemory.multiply(lhs = ROTATION_Y_MATRIX, rhs = ROTATION_Z_MATRIX, matrix = ROTATION_MATRIX)
+
+        // Translation:
+        localMemory.translation(TRANSLATION_MATRIX, translate)
 
         // Local:
         localMemory.multiply(lhs = ROTATION_MATRIX, rhs = TRANSLATION_MATRIX, matrix = LOCAL_MATRIX)
@@ -234,27 +249,6 @@ open class Geometry(
         }
 
         children.forEach { it.computeModelMatricesRecursively() }
-    }
-
-    /**
-     * Rotate in the zx plane around [theta].
-     */
-    fun rotationY(theta: Float) {
-        localMemory.rotation(ROTATION_Y_MATRIX, 2, 0, theta)
-    }
-
-    /**
-     * Rotate in the yx plane around [theta].
-     */
-    fun rotationZ(theta: Float) {
-        localMemory.rotation(ROTATION_Z_MATRIX, 0, 1, theta)
-    }
-
-    /**
-     * Translate by [v].
-     */
-    fun translate(v: Vector) {
-        localMemory.translation(TRANSLATION_MATRIX, v)
     }
 
     /**

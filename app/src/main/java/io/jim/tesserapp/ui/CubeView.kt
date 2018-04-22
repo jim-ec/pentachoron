@@ -24,7 +24,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
          */
         override var rotationY: Float by Delegates.observable(0f) { _, _, newValue ->
             synchronized(coordinateSystemView.sharedRenderData) {
-                cube.rotationY(newValue)
+                cube.rotation.y = newValue
             }
         }
 
@@ -33,7 +33,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
          */
         override var rotationZ: Float by Delegates.observable(0f) { _, _, newValue ->
             synchronized(coordinateSystemView.sharedRenderData) {
-                cube.rotationZ(newValue)
+                cube.rotation.z = newValue
             }
         }
 
@@ -42,7 +42,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
          */
         override var translationX: Float by Delegates.observable(0f) { _, _, newValue ->
             synchronized(coordinateSystemView.sharedRenderData) {
-                cube.translate(Vector(newValue, 0f, 0f, 1f))
+                cube.translate.x = newValue
             }
         }
 
