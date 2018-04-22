@@ -47,7 +47,7 @@
             android:text="@string/transform_translation"
             android:textAppearance="@android:style/TextAppearance"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/labelRotationZ" />
+            app:layout_constraintTop_toBottomOf="@+id/labelRotationY" />
 
         <TextView
             android:id="@+id/cameraHeading"
@@ -70,7 +70,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/transform_rotation_y"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rotationHeading" />
+            app:layout_constraintTop_toBottomOf="@+id/labelRotationZ" />
 
         <TextView
             android:id="@+id/labelTranslationX"
@@ -131,7 +131,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/transform_rotation_z"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/labelRotationY" />
+            app:layout_constraintTop_toBottomOf="@+id/rotationHeading" />
 
         <SeekBar
             android:id="@+id/seekerRotationXY"
