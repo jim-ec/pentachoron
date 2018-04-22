@@ -11,7 +11,7 @@ class FloatLayoutBufferTest {
 
     @Test
     fun layout() {
-        assertEquals(6, layout.size)
+        assertEquals(6, layout.floatLength)
         assertEquals(24, layout.byteLength)
         assertEquals(listOf(4, 8, 12), layout.byteRanges)
     }
@@ -58,11 +58,12 @@ class FloatLayoutBufferTest {
         }
     }
 
-    @Test(expected = FloatLayoutBuffer.OverflowException::class)
-    fun overflow() {
+    @Test
+    fun memoryIncrease() {
         for (i in 0..10) {
             buffer += listOf(1f, 2f, 2f, 3f, 3f, 3f)
         }
+        assertEquals(20, buffer.capacity)
     }
 
 }

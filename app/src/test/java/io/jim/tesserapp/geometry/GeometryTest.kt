@@ -36,19 +36,19 @@ class GeometryTest {
         register(geometry)
         geometry.addToParentGeometry(root)
 
-        root.rotationZ(PI.toFloat() / 2)
-        geometry.translate(Vector(0f, 1f, 0f, 1f))
+        root.rotation.z = PI.toFloat() / 2
+        geometry.translate.y = 1f
         root.computeModelMatricesRecursively()
 
         root.globalMemory!!.multiply(lhs = Vector(0f, 1f, 0f, 1f)).apply {
-            assertEquals(1f, x, 0.1f)
+            assertEquals(-1f, x, 0.1f)
             assertEquals(0f, y, 0.1f)
             assertEquals(0f, z, 0.1f)
             assertEquals(1f, w, 0.1f)
         }
 
         geometry.globalMemory!!.multiply(lhs = Vector(0f, 1f, 0f, 1f)).apply {
-            assertEquals(2f, x, 0.1f)
+            assertEquals(-2f, x, 0.1f)
             assertEquals(0f, y, 0.1f)
             assertEquals(0f, z, 0.1f)
             assertEquals(1f, w, 0.1f)
