@@ -53,6 +53,15 @@ class CubeView(context: Context, attrs: AttributeSet?)
     }
 
     /**
+     * Render grid option.
+     */
+    override var renderGrid: Boolean by Delegates.observable(true) { _, _, newValue ->
+        synchronized(coordinateSystemView.sharedRenderData) {
+            coordinateSystemView.enableGrid(newValue)
+        }
+    }
+
+    /**
      * The underlying coordinate system view.
      */
     val coordinateSystemView = CoordinateSystemView(context, null)

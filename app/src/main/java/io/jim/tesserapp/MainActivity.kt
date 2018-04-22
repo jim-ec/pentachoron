@@ -24,11 +24,5 @@ class MainActivity : AppCompatActivity() {
         controllerView = findViewById(R.id.controllerView)
 
         controllerView += cubeView
-
-        controllerView.renderGridOptionChangedListener = fun(enable: Boolean) {
-            synchronized(cubeView.coordinateSystemView.sharedRenderData) {
-                cubeView.coordinateSystemView.enableGrid(enable)
-            }
-        }
     }
 }

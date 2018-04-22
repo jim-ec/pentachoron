@@ -40,6 +40,11 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
          * Camera distance.
          */
         var transformCameraDistance: Float
+
+        /**
+         * Option whether to render the base-grid.
+         */
+        var renderGrid: Boolean
     }
 
     private val controllables = ArrayList<Controllable>()
@@ -106,11 +111,6 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
     private val rotationControlXY: Control
     private val translationControlX: Control
     private val cameraControlDistance: Control
-
-    /**
-     * Fire when render grid option changed.
-     */
-    lateinit var renderGridOptionChangedListener: (Boolean) -> Unit
 
     init {
         View.inflate(context, R.layout.view_controller, this)
@@ -183,7 +183,9 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
 
         // Pass render options:
         findViewById<Switch>(R.id.renderOptionGrid).setOnCheckedChangeListener { _, isChecked ->
-            renderGridOptionChangedListener(isChecked)
+            controllables.forEach {
+                it.renderGrid = isChecked
+            }
         }
     }
 
