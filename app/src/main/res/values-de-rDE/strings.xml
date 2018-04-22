@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="transform_rotation">Rotation</string>
+    <string name="transform_translation">Translation</string>
+    <string name="transform_camera">Kamera</string>
+    <string name="transform_camera_distance">Distanz</string>
+    <string name="render_option_grid">Gitter</string>
+</resources>
