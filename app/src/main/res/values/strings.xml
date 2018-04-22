@@ -2,9 +2,9 @@
     <string name="app_name">Tesserapp</string>
 
     <string name="transform_rotation">Rotation</string>
-    <string name="transform_rotation_xz">XZ Plane</string>
-    <string name="transform_rotation_xy">XY Plane</string>
-    <string name="transform_rotation_yz">YZ Plane</string>
+    <string name="transform_rotation_y">Y</string>
+    <string name="transform_rotation_z">Z</string>
+    <string name="transform_rotation_x">X</string>
     <string name="transform_rotation_value">%1$.2fπ (%2$3.0f°)</string>
 
     <string name="transform_translation">Translation</string>

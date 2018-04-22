@@ -36,7 +36,7 @@ class GeometryTest {
         register(geometry)
         geometry.addToParentGeometry(root)
 
-        root.rotationYX(PI.toFloat() / 2)
+        root.rotationZ(PI.toFloat() / 2)
         geometry.translate(Vector(0f, 1f, 0f, 1f))
         root.computeModelMatricesRecursively()
 

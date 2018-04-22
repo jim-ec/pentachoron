@@ -22,18 +22,18 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         /**
          * Rotates the cube around the y-axis.
          */
-        override var transformRotationXZ: Float by Delegates.observable(0f) { _, _, newValue ->
+        override var transformRotationY: Float by Delegates.observable(0f) { _, _, newValue ->
             synchronized(coordinateSystemView.sharedRenderData) {
-                cube.rotationZX(newValue)
+                cube.rotationY(newValue)
             }
         }
 
         /**
          * Rotates the cube around the z-axis.
          */
-        override var transformRotationXY: Float by Delegates.observable(0f) { _, _, newValue ->
+        override var transformRotationZ: Float by Delegates.observable(0f) { _, _, newValue ->
             synchronized(coordinateSystemView.sharedRenderData) {
-                cube.rotationYX(newValue)
+                cube.rotationZ(newValue)
             }
         }
 

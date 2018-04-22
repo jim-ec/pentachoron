@@ -24,12 +24,12 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         /**
          * Rotation around the y-axis.
          */
-        var transformRotationXZ: Float
+        var transformRotationY: Float
 
         /**
          * Rotation around the z-axis.
          */
-        var transformRotationXY: Float
+        var transformRotationZ: Float
 
         /**
          * Translation along the x-axis.
@@ -121,7 +121,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                 0f, 2f
         ) {
             override fun set(controllable: Controllable, value: Float) {
-                controllable.transformRotationXZ = value * PI.toFloat()
+                controllable.transformRotationY = value * PI.toFloat()
             }
 
             override val valueLabelText: String
@@ -138,7 +138,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                 0f, 2f
         ) {
             override fun set(controllable: Controllable, value: Float) {
-                controllable.transformRotationXY = value * PI.toFloat()
+                controllable.transformRotationZ = value * PI.toFloat()
             }
 
             override val valueLabelText: String

@@ -239,14 +239,14 @@ open class Geometry(
     /**
      * Rotate in the zx plane around [theta].
      */
-    fun rotationZX(theta: Float) {
+    fun rotationY(theta: Float) {
         localMemory.rotation(ROTATION_ZX_MATRIX, 2, 0, theta)
     }
 
     /**
      * Rotate in the yx plane around [theta].
      */
-    fun rotationYX(theta: Float) {
+    fun rotationZ(theta: Float) {
         localMemory.rotation(ROTATION_YX_MATRIX, 1, 0, theta)
     }
 
