@@ -91,7 +91,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
 
                 synchronized(renderer.sharedRenderData) {
                     renderer.sharedRenderData.rootGeometry.rotationY(rotation.x * TOUCH_ROTATION_SENSITIVITY)
-                    renderer.sharedRenderData.rootGeometry.rotationZ(rotation.y * TOUCH_ROTATION_SENSITIVITY)
+                    renderer.sharedRenderData.rootGeometry.rotationZ(-rotation.y * TOUCH_ROTATION_SENSITIVITY)
                 }
 
                 touchStartPosition.x = event.x

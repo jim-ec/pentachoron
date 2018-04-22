@@ -76,8 +76,8 @@ open class Geometry(
         private const val LOCAL_MATRICES_PER_GEOMETRY = 5
         private const val LOCAL_MATRIX = 0
         private const val ROTATION_MATRIX = 1
-        private const val ROTATION_ZX_MATRIX = 2
-        private const val ROTATION_YX_MATRIX = 3
+        private const val ROTATION_Y_MATRIX = 2
+        private const val ROTATION_Z_MATRIX = 3
         private const val TRANSLATION_MATRIX = 4
 
         /**
@@ -214,7 +214,7 @@ open class Geometry(
         val globalMemory = globalMemory ?: throw NotRegisteredIntoMatrixBufferException()
 
         // Rotation:
-        localMemory.multiply(lhs = ROTATION_ZX_MATRIX, rhs = ROTATION_YX_MATRIX, matrix = ROTATION_MATRIX)
+        localMemory.multiply(lhs = ROTATION_Y_MATRIX, rhs = ROTATION_Z_MATRIX, matrix = ROTATION_MATRIX)
 
         // Local:
         localMemory.multiply(lhs = ROTATION_MATRIX, rhs = TRANSLATION_MATRIX, matrix = LOCAL_MATRIX)
@@ -240,14 +240,14 @@ open class Geometry(
      * Rotate in the zx plane around [theta].
      */
     fun rotationY(theta: Float) {
-        localMemory.rotation(ROTATION_ZX_MATRIX, 2, 0, theta)
+        localMemory.rotation(ROTATION_Y_MATRIX, 2, 0, theta)
     }
 
     /**
      * Rotate in the yx plane around [theta].
      */
     fun rotationZ(theta: Float) {
-        localMemory.rotation(ROTATION_YX_MATRIX, 1, 0, theta)
+        localMemory.rotation(ROTATION_Z_MATRIX, 0, 1, theta)
     }
 
     /**
