@@ -25,9 +25,25 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     val sharedRenderData = renderer.sharedRenderData
 
     private val touchStartPosition = Vector(0f, 0f, 0f, 0f)
-    private val rotation = Vector(0f, 0f, 0f, 0f)
     private var touchStartTime = 0L
-    private val grid: Lines
+    private val grid = Lines("Grid", Color(context, R.color.colorGrid)).apply {
+        Geometry.geometrical {
+            for (i in -5..-1) {
+                addLine(Vector(i.toFloat(), 0f, -5f, 1f), Vector(i.toFloat(), 0f, 5f, 1f))
+                addLine(Vector(-5f, 0f, i.toFloat(), 1f), Vector(5f, 0f, i.toFloat(), 1f))
+            }
+            for (i in 1..5) {
+                addLine(Vector(i.toFloat(), 0f, -5f, 1f), Vector(i.toFloat(), 0f, 5f, 1f))
+                addLine(Vector(-5f, 0f, i.toFloat(), 1f), Vector(5f, 0f, i.toFloat(), 1f))
+            }
+
+            addLine(Vector(-5f, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f))
+            addLine(Vector(1f, 0f, 0f, 1f), Vector(5f, 0f, 0f, 1f))
+
+            addLine(Vector(0f, 0f, -5f, 1f), Vector(0f, 0f, 0f, 1f))
+            addLine(Vector(0f, 0f, 1f, 1f), Vector(0f, 0f, 5f, 1f))
+        }
+    }
 
     companion object {
         private const val CLICK_TIME_MS = 100L
@@ -49,24 +65,6 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         }
 
         // Create grid:
-        grid = Lines("Grid", Color(context, R.color.colorGrid)).apply {
-            Geometry.geometrical {
-                for (i in -5..-1) {
-                    addLine(Vector(i.toFloat(), 0f, -5f, 1f), Vector(i.toFloat(), 0f, 5f, 1f))
-                    addLine(Vector(-5f, 0f, i.toFloat(), 1f), Vector(5f, 0f, i.toFloat(), 1f))
-                }
-                for (i in 1..5) {
-                    addLine(Vector(i.toFloat(), 0f, -5f, 1f), Vector(i.toFloat(), 0f, 5f, 1f))
-                    addLine(Vector(-5f, 0f, i.toFloat(), 1f), Vector(5f, 0f, i.toFloat(), 1f))
-                }
-
-                addLine(Vector(-5f, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f))
-                addLine(Vector(1f, 0f, 0f, 1f), Vector(5f, 0f, 0f, 1f))
-
-                addLine(Vector(0f, 0f, -5f, 1f), Vector(0f, 0f, 0f, 1f))
-                addLine(Vector(0f, 0f, 1f, 1f), Vector(0f, 0f, 5f, 1f))
-            }
-        }
         enableGrid(true)
     }
 
@@ -86,12 +84,10 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
             event.action == ACTION_MOVE -> {
                 val dx = event.x - touchStartPosition.x
                 val dy = event.y - touchStartPosition.y
-                rotation.x += dx
-                rotation.y += dy
 
                 synchronized(renderer.sharedRenderData) {
-                    renderer.sharedRenderData.rootGeometry.rotation.y = rotation.x * TOUCH_ROTATION_SENSITIVITY
-                    renderer.sharedRenderData.rootGeometry.rotation.z = -rotation.y * TOUCH_ROTATION_SENSITIVITY
+                    renderer.sharedRenderData.rootGeometry.rotation.y += dx * TOUCH_ROTATION_SENSITIVITY
+                    renderer.sharedRenderData.rootGeometry.rotation.z -= dy * TOUCH_ROTATION_SENSITIVITY
                 }
 
                 touchStartPosition.x = event.x
@@ -100,8 +96,6 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
             }
             event.action == ACTION_UP
                     && System.currentTimeMillis() - touchStartTime < CLICK_TIME_MS -> {
-                rotation.x = 0f
-                rotation.y = 0f
                 performClick()
                 true
             }
