@@ -87,7 +87,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
             if (max < min)
                 throw RuntimeException("Maximum must be greater than minimum")
             if (startValue < min || startValue > max)
-                throw RuntimeException("Start value must lie in min-max range")
+                throw RuntimeException("Start value must be located in min-max range")
 
             seeker.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {

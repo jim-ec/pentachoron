@@ -12,59 +12,60 @@ import kotlin.properties.Delegates
 /**
  * A coordinate system view featuring a cube.
  */
-class CubeView(context: Context, attrs: AttributeSet?)
-    : FrameLayout(context, attrs)
-        , ControllerView.Controllable {
+class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
     /**
-     * Rotates the cube around the y-axis.
+     * Controls the cube.
      */
-    override var transformRotationXZ: Float by Delegates.observable(0f) { _, _, newValue ->
-        synchronized(coordinateSystemView.sharedRenderData) {
-            cube.rotationZX(newValue)
+    val cubeController = object : ControllerView.Controllable {
+
+        /**
+         * Rotates the cube around the y-axis.
+         */
+        override var transformRotationXZ: Float by Delegates.observable(0f) { _, _, newValue ->
+            synchronized(coordinateSystemView.sharedRenderData) {
+                cube.rotationZX(newValue)
+            }
+        }
+
+        /**
+         * Rotates the cube around the z-axis.
+         */
+        override var transformRotationXY: Float by Delegates.observable(0f) { _, _, newValue ->
+            synchronized(coordinateSystemView.sharedRenderData) {
+                cube.rotationYX(newValue)
+            }
+        }
+
+        /**
+         * Translates the cube along the x-axis.
+         */
+        override var transformTranslationX: Float by Delegates.observable(0f) { _, _, newValue ->
+            synchronized(coordinateSystemView.sharedRenderData) {
+                cube.translate(Vector(newValue, 0f, 0f, 1f))
+            }
+        }
+
+        /**
+         * Control the camera distance.
+         */
+        override var transformCameraDistance: Float by Delegates.observable(0f) { _, _, newValue ->
+            synchronized(coordinateSystemView.sharedRenderData) {
+                coordinateSystemView.sharedRenderData.cameraDistance = newValue
+            }
+        }
+
+        /**
+         * Render grid option.
+         */
+        override var renderGrid: Boolean by Delegates.observable(true) { _, _, newValue ->
+            synchronized(coordinateSystemView.sharedRenderData) {
+                coordinateSystemView.enableGrid(newValue)
+            }
         }
     }
 
-    /**
-     * Rotates the cube around the z-axis.
-     */
-    override var transformRotationXY: Float by Delegates.observable(0f) { _, _, newValue ->
-        synchronized(coordinateSystemView.sharedRenderData) {
-            cube.rotationYX(newValue)
-        }
-    }
-
-    /**
-     * Translates the cube along the x-axis.
-     */
-    override var transformTranslationX: Float by Delegates.observable(0f) { _, _, newValue ->
-        synchronized(coordinateSystemView.sharedRenderData) {
-            cube.translate(Vector(newValue, 0f, 0f, 1f))
-        }
-    }
-
-    /**
-     * Control the camera distance.
-     */
-    override var transformCameraDistance: Float by Delegates.observable(0f) { _, _, newValue ->
-        synchronized(coordinateSystemView.sharedRenderData) {
-            coordinateSystemView.sharedRenderData.cameraDistance = newValue
-        }
-    }
-
-    /**
-     * Render grid option.
-     */
-    override var renderGrid: Boolean by Delegates.observable(true) { _, _, newValue ->
-        synchronized(coordinateSystemView.sharedRenderData) {
-            coordinateSystemView.enableGrid(newValue)
-        }
-    }
-
-    /**
-     * The underlying coordinate system view.
-     */
-    val coordinateSystemView = CoordinateSystemView(context, null)
+    private val coordinateSystemView = CoordinateSystemView(context, null)
 
     /**
      * The featuring cube.

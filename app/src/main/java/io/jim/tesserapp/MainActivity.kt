@@ -23,6 +23,6 @@ class MainActivity : AppCompatActivity() {
         cubeView = findViewById(R.id.cubeView)
         controllerView = findViewById(R.id.controllerView)
 
-        controllerView += cubeView
+        controllerView += cubeView.cubeController
     }
 }
