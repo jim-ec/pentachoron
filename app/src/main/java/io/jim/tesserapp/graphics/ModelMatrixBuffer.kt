@@ -37,20 +37,29 @@ data class ModelMatrixBuffer(
 
     private var greatestRetainedModelIndex = 0
 
-    private val unusedModelIndices = TreeSet<Int>().apply { addAll(0 until maxGeometries) }
+    private val retainedModelIndices = TreeSet<Int>()
 
     /**
-     * Retains the next, smallest free model index, removing it from the list of unused indices.
+     * Return the smallest available model index.
+     * This automatically marks the returned index as used.
      */
-    private fun retainModelIndex() =
-            unusedModelIndices.pollFirst() ?: throw Exception("No more free model index")
+    private fun retainModelIndex(): Int {
+        for (i in 0 until maxGeometries) {
+            if (!retainedModelIndices.contains(i)) {
+                // Found next free model index!
+                retainedModelIndices += i
+                return i
+            }
+        }
+        throw RuntimeException("No more unused model indices")
+    }
 
     /**
      * Releases the [index], adding it to the list if unused indices.
      * Unused indices can be retained by [retainModelIndex] at later time point.
      */
     private fun releaseModelIndex(index: Int) {
-        if (!unusedModelIndices.add(index)) throw Exception("Index already retained")
+        if (!retainedModelIndices.remove(index)) throw Exception("Index not releasable, because not retained")
     }
 
     /**
