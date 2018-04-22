@@ -24,22 +24,22 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         /**
          * Rotation around the y-axis.
          */
-        var transformRotationY: Float
+        var rotationY: Float
 
         /**
          * Rotation around the z-axis.
          */
-        var transformRotationZ: Float
+        var rotationZ: Float
 
         /**
          * Translation along the x-axis.
          */
-        var transformTranslationX: Float
+        var translationX: Float
 
         /**
          * Camera distance.
          */
-        var transformCameraDistance: Float
+        var cameraDistance: Float
 
         /**
          * Option whether to render the base-grid.
@@ -121,7 +121,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                 0f, 2f
         ) {
             override fun set(controllable: Controllable, value: Float) {
-                controllable.transformRotationY = value * PI.toFloat()
+                controllable.rotationY = value * PI.toFloat()
             }
 
             override val valueLabelText: String
@@ -138,7 +138,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                 0f, 2f
         ) {
             override fun set(controllable: Controllable, value: Float) {
-                controllable.transformRotationZ = value * PI.toFloat()
+                controllable.rotationZ = value * PI.toFloat()
             }
 
             override val valueLabelText: String
@@ -155,7 +155,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                 -5f, 5f, 0f
         ) {
             override fun set(controllable: Controllable, value: Float) {
-                controllable.transformTranslationX = value
+                controllable.translationX = value
             }
 
             override val valueLabelText: String
@@ -171,7 +171,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                 3f, 10f, 4f
         ) {
             override fun set(controllable: Controllable, value: Float) {
-                controllable.transformCameraDistance = value
+                controllable.cameraDistance = value
             }
 
             override val valueLabelText: String

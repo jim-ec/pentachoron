@@ -22,7 +22,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         /**
          * Rotates the cube around the y-axis.
          */
-        override var transformRotationY: Float by Delegates.observable(0f) { _, _, newValue ->
+        override var rotationY: Float by Delegates.observable(0f) { _, _, newValue ->
             synchronized(coordinateSystemView.sharedRenderData) {
                 cube.rotationY(newValue)
             }
@@ -31,7 +31,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         /**
          * Rotates the cube around the z-axis.
          */
-        override var transformRotationZ: Float by Delegates.observable(0f) { _, _, newValue ->
+        override var rotationZ: Float by Delegates.observable(0f) { _, _, newValue ->
             synchronized(coordinateSystemView.sharedRenderData) {
                 cube.rotationZ(newValue)
             }
@@ -40,7 +40,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         /**
          * Translates the cube along the x-axis.
          */
-        override var transformTranslationX: Float by Delegates.observable(0f) { _, _, newValue ->
+        override var translationX: Float by Delegates.observable(0f) { _, _, newValue ->
             synchronized(coordinateSystemView.sharedRenderData) {
                 cube.translate(Vector(newValue, 0f, 0f, 1f))
             }
@@ -49,7 +49,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         /**
          * Control the camera distance.
          */
-        override var transformCameraDistance: Float by Delegates.observable(0f) { _, _, newValue ->
+        override var cameraDistance: Float by Delegates.observable(0f) { _, _, newValue ->
             synchronized(coordinateSystemView.sharedRenderData) {
                 coordinateSystemView.sharedRenderData.cameraDistance = newValue
             }
