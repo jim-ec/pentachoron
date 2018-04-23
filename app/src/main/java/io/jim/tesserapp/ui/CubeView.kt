@@ -20,6 +20,15 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
     val cubeController = object : ControllerView.Controllable {
 
         /**
+         * Rotates the cube around the x-axis.
+         */
+        override var rotationX: Float by Delegates.observable(0f) { _, _, newValue ->
+            synchronized(coordinateSystemView.sharedRenderData) {
+                cube.rotation.x = newValue
+            }
+        }
+
+        /**
          * Rotates the cube around the y-axis.
          */
         override var rotationY: Float by Delegates.observable(0f) { _, _, newValue ->

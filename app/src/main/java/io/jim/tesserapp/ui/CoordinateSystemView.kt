@@ -71,37 +71,35 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     /**
      * Handles camera orbit position upon touch events.
      */
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if (null == event) return false
-
-        return when {
-            event.action == ACTION_DOWN -> {
-                touchStartPosition.x = event.x
-                touchStartPosition.y = event.y
-                touchStartTime = System.currentTimeMillis()
-                true
-            }
-            event.action == ACTION_MOVE -> {
-                val dx = event.x - touchStartPosition.x
-                val dy = event.y - touchStartPosition.y
-
-                synchronized(renderer.sharedRenderData) {
-                    renderer.sharedRenderData.rootGeometry.rotation.y += dx * TOUCH_ROTATION_SENSITIVITY
-                    renderer.sharedRenderData.rootGeometry.rotation.z -= dy * TOUCH_ROTATION_SENSITIVITY
+    override fun onTouchEvent(event: MotionEvent?) =
+            if (null == event) false
+            else when {
+                event.action == ACTION_DOWN -> {
+                    touchStartPosition.x = event.x
+                    touchStartPosition.y = event.y
+                    touchStartTime = System.currentTimeMillis()
+                    true
                 }
+                event.action == ACTION_MOVE -> {
+                    val dx = event.x - touchStartPosition.x
+                    val dy = event.y - touchStartPosition.y
 
-                touchStartPosition.x = event.x
-                touchStartPosition.y = event.y
-                true
+                    synchronized(renderer.sharedRenderData) {
+                        renderer.sharedRenderData.rootGeometry.rotation.y += dx * TOUCH_ROTATION_SENSITIVITY
+                        renderer.sharedRenderData.rootGeometry.rotation.z -= dy * TOUCH_ROTATION_SENSITIVITY
+                    }
+
+                    touchStartPosition.x = event.x
+                    touchStartPosition.y = event.y
+                    true
+                }
+                event.action == ACTION_UP
+                        && System.currentTimeMillis() - touchStartTime < CLICK_TIME_MS -> {
+                    performClick()
+                    true
+                }
+                else -> false
             }
-            event.action == ACTION_UP
-                    && System.currentTimeMillis() - touchStartTime < CLICK_TIME_MS -> {
-                performClick()
-                true
-            }
-            else -> false
-        }
-    }
 
     /**
      * Clicks rewind camera position to default.

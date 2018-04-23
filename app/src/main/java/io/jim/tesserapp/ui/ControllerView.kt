@@ -22,6 +22,11 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
     interface Controllable {
 
         /**
+         * Rotation around the x-axis.
+         */
+        var rotationX: Float
+
+        /**
          * Rotation around the y-axis.
          */
         var rotationY: Float
@@ -107,17 +112,38 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         }
     }
 
-    private val rotationControlXZ: Control
-    private val rotationControlXY: Control
-    private val translationControlX: Control
-    private val cameraControlDistance: Control
-
     init {
         View.inflate(context, R.layout.view_controller, this)
 
-        rotationControlXZ = object : Control(
-                findViewById(R.id.seekerRotationXZ),
-                findViewById(R.id.valueRotationXZ),
+        // Pass render options:
+        findViewById<Switch>(R.id.renderOptionGrid).setOnCheckedChangeListener { _, isChecked ->
+            controllables.forEach {
+                it.renderGrid = isChecked
+            }
+        }
+
+        // X-Rotation:
+        object : Control(
+                findViewById(R.id.seekerRotationX),
+                findViewById(R.id.valueRotationX),
+                0f, 2f
+        ) {
+            override fun set(controllable: Controllable, value: Float) {
+                controllable.rotationX = value * PI.toFloat()
+            }
+
+            override val valueLabelText: String
+                get() = String.format(
+                        context.getString(R.string.transform_rotation_value),
+                        currentValue,
+                        currentValue * 180.0
+                )
+        }
+
+        // Y-Rotation:
+        object : Control(
+                findViewById(R.id.seekerRotationY),
+                findViewById(R.id.valueRotationY),
                 0f, 2f
         ) {
             override fun set(controllable: Controllable, value: Float) {
@@ -132,9 +158,10 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                 )
         }
 
-        rotationControlXY = object : Control(
-                findViewById(R.id.seekerRotationXY),
-                findViewById(R.id.valueRotationXY),
+        // Z-Rotation:
+        object : Control(
+                findViewById(R.id.seekerRotationZ),
+                findViewById(R.id.valueRotationZ),
                 0f, 2f
         ) {
             override fun set(controllable: Controllable, value: Float) {
@@ -149,7 +176,8 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                 )
         }
 
-        translationControlX = object : Control(
+        // X-Translation:
+        object : Control(
                 findViewById(R.id.seekerTranslationX),
                 findViewById(R.id.valueTranslationX),
                 -5f, 5f, 0f
@@ -165,7 +193,8 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                 )
         }
 
-        cameraControlDistance = object : Control(
+        // Camera distance:
+        object : Control(
                 findViewById(R.id.seekerCameraDistance),
                 findViewById(R.id.valueCameraDistance),
                 3f, 10f, 4f
@@ -179,13 +208,6 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         context.getString(R.string.transform_translation_value),
                         currentValue
                 )
-        }
-
-        // Pass render options:
-        findViewById<Switch>(R.id.renderOptionGrid).setOnCheckedChangeListener { _, isChecked ->
-            controllables.forEach {
-                it.renderGrid = isChecked
-            }
         }
     }
 
