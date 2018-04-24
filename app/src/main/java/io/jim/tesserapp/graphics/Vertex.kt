@@ -25,7 +25,7 @@ data class Vertex(
 ) : Iterable<Float> {
 
     private val floats = listOf(
-            position.x.toFloat(), position.y.toFloat(), position.z.toFloat(),
+            position.x, position.y, position.z,
             color.red, color.green, color.blue,
             modelIndex.toFloat()
     )

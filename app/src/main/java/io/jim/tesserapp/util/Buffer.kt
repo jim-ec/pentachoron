@@ -23,12 +23,21 @@ class Buffer<T : Buffer.Element>(
 ) {
 
     /**
-     * Buffer elements are in fact lists, over which the buffer iterates when copying them into
-     * its memory.
+     * Buffer elements, over which the buffer iterates when copying them into memory.
      */
-    interface Element : List<Float>
+    interface Element {
+        /**
+         * Floats to be stored into the buffer.
+         */
+        val floats: List<Float>
+    }
 
-    private var capacity = 0
+    /**
+     * Capacity of this buffer, expressed in elements.
+     */
+    var capacity = 0
+        private set
+
     private lateinit var byteBuffer: ByteBuffer
     private lateinit var floatBuffer: FloatBuffer
 
@@ -43,6 +52,18 @@ class Buffer<T : Buffer.Element>(
         : RuntimeException("Invalid element: $wrongFloatCount floats given instead of $neededFloatCount")
 
     /**
+     * Thrown when you try to access an invalid index.
+     */
+    class InvalidElementIndexException(elementIndex: Int)
+        : RuntimeException("Invalid buffer element index $elementIndex")
+
+    /**
+     * Thrown when you try to access an invalid index.
+     */
+    class InvalidSubIndexException(subIndex: Int)
+        : RuntimeException("Invalid buffer sub-index $subIndex")
+
+    /**
      * Increase the memory by [capacityGranularity] elements.
      */
     private fun increaseMemory() {
@@ -53,11 +74,10 @@ class Buffer<T : Buffer.Element>(
                 capacity * elementSize * FLOAT_BYTE_LENGTH
         ).order(ByteOrder.nativeOrder())
 
-        // Copy contents from old byte-buffer: TODO: use buffer bulk method, then reset position
         if (::byteBuffer.isInitialized) {
-            for (i in 0 until byteBuffer.capacity()) {
-                newByteBuffer.put(i, byteBuffer[i])
-            }
+            // If old buffers hold data, copy them into the new buffer:
+            newByteBuffer.put(byteBuffer)
+            newByteBuffer.position(0)
         }
 
         byteBuffer = newByteBuffer
@@ -68,19 +88,32 @@ class Buffer<T : Buffer.Element>(
      * Set the [elementIndex]th element to [element].
      */
     operator fun set(elementIndex: Int, element: T) {
-        if (element.size != elementSize)
-            throw InvalidElementException(element.size, elementSize)
+        if (element.floats.size != elementSize)
+            throw InvalidElementException(element.floats.size, elementSize)
 
         while (floatBuffer.capacity() <= elementIndex * elementSize) {
             increaseMemory()
         }
 
         for (i in 0 until elementSize) {
-            floatBuffer.put(elementIndex * elementSize + i, element[i])
+            floatBuffer.put(elementIndex * elementSize + i, element.floats[i])
         }
     }
 
-    //inline operator fun <reified T : Element> get(elementIndex: Int) = T()
+    /**
+     * Return a single float of an element.
+     * @param elementIndex Index of element to be queried.
+     * @param subIndex Index of float to be returned within that element.
+     */
+    operator fun get(elementIndex: Int, subIndex: Int): Float {
+        if (elementIndex < 0 || elementIndex >= capacity)
+            throw InvalidElementIndexException(elementIndex)
+
+        if (subIndex < 0 || subIndex >= elementSize)
+            throw InvalidSubIndexException(subIndex)
+
+        return floatBuffer[elementIndex * elementSize + subIndex]
+    }
 
     companion object {
         private const val FLOAT_BYTE_LENGTH = 4
