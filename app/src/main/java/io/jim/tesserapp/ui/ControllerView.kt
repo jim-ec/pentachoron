@@ -133,11 +133,9 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
             }
 
             override val valueLabelText: String
-                get() = String.format(
-                        context.getString(R.string.transform_rotation_value),
-                        currentValue,
-                        currentValue * 180.0
-                )
+                get() =
+                    String.format(context.getString(R.string.transform_rotation_value_radians),
+                            currentValue)
         }
 
         // Y-Rotation:
@@ -151,11 +149,9 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
             }
 
             override val valueLabelText: String
-                get() = String.format(
-                        context.getString(R.string.transform_rotation_value),
-                        currentValue,
-                        currentValue * 180.0
-                )
+                get() =
+                    String.format(context.getString(R.string.transform_rotation_value_radians),
+                            currentValue)
         }
 
         // Z-Rotation:
@@ -169,11 +165,9 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
             }
 
             override val valueLabelText: String
-                get() = String.format(
-                        context.getString(R.string.transform_rotation_value),
-                        currentValue,
-                        currentValue * 180.0
-                )
+                get() =
+                    String.format(context.getString(R.string.transform_rotation_value_radians),
+                            currentValue)
         }
 
         // X-Translation:

@@ -132,7 +132,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:fontFamily="monospace"
-            android:text="@string/transform_rotation_value"
+            android:text="@string/transform_rotation_value_radians"
             app:layout_constraintBottom_toBottomOf="@+id/seekerRotationY"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/seekerRotationY" />
@@ -145,7 +145,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:fontFamily="monospace"
-            android:text="@string/transform_rotation_value"
+            android:text="@string/transform_rotation_value_radians"
             app:layout_constraintBottom_toBottomOf="@+id/seekerRotationX"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/seekerRotationX" />
@@ -225,7 +225,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:fontFamily="monospace"
-            android:text="@string/transform_rotation_value"
+            android:text="@string/transform_rotation_value_radians"
             app:layout_constraintBottom_toBottomOf="@+id/seekerRotationZ"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/seekerRotationZ" />
@@ -237,7 +237,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:fontFamily="monospace"
-            android:text="@string/transform_rotation_value"
+            android:text="@string/transform_rotation_value_radians"
             app:layout_constraintBottom_toBottomOf="@+id/seekerTranslationX"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/seekerTranslationX" />
@@ -250,7 +250,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:fontFamily="monospace"
-            android:text="@string/transform_rotation_value"
+            android:text="@string/transform_rotation_value_radians"
             app:layout_constraintBottom_toBottomOf="@+id/seekerCameraDistance"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/seekerCameraDistance" />
