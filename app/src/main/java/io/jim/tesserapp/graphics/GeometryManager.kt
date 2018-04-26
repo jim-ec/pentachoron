@@ -1,7 +1,7 @@
 package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.util.RandomAccessBuffer
+import io.jim.tesserapp.util.InputStreamBuffer
 
 /**
  * Manages a geometry tree, while providing backing buffers for vertex and matrix data.
@@ -20,7 +20,7 @@ class GeometryManager(maxGeometries: Int) {
      * Vertex buffer.
      * Buffer data is updated automatically upon geometrical change.
      */
-    val vertexBuffer = RandomAccessBuffer<Vertex>(100, Vertex.COMPONENTS_PER_VERTEX)
+    val vertexBuffer = InputStreamBuffer<Vertex>(100, Vertex.COMPONENTS_PER_VERTEX)
 
     /**
      * Root geometry of this manager.
@@ -71,13 +71,11 @@ class GeometryManager(maxGeometries: Int) {
     private fun uploadVertexData() {
         // Rewrite vertex buffer:
         vertexBuffer.rewind()
-        var globalVertexIndex = 0
         rootGeometry.forEachRecursive { geometry ->
             geometry.vertices.also { vertices ->
-                vertices.forEachIndexed { localVertexIndex, vertex ->
-                    vertexBuffer[globalVertexIndex + localVertexIndex] = vertex
+                vertices.forEach { vertex ->
+                    vertexBuffer += vertex
                 }
-                globalVertexIndex += vertices.size
             }
         }
         verticesUpdated = true
