@@ -51,7 +51,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
          */
         override var translationX: Float by Delegates.observable(0f) { _, _, newValue ->
             synchronized(coordinateSystemView.sharedRenderData) {
-                cube.translate.x = newValue
+                cube.translation.x = newValue
             }
         }
 

@@ -48,17 +48,17 @@ open class Geometry(
     private val children = ArrayList<Geometry>()
     private var parent: Geometry? = null
 
-    private data class LineIndices(var a: Int, var b: Int, var color: Color)
+    private data class LineIndices(val from: Int, val to: Int, var color: Color)
 
     /**
      * Rotation around the x, y and z axis.
      */
-    var rotation = Vector(0f, 0f, 0f, 0f)
+    val rotation = Vector(0f, 0f, 0f, 0f)
 
     /**
      * Translation.
      */
-    var translate = Vector(0f, 0f, 0f, 1f)
+    val translation = Vector(0f, 0f, 0f, 1f)
 
     /**
      * List of vertices, with resolved indices.
@@ -69,8 +69,8 @@ open class Geometry(
         get() = let {
             lines.flatMap {
                 listOf(
-                        Vertex(positions[it.a], it.color, modelIndex),
-                        Vertex(positions[it.b], it.color, modelIndex)
+                        Vertex(positions[it.from], it.color, modelIndex),
+                        Vertex(positions[it.to], it.color, modelIndex)
                 )
             }
         }
@@ -203,8 +203,8 @@ open class Geometry(
             positions += positions.map { it + direction }
             lines += lines.map {
                 LineIndices(
-                        it.a + size,
-                        it.b + size,
+                        it.from + size,
+                        it.to + size,
                         if (keepColors) it.color else baseColor
                 )
             }
@@ -233,7 +233,7 @@ open class Geometry(
         localMemory.multiply(lhs = ROTATION_X_MATRIX, rhs = ROTATION_YZ_MATRIX, matrix = ROTATION_MATRIX)
 
         // Translation:
-        localMemory.translation(TRANSLATION_MATRIX, translate)
+        localMemory.translation(TRANSLATION_MATRIX, translation)
 
         // Local:
         localMemory.multiply(lhs = ROTATION_MATRIX, rhs = TRANSLATION_MATRIX, matrix = LOCAL_MATRIX)
