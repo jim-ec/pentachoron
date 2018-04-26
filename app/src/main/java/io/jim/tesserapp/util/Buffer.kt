@@ -3,10 +3,13 @@ package io.jim.tesserapp.util
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
+import kotlin.math.max
 
 /**
  * A buffer, capable of resizing.
  * Contents are kept in elements, equally sized memory sections.
+ *
+ * TODO: Implement InputStreamBuffer and RandomAccessBuffer
  */
 class Buffer<T : Buffer.Element>(
 
@@ -38,8 +41,14 @@ class Buffer<T : Buffer.Element>(
     var capacity = 0
         private set
 
+    /**
+     * Greatest index a value was written to since the last call to [rewind] or construction time.
+     */
+    var lastActiveElementIndex = 0
+        private set
+
     private lateinit var byteBuffer: ByteBuffer
-    private lateinit var floatBuffer: FloatBuffer
+    internal lateinit var floatBuffer: FloatBuffer
 
     init {
         increaseMemory()
@@ -71,7 +80,7 @@ class Buffer<T : Buffer.Element>(
 
         // Allocate buffer:
         val newByteBuffer = ByteBuffer.allocateDirect(
-                capacity * elementSize * FLOAT_BYTE_LENGTH
+                capacity * elementSize * Float.BYTE_LENGTH
         ).order(ByteOrder.nativeOrder())
 
         if (::byteBuffer.isInitialized) {
@@ -98,6 +107,8 @@ class Buffer<T : Buffer.Element>(
         for (i in 0 until elementSize) {
             floatBuffer.put(elementIndex * elementSize + i, element.floats[i])
         }
+
+        lastActiveElementIndex = max(lastActiveElementIndex, elementIndex)
     }
 
     /**
@@ -115,8 +126,17 @@ class Buffer<T : Buffer.Element>(
         return floatBuffer[elementIndex * elementSize + subIndex]
     }
 
-    companion object {
-        private const val FLOAT_BYTE_LENGTH = 4
+    /**
+     * Reset [lastActiveElementIndex] to 0.
+     */
+    fun rewind() {
+        lastActiveElementIndex = 0
     }
 
 }
+
+/**
+ * Byte length of one float.
+ */
+val Float.Companion.BYTE_LENGTH: Int
+    get() = 4

@@ -1,9 +1,9 @@
 package io.jim.tesserapp.rendering
 
 import android.opengl.GLES20.*
-import io.jim.tesserapp.graphics.FloatLayoutBuffer
-import io.jim.tesserapp.graphics.GeometryManager
 import io.jim.tesserapp.graphics.Vertex
+import io.jim.tesserapp.util.BYTE_LENGTH
+import io.jim.tesserapp.util.Buffer
 
 /**
  * Uploads buffer data to an OpenGL vertex buffer.
@@ -19,44 +19,46 @@ class VertexBuffer {
     /**
      * Bind the vertex buffer and instruct the vertex attribute pointer a the given [shader].
      */
-    fun bind(shader: Shader, backingBuffer: FloatLayoutBuffer<Vertex>) {
-        val bytes = backingBuffer.rewind()
-        glBindBuffer(GL_ARRAY_BUFFER, handle)
-        glBufferData(GL_ARRAY_BUFFER, bytes, backingBuffer.floatBuffer, GL_STATIC_DRAW)
+    fun bind(shader: Shader, backingBuffer: Buffer<Vertex>) {
 
-        val (colorOffset, modelIndexOffset) = backingBuffer.layout.byteRanges
+        glBindBuffer(GL_ARRAY_BUFFER, handle)
+        glBufferData(
+                GL_ARRAY_BUFFER,
+                (backingBuffer.lastActiveElementIndex + 1) * Vertex.COMPONENTS_PER_VERTEX * Float.BYTE_LENGTH,
+                backingBuffer.floatBuffer,
+                GL_STATIC_DRAW)
 
         // Position attribute:
         glEnableVertexAttribArray(shader.positionAttributeLocation)
         glVertexAttribPointer(
                 shader.positionAttributeLocation,
-                GeometryManager.COMPONENTS_PER_POSITION,
+                Vertex.COMPONENTS_PER_POSITION,
                 GL_FLOAT,
                 false,
-                backingBuffer.layout.byteLength,
-                0
+                Vertex.STRIDE_BYTES,
+                Vertex.OFFSET_POSITION_BYTES
         )
 
         // Color attribute:
         glEnableVertexAttribArray(shader.colorAttributeLocation)
         glVertexAttribPointer(
                 shader.colorAttributeLocation,
-                GeometryManager.COMPONENTS_PER_COLOR,
+                Vertex.COMPONENTS_PER_COLOR,
                 GL_FLOAT,
                 false,
-                backingBuffer.layout.byteLength,
-                colorOffset
+                Vertex.STRIDE_BYTES,
+                Vertex.OFFSET_COLOR_BYTES
         )
 
         // Model index attribute:
         glEnableVertexAttribArray(shader.modelIndexAttributeLocation)
         glVertexAttribPointer(
                 shader.modelIndexAttributeLocation,
-                GeometryManager.COMPONENTS_PER_MODEL_INDEX,
+                Vertex.COMPONENTS_PER_MODEL_INDEX,
                 GL_FLOAT,
                 false,
-                backingBuffer.layout.byteLength,
-                colorOffset + modelIndexOffset
+                Vertex.STRIDE_BYTES,
+                Vertex.OFFSET_MODEL_INDEX_BYTES
         )
     }
 

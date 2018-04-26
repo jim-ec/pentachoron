@@ -88,8 +88,9 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
             }
 
             // Draw actual geometry:
-            glDrawArrays(GL_LINES, 0, sharedRenderData.geometryManager.vertexBuffer.activeEntries)
-
+            glDrawArrays(
+                    GL_LINES, 0,
+                    (sharedRenderData.geometryManager.vertexBuffer.lastActiveElementIndex + 1))
         }
     }
 

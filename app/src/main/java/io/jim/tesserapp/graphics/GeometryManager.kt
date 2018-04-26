@@ -1,6 +1,7 @@
 package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.util.Buffer
 
 /**
  * Manages a geometry tree, while providing backing buffers for vertex and matrix data.
@@ -19,11 +20,7 @@ class GeometryManager(maxGeometries: Int) {
      * Vertex buffer.
      * Buffer data is updated automatically upon geometrical change.
      */
-    val vertexBuffer = FloatLayoutBuffer<Vertex>(10,
-            FloatLayoutBuffer.Layout(
-                    COMPONENTS_PER_POSITION,
-                    COMPONENTS_PER_COLOR,
-                    COMPONENTS_PER_MODEL_INDEX))
+    val vertexBuffer = Buffer<Vertex>(100, Vertex.COMPONENTS_PER_VERTEX)
 
     /**
      * Root geometry of this manager.
@@ -37,12 +34,6 @@ class GeometryManager(maxGeometries: Int) {
     var verticesUpdated = true
 
     private var geometries = HashSet<Geometry>()
-
-    companion object {
-        internal const val COMPONENTS_PER_POSITION = 3
-        internal const val COMPONENTS_PER_COLOR = 3
-        internal const val COMPONENTS_PER_MODEL_INDEX = 1
-    }
 
     init {
         Geometry.onHierarchyChangedListeners += {
@@ -80,9 +71,13 @@ class GeometryManager(maxGeometries: Int) {
     private fun uploadVertexData() {
         // Rewrite vertex buffer:
         vertexBuffer.rewind()
+        var globalVertexIndex = 0
         rootGeometry.forEachRecursive { geometry ->
-            geometry.vertices.forEach {
-                vertexBuffer += it
+            geometry.vertices.also { vertices ->
+                vertices.forEachIndexed { localVertexIndex, vertex ->
+                    vertexBuffer[globalVertexIndex + localVertexIndex] = vertex
+                }
+                globalVertexIndex += vertices.size
             }
         }
         verticesUpdated = true
