@@ -126,9 +126,7 @@ open class Geometry(
          * The counter can never be negative, and is incremented/decremented automatically
          * on calls to [geometrical].
          */
-        @Suppress("MemberVisibilityCanBePrivate")
-        @PublishedApi
-        internal var geometricalCounter = 0
+        var geometricalCounter = 0
             set(value) {
                 field = max(value, 0)
             }
