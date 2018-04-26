@@ -1,7 +1,7 @@
 package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.util.Buffer
+import io.jim.tesserapp.util.RandomAccessBuffer
 
 /**
  * Manages a geometry tree, while providing backing buffers for vertex and matrix data.
@@ -20,7 +20,7 @@ class GeometryManager(maxGeometries: Int) {
      * Vertex buffer.
      * Buffer data is updated automatically upon geometrical change.
      */
-    val vertexBuffer = Buffer<Vertex>(100, Vertex.COMPONENTS_PER_VERTEX)
+    val vertexBuffer = RandomAccessBuffer<Vertex>(100, Vertex.COMPONENTS_PER_VERTEX)
 
     /**
      * Root geometry of this manager.

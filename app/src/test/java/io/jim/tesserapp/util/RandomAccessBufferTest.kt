@@ -3,13 +3,13 @@ package io.jim.tesserapp.util
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class BufferTest {
+class RandomAccessBufferTest {
 
-    private data class Entry(val a: Float, val b: Float) : Buffer.Element {
+    private open class Entry(a: Float, b: Float) : Buffer.Element {
         override val floats = listOf(a, b)
     }
 
-    private val buffer = Buffer<Entry>(2, 2)
+    private val buffer = RandomAccessBuffer<Entry>(2, 2)
 
     @Test
     fun initialCapacity() {
@@ -28,6 +28,14 @@ class BufferTest {
     @Test(expected = Buffer.InvalidSubIndexException::class)
     fun invalidSubIndex() {
         buffer[0, 3]
+    }
+
+    @Test(expected = Buffer.InvalidElementException::class)
+    fun invalidElement() {
+        class WrongEntry(a: Float, b: Float, c: Float) : Entry(a, b) {
+            override val floats = listOf(a, b, c)
+        }
+        buffer[0] = WrongEntry(3f, 4f, 5f)
     }
 
     @Test

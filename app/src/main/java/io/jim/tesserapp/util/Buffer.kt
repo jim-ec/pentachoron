@@ -3,7 +3,6 @@ package io.jim.tesserapp.util
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
-import kotlin.math.max
 
 /**
  * A buffer, capable of resizing.
@@ -11,7 +10,7 @@ import kotlin.math.max
  *
  * TODO: Implement InputStreamBuffer and RandomAccessBuffer
  */
-class Buffer<T : Buffer.Element>(
+abstract class Buffer<T : Buffer.Element>(
 
         /**
          * Initial memory size.
@@ -22,7 +21,7 @@ class Buffer<T : Buffer.Element>(
         /**
          * The size of each element.
          */
-        private val elementSize: Int
+        protected val elementSize: Int
 ) {
 
     /**
@@ -45,7 +44,7 @@ class Buffer<T : Buffer.Element>(
      * Greatest index a value was written to since the last call to [rewind] or construction time.
      */
     var lastActiveElementIndex = 0
-        private set
+        protected set
 
     private lateinit var byteBuffer: ByteBuffer
     internal lateinit var floatBuffer: FloatBuffer
@@ -75,7 +74,7 @@ class Buffer<T : Buffer.Element>(
     /**
      * Increase the memory by [capacityGranularity] elements.
      */
-    private fun increaseMemory() {
+    protected fun increaseMemory() {
         capacity += capacityGranularity
 
         // Allocate buffer:
@@ -91,24 +90,6 @@ class Buffer<T : Buffer.Element>(
 
         byteBuffer = newByteBuffer
         floatBuffer = byteBuffer.asFloatBuffer()
-    }
-
-    /**
-     * Set the [elementIndex]th element to [element].
-     */
-    operator fun set(elementIndex: Int, element: T) {
-        if (element.floats.size != elementSize)
-            throw InvalidElementException(element.floats.size, elementSize)
-
-        while (floatBuffer.capacity() <= elementIndex * elementSize) {
-            increaseMemory()
-        }
-
-        for (i in 0 until elementSize) {
-            floatBuffer.put(elementIndex * elementSize + i, element.floats[i])
-        }
-
-        lastActiveElementIndex = max(lastActiveElementIndex, elementIndex)
     }
 
     /**
