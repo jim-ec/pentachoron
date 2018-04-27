@@ -5,7 +5,7 @@ import org.junit.Test
 
 class InputStreamBufferTest {
 
-    private val buffer = RandomAccessBuffer(2, 2)
+    private val buffer = InputStreamBuffer(2, 2)
 
     @Test
     fun initialCapacity() {
@@ -28,21 +28,22 @@ class InputStreamBufferTest {
 
     @Test(expected = Buffer.InvalidElementException::class)
     fun invalidElement() {
-        buffer[0] = listOf(3f, 4f, 5f)
+        buffer += listOf(3f, 4f, 5f)
     }
 
     @Test
     fun writeRead() {
-        buffer[1] = listOf(1f, 2f)
+        buffer += listOf(8f, 9f)
+        buffer += listOf(1f, 2f)
         assertEquals(1f, buffer[1, 0], 0.1f)
         assertEquals(2f, buffer[1, 1], 0.1f)
     }
 
     @Test
     fun increaseMemoryAndPreserveOldData() {
-        buffer[0] = listOf(4f, 5f)
-        buffer[1] = listOf(7f, 8f)
-        buffer[2] = listOf(1f, 2f)
+        buffer += listOf(4f, 5f)
+        buffer += listOf(7f, 8f)
+        buffer += listOf(1f, 2f)
 
         assertEquals(4, buffer.capacity)
 
