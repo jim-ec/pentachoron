@@ -24,7 +24,7 @@ class VertexBuffer {
         glBindBuffer(GL_ARRAY_BUFFER, handle)
         glBufferData(
                 GL_ARRAY_BUFFER,
-                (backingBuffer.writtenElementCounts) * Vertex.COMPONENTS_PER_VERTEX * Float.BYTE_LENGTH,
+                backingBuffer.writtenElementCounts * Vertex.COMPONENTS_PER_VERTEX * Float.BYTE_LENGTH,
                 backingBuffer.floatBuffer,
                 GL_STATIC_DRAW)
 
