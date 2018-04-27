@@ -1,32 +1,42 @@
 package io.jim.tesserapp.util
 
-import kotlin.math.max
-
 /**
  * A buffer, capable of resizing.
  * Contents are kept in elements, equally sized memory sections.
  */
-class RandomAccessBuffer<T : Buffer.Element>(
+class RandomAccessBuffer(
         capacityGranularity: Int,
         elementSize: Int
-) : Buffer<T>(capacityGranularity, elementSize) {
+) : Buffer(capacityGranularity, elementSize) {
 
     /**
-     * Set the [elementIndex]th element to [element].
+     * Writes [value] to the float at [subIndex] of element at [elementIndex].
+     * Memory is increased if [elementIndex] would exceed the current [capacity].
+     *
+     * @throws InvalidSubIndexException If [subIndex] does not identify a valid float within the element.
      */
-    operator fun set(elementIndex: Int, element: T) {
-        if (element.floats.size != elementSize)
-            throw InvalidElementException(element.floats.size, elementSize)
-
+    public override operator fun set(elementIndex: Int, subIndex: Int, value: Float) {
         while (floatBuffer.capacity() <= elementIndex * elementSize) {
+            // Increase memory as long as the element index is out of bounds:
             increaseMemory()
         }
 
-        for (i in 0 until elementSize) {
-            floatBuffer.put(elementIndex * elementSize + i, element.floats[i])
-        }
+        // Actually write the float:
+        super.set(elementIndex, subIndex, value)
+    }
 
-        lastActiveElementIndex = max(lastActiveElementIndex, elementIndex)
+    /**
+     * Write a complete element to [elementIndex].
+     * @param floats Float values to be written. Represents one element.
+     * @throws InvalidElementException If float value count differs from [elementSize].
+     */
+    operator fun set(elementIndex: Int, floats: List<Float>) {
+        if (floats.size != elementSize)
+            throw InvalidElementException(floats.size)
+
+        for (subIndex in 0 until elementSize) {
+            this[elementIndex, subIndex] = floats[subIndex]
+        }
     }
 
 }

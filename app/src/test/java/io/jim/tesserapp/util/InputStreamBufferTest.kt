@@ -3,7 +3,7 @@ package io.jim.tesserapp.util
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class RandomAccessBufferTest {
+class InputStreamBufferTest {
 
     private val buffer = RandomAccessBuffer(2, 2)
 
@@ -24,6 +24,11 @@ class RandomAccessBufferTest {
     @Test(expected = Buffer.InvalidSubIndexException::class)
     fun invalidSubIndex() {
         buffer[0, 3]
+    }
+
+    @Test(expected = Buffer.InvalidElementException::class)
+    fun invalidElement() {
+        buffer[0] = listOf(3f, 4f, 5f)
     }
 
     @Test

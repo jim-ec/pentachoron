@@ -20,7 +20,7 @@ class GeometryManager(maxGeometries: Int) {
      * Vertex buffer.
      * Buffer data is updated automatically upon geometrical change.
      */
-    val vertexBuffer = InputStreamBuffer<Vertex>(100, Vertex.COMPONENTS_PER_VERTEX)
+    val vertexBuffer = InputStreamBuffer(100, Vertex.COMPONENTS_PER_VERTEX)
 
     /**
      * Root geometry of this manager.
@@ -74,7 +74,7 @@ class GeometryManager(maxGeometries: Int) {
         rootGeometry.forEachRecursive { geometry ->
             geometry.vertices.also { vertices ->
                 vertices.forEach { vertex ->
-                    vertexBuffer += vertex
+                    vertexBuffer += vertex.floats
                 }
             }
         }

@@ -3,7 +3,7 @@ package io.jim.tesserapp.rendering
 import android.opengl.GLES20.*
 import io.jim.tesserapp.graphics.Vertex
 import io.jim.tesserapp.util.BYTE_LENGTH
-import io.jim.tesserapp.util.Buffer
+import io.jim.tesserapp.util.InputStreamBuffer
 
 /**
  * Uploads buffer data to an OpenGL vertex buffer.
@@ -19,12 +19,12 @@ class VertexBuffer {
     /**
      * Bind the vertex buffer and instruct the vertex attribute pointer a the given [shader].
      */
-    fun bind(shader: Shader, backingBuffer: Buffer<Vertex>) {
+    fun bind(shader: Shader, backingBuffer: InputStreamBuffer) {
 
         glBindBuffer(GL_ARRAY_BUFFER, handle)
         glBufferData(
                 GL_ARRAY_BUFFER,
-                (backingBuffer.lastActiveElementIndex + 1) * Vertex.COMPONENTS_PER_VERTEX * Float.BYTE_LENGTH,
+                (backingBuffer.writtenElementCounts) * Vertex.COMPONENTS_PER_VERTEX * Float.BYTE_LENGTH,
                 backingBuffer.floatBuffer,
                 GL_STATIC_DRAW)
 

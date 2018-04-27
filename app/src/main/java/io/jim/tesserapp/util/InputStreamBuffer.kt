@@ -4,27 +4,50 @@ package io.jim.tesserapp.util
  * A buffer, capable of resizing.
  * Contents are kept in elements, equally sized memory sections.
  */
-class InputStreamBuffer<T : Buffer.Element>(
+class InputStreamBuffer(
         capacityGranularity: Int,
         elementSize: Int
-) : Buffer<T>(capacityGranularity, elementSize) {
+) : Buffer(capacityGranularity, elementSize) {
 
     /**
-     * Append [element] to the buffer.
+     * The count of elements written to this buffer since the last call to [rewind] or
+     * construction time.
      */
-    operator fun plusAssign(element: T) {
-        if (element.floats.size != elementSize)
-            throw InvalidElementException(element.floats.size, elementSize)
+    val writtenElementCounts
+        get() = lastActiveElementIndex + 1
 
-        while (floatBuffer.capacity() <= lastActiveElementIndex * elementSize) {
+    /**
+     * Greatest index a value was written to since the last call to [rewind] or construction time.
+     */
+    private var lastActiveElementIndex = 0
+
+    /**
+     * Append [floats] to the buffer.
+     * @throws InvalidElementException If the count of floats in the list do not match up with [elementSize].
+     */
+    operator fun plusAssign(floats: List<Float>) {
+        if (floats.size != elementSize)
+            throw InvalidElementException(floats.size)
+
+        if (floatBuffer.capacity() <= lastActiveElementIndex * elementSize) {
+            // Re-allocate memory.
+            // Since the granularity must be at least 1, at most one re-allocation is necessary
+            // per one call to plusAssign().
             increaseMemory()
         }
 
         for (i in 0 until elementSize) {
-            floatBuffer.put(lastActiveElementIndex * elementSize + i, element.floats[i])
+            floatBuffer.put(lastActiveElementIndex * elementSize + i, floats[i])
         }
 
         lastActiveElementIndex++
+    }
+
+    /**
+     * Reset [lastActiveElementIndex] to 0.
+     */
+    fun rewind() {
+        lastActiveElementIndex = 0
     }
 
 }

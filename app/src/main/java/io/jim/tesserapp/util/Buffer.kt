@@ -7,14 +7,14 @@ import java.nio.FloatBuffer
 /**
  * A buffer, capable of resizing.
  * Contents are kept in elements, equally sized memory sections.
- *
- * TODO: Implement InputStreamBuffer and RandomAccessBuffer
  */
-abstract class Buffer<T : Buffer.Element>(
+abstract class Buffer(
 
         /**
-         * Initial memory size.
-         * As soon as buffers needs to resize, this count of elements is added.
+         * As soon as the buffers needs more memory to store the elements,
+         * the buffer gets re-allocated, gaining space for this count of elements.
+         *
+         * Therefore, this is the initial element capacity as well.
          */
         private val capacityGranularity: Int,
 
@@ -25,26 +25,10 @@ abstract class Buffer<T : Buffer.Element>(
 ) {
 
     /**
-     * Buffer elements, over which the buffer iterates when copying them into memory.
-     */
-    interface Element {
-        /**
-         * Floats to be stored into the buffer.
-         */
-        val floats: List<Float>
-    }
-
-    /**
      * Capacity of this buffer, expressed in elements.
      */
     var capacity = 0
         private set
-
-    /**
-     * Greatest index a value was written to since the last call to [rewind] or construction time.
-     */
-    var lastActiveElementIndex = 0
-        protected set
 
     private lateinit var byteBuffer: ByteBuffer
     internal lateinit var floatBuffer: FloatBuffer
@@ -52,12 +36,6 @@ abstract class Buffer<T : Buffer.Element>(
     init {
         increaseMemory()
     }
-
-    /**
-     * Thrown when you try to write-in an element with a different list size than [elementSize].
-     */
-    class InvalidElementException(wrongFloatCount: Int, neededFloatCount: Int)
-        : RuntimeException("Invalid element: $wrongFloatCount floats given instead of $neededFloatCount")
 
     /**
      * Thrown when you try to access an invalid index.
@@ -70,6 +48,12 @@ abstract class Buffer<T : Buffer.Element>(
      */
     class InvalidSubIndexException(subIndex: Int)
         : RuntimeException("Invalid buffer sub-index $subIndex")
+
+    /**
+     * Thrown when you try to write an element with a different list size than [elementSize].
+     */
+    inner class InvalidElementException(wrongFloatCount: Int)
+        : RuntimeException("Invalid element: $wrongFloatCount floats given instead of $elementSize")
 
     /**
      * Increase the memory by [capacityGranularity] elements.
@@ -108,10 +92,19 @@ abstract class Buffer<T : Buffer.Element>(
     }
 
     /**
-     * Reset [lastActiveElementIndex] to 0.
+     * Writes [value] to the float at [subIndex] of element at [elementIndex].
+     *
+     * Assumes that such a location exists. Sub-classes take care of eventual re-allocations.
+     * Otherwise, either [InvalidElementIndexException] or [InvalidSubIndexException] are thrown.
      */
-    fun rewind() {
-        lastActiveElementIndex = 0
+    protected open operator fun set(elementIndex: Int, subIndex: Int, value: Float) {
+        if (elementIndex < 0 || elementIndex >= capacity)
+            throw InvalidElementIndexException(elementIndex)
+
+        if (subIndex < 0 || subIndex >= elementSize)
+            throw InvalidSubIndexException(subIndex)
+
+        floatBuffer.put(elementIndex * elementSize + subIndex, value)
     }
 
 }

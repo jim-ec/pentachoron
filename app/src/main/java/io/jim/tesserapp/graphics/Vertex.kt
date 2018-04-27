@@ -2,7 +2,6 @@ package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.util.BYTE_LENGTH
-import io.jim.tesserapp.util.Buffer
 
 /**
  * One individual vertex.
@@ -24,9 +23,9 @@ data class Vertex(
          */
         private val modelIndex: Int
 
-) : Buffer.Element {
+) {
 
-    override val floats = listOf(
+    val floats = listOf(
             position.x, position.y, position.z,
             color.red, color.green, color.blue,
             modelIndex.toFloat()
