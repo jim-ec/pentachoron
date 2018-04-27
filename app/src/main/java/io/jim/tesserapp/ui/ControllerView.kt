@@ -47,6 +47,11 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         var translationY: Float
 
         /**
+         * Translation along the w-axis.
+         */
+        var translationW: Float
+
+        /**
          * Translation along the z-axis.
          */
         var translationZ: Float
@@ -231,11 +236,28 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                 )
         }
 
+        // W-Translation:
+        object : Controller(
+                findViewById(R.id.seekerTranslationW),
+                findViewById(R.id.valueTranslationW),
+                -5f, 5f, 1f
+        ) {
+            override fun set(controllable: Controllable, value: Float) {
+                controllable.translationW = value
+            }
+
+            override val valueLabelText: String
+                get() = String.format(
+                        context.getString(R.string.transform_translation_value),
+                        currentValue
+                )
+        }
+
         // Camera distance:
         object : Controller(
                 findViewById(R.id.seekerCameraDistance),
                 findViewById(R.id.valueCameraDistance),
-                3f, 10f, 6f
+                3f, 15f, 9f
         ) {
             override fun set(controllable: Controllable, value: Float) {
                 controllable.cameraDistance = value

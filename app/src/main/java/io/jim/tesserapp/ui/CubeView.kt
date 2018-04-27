@@ -74,6 +74,15 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         }
 
         /**
+         * Translates the cube along the w-axis.
+         */
+        override var translationW: Float by Delegates.observable(0f) { _, _, newValue ->
+            synchronized(coordinateSystemView.sharedRenderData) {
+                cube.translation.w = newValue
+            }
+        }
+
+        /**
          * Control the camera distance.
          */
         override var cameraDistance: Float by Delegates.observable(0f) { _, _, newValue ->
