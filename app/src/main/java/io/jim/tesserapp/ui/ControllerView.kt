@@ -42,6 +42,16 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         var translationX: Float
 
         /**
+         * Translation along the y-axis.
+         */
+        var translationY: Float
+
+        /**
+         * Translation along the z-axis.
+         */
+        var translationZ: Float
+
+        /**
          * Camera distance.
          */
         var cameraDistance: Float
@@ -64,7 +74,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
     /**
      * Control for one rotation.
      */
-    abstract inner class Control(
+    abstract inner class Controller(
             private val seeker: SeekBar,
             private val valueLabel: TextView,
             private val min: Float,
@@ -123,7 +133,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         }
 
         // X-Rotation:
-        object : Control(
+        object : Controller(
                 findViewById(R.id.seekerRotationX),
                 findViewById(R.id.valueRotationX),
                 0f, 2f
@@ -139,7 +149,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         }
 
         // Y-Rotation:
-        object : Control(
+        object : Controller(
                 findViewById(R.id.seekerRotationY),
                 findViewById(R.id.valueRotationY),
                 0f, 2f
@@ -155,7 +165,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         }
 
         // Z-Rotation:
-        object : Control(
+        object : Controller(
                 findViewById(R.id.seekerRotationZ),
                 findViewById(R.id.valueRotationZ),
                 0f, 2f
@@ -171,7 +181,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         }
 
         // X-Translation:
-        object : Control(
+        object : Controller(
                 findViewById(R.id.seekerTranslationX),
                 findViewById(R.id.valueTranslationX),
                 -5f, 5f, 0f
@@ -187,8 +197,42 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                 )
         }
 
+        // Y-Translation:
+        object : Controller(
+                findViewById(R.id.seekerTranslationY),
+                findViewById(R.id.valueTranslationY),
+                -5f, 5f, 0f
+        ) {
+            override fun set(controllable: Controllable, value: Float) {
+                controllable.translationY = value
+            }
+
+            override val valueLabelText: String
+                get() = String.format(
+                        context.getString(R.string.transform_translation_value),
+                        currentValue
+                )
+        }
+
+        // Z-Translation:
+        object : Controller(
+                findViewById(R.id.seekerTranslationZ),
+                findViewById(R.id.valueTranslationZ),
+                -5f, 5f, 0f
+        ) {
+            override fun set(controllable: Controllable, value: Float) {
+                controllable.translationZ = value
+            }
+
+            override val valueLabelText: String
+                get() = String.format(
+                        context.getString(R.string.transform_translation_value),
+                        currentValue
+                )
+        }
+
         // Camera distance:
-        object : Control(
+        object : Controller(
                 findViewById(R.id.seekerCameraDistance),
                 findViewById(R.id.valueCameraDistance),
                 3f, 10f, 4f
