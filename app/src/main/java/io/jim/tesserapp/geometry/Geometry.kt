@@ -79,7 +79,7 @@ open class Geometry(
      * Thrown when trying to transform the geometry while not registered into a matrix buffer.
      */
     inner class NotRegisteredIntoMatrixBufferException
-        : Exception("Geometry $this not registered into matrix buffer")
+        : RuntimeException("Geometry $this not registered into matrix buffer")
 
     companion object {
 

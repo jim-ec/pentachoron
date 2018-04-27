@@ -42,13 +42,13 @@ class MatrixBuffer(
          * Thrown when invalid memory space is created.
          */
         inner class InvalidMemorySpaceException(msg: String)
-            : Exception("Invalid memory space (at $offset, ranging over $range matrices): $msg")
+            : RuntimeException("Invalid memory space (at $offset, ranging over $range matrices): $msg")
 
         /**
          * Thrown when invalid index was specified.
          */
         inner class InvalidIndexException(msg: String)
-            : Exception("Invalid index in memory space (at $offset, ranging over $range matrices): $msg")
+            : RuntimeException("Invalid index in memory space (at $offset, ranging over $range matrices): $msg")
 
         init {
             if (offset < 0 || offset + range > maxMatrices)
@@ -164,7 +164,7 @@ class MatrixBuffer(
          */
         fun perspective2D(matrix: Int, near: Float, far: Float) {
             if (near <= 0.0 || far <= 0.0 || near > far)
-                throw Exception("Invalid near=$near or far=$far parameter")
+                throw RuntimeException("Invalid near=$near or far=$far parameter")
             this[matrix, 2, 3] = -1.0f
             this[matrix, 3, 3] = 0.0f
             this[matrix, 2, 2] = -far / (far - near)

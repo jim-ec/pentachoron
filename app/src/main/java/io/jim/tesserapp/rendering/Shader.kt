@@ -1,5 +1,7 @@
 package io.jim.tesserapp.rendering
 
+import android.opengl.GLES10.GL_STACK_OVERFLOW
+import android.opengl.GLES10.GL_STACK_UNDERFLOW
 import android.opengl.GLES20.*
 import io.jim.tesserapp.math.MatrixBuffer
 
@@ -8,6 +10,28 @@ import io.jim.tesserapp.math.MatrixBuffer
  * uniforms.
  */
 class Shader(maxModels: Int) {
+
+    /**
+     * Thrown upon OpenGL errors.
+     */
+    inner class GlException(msg: String) :
+            RuntimeException("OpenGL Error 0x${glGetError()} ($errorString): $msg")
+
+    /**
+     * Return a string describing the current OpenGL error.
+     */
+    private val errorString: String
+        get() = when (glGetError()) {
+            GL_NO_ERROR -> "no error"
+            GL_INVALID_ENUM -> "invalid enumeration"
+            GL_INVALID_VALUE -> "invalid value"
+            GL_INVALID_OPERATION -> "invalid operation"
+            GL_INVALID_FRAMEBUFFER_OPERATION -> "invalid framebuffer operation"
+            GL_OUT_OF_MEMORY -> "out of memory"
+            GL_STACK_UNDERFLOW -> "stack underflow"
+            GL_STACK_OVERFLOW -> "stack overflow"
+            else -> "unknown error"
+        }
 
     /**
      * GLSL location of position attribute.
@@ -58,9 +82,9 @@ class Shader(maxModels: Int) {
         """
 
     init {
-        if (vertexShader < 0) throw Exception("Cannot create vertex shader")
-        if (fragmentShader < 0) throw Exception("Cannot create fragment shader")
-        if (program < 0) throw Exception("Cannot create shader program")
+        if (vertexShader < 0) throw GlException("Cannot create vertex shader")
+        if (fragmentShader < 0) throw GlException("Cannot create fragment shader")
+        if (program < 0) throw GlException("Cannot create shader program")
 
         val status = IntArray(1)
 
@@ -69,7 +93,7 @@ class Shader(maxModels: Int) {
             glCompileShader(it)
             glGetShaderiv(it, GL_COMPILE_STATUS, status, 0)
             if (GL_TRUE != status[0]) {
-                throw Exception("Cannot compile vertex shader: ${glGetShaderInfoLog(it)}")
+                throw GlException("Cannot compile vertex shader: ${glGetShaderInfoLog(it)}")
             }
         }
 
@@ -77,8 +101,9 @@ class Shader(maxModels: Int) {
             glShaderSource(it, fragmentShaderSource)
             glCompileShader(it)
             glGetShaderiv(it, GL_COMPILE_STATUS, status, 0)
+            glGetError()
             if (GL_TRUE != status[0]) {
-                throw Exception("Cannot compile fragment shader: ${glGetShaderInfoLog(it)}")
+                throw GlException("Cannot compile fragment shader: ${glGetShaderInfoLog(it)}")
             }
         }
 
@@ -88,12 +113,12 @@ class Shader(maxModels: Int) {
             glLinkProgram(it)
             glGetProgramiv(it, GL_LINK_STATUS, status, 0)
             if (GL_TRUE != status[0]) {
-                throw Exception("Cannot link program: ${glGetProgramInfoLog(it)}")
+                throw GlException("Cannot link program: ${glGetProgramInfoLog(it)}")
             }
             glValidateProgram(it)
             glGetProgramiv(it, GL_VALIDATE_STATUS, status, 0)
             if (GL_TRUE != status[0]) {
-                throw Exception("Cannot validate program: ${glGetProgramInfoLog(it)}")
+                throw GlException("Cannot validate program: ${glGetProgramInfoLog(it)}")
             }
             glUseProgram(it)
         }
@@ -105,18 +130,21 @@ class Shader(maxModels: Int) {
         viewMatrixLocation = glGetUniformLocation(program, "V")
         projectionMatrixLocation = glGetUniformLocation(program, "P")
 
-        if (positionAttributeLocation < 0) throw Exception("Cannot locate position attribute")
-        if (colorAttributeLocation < 0) throw Exception("Cannot locate color attribute")
-        if (modelIndexAttributeLocation < 0) throw Exception("Cannot locate model index attribute")
-        if (modelMatrixLocation < 0) throw Exception("Cannot locate model matrix uniform")
-        if (viewMatrixLocation < 0) throw Exception("Cannot locate view matrix uniform")
-        if (projectionMatrixLocation < 0) throw Exception("Cannot locate projection matrix uniform")
+        if (positionAttributeLocation < 0) throw GlException("Cannot locate position attribute")
+        if (colorAttributeLocation < 0) throw GlException("Cannot locate color attribute")
+        if (modelIndexAttributeLocation < 0) throw GlException("Cannot locate model index attribute")
+        if (modelMatrixLocation < 0) throw GlException("Cannot locate model matrix uniform")
+        if (viewMatrixLocation < 0) throw GlException("Cannot locate view matrix uniform")
+        if (projectionMatrixLocation < 0) throw GlException("Cannot locate projection matrix uniform")
+
+        checkGlError("Initialization")
     }
 
     /**
      * Upload the first [matrixCount] matrices from [buffer] into the model matrix uniform array.
      */
     fun uploadModelMatrixBuffer(buffer: MatrixBuffer, matrixCount: Int) {
+        checkGlError("Uploading model matrices")
         glUniformMatrix4fv(modelMatrixLocation, matrixCount, false, buffer.array, 0)
     }
 
@@ -124,6 +152,7 @@ class Shader(maxModels: Int) {
      * Upload the first matrix in [buffer] to the view matrix uniform.
      */
     fun uploadViewMatrix(buffer: MatrixBuffer) {
+        checkGlError("Uploading view matrix")
         glUniformMatrix4fv(viewMatrixLocation, 1, false, buffer.array, 0)
     }
 
@@ -131,7 +160,17 @@ class Shader(maxModels: Int) {
      * Upload the first matrix in [buffer] to the projection matrix uniform.
      */
     fun uploadProjectionMatrix(buffer: MatrixBuffer) {
+        checkGlError("Uploading projection matrix")
         glUniformMatrix4fv(projectionMatrixLocation, 1, false, buffer.array, 0)
+    }
+
+    /**
+     * Simply checks for an error-state and throws [GlException] if so.
+     * @param currentAction Short description what the caller is currently about to do.
+     */
+    private fun checkGlError(currentAction: String) {
+        if (glGetError() != GL_NO_ERROR)
+            throw GlException("Occurred when: $currentAction")
     }
 
 }

@@ -59,7 +59,8 @@ data class ModelMatrixBuffer(
      * Unused indices can be retained by [retainModelIndex] at later time point.
      */
     private fun releaseModelIndex(index: Int) {
-        if (!retainedModelIndices.remove(index)) throw Exception("Index not releasable, because not retained")
+        if (!retainedModelIndices.remove(index))
+            throw RuntimeException("Index not releasable, because not retained")
     }
 
     /**
@@ -67,7 +68,7 @@ data class ModelMatrixBuffer(
      */
     operator fun plusAssign(geometry: Geometry) {
         if (activeGeometries >= maxGeometries)
-            throw Exception("Registration exceeds model matrix capacity")
+            throw RuntimeException("Registration exceeds model matrix capacity")
 
         val retainedModelIndex = retainModelIndex()
         geometry.globalMemory = modelMatrixBuffer.MemorySpace(retainedModelIndex, 1)
@@ -83,7 +84,7 @@ data class ModelMatrixBuffer(
      */
     operator fun minusAssign(geometry: Geometry) {
         if (geometry.globalMemory == null)
-            throw Exception("Geometry $geometry is not registered")
+            throw RuntimeException("Geometry $geometry is not registered")
 
         if (geometry.modelIndex == greatestRetainedModelIndex) {
             // Geometry reserve the last-most matrix, so we can decrease the greatest index
