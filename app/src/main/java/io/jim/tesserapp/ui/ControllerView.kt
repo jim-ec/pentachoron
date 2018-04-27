@@ -235,7 +235,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         object : Controller(
                 findViewById(R.id.seekerCameraDistance),
                 findViewById(R.id.valueCameraDistance),
-                3f, 10f, 4f
+                3f, 10f, 6f
         ) {
             override fun set(controllable: Controllable, value: Float) {
                 controllable.cameraDistance = value
