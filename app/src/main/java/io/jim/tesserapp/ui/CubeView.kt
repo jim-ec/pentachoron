@@ -116,10 +116,10 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
      * The featuring cube.
      */
     private val cube = Quadrilateral("Cube",
-            Vector(1f, 1f, 1f, 2f),
-            Vector(-1f, 1f, 1f, 2f),
-            Vector(-1f, -1f, 1f, 2f),
-            Vector(1f, -1f, 1f, 2f),
+            Vector(1f, 1f, 1f, 1f),
+            Vector(-1f, 1f, 1f, 1f),
+            Vector(-1f, -1f, 1f, 1f),
+            Vector(1f, -1f, 1f, 1f),
             Color(context, R.color.colorAccent)
     ).apply {
         synchronized(coordinateSystemView.sharedRenderData) {
