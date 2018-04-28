@@ -73,18 +73,23 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
     }
 
     private val controllables = ArrayList<Controllable>()
+    private val controllers: List<Controller>
 
     /**
      * Add a [controllable] to the list of targets this controller controls.
      */
     operator fun plusAssign(controllable: Controllable) {
         controllables += controllable
+
+        controllers.forEach {
+            it.reevaluate()
+        }
     }
 
     /**
      * Control for one rotation.
      */
-    abstract inner class Controller(
+    private abstract inner class Controller(
             private val seeker: SeekBar,
             private val valueLabel: TextView,
             private val min: Float,
@@ -116,10 +121,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
 
             seeker.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    valueLabel.text = valueLabelText
-                    controllables.forEach {
-                        set(it, currentValue)
-                    }
+                    reevaluate()
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -129,6 +131,13 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
             // Force the seeker bar to at least once call its value-changed listeners:
             seeker.progress = 1
             seeker.progress = ((startValue - min) / (max - min) * seeker.max).toInt()
+        }
+
+        fun reevaluate() {
+            valueLabel.text = valueLabelText
+            controllables.forEach {
+                set(it, currentValue)
+            }
         }
     }
 
@@ -142,155 +151,157 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
             }
         }
 
-        // X-Rotation:
-        object : Controller(
-                findViewById(R.id.seekerRotationX),
-                findViewById(R.id.valueRotationX),
-                0f, 2f
-        ) {
-            override fun set(controllable: Controllable, value: Float) {
-                controllable.rotationX = value * PI.toFloat()
-            }
+        controllers = listOf(
+                // X-Rotation:
+                object : Controller(
+                        findViewById(R.id.seekerRotationX),
+                        findViewById(R.id.valueRotationX),
+                        0f, 2f
+                ) {
+                    override fun set(controllable: Controllable, value: Float) {
+                        controllable.rotationX = value * PI.toFloat()
+                    }
 
-            override val valueLabelText: String
-                get() =
-                    String.format(context.getString(R.string.transform_rotation_value_radians),
-                            currentValue)
-        }
+                    override val valueLabelText: String
+                        get() =
+                            String.format(context.getString(R.string.transform_rotation_value_radians),
+                                    currentValue)
+                },
 
-        // Y-Rotation:
-        object : Controller(
-                findViewById(R.id.seekerRotationY),
-                findViewById(R.id.valueRotationY),
-                0f, 2f
-        ) {
-            override fun set(controllable: Controllable, value: Float) {
-                controllable.rotationY = value * PI.toFloat()
-            }
+                // Y-Rotation:
+                object : Controller(
+                        findViewById(R.id.seekerRotationY),
+                        findViewById(R.id.valueRotationY),
+                        0f, 2f
+                ) {
+                    override fun set(controllable: Controllable, value: Float) {
+                        controllable.rotationY = value * PI.toFloat()
+                    }
 
-            override val valueLabelText: String
-                get() =
-                    String.format(context.getString(R.string.transform_rotation_value_radians),
-                            currentValue)
-        }
+                    override val valueLabelText: String
+                        get() =
+                            String.format(context.getString(R.string.transform_rotation_value_radians),
+                                    currentValue)
+                },
 
-        // Z-Rotation:
-        object : Controller(
-                findViewById(R.id.seekerRotationZ),
-                findViewById(R.id.valueRotationZ),
-                0f, 2f
-        ) {
-            override fun set(controllable: Controllable, value: Float) {
-                controllable.rotationZ = value * PI.toFloat()
-            }
+                // Z-Rotation:
+                object : Controller(
+                        findViewById(R.id.seekerRotationZ),
+                        findViewById(R.id.valueRotationZ),
+                        0f, 2f
+                ) {
+                    override fun set(controllable: Controllable, value: Float) {
+                        controllable.rotationZ = value * PI.toFloat()
+                    }
 
-            override val valueLabelText: String
-                get() =
-                    String.format(context.getString(R.string.transform_rotation_value_radians),
-                            currentValue)
-        }
+                    override val valueLabelText: String
+                        get() =
+                            String.format(context.getString(R.string.transform_rotation_value_radians),
+                                    currentValue)
+                },
 
-        // W-Rotation:
-        object : Controller(
-                findViewById(R.id.seekerRotationW),
-                findViewById(R.id.valueRotationW),
-                0f, 2f
-        ) {
-            override fun set(controllable: Controllable, value: Float) {
-                controllable.rotationW = value * PI.toFloat()
-            }
+                // W-Rotation:
+                object : Controller(
+                        findViewById(R.id.seekerRotationW),
+                        findViewById(R.id.valueRotationW),
+                        0f, 2f
+                ) {
+                    override fun set(controllable: Controllable, value: Float) {
+                        controllable.rotationW = value * PI.toFloat()
+                    }
 
-            override val valueLabelText: String
-                get() =
-                    String.format(context.getString(R.string.transform_rotation_value_radians),
-                            currentValue)
-        }
+                    override val valueLabelText: String
+                        get() =
+                            String.format(context.getString(R.string.transform_rotation_value_radians),
+                                    currentValue)
+                },
 
-        // X-Translation:
-        object : Controller(
-                findViewById(R.id.seekerTranslationX),
-                findViewById(R.id.valueTranslationX),
-                -5f, 5f, 0f
-        ) {
-            override fun set(controllable: Controllable, value: Float) {
-                controllable.translationX = value
-            }
+                // X-Translation:
+                object : Controller(
+                        findViewById(R.id.seekerTranslationX),
+                        findViewById(R.id.valueTranslationX),
+                        -5f, 5f, 0f
+                ) {
+                    override fun set(controllable: Controllable, value: Float) {
+                        controllable.translationX = value
+                    }
 
-            override val valueLabelText: String
-                get() = String.format(
-                        context.getString(R.string.transform_translation_value),
-                        currentValue
-                )
-        }
+                    override val valueLabelText: String
+                        get() = String.format(
+                                context.getString(R.string.transform_translation_value),
+                                currentValue
+                        )
+                },
 
-        // Y-Translation:
-        object : Controller(
-                findViewById(R.id.seekerTranslationY),
-                findViewById(R.id.valueTranslationY),
-                -5f, 5f, 0f
-        ) {
-            override fun set(controllable: Controllable, value: Float) {
-                controllable.translationY = value
-            }
+                // Y-Translation:
+                object : Controller(
+                        findViewById(R.id.seekerTranslationY),
+                        findViewById(R.id.valueTranslationY),
+                        -5f, 5f, 0f
+                ) {
+                    override fun set(controllable: Controllable, value: Float) {
+                        controllable.translationY = value
+                    }
 
-            override val valueLabelText: String
-                get() = String.format(
-                        context.getString(R.string.transform_translation_value),
-                        currentValue
-                )
-        }
+                    override val valueLabelText: String
+                        get() = String.format(
+                                context.getString(R.string.transform_translation_value),
+                                currentValue
+                        )
+                },
 
-        // Z-Translation:
-        object : Controller(
-                findViewById(R.id.seekerTranslationZ),
-                findViewById(R.id.valueTranslationZ),
-                -5f, 5f, 0f
-        ) {
-            override fun set(controllable: Controllable, value: Float) {
-                controllable.translationZ = value
-            }
+                // Z-Translation:
+                object : Controller(
+                        findViewById(R.id.seekerTranslationZ),
+                        findViewById(R.id.valueTranslationZ),
+                        -5f, 5f, 0f
+                ) {
+                    override fun set(controllable: Controllable, value: Float) {
+                        controllable.translationZ = value
+                    }
 
-            override val valueLabelText: String
-                get() = String.format(
-                        context.getString(R.string.transform_translation_value),
-                        currentValue
-                )
-        }
+                    override val valueLabelText: String
+                        get() = String.format(
+                                context.getString(R.string.transform_translation_value),
+                                currentValue
+                        )
+                },
 
-        // W-Translation:
-        object : Controller(
-                findViewById(R.id.seekerTranslationW),
-                findViewById(R.id.valueTranslationW),
-                -5f, 5f, 1f
-        ) {
-            override fun set(controllable: Controllable, value: Float) {
-                controllable.translationW = value
-            }
+                // W-Translation:
+                object : Controller(
+                        findViewById(R.id.seekerTranslationW),
+                        findViewById(R.id.valueTranslationW),
+                        -5f, 5f, 1f
+                ) {
+                    override fun set(controllable: Controllable, value: Float) {
+                        controllable.translationW = value
+                    }
 
-            override val valueLabelText: String
-                get() = String.format(
-                        context.getString(R.string.transform_translation_value),
-                        currentValue
-                )
-        }
+                    override val valueLabelText: String
+                        get() = String.format(
+                                context.getString(R.string.transform_translation_value),
+                                currentValue
+                        )
+                },
 
-        // Camera distance:
-        object : Controller(
-                findViewById(R.id.seekerCameraDistance),
-                findViewById(R.id.valueCameraDistance),
-                3f, 15f, 9f
-        ) {
-            override fun set(controllable: Controllable, value: Float) {
-                controllable.cameraDistance = value
-                println("Set new camera distance to: $value")
-            }
+                // Camera distance:
+                object : Controller(
+                        findViewById(R.id.seekerCameraDistance),
+                        findViewById(R.id.valueCameraDistance),
+                        3f, 15f, 9f
+                ) {
+                    override fun set(controllable: Controllable, value: Float) {
+                        controllable.cameraDistance = value
+                        println("Set new camera distance to: $value")
+                    }
 
-            override val valueLabelText: String
-                get() = String.format(
-                        context.getString(R.string.transform_translation_value),
-                        currentValue
-                )
-        }
+                    override val valueLabelText: String
+                        get() = String.format(
+                                context.getString(R.string.transform_translation_value),
+                                currentValue
+                        )
+                }
+        )
     }
 
 }
