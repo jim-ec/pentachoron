@@ -25,4 +25,13 @@ data class SharedRenderData(
      */
     val rootGeometry: Geometry = geometryManager.rootGeometry
 
+    /**
+     * Executes [f], assuring thread synchronization on this render-data as long as [f] runs.
+     */
+    inline fun synchronized(f: (renderData: SharedRenderData) -> Unit) {
+        synchronized(this) {
+            f(this)
+        }
+    }
+
 }

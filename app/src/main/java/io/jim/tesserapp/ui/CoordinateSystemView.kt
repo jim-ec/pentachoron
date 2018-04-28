@@ -84,9 +84,9 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
                     val dx = event.x - touchStartPosition.x
                     val dy = event.y - touchStartPosition.y
 
-                    synchronized(renderer.sharedRenderData) {
-                        renderer.sharedRenderData.rootGeometry.rotation.y += dx * TOUCH_ROTATION_SENSITIVITY
-                        renderer.sharedRenderData.rootGeometry.rotation.z -= dy * TOUCH_ROTATION_SENSITIVITY
+                    renderer.sharedRenderData.synchronized { renderData ->
+                        renderData.rootGeometry.rotation.y += dx * TOUCH_ROTATION_SENSITIVITY
+                        renderData.rootGeometry.rotation.z -= dy * TOUCH_ROTATION_SENSITIVITY
                     }
 
                     touchStartPosition.x = event.x
@@ -107,9 +107,9 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     override fun performClick(): Boolean {
         super.performClick()
 
-        synchronized(renderer.sharedRenderData) {
-            renderer.sharedRenderData.rootGeometry.rotation.y = 0f
-            renderer.sharedRenderData.rootGeometry.rotation.z = 0f
+        renderer.sharedRenderData.synchronized { renderData ->
+            renderData.rootGeometry.rotation.y = 0f
+            renderData.rootGeometry.rotation.z = 0f
         }
 
         return true
@@ -119,9 +119,9 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
      * Enable or disable grid rendering.
      */
     fun enableGrid(enable: Boolean) {
-        synchronized(renderer.sharedRenderData) {
+        renderer.sharedRenderData.synchronized { renderData ->
             if (enable) {
-                grid.addToParentGeometry(renderer.sharedRenderData.rootGeometry)
+                grid.addToParentGeometry(renderData.rootGeometry)
             }
             else {
                 grid.releaseFromParentGeometry()

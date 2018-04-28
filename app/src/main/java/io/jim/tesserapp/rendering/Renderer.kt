@@ -66,31 +66,31 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        synchronized(sharedRenderData) {
+        sharedRenderData.synchronized { renderData ->
             // Recompute view matrix:
             viewMatrixMemory.apply {
-                lookAt(1, Vector(sharedRenderData.cameraDistance, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
+                lookAt(1, Vector(renderData.cameraDistance, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
                 scale(2, Vector(1f, viewportAspectRation, 1f, 1f))
                 multiply(1, 2, 0)
                 shader.uploadViewMatrix(viewMatrix)
             }
 
             // Upload model matrices:
-            sharedRenderData.geometryManager.computeModelMatrices()
+            renderData.geometryManager.computeModelMatrices()
             shader.uploadModelMatrixBuffer(
-                    sharedRenderData.geometryManager.modelMatrixBuffer.modelMatrixBuffer,
-                    sharedRenderData.geometryManager.modelMatrixBuffer.activeGeometries)
+                    renderData.geometryManager.modelMatrixBuffer.modelMatrixBuffer,
+                    renderData.geometryManager.modelMatrixBuffer.activeGeometries)
 
             // Recompute geometry vertices:
-            if (sharedRenderData.geometryManager.verticesUpdated) {
-                vertexBuffer.bind(shader, sharedRenderData.geometryManager.vertexBuffer)
-                sharedRenderData.geometryManager.verticesUpdated = false
+            if (renderData.geometryManager.verticesUpdated) {
+                vertexBuffer.bind(shader, renderData.geometryManager.vertexBuffer)
+                renderData.geometryManager.verticesUpdated = false
             }
 
             // Draw actual geometry:
             glDrawArrays(
                     GL_LINES, 0,
-                    sharedRenderData.geometryManager.vertexBuffer.writtenElementCounts)
+                    renderData.geometryManager.vertexBuffer.writtenElementCounts)
         }
     }
 

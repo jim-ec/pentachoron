@@ -23,7 +23,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
          * Rotates the cube around the x-axis.
          */
         override var rotationX: Float by Delegates.observable(0f) { _, _, newValue ->
-            synchronized(coordinateSystemView.sharedRenderData) {
+            coordinateSystemView.sharedRenderData.synchronized {
                 cube.rotation.x = newValue
             }
         }
@@ -32,7 +32,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
          * Rotates the cube around the y-axis.
          */
         override var rotationY: Float by Delegates.observable(0f) { _, _, newValue ->
-            synchronized(coordinateSystemView.sharedRenderData) {
+            coordinateSystemView.sharedRenderData.synchronized {
                 cube.rotation.y = newValue
             }
         }
@@ -41,7 +41,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
          * Rotates the cube around the z-axis.
          */
         override var rotationZ: Float by Delegates.observable(0f) { _, _, newValue ->
-            synchronized(coordinateSystemView.sharedRenderData) {
+            coordinateSystemView.sharedRenderData.synchronized {
                 cube.rotation.z = newValue
             }
         }
@@ -50,7 +50,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
          * Rotates the cube around the z-axis.
          */
         override var rotationW: Float by Delegates.observable(0f) { _, _, newValue ->
-            synchronized(coordinateSystemView.sharedRenderData) {
+            coordinateSystemView.sharedRenderData.synchronized {
                 cube.rotation.w = newValue
             }
         }
@@ -59,7 +59,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
          * Translates the cube along the x-axis.
          */
         override var translationX: Float by Delegates.observable(0f) { _, _, newValue ->
-            synchronized(coordinateSystemView.sharedRenderData) {
+            coordinateSystemView.sharedRenderData.synchronized {
                 cube.translation.x = newValue
             }
         }
@@ -68,7 +68,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
          * Translates the cube along the y-axis.
          */
         override var translationY: Float by Delegates.observable(0f) { _, _, newValue ->
-            synchronized(coordinateSystemView.sharedRenderData) {
+            coordinateSystemView.sharedRenderData.synchronized {
                 cube.translation.y = newValue
             }
         }
@@ -77,7 +77,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
          * Translates the cube along the z-axis.
          */
         override var translationZ: Float by Delegates.observable(0f) { _, _, newValue ->
-            synchronized(coordinateSystemView.sharedRenderData) {
+            coordinateSystemView.sharedRenderData.synchronized {
                 cube.translation.z = newValue
             }
         }
@@ -86,7 +86,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
          * Translates the cube along the w-axis.
          */
         override var translationW: Float by Delegates.observable(0f) { _, _, newValue ->
-            synchronized(coordinateSystemView.sharedRenderData) {
+            coordinateSystemView.sharedRenderData.synchronized {
                 cube.translation.w = newValue
             }
         }
@@ -95,7 +95,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
          * Control the camera distance.
          */
         override var cameraDistance: Float by Delegates.observable(0f) { _, _, newValue ->
-            synchronized(coordinateSystemView.sharedRenderData) {
+            coordinateSystemView.sharedRenderData.synchronized {
                 coordinateSystemView.sharedRenderData.cameraDistance = newValue
             }
         }
@@ -104,7 +104,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
          * Render grid option.
          */
         override var renderGrid: Boolean by Delegates.observable(true) { _, _, newValue ->
-            synchronized(coordinateSystemView.sharedRenderData) {
+            coordinateSystemView.sharedRenderData.synchronized {
                 coordinateSystemView.enableGrid(newValue)
             }
         }
@@ -122,7 +122,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             Vector(1f, -1f, 1f, 1f),
             Color(context, R.color.colorAccent)
     ).apply {
-        synchronized(coordinateSystemView.sharedRenderData) {
+        coordinateSystemView.sharedRenderData.synchronized {
             addToParentGeometry(coordinateSystemView.sharedRenderData.rootGeometry)
             extrude(Vector(0f, 0f, -2f, 0f))
         }
