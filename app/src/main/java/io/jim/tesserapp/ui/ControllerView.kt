@@ -37,6 +37,11 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         var rotationZ: Float
 
         /**
+         * Rotation around on the w-x plane.
+         */
+        var rotationW: Float
+
+        /**
          * Translation along the x-axis.
          */
         var translationX: Float
@@ -185,6 +190,22 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                             currentValue)
         }
 
+        // W-Rotation:
+        object : Controller(
+                findViewById(R.id.seekerRotationW),
+                findViewById(R.id.valueRotationW),
+                0f, 2f
+        ) {
+            override fun set(controllable: Controllable, value: Float) {
+                controllable.rotationW = value * PI.toFloat()
+            }
+
+            override val valueLabelText: String
+                get() =
+                    String.format(context.getString(R.string.transform_rotation_value_radians),
+                            currentValue)
+        }
+
         // X-Translation:
         object : Controller(
                 findViewById(R.id.seekerTranslationX),
@@ -261,6 +282,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         ) {
             override fun set(controllable: Controllable, value: Float) {
                 controllable.cameraDistance = value
+                println("Set new camera distance to: $value")
             }
 
             override val valueLabelText: String

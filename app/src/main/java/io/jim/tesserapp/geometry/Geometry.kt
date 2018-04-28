@@ -83,14 +83,18 @@ open class Geometry(
 
     companion object {
 
-        private const val LOCAL_MATRICES_PER_GEOMETRY = 7
+        private const val LOCAL_MATRICES_PER_GEOMETRY = 9
         private const val LOCAL_MATRIX = 0
+
         private const val ROTATION_MATRIX = 1
         private const val ROTATION_X_MATRIX = 2
-        private const val ROTATION_YZ_MATRIX = 3
+        private const val ROTATION_WZY_MATRIX = 3
         private const val ROTATION_Y_MATRIX = 4
-        private const val ROTATION_Z_MATRIX = 5
-        private const val TRANSLATION_MATRIX = 6
+        private const val ROTATION_WZ_MATRIX = 5
+        private const val ROTATION_Z_MATRIX = 6
+        private const val ROTATION_W_MATRIX = 7
+
+        private const val TRANSLATION_MATRIX = 8
 
         /**
          * Added listeners are fired when hierarchical structure, i.e. parent-child relationships,
@@ -227,8 +231,10 @@ open class Geometry(
         localMemory.rotation(ROTATION_X_MATRIX, 1, 2, rotation.x)
         localMemory.rotation(ROTATION_Y_MATRIX, 2, 0, rotation.y)
         localMemory.rotation(ROTATION_Z_MATRIX, 0, 1, rotation.z)
-        localMemory.multiply(lhs = ROTATION_Y_MATRIX, rhs = ROTATION_Z_MATRIX, matrix = ROTATION_YZ_MATRIX)
-        localMemory.multiply(lhs = ROTATION_X_MATRIX, rhs = ROTATION_YZ_MATRIX, matrix = ROTATION_MATRIX)
+        localMemory.rotation(ROTATION_W_MATRIX, 3, 0, rotation.w)
+        localMemory.multiply(lhs = ROTATION_Z_MATRIX, rhs = ROTATION_W_MATRIX, matrix = ROTATION_WZ_MATRIX)
+        localMemory.multiply(lhs = ROTATION_Y_MATRIX, rhs = ROTATION_WZ_MATRIX, matrix = ROTATION_WZY_MATRIX)
+        localMemory.multiply(lhs = ROTATION_X_MATRIX, rhs = ROTATION_WZY_MATRIX, matrix = ROTATION_MATRIX)
 
         // Translation:
         localMemory.translation(TRANSLATION_MATRIX, translation)

@@ -47,6 +47,15 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         }
 
         /**
+         * Rotates the cube around the z-axis.
+         */
+        override var rotationW: Float by Delegates.observable(0f) { _, _, newValue ->
+            synchronized(coordinateSystemView.sharedRenderData) {
+                cube.rotation.w = newValue
+            }
+        }
+
+        /**
          * Translates the cube along the x-axis.
          */
         override var translationX: Float by Delegates.observable(0f) { _, _, newValue ->
@@ -106,10 +115,11 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
     /**
      * The featuring cube.
      */
-    private val cube = Quadrilateral("Cube", Vector(1f, 1f, 1f, 1f),
-            Vector(-1f, 1f, 1f, 1f),
-            Vector(-1f, -1f, 1f, 1f),
-            Vector(1f, -1f, 1f, 1f),
+    private val cube = Quadrilateral("Cube",
+            Vector(1f, 1f, 1f, 2f),
+            Vector(-1f, 1f, 1f, 2f),
+            Vector(-1f, -1f, 1f, 2f),
+            Vector(1f, -1f, 1f, 2f),
             Color(context, R.color.colorAccent)
     ).apply {
         synchronized(coordinateSystemView.sharedRenderData) {
