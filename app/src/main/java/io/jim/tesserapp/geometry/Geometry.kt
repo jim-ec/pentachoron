@@ -81,20 +81,23 @@ open class Geometry(
     inner class NotRegisteredIntoMatrixBufferException
         : RuntimeException("Geometry $this not registered into matrix buffer")
 
+    private enum class MatrixIndex {
+        LOCAL,
+        ROTATION,
+        ROTATION_X,
+        ROTATION_WZY,
+        ROTATION_Y,
+        ROTATION_WZ,
+        ROTATION_Z,
+        ROTATION_W,
+        TRANSLATION;
+
+        val index: Int by lazy { MatrixIndex.values().indexOf(this) }
+    }
+
     companion object {
 
-        private const val LOCAL_MATRICES_PER_GEOMETRY = 9
-        private const val LOCAL_MATRIX = 0
-
-        private const val ROTATION_MATRIX = 1
-        private const val ROTATION_X_MATRIX = 2
-        private const val ROTATION_WZY_MATRIX = 3
-        private const val ROTATION_Y_MATRIX = 4
-        private const val ROTATION_WZ_MATRIX = 5
-        private const val ROTATION_Z_MATRIX = 6
-        private const val ROTATION_W_MATRIX = 7
-
-        private const val TRANSLATION_MATRIX = 8
+        private val LOCAL_MATRICES_PER_GEOMETRY = MatrixIndex.values().size
 
         /**
          * Added listeners are fired when hierarchical structure, i.e. parent-child relationships,
@@ -228,32 +231,32 @@ open class Geometry(
         val globalMemory = globalMemory ?: throw NotRegisteredIntoMatrixBufferException()
 
         // Rotation:
-        localMemory.rotation(ROTATION_X_MATRIX, 1, 2, rotation.x)
-        localMemory.rotation(ROTATION_Y_MATRIX, 2, 0, rotation.y)
-        localMemory.rotation(ROTATION_Z_MATRIX, 0, 1, rotation.z)
-        localMemory.rotation(ROTATION_W_MATRIX, 3, 0, rotation.w)
-        localMemory.multiply(lhs = ROTATION_Z_MATRIX, rhs = ROTATION_W_MATRIX, matrix = ROTATION_WZ_MATRIX)
-        localMemory.multiply(lhs = ROTATION_Y_MATRIX, rhs = ROTATION_WZ_MATRIX, matrix = ROTATION_WZY_MATRIX)
-        localMemory.multiply(lhs = ROTATION_X_MATRIX, rhs = ROTATION_WZY_MATRIX, matrix = ROTATION_MATRIX)
+        localMemory.rotation(MatrixIndex.ROTATION_X.index, 1, 2, rotation.x)
+        localMemory.rotation(MatrixIndex.ROTATION_Y.index, 2, 0, rotation.y)
+        localMemory.rotation(MatrixIndex.ROTATION_Z.index, 0, 1, rotation.z)
+        localMemory.rotation(MatrixIndex.ROTATION_W.index, 3, 0, rotation.w)
+        localMemory.multiply(lhs = MatrixIndex.ROTATION_Z.index, rhs = MatrixIndex.ROTATION_W.index, matrix = MatrixIndex.ROTATION_WZ.index)
+        localMemory.multiply(lhs = MatrixIndex.ROTATION_Y.index, rhs = MatrixIndex.ROTATION_WZ.index, matrix = MatrixIndex.ROTATION_WZY.index)
+        localMemory.multiply(lhs = MatrixIndex.ROTATION_X.index, rhs = MatrixIndex.ROTATION_WZY.index, matrix = MatrixIndex.ROTATION.index)
 
         // Translation:
-        localMemory.translation(TRANSLATION_MATRIX, translation)
+        localMemory.translation(MatrixIndex.TRANSLATION.index, translation)
 
         // Local:
-        localMemory.multiply(lhs = ROTATION_MATRIX, rhs = TRANSLATION_MATRIX, matrix = LOCAL_MATRIX)
+        localMemory.multiply(lhs = MatrixIndex.ROTATION.index, rhs = MatrixIndex.TRANSLATION.index, matrix = MatrixIndex.LOCAL.index)
 
         // Global:
         if (null != parent) {
             // This geometry has a parent, therefore we need to multiply the local matrix
             // to the parent's global matrix:
             globalMemory.multiply(
-                    lhs = LOCAL_MATRIX, lhsMemorySpace = localMemory,
+                    lhs = MatrixIndex.LOCAL.index, lhsMemorySpace = localMemory,
                     rhsMemorySpace = parent!!.globalMemory
                             ?: throw NotRegisteredIntoMatrixBufferException())
         }
         else {
             // This geometry has no parent, therefore the local matrix equals the global one:
-            globalMemory.copy(source = LOCAL_MATRIX, sourceMemorySpace = localMemory)
+            globalMemory.copy(source = MatrixIndex.LOCAL.index, sourceMemorySpace = localMemory)
         }
 
         children.forEach { it.computeModelMatricesRecursively() }
