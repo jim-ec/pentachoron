@@ -292,7 +292,6 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                 ) {
                     override fun set(controllable: Controllable, value: Float) {
                         controllable.cameraDistance = value
-                        println("Set new camera distance to: $value")
                     }
 
                     override val valueLabelText: String
