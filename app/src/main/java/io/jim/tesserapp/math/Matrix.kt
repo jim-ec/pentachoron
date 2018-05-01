@@ -1,6 +1,8 @@
 package io.jim.tesserapp.math
 
 import io.jim.tesserapp.util.RandomAccessBuffer
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
  * A row-major matrix with [rows] rows and [cols] columns.
@@ -28,35 +30,45 @@ data class Matrix(val rows: Int, val cols: Int) {
      */
     var x: Float
         get() = this[0, 0]
-        set(value) { this[0, 0] = value }
+        set(value) {
+            this[0, 0] = value
+        }
 
     /**
      * Y-component when this matrix represents a vector.
      */
     var y: Float
         get() = this[0, 1]
-        set(value) { this[0, 1] = value }
+        set(value) {
+            this[0, 1] = value
+        }
 
     /**
      * Z-component when this matrix represents a vector.
      */
     var z: Float
         get() = this[0, 2]
-        set(value) { this[0, 2] = value }
+        set(value) {
+            this[0, 2] = value
+        }
 
     /**
      * Q-component when this matrix represents a vector.
      */
     var q: Float
         get() = this[0, 3]
-        set(value) { this[0, 3] = value }
+        set(value) {
+            this[0, 3] = value
+        }
 
     /**
      * W-component when this matrix represents a vector.
      */
     var w: Float
         get() = this[0, 4]
-        set(value) { this[0, 4] = value }
+        set(value) {
+            this[0, 4] = value
+        }
 
     /**
      * Underlying float buffer. One buffer element is seen as one row.
@@ -64,7 +76,7 @@ data class Matrix(val rows: Int, val cols: Int) {
     private val floats = RandomAccessBuffer(rows, cols)
 
     init {
-        if(rows <= 0 || cols <= 0)
+        if (rows <= 0 || cols <= 0)
             throw RuntimeException("Matrix must have non-null positive dimensions")
         identity()
     }
@@ -74,7 +86,7 @@ data class Matrix(val rows: Int, val cols: Int) {
      */
     fun identity() {
         forEachComponent { row, col ->
-            floats[row, col] = if(row == col) 1f else 0f
+            floats[row, col] = if (row == col) 1f else 0f
         }
     }
 
@@ -85,17 +97,75 @@ data class Matrix(val rows: Int, val cols: Int) {
      * @throws RuntimeException If any list in [rowList] has not [cols] columns.
      */
     fun load(vararg rowList: List<Float>) {
-        if(rowList.size != rows)
+        if (rowList.size != rows)
             throw RuntimeException("Row lists must match with matrix row count $rows")
 
         rowList.forEachIndexed { rowIndex, row ->
-            if(row.size != cols)
+            if (row.size != cols)
                 throw RuntimeException("Columns per row list must match with matrix column count $cols")
 
             row.forEachIndexed { colIndex, coefficient ->
                 this[rowIndex, colIndex] = coefficient
             }
         }
+    }
+
+    /**
+     * Loads a complete set of floats into a vector matrix.
+     */
+    fun load(vararg coefficients: Float) {
+        if (rows != 1)
+            throw RuntimeException("Matrix must be a vector")
+        if (coefficients.size != cols)
+            throw RuntimeException("Coefficient count must match with matrix columns")
+
+        coefficients.forEachIndexed { index, coefficient ->
+            this[0, index] = coefficient
+        }
+    }
+
+    /**
+     * Thrown when an operation's requirement to be called on a quadratic matrix is not met.
+     */
+    inner class IsNotQuadraticException :
+            RuntimeException("Matrix needs to be quadratic but is ${this@Matrix}")
+
+    inner class IncompatibleTransformDimension(transformDimension: Int) :
+            RuntimeException("${transformDimension}d transform not compatible with $this")
+
+    /**
+     * Load a translation.
+     * This does not reset any parts of the matrix,
+     * just the floats representing translation are modified.
+     * @throws IncompatibleTransformDimension
+     * @throws IsNotQuadraticException
+     */
+    fun translation(vararg coefficients: Float) {
+        if (rows != cols)
+            throw IsNotQuadraticException()
+        if (coefficients.size != cols - 1)
+            throw IncompatibleTransformDimension(coefficients.size)
+
+        coefficients.forEachIndexed { col, coefficient ->
+            this[rows - 1, col] = coefficient
+        }
+    }
+
+    /**
+     * Load a rotation matrix.
+     * The rotation takes place on the given [a]-[b]-plane, the angle is defined in [radians].
+     * @throws IncompatibleTransformDimension
+     */
+    fun rotation(a: Int, b: Int, radians: Float) {
+        if (a + 1 >= rows || a + 1 >= cols)
+            throw IncompatibleTransformDimension(a + 1)
+        if (b + 1 >= rows || b + 1 >= cols)
+            throw IncompatibleTransformDimension(b + 1)
+
+        this[a, a] = cos(radians)
+        this[a, b] = sin(radians)
+        this[b, a] = -sin(radians)
+        this[b, b] = cos(radians)
     }
 
     /**
@@ -119,15 +189,15 @@ data class Matrix(val rows: Int, val cols: Int) {
      * Prints the whole matrix into a string representation.
      */
     @Suppress("unused")
-    fun joinToString() : String {
+    fun joinToString(): String {
         val sb = StringBuffer()
         sb.append("[ ")
-        for(row in 0 until rows) {
+        for (row in 0 until rows) {
             for (col in 0 until cols) {
                 sb.append(decimalFormat.format(this[row, col]))
-                if(col < cols - 1)
+                if (col < cols - 1)
                     sb.append(" , ")
-                else if(row < rows - 1)
+                else if (row < rows - 1)
                     sb.append(" | ")
             }
         }
@@ -143,13 +213,13 @@ data class Matrix(val rows: Int, val cols: Int) {
     fun multiply(rhs: Matrix, target: Matrix) {
         if (cols != rhs.rows)
             throw RuntimeException("Cannot multiply $this and $rhs")
-        if(rows != target.rows || rhs.cols != target.cols)
+        if (rows != target.rows || rhs.cols != target.cols)
             throw RuntimeException("Target matrix $target is incompatible for $this * $rhs")
 
         target.forEachComponent { row, col ->
             var sum = 0f
 
-            for(i in 0 until cols) {
+            for (i in 0 until cols) {
                 sum += this[row, i] * rhs[i, col]
             }
 
@@ -173,8 +243,8 @@ data class Matrix(val rows: Int, val cols: Int) {
      * Calls [f] for each coefficient.
      */
     inline fun forEachComponent(f: (row: Int, col: Int) -> Unit) {
-        for(row in 0 until rows) {
-            for(col in 0 until cols) {
+        for (row in 0 until rows) {
+            for (col in 0 until cols) {
                 f(row, col)
             }
         }
