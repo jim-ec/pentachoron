@@ -1,6 +1,7 @@
 package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.util.Flag
 import io.jim.tesserapp.util.InputStreamBuffer
 import io.jim.tesserapp.util.ListenerListParam
 
@@ -29,21 +30,17 @@ class GeometryManager(maxGeometries: Int) {
     val vertexBufferRewritten = ListenerListParam<InputStreamBuffer>()
 
     private val geometries = LinkedHashSet<Geometry>()
-    private var vertexBufferUpdateRequested = false
-
-    private fun requestVertexBufferRewrite() {
-        vertexBufferUpdateRequested = true
-    }
+    private val vertexBufferUpdateRequested = Flag(false)
 
     operator fun plusAssign(geometry: Geometry) {
         if (geometries.add(geometry)) {
             // Geometry was actually added:
             modelMatrixBuffer += geometry
 
-            geometry.onGeometryChangedListeners += ::requestVertexBufferRewrite
+            geometry.onGeometryChangedListeners += vertexBufferUpdateRequested::set
 
             // Guarantee the the geometry is initially uploaded:
-            vertexBufferUpdateRequested = true
+            vertexBufferUpdateRequested.set()
         }
     }
 
@@ -53,9 +50,9 @@ class GeometryManager(maxGeometries: Int) {
             modelMatrixBuffer -= geometry
 
             // Unregister this geometry manager:
-            geometry.onGeometryChangedListeners -= ::requestVertexBufferRewrite
+            geometry.onGeometryChangedListeners -= vertexBufferUpdateRequested::set
 
-            vertexBufferUpdateRequested = true
+            vertexBufferUpdateRequested.set()
         }
     }
 
@@ -81,7 +78,7 @@ class GeometryManager(maxGeometries: Int) {
 
         vertexBufferRewritten.fire(vertexBuffer)
 
-        vertexBufferUpdateRequested = false
+        vertexBufferUpdateRequested.unset()
     }
 
     /**
