@@ -45,8 +45,6 @@ open class Geometry(
     private val positions = ArrayList<Vector>()
     private val lines = ArrayList<LineIndices>()
 
-    private data class LineIndices(val from: Int, val to: Int, var color: Color)
-
     /**
      * Rotation around the x, y and z axis.
      */
@@ -73,6 +71,13 @@ open class Geometry(
         }
 
     /**
+     * Listeners are fired every time a single point or line is added.
+     */
+    val onGeometryChangedListeners = ListenerList()
+
+    private data class LineIndices(val from: Int, val to: Int, var color: Color)
+
+    /**
      * Thrown when trying to transform the geometry while not registered into a matrix buffer.
      */
     inner class NotRegisteredIntoMatrixBufferException
@@ -92,15 +97,8 @@ open class Geometry(
         val index: Int by lazy { MatrixIndex.values().indexOf(this) }
     }
 
-    /**
-     * Listeners are fired every time a single point or line is added.
-     */
-    val onGeometryChangedListeners = ListenerList()
-
     companion object {
-
-        private val LOCAL_MATRICES_PER_GEOMETRY = MatrixIndex.values().size
-
+        private val LOCAL_MATRICES_PER_GEOMETRY: Int by lazy { MatrixIndex.values().size }
     }
 
     /**
@@ -134,7 +132,7 @@ open class Geometry(
      * Colorize the [lineIndex]th line to [baseColor].
      * @throws IndexOutOfBoundsException If index is out of bounds.
      */
-    @Suppress("unused", "MemberVisibilityCanBePrivate")
+    @Suppress("unused")
     fun decolorizeLine(lineIndex: Int) {
         colorizeLine(lineIndex, baseColor)
     }
@@ -190,15 +188,25 @@ open class Geometry(
         localMemory.rotation(MatrixIndex.ROTATION_Y.index, 2, 0, rotation.y)
         localMemory.rotation(MatrixIndex.ROTATION_Z.index, 0, 1, rotation.z)
         localMemory.rotation(MatrixIndex.ROTATION_W.index, 3, 0, rotation.w)
-        localMemory.multiply(lhs = MatrixIndex.ROTATION_Z.index, rhs = MatrixIndex.ROTATION_W.index, matrix = MatrixIndex.ROTATION_WZ.index)
-        localMemory.multiply(lhs = MatrixIndex.ROTATION_Y.index, rhs = MatrixIndex.ROTATION_WZ.index, matrix = MatrixIndex.ROTATION_WZY.index)
-        localMemory.multiply(lhs = MatrixIndex.ROTATION_X.index, rhs = MatrixIndex.ROTATION_WZY.index, matrix = MatrixIndex.ROTATION.index)
+
+        localMemory.multiply(
+                lhs = MatrixIndex.ROTATION_Z.index, rhs = MatrixIndex.ROTATION_W.index,
+                matrix = MatrixIndex.ROTATION_WZ.index)
+
+        localMemory.multiply(
+                lhs = MatrixIndex.ROTATION_Y.index, rhs = MatrixIndex.ROTATION_WZ.index,
+                matrix = MatrixIndex.ROTATION_WZY.index)
+
+        localMemory.multiply(
+                lhs = MatrixIndex.ROTATION_X.index, rhs = MatrixIndex.ROTATION_WZY.index,
+                matrix = MatrixIndex.ROTATION.index)
 
         // Translation:
         localMemory.translation(MatrixIndex.TRANSLATION.index, translation)
 
         // Local:
-        localMemory.multiply(lhs = MatrixIndex.ROTATION.index, rhs = MatrixIndex.TRANSLATION.index, matrix = MatrixIndex.LOCAL.index)
+        localMemory.multiply(lhs = MatrixIndex.ROTATION.index, rhs = MatrixIndex.TRANSLATION.index,
+                matrix = MatrixIndex.LOCAL.index)
 
         // Global:
         globalMemory.copy(source = MatrixIndex.LOCAL.index, sourceMemorySpace = localMemory)

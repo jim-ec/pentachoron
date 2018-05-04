@@ -25,35 +25,43 @@ class GeometryManager(maxGeometries: Int) {
     val vertexBuffer = InputStreamBuffer(100, Vertex.COMPONENTS_PER_VERTEX)
 
     /**
-     * Listeners are called when the vertex buffer was rewritten and needs to be uploaded to the GPU.
+     * Listeners are called when the vertex buffer was rewritten and needs to be uploaded to OpenGL.
      */
     val vertexBufferRewritten = ListenerListParam<InputStreamBuffer>()
 
     private val geometries = LinkedHashSet<Geometry>()
     private val vertexBufferUpdateRequested = Flag(false)
 
+    /**
+     * Registers [geometry] into this manager.
+     * Does nothing if [geometry] is already registered.
+     */
     operator fun plusAssign(geometry: Geometry) {
-        if (geometries.add(geometry)) {
-            // Geometry was actually added:
-            modelMatrixBuffer += geometry
+        if (!geometries.add(geometry)) return
 
-            geometry.onGeometryChangedListeners += vertexBufferUpdateRequested::set
+        // Geometry was actually added:
+        modelMatrixBuffer += geometry
 
-            // Guarantee the the geometry is initially uploaded:
-            vertexBufferUpdateRequested.set()
-        }
+        geometry.onGeometryChangedListeners += vertexBufferUpdateRequested::set
+
+        // Guarantee the the geometry is initially uploaded:
+        vertexBufferUpdateRequested.set()
     }
 
+    /**
+     * Unregisters [geometry] into this manager.
+     * Does nothing if [geometry] is not registered.
+     */
     operator fun minusAssign(geometry: Geometry) {
-        if (geometries.remove(geometry)) {
-            // Geometry was actually removed:
-            modelMatrixBuffer -= geometry
+        if (!geometries.remove(geometry)) return
 
-            // Unregister this geometry manager:
-            geometry.onGeometryChangedListeners -= vertexBufferUpdateRequested::set
+        // Geometry was actually removed:
+        modelMatrixBuffer -= geometry
 
-            vertexBufferUpdateRequested.set()
-        }
+        // Unregister this geometry manager:
+        geometry.onGeometryChangedListeners -= vertexBufferUpdateRequested::set
+
+        vertexBufferUpdateRequested.set()
     }
 
     /**
