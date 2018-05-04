@@ -5,7 +5,7 @@ package io.jim.tesserapp.util
  */
 class ListenerList {
 
-    private val listeners = ArrayList<() -> Unit>()
+    private val listeners = HashSet<() -> Unit>()
 
     /**
      * Add [listener] to the list.
@@ -19,6 +19,10 @@ class ListenerList {
      */
     fun fire() {
         listeners.forEach { it() }
+    }
+
+    operator fun minusAssign(listener: () -> Unit) {
+        listeners -= listener
     }
 
 }

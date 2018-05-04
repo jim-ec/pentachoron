@@ -46,6 +46,11 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
 
         projectionMatrix.MemorySpace().perspective2D(0, 0.1f, 100f)
         shader.uploadProjectionMatrix(projectionMatrix)
+
+        sharedRenderData.geometryManager.vertexBufferRewritten += { buffer ->
+            println("Renderer: Upload vertex buffer to GPU")
+            vertexBuffer.bind(shader, buffer)
+        }
     }
 
     /**
@@ -66,7 +71,6 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
 
             // Recompute view matrix:
             viewMatrix.compute()
-            println("Camera distance: ${renderData.camera.distance}")
             shader.uploadViewMatrix(viewMatrix.buffer)
 
             // Upload model matrices:
@@ -75,11 +79,8 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
                     renderData.geometryManager.modelMatrixBuffer.modelMatrixBuffer,
                     renderData.geometryManager.modelMatrixBuffer.activeGeometries)
 
-            // Recompute geometry vertices:
-            if (renderData.geometryManager.verticesUpdated) {
-                vertexBuffer.bind(shader, renderData.geometryManager.vertexBuffer)
-                renderData.geometryManager.verticesUpdated = false
-            }
+            // Ensure vertex data is up-to-date:
+            renderData.geometryManager.updateVertexBuffer()
 
             // Draw actual geometry:
             glDrawArrays(

@@ -13,16 +13,14 @@ class Quadrilateral(
 ) : Geometry(name, baseColor) {
 
     init {
-        geometrical {
-            addPosition(a)
-            addPosition(b)
-            addPosition(c)
-            addPosition(d)
-            addLine(0, 1)
-            addLine(1, 2)
-            addLine(2, 3)
-            addLine(3, 0)
-        }
+        addPosition(a)
+        addPosition(b)
+        addPosition(c)
+        addPosition(d)
+        addLine(0, 1)
+        addLine(1, 2)
+        addLine(2, 3)
+        addLine(3, 0)
     }
 
 }

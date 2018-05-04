@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.*
 import io.jim.tesserapp.R
-import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.Lines
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.Pi
@@ -29,22 +28,20 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     private var touchStartTime = 0L
 
     private val grid = Lines("Grid", Color(context, R.color.colorGrid)).apply {
-        Geometry.geometrical {
-            for (i in -5..-1) {
-                addLine(Vector(i.toFloat(), 0f, -5f, 1f), Vector(i.toFloat(), 0f, 5f, 1f))
-                addLine(Vector(-5f, 0f, i.toFloat(), 1f), Vector(5f, 0f, i.toFloat(), 1f))
-            }
-            for (i in 1..5) {
-                addLine(Vector(i.toFloat(), 0f, -5f, 1f), Vector(i.toFloat(), 0f, 5f, 1f))
-                addLine(Vector(-5f, 0f, i.toFloat(), 1f), Vector(5f, 0f, i.toFloat(), 1f))
-            }
-
-            addLine(Vector(-5f, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f))
-            addLine(Vector(1f, 0f, 0f, 1f), Vector(5f, 0f, 0f, 1f))
-
-            addLine(Vector(0f, 0f, -5f, 1f), Vector(0f, 0f, 0f, 1f))
-            addLine(Vector(0f, 0f, 1f, 1f), Vector(0f, 0f, 5f, 1f))
+        for (i in -5..-1) {
+            addLine(Vector(i.toFloat(), 0f, -5f, 1f), Vector(i.toFloat(), 0f, 5f, 1f))
+            addLine(Vector(-5f, 0f, i.toFloat(), 1f), Vector(5f, 0f, i.toFloat(), 1f))
         }
+        for (i in 1..5) {
+            addLine(Vector(i.toFloat(), 0f, -5f, 1f), Vector(i.toFloat(), 0f, 5f, 1f))
+            addLine(Vector(-5f, 0f, i.toFloat(), 1f), Vector(5f, 0f, i.toFloat(), 1f))
+        }
+
+        addLine(Vector(-5f, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f))
+        addLine(Vector(1f, 0f, 0f, 1f), Vector(5f, 0f, 0f, 1f))
+
+        addLine(Vector(0f, 0f, -5f, 1f), Vector(0f, 0f, 0f, 1f))
+        addLine(Vector(0f, 0f, 1f, 1f), Vector(0f, 0f, 5f, 1f))
     }
 
     private val axis = Lines("Axis").apply {

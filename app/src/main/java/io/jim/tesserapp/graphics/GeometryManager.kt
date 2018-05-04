@@ -2,6 +2,7 @@ package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.util.InputStreamBuffer
+import io.jim.tesserapp.util.ListenerListParam
 
 /**
  * Manages a geometry list, while providing backing buffers for vertex and matrix data.
@@ -23,42 +24,53 @@ class GeometryManager(maxGeometries: Int) {
     val vertexBuffer = InputStreamBuffer(100, Vertex.COMPONENTS_PER_VERTEX)
 
     /**
-     * List of geometries.
+     * Listeners are called when the vertex buffer was rewritten and needs to be uploaded to the GPU.
      */
-    private val geometries = LinkedHashSet<Geometry>()
+    val vertexBufferRewritten = ListenerListParam<InputStreamBuffer>()
 
-    /**
-     * Set to false if vertex buffer was re-written and needs to be uploaded to the GPU.
-     */
-    var verticesUpdated = true
+    private val geometries = LinkedHashSet<Geometry>()
+    private var vertexBufferUpdateRequested = false
+
+    private fun requestVertexBufferRewrite() {
+        vertexBufferUpdateRequested = true
+    }
 
     operator fun plusAssign(geometry: Geometry) {
         if (geometries.add(geometry)) {
             // Geometry was actually added:
             modelMatrixBuffer += geometry
+
+            geometry.onGeometryChangedListeners += ::requestVertexBufferRewrite
+
+            // Guarantee the the geometry is initially uploaded:
+            vertexBufferUpdateRequested = true
         }
-        uploadVertexData()
-        computeModelMatrices()
     }
 
     operator fun minusAssign(geometry: Geometry) {
         if (geometries.remove(geometry)) {
             // Geometry was actually removed:
             modelMatrixBuffer -= geometry
+
+            // Unregister this geometry manager:
+            geometry.onGeometryChangedListeners -= ::requestVertexBufferRewrite
+
+            vertexBufferUpdateRequested = true
         }
-        uploadVertexData()
-        computeModelMatrices()
     }
 
-    init {
-        Geometry.onGeometryChangedListeners += ::uploadVertexData
-    }
+    /**
+     * Rewrite the vertex buffer if any vertex data changed.
+     */
+    fun updateVertexBuffer() {
 
-    private fun uploadVertexData() {
+        if (!vertexBufferUpdateRequested) {
+            // No update was requested, so buffer rewrite is not necessary:
+            return
+        }
 
         // Rewrite vertex buffer:
         vertexBuffer.rewind()
-
         geometries.forEach { geometry ->
             geometry.vertices.also { vertices ->
                 vertices.forEach { vertex ->
@@ -67,7 +79,9 @@ class GeometryManager(maxGeometries: Int) {
             }
         }
 
-        verticesUpdated = true
+        vertexBufferRewritten.fire(vertexBuffer)
+
+        vertexBufferUpdateRequested = false
     }
 
     /**

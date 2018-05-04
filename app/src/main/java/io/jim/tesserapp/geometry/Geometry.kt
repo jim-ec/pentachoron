@@ -5,7 +5,6 @@ import io.jim.tesserapp.graphics.Vertex
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.util.ListenerList
-import kotlin.math.max
 
 /**
  * A geometrical structure consisting of vertices.
@@ -93,42 +92,14 @@ open class Geometry(
         val index: Int by lazy { MatrixIndex.values().indexOf(this) }
     }
 
+    /**
+     * Listeners are fired every time a single point or line is added.
+     */
+    val onGeometryChangedListeners = ListenerList()
+
     companion object {
 
         private val LOCAL_MATRICES_PER_GEOMETRY = MatrixIndex.values().size
-
-        /**
-         * Listeners are fired every time a single point or line is added.
-         */
-        val onGeometryChangedListeners = ListenerList()
-
-        /**
-         * Vertex data is re-uploaded after the calling [f].
-         *
-         * Calls to [geometrical] can even be nested, and only after the outermost execution
-         * finished, the vertex data gets uploaded.
-         *
-         * This is really useful to reduces vertex re-uploaded during many geometrical structure
-         * changes at once.
-         */
-        inline fun geometrical(f: () -> Unit) {
-            geometricalCounter++
-            f()
-            geometricalCounter--
-            if (0 == geometricalCounter) {
-                onGeometryChangedListeners.fire()
-            }
-        }
-
-        /**
-         * Every time this counter reaches 0, geometry change listeners are fired.
-         * The counter can never be negative, and is incremented/decremented automatically
-         * on calls to [geometrical].
-         */
-        var geometricalCounter = 0
-            set(value) {
-                field = max(value, 0)
-            }
 
     }
 
@@ -137,18 +108,16 @@ open class Geometry(
      * The actual lines are drawn from indices to these vertices.
      */
     protected fun addPosition(position: Vector) {
-        geometrical {
-            positions += position
-        }
+        positions += position
+        onGeometryChangedListeners.fire()
     }
 
     /**
      * Add a lines from point [a] to point [b].
      */
     protected fun addLine(a: Int, b: Int, color: Color = baseColor) {
-        geometrical {
-            lines += LineIndices(a, b, color)
-        }
+        lines += LineIndices(a, b, color)
+        onGeometryChangedListeners.fire()
     }
 
     /**
@@ -157,9 +126,8 @@ open class Geometry(
      */
     @Suppress("unused", "MemberVisibilityCanBePrivate")
     fun colorizeLine(lineIndex: Int, color: Color) {
-        geometrical {
-            lines[lineIndex].color = color
-        }
+        lines[lineIndex].color = color
+        onGeometryChangedListeners.fire()
     }
 
     /**
@@ -168,19 +136,16 @@ open class Geometry(
      */
     @Suppress("unused", "MemberVisibilityCanBePrivate")
     fun decolorizeLine(lineIndex: Int) {
-        geometrical {
-            colorizeLine(lineIndex, baseColor)
-        }
+        colorizeLine(lineIndex, baseColor)
     }
 
     /**
      * Remove all geometry data.
      */
     protected fun clearGeometry() {
-        geometrical {
-            positions.clear()
-            lines.clear()
-        }
+        positions.clear()
+        lines.clear()
+        onGeometryChangedListeners.fire()
     }
 
     /**
@@ -195,19 +160,17 @@ open class Geometry(
             keepColors: Boolean = false,
             connectorColor: Color = baseColor
     ) {
-        geometrical {
-            val size = positions.size
-            positions += positions.map { it + direction }
-            lines += lines.map {
-                LineIndices(
-                        it.from + size,
-                        it.to + size,
-                        if (keepColors) it.color else baseColor
-                )
-            }
-            for (i in 0 until size) {
-                addLine(i, i + size, connectorColor)
-            }
+        val size = positions.size
+        positions += positions.map { it + direction }
+        lines += lines.map {
+            LineIndices(
+                    it.from + size,
+                    it.to + size,
+                    if (keepColors) it.color else baseColor
+            )
+        }
+        for (i in 0 until size) {
+            addLine(i, i + size, connectorColor)
         }
     }
 

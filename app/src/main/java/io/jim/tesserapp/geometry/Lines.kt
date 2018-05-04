@@ -14,21 +14,17 @@ class Lines(name: String, baseColor: Color = Color.BLACK) : Geometry(name, baseC
      * Add a line from point [a] to point [b].
      */
     fun addLine(a: Vector, b: Vector, color: Color = baseColor) {
-        geometrical {
-            addPosition(a)
-            addPosition(b)
-            addLine(index++, index++, color)
-        }
+        addPosition(a)
+        addPosition(b)
+        addLine(index++, index++, color)
     }
 
     /**
      * Remove all lines.
      */
     fun clearLines() {
-        geometrical {
-            clearGeometry()
-            index = 0
-        }
+        clearGeometry()
+        index = 0
     }
 
 }
