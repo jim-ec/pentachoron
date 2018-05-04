@@ -2,7 +2,6 @@ package io.jim.tesserapp.math
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import kotlin.math.PI
 
 class MatrixTest {
 
@@ -115,7 +114,7 @@ class MatrixTest {
 
     @Test
     fun rotation() {
-        matrix.rotation(1, 2, PI.toFloat() / 2)
+        matrix.rotation(1, 2, Pi / 2)
         vector.load(0f, 3f, 0f, 5f)
         vector.multiply(matrix, result)
         result.apply {

@@ -8,7 +8,7 @@ import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.TextView
 import io.jim.tesserapp.R
-import kotlin.math.PI
+import io.jim.tesserapp.math.Pi
 
 /**
  * This view contains controls related to the coordinate system and its geometry.
@@ -159,7 +159,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         0f, 2f
                 ) {
                     override fun set(controllable: Controllable, value: Float) {
-                        controllable.rotationX = value * PI.toFloat()
+                        controllable.rotationX = value * Pi
                     }
 
                     override val valueLabelText: String
@@ -175,7 +175,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         0f, 2f
                 ) {
                     override fun set(controllable: Controllable, value: Float) {
-                        controllable.rotationY = value * PI.toFloat()
+                        controllable.rotationY = value * Pi
                     }
 
                     override val valueLabelText: String
@@ -191,7 +191,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         0f, 2f
                 ) {
                     override fun set(controllable: Controllable, value: Float) {
-                        controllable.rotationZ = value * PI.toFloat()
+                        controllable.rotationZ = value * Pi
                     }
 
                     override val valueLabelText: String
@@ -207,7 +207,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         0f, 2f
                 ) {
                     override fun set(controllable: Controllable, value: Float) {
-                        controllable.rotationW = value * PI.toFloat()
+                        controllable.rotationW = value * Pi
                     }
 
                     override val valueLabelText: String

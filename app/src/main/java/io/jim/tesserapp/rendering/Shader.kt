@@ -144,7 +144,7 @@ class Shader(maxModels: Int) {
      * Upload the first [matrixCount] matrices from [buffer] into the model matrix uniform array.
      */
     fun uploadModelMatrixBuffer(buffer: MatrixBuffer, matrixCount: Int) {
-        checkGlError("Uploading model matrices")
+        checkGlError("Uploading model buffer")
         glUniformMatrix4fv(modelMatrixLocation, matrixCount, false, buffer.array, 0)
     }
 

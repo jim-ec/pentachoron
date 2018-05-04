@@ -7,7 +7,8 @@ import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.graphics.GeometryManager
 import io.jim.tesserapp.graphics.SharedRenderData
 import io.jim.tesserapp.math.MatrixBuffer
-import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.math.Pi
+import io.jim.tesserapp.math.ViewMatrix
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -22,17 +23,16 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     val sharedRenderData = SharedRenderData(
             GeometryManager(MAX_MODELS),
             cameraDistance = 4f,
-            cameraVerticalRotation = 0f,
-            cameraHorizontalRotation = 0f
+            cameraVerticalRotation = -Pi / 8f,
+            cameraHorizontalRotation = Pi / 3f
     )
 
     private val clearColor = Color(context, android.R.color.background_light)
-    private val viewMatrix = MatrixBuffer(10)
-    private val viewMatrixMemory = viewMatrix.MemorySpace()
-    private val projectionMatrix = MatrixBuffer(1)
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
-    private var viewportAspectRation = 1f
+
+    private val projectionMatrix = MatrixBuffer(1)
+    private val viewMatrix = ViewMatrix()
 
     companion object {
         private const val MAX_MODELS = 100
@@ -59,7 +59,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
      */
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
-        viewportAspectRation = width.toFloat() / height.toFloat()
+        viewMatrix.aspectRatio = width.toFloat() / height.toFloat()
     }
 
     /**
@@ -71,25 +71,12 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         sharedRenderData.synchronized { renderData ->
 
             // Recompute view matrix:
-            viewMatrixMemory.apply {
-                val matrixLookAt = 5
-                val matrixScale = 6
-
-                val matrixRotation = 2
-                val matrixHorizontalRotation = 3
-                val matrixVerticalRotation = 4
-
-                rotation(matrixHorizontalRotation, 2, 0, renderData.cameraHorizontalRotation)
-                rotation(matrixVerticalRotation, 0, 1, renderData.cameraVerticalRotation)
-                multiply(matrixHorizontalRotation, matrixVerticalRotation, matrixRotation)
-
-                lookAt(matrixLookAt, Vector(renderData.cameraDistance, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
-                scale(matrixScale, Vector(1f, viewportAspectRation, 1f, 1f))
-
-                multiply(matrixRotation, matrixLookAt, 1)
-                multiply(1, matrixScale, 0)
-
-                shader.uploadViewMatrix(viewMatrix)
+            viewMatrix.apply {
+                horizontalRotation = renderData.cameraHorizontalRotation
+                verticalRotation = renderData.cameraVerticalRotation
+                distance = renderData.cameraDistance
+                compute()
+                shader.uploadViewMatrix(buffer)
             }
 
             // Upload model matrices:

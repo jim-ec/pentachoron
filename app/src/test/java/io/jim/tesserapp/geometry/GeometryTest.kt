@@ -2,12 +2,12 @@ package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.MatrixBuffer
+import io.jim.tesserapp.math.Pi
 import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.util.assertEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import kotlin.math.PI
 
 /**
  * Geometry unit test.
@@ -36,7 +36,7 @@ class GeometryTest {
         register(geometry)
         geometry.addToParentGeometry(root)
 
-        root.rotation.z = PI.toFloat() / 2
+        root.rotation.z = Pi / 2
         geometry.translation.y = 1f
         root.computeModelMatricesRecursively()
 

@@ -280,7 +280,7 @@ class MatrixBuffer(
         }
 
         override fun toString() =
-                "Memory at $offset spanning over $range ${if (range > 1) "matrices" else "matrix"}:\n"
+                "Memory at $offset spanning over $range ${if (range > 1) "buffer" else "matrix"}:\n"
 
         /**
          * Prints the whole matrix buffer into a string.

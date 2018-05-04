@@ -4,7 +4,6 @@ import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import kotlin.math.PI
 
 class MatrixBufferTest {
 
@@ -24,7 +23,7 @@ class MatrixBufferTest {
 
     @Test
     fun identity() {
-        memory.rotation(1, 0, 2, PI.toFloat())
+        memory.rotation(1, 0, 2, Pi)
         memory.identity(1)
         for (row in 0 until MatrixBuffer.MATRIX_COLUMNS) {
             for (col in 0 until MatrixBuffer.MATRIX_COLUMNS) {
@@ -121,7 +120,7 @@ class MatrixBufferTest {
 
     @Test
     fun rotation() {
-        memory.rotation(2, 1, 3, PI.toFloat() / 2)
+        memory.rotation(2, 1, 3, Pi / 2)
         memory.multiply(Vector(0f, 3f, 0f, 5f), 2).apply {
             assertEquals(0f, x, 0.1f)
             assertEquals(-5f, y, 0.1f)
