@@ -21,11 +21,13 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
      */
     val sharedRenderData = SharedRenderData(
             GeometryManager(MAX_MODELS),
-            4f
+            cameraDistance = 4f,
+            cameraVerticalRotation = 0f,
+            cameraHorizontalRotation = 0f
     )
 
     private val clearColor = Color(context, android.R.color.background_light)
-    private val viewMatrix = MatrixBuffer(3)
+    private val viewMatrix = MatrixBuffer(10)
     private val viewMatrixMemory = viewMatrix.MemorySpace()
     private val projectionMatrix = MatrixBuffer(1)
     private lateinit var shader: Shader
@@ -67,11 +69,26 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
         sharedRenderData.synchronized { renderData ->
+
             // Recompute view matrix:
             viewMatrixMemory.apply {
-                lookAt(1, Vector(renderData.cameraDistance, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
-                scale(2, Vector(1f, viewportAspectRation, 1f, 1f))
-                multiply(1, 2, 0)
+                val matrixLookAt = 5
+                val matrixScale = 6
+
+                val matrixRotation = 2
+                val matrixHorizontalRotation = 3
+                val matrixVerticalRotation = 4
+
+                rotation(matrixHorizontalRotation, 2, 0, renderData.cameraHorizontalRotation)
+                rotation(matrixVerticalRotation, 0, 1, renderData.cameraVerticalRotation)
+                multiply(matrixHorizontalRotation, matrixVerticalRotation, matrixRotation)
+
+                lookAt(matrixLookAt, Vector(renderData.cameraDistance, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
+                scale(matrixScale, Vector(1f, viewportAspectRation, 1f, 1f))
+
+                multiply(matrixRotation, matrixLookAt, 1)
+                multiply(1, matrixScale, 0)
+
                 shader.uploadViewMatrix(viewMatrix)
             }
 

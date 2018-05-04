@@ -85,8 +85,8 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
                     val dy = event.y - touchStartPosition.y
 
                     renderer.sharedRenderData.synchronized { renderData ->
-                        renderData.rootGeometry.rotation.y += dx * TOUCH_ROTATION_SENSITIVITY
-                        renderData.rootGeometry.rotation.z -= dy * TOUCH_ROTATION_SENSITIVITY
+                        renderData.cameraHorizontalRotation += dx * TOUCH_ROTATION_SENSITIVITY
+                        renderData.cameraVerticalRotation -= dy * TOUCH_ROTATION_SENSITIVITY
                     }
 
                     touchStartPosition.x = event.x
@@ -108,8 +108,8 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         super.performClick()
 
         renderer.sharedRenderData.synchronized { renderData ->
-            renderData.rootGeometry.rotation.y = 0f
-            renderData.rootGeometry.rotation.z = 0f
+            renderData.cameraVerticalRotation = 0f
+            renderData.cameraHorizontalRotation = 0f
         }
 
         return true

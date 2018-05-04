@@ -16,7 +16,10 @@ data class SharedRenderData(
         /**
          * Distance of camera position from center.
          */
-        var cameraDistance: Float
+        var cameraDistance: Float,
+
+        var cameraVerticalRotation: Float,
+        var cameraHorizontalRotation: Float
 
 ) {
 
