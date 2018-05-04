@@ -61,14 +61,13 @@ open class Geometry(
      * To query vertex points, this geometry must be registered firstly into a matrix buffer.
      */
     val vertices: List<Vertex>
-        get() = let {
+        get() =
             lines.flatMap {
                 listOf(
                         Vertex(positions[it.from], it.color, modelIndex),
                         Vertex(positions[it.to], it.color, modelIndex)
                 )
             }
-        }
 
     /**
      * Listeners are fired every time a single point or line is added.
