@@ -7,7 +7,6 @@ import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.graphics.GeometryManager
 import io.jim.tesserapp.graphics.SharedRenderData
 import io.jim.tesserapp.math.MatrixBuffer
-import io.jim.tesserapp.math.Pi
 import io.jim.tesserapp.math.ViewMatrix
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -20,19 +19,14 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     /**
      * Render data shared across this render thread an others.
      */
-    val sharedRenderData = SharedRenderData(
-            GeometryManager(MAX_MODELS),
-            cameraDistance = 4f,
-            cameraVerticalRotation = -Pi / 8f,
-            cameraHorizontalRotation = Pi / 3f
-    )
+    val sharedRenderData = SharedRenderData(GeometryManager(MAX_MODELS))
 
     private val clearColor = Color(context, android.R.color.background_light)
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
 
     private val projectionMatrix = MatrixBuffer(1)
-    private val viewMatrix = ViewMatrix()
+    private val viewMatrix = ViewMatrix(sharedRenderData.camera)
 
     companion object {
         private const val MAX_MODELS = 100
@@ -59,7 +53,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
      */
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
-        viewMatrix.aspectRatio = width.toFloat() / height.toFloat()
+        sharedRenderData.camera.aspectRatio = width.toFloat() / height.toFloat()
     }
 
     /**
@@ -71,13 +65,9 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         sharedRenderData.synchronized { renderData ->
 
             // Recompute view matrix:
-            viewMatrix.apply {
-                horizontalRotation = renderData.cameraHorizontalRotation
-                verticalRotation = renderData.cameraVerticalRotation
-                distance = renderData.cameraDistance
-                compute()
-                shader.uploadViewMatrix(buffer)
-            }
+            viewMatrix.compute()
+            println("Camera distance: ${renderData.camera.distance}")
+            shader.uploadViewMatrix(viewMatrix.buffer)
 
             // Upload model matrices:
             renderData.geometryManager.computeModelMatrices()

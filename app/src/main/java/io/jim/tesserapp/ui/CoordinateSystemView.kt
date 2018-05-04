@@ -9,6 +9,7 @@ import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.Lines
 import io.jim.tesserapp.graphics.Color
+import io.jim.tesserapp.math.Pi
 import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.rendering.Renderer
 
@@ -48,6 +49,9 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     companion object {
         private const val CLICK_TIME_MS = 100L
         private const val TOUCH_ROTATION_SENSITIVITY = 0.005f
+        const val DEFAULT_CAMERA_DISTANCE = 8f
+        const val DEFAULT_CAMERA_HORIZONTAL_ROTATION = -Pi / 8f
+        const val DEFAULT_CAMERA_VERTICAL_ROTATION = Pi / 3f
     }
 
     init {
@@ -66,6 +70,17 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
 
         // Create grid:
         enableGrid(true)
+
+        // Default camera rotation:
+        moveToDefaultCameraPosition()
+    }
+
+    private fun moveToDefaultCameraPosition() {
+        sharedRenderData.synchronized { renderData ->
+            renderData.camera.distance = DEFAULT_CAMERA_DISTANCE
+            renderData.camera.verticalRotation = DEFAULT_CAMERA_HORIZONTAL_ROTATION
+            renderData.camera.horizontalRotation = DEFAULT_CAMERA_VERTICAL_ROTATION
+        }
     }
 
     /**
@@ -85,8 +100,8 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
                     val dy = event.y - touchStartPosition.y
 
                     renderer.sharedRenderData.synchronized { renderData ->
-                        renderData.cameraHorizontalRotation += dx * TOUCH_ROTATION_SENSITIVITY
-                        renderData.cameraVerticalRotation -= dy * TOUCH_ROTATION_SENSITIVITY
+                        renderData.camera.horizontalRotation += dx * TOUCH_ROTATION_SENSITIVITY
+                        renderData.camera.verticalRotation -= dy * TOUCH_ROTATION_SENSITIVITY
                     }
 
                     touchStartPosition.x = event.x
@@ -106,12 +121,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
      */
     override fun performClick(): Boolean {
         super.performClick()
-
-        renderer.sharedRenderData.synchronized { renderData ->
-            renderData.cameraVerticalRotation = 0f
-            renderData.cameraHorizontalRotation = 0f
-        }
-
+        moveToDefaultCameraPosition()
         return true
     }
 

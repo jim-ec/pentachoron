@@ -11,15 +11,7 @@ data class SharedRenderData(
         /**
          * Geometry manager.
          */
-        val geometryManager: GeometryManager,
-
-        /**
-         * Distance of camera position from center.
-         */
-        var cameraDistance: Float,
-
-        var cameraVerticalRotation: Float,
-        var cameraHorizontalRotation: Float
+        val geometryManager: GeometryManager
 
 ) {
 
@@ -27,6 +19,11 @@ data class SharedRenderData(
      * Root geometry.
      */
     val rootGeometry: Geometry = geometryManager.rootGeometry
+
+    /**
+     * Camera.
+     */
+    val camera = Camera()
 
     /**
      * Executes [f], assuring thread synchronization on this render-data as long as [f] runs.

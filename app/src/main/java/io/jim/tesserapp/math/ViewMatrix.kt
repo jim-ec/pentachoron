@@ -1,10 +1,9 @@
 package io.jim.tesserapp.math
 
+import io.jim.tesserapp.graphics.Camera
+
 data class ViewMatrix(
-        var distance: Float = 1f,
-        var aspectRatio: Float = 1f,
-        var horizontalRotation: Float = 0f,
-        var verticalRotation: Float = 0f
+        private val camera: Camera
 ) {
 
     val buffer = MatrixBuffer(10)
@@ -18,12 +17,12 @@ data class ViewMatrix(
 
     fun compute() {
         matricesMemory.apply {
-            rotation(matrixHorizontalRotation, 2, 0, horizontalRotation)
-            rotation(matrixVerticalRotation, 0, 1, verticalRotation)
+            rotation(matrixHorizontalRotation, 2, 0, camera.horizontalRotation)
+            rotation(matrixVerticalRotation, 0, 1, camera.verticalRotation)
             multiply(matrixHorizontalRotation, matrixVerticalRotation, matrixRotation)
 
-            lookAt(matrixLookAt, Vector(distance, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
-            scale(matrixScale, Vector(1f, aspectRatio, 1f, 1f))
+            lookAt(matrixLookAt, Vector(camera.distance, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
+            scale(matrixScale, Vector(1f, camera.aspectRatio, 1f, 1f))
 
             multiply(matrixRotation, matrixLookAt, 1)
             multiply(1, matrixScale, 0)

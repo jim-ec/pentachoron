@@ -96,7 +96,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
          */
         override var cameraDistance: Float by Delegates.observable(0f) { _, _, newValue ->
             coordinateSystemView.sharedRenderData.synchronized {
-                coordinateSystemView.sharedRenderData.cameraDistance = newValue
+                coordinateSystemView.sharedRenderData.camera.distance = newValue
             }
         }
 
