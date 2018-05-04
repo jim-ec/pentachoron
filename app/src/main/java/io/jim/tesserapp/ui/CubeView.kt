@@ -122,8 +122,8 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             Vector(1f, -1f, 1f, 1f),
             Color(context, R.color.colorAccent)
     ).apply {
-        coordinateSystemView.sharedRenderData.synchronized {
-            addToParentGeometry(coordinateSystemView.sharedRenderData.rootGeometry)
+        coordinateSystemView.sharedRenderData.synchronized { renderData ->
+            renderData.geometryManager += this
             extrude(Vector(0f, 0f, -2f, 0f))
         }
     }

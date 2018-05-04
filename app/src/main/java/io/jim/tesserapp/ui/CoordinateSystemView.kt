@@ -27,6 +27,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
 
     private val touchStartPosition = Vector(0f, 0f, 0f, 0f)
     private var touchStartTime = 0L
+
     private val grid = Lines("Grid", Color(context, R.color.colorGrid)).apply {
         Geometry.geometrical {
             for (i in -5..-1) {
@@ -46,6 +47,13 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         }
     }
 
+    private val axis = Lines("Axis").apply {
+        addLine(Vector(0f, 0f, 0f, 1f), Vector(1f, 0f, 0f, 1f), Color(context, R.color.colorAxisX))
+        addLine(Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f), Color(context, R.color.colorAxisY))
+        addLine(Vector(0f, 0f, 0f, 1f), Vector(0f, 0f, 1f, 1f), Color(context, R.color.colorAxisZ))
+        sharedRenderData.geometryManager += this
+    }
+
     companion object {
         private const val CLICK_TIME_MS = 100L
         private const val TOUCH_ROTATION_SENSITIVITY = 0.005f
@@ -59,14 +67,6 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         setRenderer(renderer)
         debugFlags = DEBUG_CHECK_GL_ERROR
         renderMode = RENDERMODE_CONTINUOUSLY
-
-        // Create axis:
-        Lines("Axis").apply {
-            addLine(Vector(0f, 0f, 0f, 1f), Vector(1f, 0f, 0f, 1f), Color(context, R.color.colorAxisX))
-            addLine(Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f), Color(context, R.color.colorAxisY))
-            addLine(Vector(0f, 0f, 0f, 1f), Vector(0f, 0f, 1f, 1f), Color(context, R.color.colorAxisZ))
-            addToParentGeometry(renderer.sharedRenderData.rootGeometry)
-        }
 
         // Create grid:
         enableGrid(true)
@@ -131,10 +131,10 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     fun enableGrid(enable: Boolean) {
         renderer.sharedRenderData.synchronized { renderData ->
             if (enable) {
-                grid.addToParentGeometry(renderData.rootGeometry)
+                renderData.geometryManager += grid
             }
             else {
-                grid.releaseFromParentGeometry()
+                renderData.geometryManager -= grid
             }
         }
     }

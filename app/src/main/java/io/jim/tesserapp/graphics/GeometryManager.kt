@@ -4,7 +4,7 @@ import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.util.InputStreamBuffer
 
 /**
- * Manages a geometry tree, while providing backing buffers for vertex and matrix data.
+ * Manages a geometry list, while providing backing buffers for vertex and matrix data.
  *
  * This geometry buffer is only responsible for raw data, without incorporating with OpenGL at all.
  */
@@ -23,61 +23,50 @@ class GeometryManager(maxGeometries: Int) {
     val vertexBuffer = InputStreamBuffer(100, Vertex.COMPONENTS_PER_VERTEX)
 
     /**
-     * Root geometry of this manager.
-     * To register hierarchical structured geometries, add them to this root.
+     * List of geometries.
      */
-    val rootGeometry = Geometry("Root")
+    private val geometries = LinkedHashSet<Geometry>()
 
     /**
      * Set to false if vertex buffer was re-written and needs to be uploaded to the GPU.
      */
     var verticesUpdated = true
 
-    private var geometries = HashSet<Geometry>()
+    operator fun plusAssign(geometry: Geometry) {
+        if (geometries.add(geometry)) {
+            // Geometry was actually added:
+            modelMatrixBuffer += geometry
+        }
+        uploadVertexData()
+        computeModelMatrices()
+    }
+
+    operator fun minusAssign(geometry: Geometry) {
+        if (geometries.remove(geometry)) {
+            // Geometry was actually removed:
+            modelMatrixBuffer -= geometry
+        }
+        uploadVertexData()
+        computeModelMatrices()
+    }
 
     init {
-        Geometry.onHierarchyChangedListeners += {
-
-            // Get a set of all currently added geometries:
-            val currentGeometries = HashSet<Geometry>().apply {
-                rootGeometry.forEachRecursive { add(it) }
-            }
-
-            // Get a set of all newly added geometries:
-            HashSet<Geometry>().apply {
-                addAll(currentGeometries)
-                removeAll(geometries)
-            }.forEach { newGeometry ->
-                geometries.add(newGeometry)
-                modelMatrixBuffer += newGeometry
-            }
-
-            // Get a set of all removed geometries:
-            HashSet<Geometry>().apply {
-                addAll(geometries)
-                removeAll(currentGeometries)
-            }.forEach { removedGeometry ->
-                geometries.remove(removedGeometry)
-                modelMatrixBuffer -= removedGeometry
-            }
-
-            uploadVertexData()
-            computeModelMatrices()
-        }
-
         Geometry.onGeometryChangedListeners += ::uploadVertexData
     }
 
     private fun uploadVertexData() {
+
         // Rewrite vertex buffer:
         vertexBuffer.rewind()
-        rootGeometry.forEachRecursive { geometry ->
+
+        geometries.forEach { geometry ->
             geometry.vertices.also { vertices ->
                 vertices.forEach { vertex ->
                     vertexBuffer += vertex.floats
                 }
             }
         }
+
         verticesUpdated = true
     }
 
@@ -85,7 +74,7 @@ class GeometryManager(maxGeometries: Int) {
      * Recomputes model matrices.
      */
     fun computeModelMatrices() {
-        rootGeometry.computeModelMatricesRecursively()
+        geometries.forEach(Geometry::computeModelMatrix)
     }
 
 }

@@ -45,8 +45,6 @@ open class Geometry(
     private val localMemory = MatrixBuffer(LOCAL_MATRICES_PER_GEOMETRY).MemorySpace()
     private val positions = ArrayList<Vector>()
     private val lines = ArrayList<LineIndices>()
-    private val children = ArrayList<Geometry>()
-    private var parent: Geometry? = null
 
     private data class LineIndices(val from: Int, val to: Int, var color: Color)
 
@@ -98,12 +96,6 @@ open class Geometry(
     companion object {
 
         private val LOCAL_MATRICES_PER_GEOMETRY = MatrixIndex.values().size
-
-        /**
-         * Added listeners are fired when hierarchical structure, i.e. parent-child relationships,
-         * changed.
-         */
-        val onHierarchyChangedListeners = ListenerList()
 
         /**
          * Listeners are fired every time a single point or line is added.
@@ -226,7 +218,7 @@ open class Geometry(
      * with its one global matrix, it can safely access its parent's global model matrix,
      * since that is guaranteed to already be computed.
      */
-    fun computeModelMatricesRecursively() {
+    fun computeModelMatrix() {
 
         val globalMemory = globalMemory ?: throw NotRegisteredIntoMatrixBufferException()
 
@@ -246,60 +238,8 @@ open class Geometry(
         localMemory.multiply(lhs = MatrixIndex.ROTATION.index, rhs = MatrixIndex.TRANSLATION.index, matrix = MatrixIndex.LOCAL.index)
 
         // Global:
-        if (null != parent) {
-            // This geometry has a parent, therefore we need to multiply the local matrix
-            // to the parent's global matrix:
-            globalMemory.multiply(
-                    lhs = MatrixIndex.LOCAL.index, lhsMemorySpace = localMemory,
-                    rhsMemorySpace = parent!!.globalMemory
-                            ?: throw NotRegisteredIntoMatrixBufferException())
-        }
-        else {
-            // This geometry has no parent, therefore the local matrix equals the global one:
-            globalMemory.copy(source = MatrixIndex.LOCAL.index, sourceMemorySpace = localMemory)
-        }
+        globalMemory.copy(source = MatrixIndex.LOCAL.index, sourceMemorySpace = localMemory)
 
-        children.forEach { it.computeModelMatricesRecursively() }
-    }
-
-    /**
-     * Add to a parent [parentGeometry].
-     * This does not change the local transform, but rather the global one.
-     */
-    fun addToParentGeometry(parentGeometry: Geometry) {
-        if (parent == parentGeometry) return
-
-        // Release from former parent:
-        parent?.children?.remove(this)
-
-        // Re-parent to new geometry:
-        parent = parentGeometry
-        parentGeometry.children.add(this)
-
-        // Fire children changed listener recursively:
-        onHierarchyChangedListeners.fire()
-    }
-
-    /**
-     * Release from its parent geometry.
-     * This does not change the local transform, but rather the global one.
-     */
-    fun releaseFromParentGeometry() {
-        parent?.children?.remove(this)
-        parent = null
-
-        // Fire children changed listener recursively:
-        onHierarchyChangedListeners.fire()
-    }
-
-    /**
-     * Invoke [f] for each geometry, recursively.
-     */
-    fun forEachRecursive(f: (Geometry) -> Unit) {
-        f(this)
-        children.forEach { child ->
-            child.forEachRecursive(f)
-        }
     }
 
     override fun toString() = name

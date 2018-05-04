@@ -28,28 +28,17 @@ class GeometryTest {
     }
 
     @Test
-    fun computeModelMatricesRecursively() {
-        val root = Geometry("Root")
+    fun computeModelMatrices() {
         val geometry = Geometry("Geometry")
-
-        register(root)
         register(geometry)
-        geometry.addToParentGeometry(root)
 
-        root.rotation.z = Pi / 2
-        geometry.translation.y = 1f
-        root.computeModelMatricesRecursively()
+        geometry.rotation.z = Pi / 2
+        geometry.translation.x = 1f
+        geometry.computeModelMatrix()
 
-        root.globalMemory!!.multiply(lhs = Vector(0f, 1f, 0f, 1f)).apply {
-            assertEquals(-1f, x, 0.1f)
-            assertEquals(0f, y, 0.1f)
-            assertEquals(0f, z, 0.1f)
-            assertEquals(1f, w, 0.1f)
-        }
-
-        geometry.globalMemory!!.multiply(lhs = Vector(0f, 1f, 0f, 1f)).apply {
-            assertEquals(-2f, x, 0.1f)
-            assertEquals(0f, y, 0.1f)
+        geometry.globalMemory!!.multiply(lhs = Vector(1f, 0f, 0f, 1f)).apply {
+            assertEquals(1f, x, 0.1f)
+            assertEquals(1f, y, 0.1f)
             assertEquals(0f, z, 0.1f)
             assertEquals(1f, w, 0.1f)
         }
