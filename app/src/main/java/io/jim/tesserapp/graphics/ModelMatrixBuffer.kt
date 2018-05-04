@@ -10,6 +10,8 @@ import kotlin.math.max
  *
  * Register a geometry into this buffer associates the geometry with an own memory space,
  * which is never changed, unless the geometry is unregistered.
+ *
+ * You can iterate over the registered geometries with [iterator].
  */
 data class ModelMatrixBuffer(
 
@@ -18,12 +20,19 @@ data class ModelMatrixBuffer(
          */
         private val maxGeometries: Int
 
-) {
+) : Iterable<Geometry> {
+
+    /**
+     * Iterates over the registered geometries.
+     */
+    override fun iterator() = geometries.iterator()
 
     /**
      * Buffer containing global model matrices.
      */
     val modelMatrixBuffer = MatrixBuffer(maxGeometries)
+
+    private val geometries = HashSet<Geometry>()
 
     /**
      * Count of matrices from start to a specific point in matrix buffer, guaranteeing that all
@@ -66,25 +75,37 @@ data class ModelMatrixBuffer(
     /**
      * Register [geometry] into the matrix buffer.
      */
-    operator fun plusAssign(geometry: Geometry) {
+    fun register(geometry: Geometry): Boolean {
         if (activeGeometries >= maxGeometries)
             throw RuntimeException("Registration exceeds model matrix capacity")
+
+        if (!geometries.add(geometry)) {
+            // Geometry already registered:
+            return false
+        }
 
         val retainedModelIndex = retainModelIndex()
         geometry.globalMemory = modelMatrixBuffer.MemorySpace(retainedModelIndex, 1)
 
         greatestRetainedModelIndex = max(greatestRetainedModelIndex, retainedModelIndex)
+
+        return true
     }
 
     /**
      * Unregister [geometry] from this matrix buffer.
      * Note that does not decrease [activeGeometries] in all cases, but rather fragments the
      * matrix buffer.
-     * Note that [geometry] must be previously registered into this buffer with [plusAssign].
+     * Note that [geometry] must be previously registered into this buffer with [register].
      */
-    operator fun minusAssign(geometry: Geometry) {
+    fun unregister(geometry: Geometry): Boolean {
         if (geometry.globalMemory == null)
             throw RuntimeException("Geometry $geometry is not registered")
+
+        if (!geometries.remove(geometry)) {
+            // Geometry not registered:
+            return false
+        }
 
         if (geometry.modelIndex == greatestRetainedModelIndex) {
             // Geometry reserve the last-most matrix, so we can decrease the greatest index
@@ -95,6 +116,8 @@ data class ModelMatrixBuffer(
         // We add the model index to the list of unused ones, releasing it from a specific geometry:
         releaseModelIndex(geometry.modelIndex)
         geometry.globalMemory = null
+
+        return true
     }
 
 }

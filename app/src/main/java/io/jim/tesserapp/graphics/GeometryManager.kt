@@ -29,7 +29,6 @@ class GeometryManager(maxGeometries: Int) {
      */
     val vertexBufferRewritten = ListenerListParam<InputStreamBuffer>()
 
-    private val geometries = LinkedHashSet<Geometry>()
     private val vertexBufferUpdateRequested = Flag(false)
 
     /**
@@ -37,10 +36,7 @@ class GeometryManager(maxGeometries: Int) {
      * Does nothing if [geometry] is already registered.
      */
     operator fun plusAssign(geometry: Geometry) {
-        if (!geometries.add(geometry)) return
-
-        // Geometry was actually added:
-        modelMatrixBuffer += geometry
+        if (!(modelMatrixBuffer.register(geometry))) return
 
         geometry.onGeometryChangedListeners += vertexBufferUpdateRequested::set
 
@@ -53,10 +49,7 @@ class GeometryManager(maxGeometries: Int) {
      * Does nothing if [geometry] is not registered.
      */
     operator fun minusAssign(geometry: Geometry) {
-        if (!geometries.remove(geometry)) return
-
-        // Geometry was actually removed:
-        modelMatrixBuffer -= geometry
+        if (!(modelMatrixBuffer.unregister(geometry))) return
 
         // Unregister this geometry manager:
         geometry.onGeometryChangedListeners -= vertexBufferUpdateRequested::set
@@ -76,7 +69,7 @@ class GeometryManager(maxGeometries: Int) {
 
         // Rewrite vertex buffer:
         vertexBuffer.rewind()
-        geometries.forEach { geometry ->
+        modelMatrixBuffer.forEach { geometry ->
             geometry.vertices.also { vertices ->
                 vertices.forEach { vertex ->
                     vertexBuffer += vertex.floats
@@ -93,7 +86,7 @@ class GeometryManager(maxGeometries: Int) {
      * Recomputes model matrices.
      */
     fun computeModelMatrices() {
-        geometries.forEach(Geometry::computeModelMatrix)
+        modelMatrixBuffer.forEach(Geometry::computeModelMatrix)
     }
 
 }
