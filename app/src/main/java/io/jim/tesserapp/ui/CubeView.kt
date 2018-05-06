@@ -17,7 +17,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
     /**
      * Controls the cube.
      */
-    val cubeController = object : ControllerView.Controllable {
+    val cubeController = object : Controllable {
 
         /**
          * Rotates the cube around the x-axis.
