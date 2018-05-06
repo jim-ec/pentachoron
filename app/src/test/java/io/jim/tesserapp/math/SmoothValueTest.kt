@@ -34,7 +34,7 @@ class SmoothValueTest {
         private const val STEP_INTERVAL = 250L
     }
 
-    private var value: Float by SmoothValueProvider<SmoothValueTest>(2f)
+    private var value by SmoothValueProvider<SmoothValueTest>(2f)
 
     @Test
     fun initialValueIsStartValue() {

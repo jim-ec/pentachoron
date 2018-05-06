@@ -64,7 +64,6 @@ abstract class SmoothValueBase<R>(
         }
 
     override fun setValue(thisRef: R, property: KProperty<*>, value: Float) {
-        lastTransitionStartX = x
         if (transitioning) {
             curve.reSpan(
                     sourceX = x.toFloat(),
@@ -82,6 +81,9 @@ abstract class SmoothValueBase<R>(
                     sourceGradient = 0f
             )
         }
+
+        // Mark the transition start:
+        lastTransitionStartX = x
     }
 
     override fun getValue(thisRef: R, property: KProperty<*>) = currentValue

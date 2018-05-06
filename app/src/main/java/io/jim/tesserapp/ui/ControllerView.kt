@@ -1,6 +1,8 @@
 package io.jim.tesserapp.ui
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -9,6 +11,9 @@ import android.widget.Switch
 import android.widget.TextView
 import io.jim.tesserapp.R
 import io.jim.tesserapp.math.Pi
+import io.jim.tesserapp.math.SmoothValue
+import java.util.*
+
 
 /**
  * This view contains controls related to the coordinate system and its geometry.
@@ -105,13 +110,20 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         /**
          * Maps the seeker progress onto the [min]-[max] range.
          */
-        protected val currentValue: Float
-            get() = seeker.progress.toFloat() / seeker.max * (max - min) + min
+        protected var currentSeekerValue by SmoothValue<Controller>(0f, 300L)
 
         /**
          * The current value formatted into a string.
          */
         protected abstract val valueLabelText: String
+
+        private val timer = Timer().scheduleAtFixedRate(object : TimerTask() {
+            val handler = Handler(Looper.getMainLooper())
+
+            override fun run() {
+                handler.post(::reevaluate)
+            }
+        }, 0, 10)
 
         init {
             if (max < min)
@@ -121,7 +133,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
 
             seeker.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    reevaluate()
+                    currentSeekerValue = seeker.progress.toFloat() / seeker.max * (max - min) + min
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -136,7 +148,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         fun reevaluate() {
             valueLabel.text = valueLabelText
             controllables.forEach {
-                set(it, currentValue)
+                set(it, currentSeekerValue)
             }
         }
     }
@@ -165,7 +177,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                     override val valueLabelText: String
                         get() =
                             String.format(context.getString(R.string.transform_rotation_value_radians),
-                                    currentValue)
+                                    currentSeekerValue)
                 },
 
                 // Y-Rotation:
@@ -181,7 +193,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                     override val valueLabelText: String
                         get() =
                             String.format(context.getString(R.string.transform_rotation_value_radians),
-                                    currentValue)
+                                    currentSeekerValue)
                 },
 
                 // Z-Rotation:
@@ -197,7 +209,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                     override val valueLabelText: String
                         get() =
                             String.format(context.getString(R.string.transform_rotation_value_radians),
-                                    currentValue)
+                                    currentSeekerValue)
                 },
 
                 // W-Rotation:
@@ -213,7 +225,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                     override val valueLabelText: String
                         get() =
                             String.format(context.getString(R.string.transform_rotation_value_radians),
-                                    currentValue)
+                                    currentSeekerValue)
                 },
 
                 // X-Translation:
@@ -229,7 +241,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                     override val valueLabelText: String
                         get() = String.format(
                                 context.getString(R.string.transform_translation_value),
-                                currentValue
+                                currentSeekerValue
                         )
                 },
 
@@ -246,7 +258,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                     override val valueLabelText: String
                         get() = String.format(
                                 context.getString(R.string.transform_translation_value),
-                                currentValue
+                                currentSeekerValue
                         )
                 },
 
@@ -263,7 +275,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                     override val valueLabelText: String
                         get() = String.format(
                                 context.getString(R.string.transform_translation_value),
-                                currentValue
+                                currentSeekerValue
                         )
                 },
 
@@ -280,7 +292,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                     override val valueLabelText: String
                         get() = String.format(
                                 context.getString(R.string.transform_translation_value),
-                                currentValue
+                                currentSeekerValue
                         )
                 },
 
@@ -297,7 +309,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                     override val valueLabelText: String
                         get() = String.format(
                                 context.getString(R.string.transform_translation_value),
-                                currentValue
+                                currentSeekerValue
                         )
                 }
         )
