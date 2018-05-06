@@ -77,7 +77,7 @@ data class Matrix(val rows: Int, val cols: Int) {
 
     init {
         if (rows <= 0 || cols <= 0)
-            throw RuntimeException("Matrix must have non-null positive dimensions")
+            throw MathException("Matrix must have non-null positive dimensions")
         identity()
     }
 
@@ -93,16 +93,16 @@ data class Matrix(val rows: Int, val cols: Int) {
     /**
      * Loads a complete set of floats into the matrix.
      * Each row is one float list in [rowList].
-     * @throws RuntimeException If [rowList] has not [rows] rows.
-     * @throws RuntimeException If any list in [rowList] has not [cols] columns.
+     * @throws MathException If [rowList] has not [rows] rows.
+     * @throws MathException If any list in [rowList] has not [cols] columns.
      */
     fun load(vararg rowList: List<Float>) {
         if (rowList.size != rows)
-            throw RuntimeException("Row lists must match with matrix row count $rows")
+            throw MathException("Row lists must match with matrix row count $rows")
 
         rowList.forEachIndexed { rowIndex, row ->
             if (row.size != cols)
-                throw RuntimeException("Columns per row list must match with matrix column count $cols")
+                throw MathException("Columns per row list must match with matrix column count $cols")
 
             row.forEachIndexed { colIndex, coefficient ->
                 this[rowIndex, colIndex] = coefficient
@@ -115,9 +115,9 @@ data class Matrix(val rows: Int, val cols: Int) {
      */
     fun load(vararg coefficients: Float) {
         if (rows != 1)
-            throw RuntimeException("Matrix must be a vector")
+            throw MathException("Matrix must be a vector")
         if (coefficients.size != cols)
-            throw RuntimeException("Coefficient count must match with matrix columns")
+            throw MathException("Coefficient count must match with matrix columns")
 
         coefficients.forEachIndexed { index, coefficient ->
             this[0, index] = coefficient
@@ -128,10 +128,10 @@ data class Matrix(val rows: Int, val cols: Int) {
      * Thrown when an operation's requirement to be called on a quadratic matrix is not met.
      */
     inner class IsNotQuadraticException :
-            RuntimeException("Matrix needs to be quadratic but is ${this@Matrix}")
+            MathException("Matrix needs to be quadratic but is ${this@Matrix}")
 
     inner class IncompatibleTransformDimension(transformDimension: Int) :
-            RuntimeException("${transformDimension}d transform not compatible with $this")
+            MathException("${transformDimension}d transform not compatible with $this")
 
     /**
      * Load a translation.
@@ -212,9 +212,9 @@ data class Matrix(val rows: Int, val cols: Int) {
      */
     fun multiply(rhs: Matrix, target: Matrix) {
         if (cols != rhs.rows)
-            throw RuntimeException("Cannot multiply $this and $rhs")
+            throw MathException("Cannot multiply $this and $rhs")
         if (rows != target.rows || rhs.cols != target.cols)
-            throw RuntimeException("Target matrix $target is incompatible for $this * $rhs")
+            throw MathException("Target matrix $target is incompatible for $this * $rhs")
 
         target.forEachComponent { row, col ->
             var sum = 0f
