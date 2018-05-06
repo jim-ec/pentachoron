@@ -3,10 +3,10 @@ package io.jim.tesserapp.math
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class SmoothValueTest {
+class SmoothTimedValueDelegateTest {
 
     /**
-     * Usually, a smooth value would use the [SmoothValue] class, in order to bind the transition
+     * Usually, a smooth value would use the [SmoothTimedValueDelegate] class, in order to bind the transition
      * to time. But this time must be more exact and in addition, using that class would require
      * us to use `Thread.sleep` in order to *wait* for the proper value.
      *
@@ -16,7 +16,7 @@ class SmoothValueTest {
      */
     private inner class SmoothValueProvider<R>(
             startValue: Float
-    ) : SmoothValueBase<R>(startValue, INTERVAL) {
+    ) : SmoothValueDelegate<R>(startValue, INTERVAL) {
 
         override val x0 = 0L
 
@@ -34,7 +34,7 @@ class SmoothValueTest {
         private const val STEP_INTERVAL = 250L
     }
 
-    private var value by SmoothValueProvider<SmoothValueTest>(2f)
+    private var value by SmoothValueProvider<SmoothTimedValueDelegateTest>(2f)
 
     @Test
     fun initialValueIsStartValue() {

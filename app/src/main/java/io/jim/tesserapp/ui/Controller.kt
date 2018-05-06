@@ -4,7 +4,7 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.SeekBar
 import android.widget.TextView
-import io.jim.tesserapp.math.SmoothValue
+import io.jim.tesserapp.math.SmoothTimedValueDelegate
 import java.util.*
 
 /**
@@ -27,7 +27,7 @@ abstract class Controller(
     /**
      * Maps the seeker progress onto the [min]-[max] range.
      */
-    protected var currentSeekerValue by SmoothValue<Controller>(0f, 300L)
+    protected var currentSeekerValue by SmoothTimedValueDelegate<Controller>(0f, 300L)
 
     /**
      * The current value formatted into a string.

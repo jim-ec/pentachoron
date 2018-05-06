@@ -3,10 +3,10 @@ package io.jim.tesserapp.math
 /**
  * Provides a value that, if changed, transitions smoothly over time using an underlying curve.
  */
-class SmoothValue<R>(
+class SmoothTimedValueDelegate<R>(
         startValue: Float,
         transitionTimeInterval: Long
-) : SmoothValueBase<R>(startValue, transitionTimeInterval) {
+) : SmoothValueDelegate<R>(startValue, transitionTimeInterval) {
 
     /**
      * The axis start is defined as the construction time.

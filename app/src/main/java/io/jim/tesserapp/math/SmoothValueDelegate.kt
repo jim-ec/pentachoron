@@ -5,9 +5,9 @@ import kotlin.reflect.KProperty
 
 /**
  * Provides a value that, if changed, transitions smoothly over a generic axis.
- * [SmoothValue] implements time as that axis.
+ * [SmoothTimedValueDelegate] implements time as that axis.
  */
-abstract class SmoothValueBase<R>(
+abstract class SmoothValueDelegate<R>(
         startValue: Float,
         private val transitionIntervalX: Long
 ) : ReadWriteProperty<R, Float> {
