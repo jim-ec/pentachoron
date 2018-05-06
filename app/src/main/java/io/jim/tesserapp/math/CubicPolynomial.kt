@@ -1,71 +1,73 @@
 package io.jim.tesserapp.math
 
 /**
- * Represents a cubic polynomial function with a source, a target and a source gradient.
+ * Represents a shift-able cubic polynomial function.
+ * @constructor Create the function mapping `x ↦ a(x - x0)³ + b(x - x0)² + c(x - x0) + y0`.
  */
 data class CubicPolynomial(
-        var a: Float,
-        var b: Float,
-        var c: Float,
-        var x0: Float,
-        var y0: Float
+        private var a: Float = 0f,
+        private var b: Float = 0f,
+        private var c: Float = 0f,
+        private var x0: Float = 0f,
+        private var y0: Float = 0f
 ) {
 
-    companion object {
-
-        /**
-         * Create a new curve with a specific positions and start gradient.
-         */
-        fun parametrized(
-                sourceX: Float,
-                sourceY: Float,
-                targetX: Float,
-                targetY: Float,
-                sourceGradient: Float
-        ) = let {
-            val dx = targetX - sourceX
-            val dy = targetY - sourceY
-            if (dx == 0f)
-                throw RuntimeException("X-range of curve cannot be zero")
-
-            CubicPolynomial(
-                    a = (sourceGradient * dx - 2 * dy) / (dx * dx * dx),
-                    b = (3 * dy - 2 * sourceGradient * dx) / (dx * dx),
-                    c = sourceGradient,
-                    x0 = sourceX,
-                    y0 = sourceY
-            )
-        }
-
-    }
-
     /**
-     * Retarget the curve to a new point from a source point on the old curve.
-     * @param sourceX Point of old curve the new will source from.
-     * @param targetX Target point of new curve.
-     * @param targetY Target point of new curve.
-     * @param keepSourceGradient Whether the new curve should keep its gradient at its source.
-     * @throws RuntimeException If the x difference between target and source point is zero.
+     * Spans the curve from a source point to a target point.
+     *
+     * The resulting curve has a specific start slope and is flat at its target.
+     *
+     * @param sourceGradient Curve slope at the source point.
+     * @param sourceX Source point, x component.
+     * @param sourceY Source point, y component.
+     * @param targetX Target point, x component.
+     * @param targetY Target point, y component.
+     * @throws MathException If x-difference between source and target would is zero.
      */
-    fun extent(
+    fun span(
             sourceX: Float,
+            sourceY: Float,
             targetX: Float,
             targetY: Float,
-            keepSourceGradient: Boolean
+            sourceGradient: Float
     ) {
-        val sourceY = this(sourceX)
+        if (sourceX == targetX)
+            throw MathException("X-range of curve cannot be zero")
+
         val dx = targetX - sourceX
         val dy = targetY - sourceY
-        if (dx == 0f)
-            throw RuntimeException("X-range of curve cannot be zero")
-
-        val sourceGradient = if (keepSourceGradient) derivation(sourceX) else 0.0f
 
         a = (sourceGradient * dx - 2 * dy) / (dx * dx * dx)
         b = (3 * dy - 2 * sourceGradient * dx) / (dx * dx)
         c = sourceGradient
         x0 = sourceX
         y0 = sourceY
+    }
+
+    /**
+     * Re-spans the curve to a new point from a source point on the old curve.
+     *
+     * The new curve will be flat at the new target.
+     *
+     * @param sourceX Point on the old curve the new will one originating from.
+     * @param targetX Target point of new curve, x-component.
+     * @param targetY Target point of new curve, y-component.
+     * @param keepSourceGradient Whether the new curve should keep its gradient at its source.
+     * @throws MathException If x-difference between source and target would is zero.
+     */
+    fun reSpan(
+            sourceX: Float,
+            targetX: Float,
+            targetY: Float,
+            keepSourceGradient: Boolean
+    ) {
+        span(
+                sourceX = sourceX,
+                sourceY = this(sourceX),
+                targetX = targetX,
+                targetY = targetY,
+                sourceGradient = if (keepSourceGradient) derivation(sourceX) else 0.0f
+        )
     }
 
     /**

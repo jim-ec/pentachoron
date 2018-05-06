@@ -5,13 +5,15 @@ import org.junit.Test
 
 class CubicPolynomialTest {
 
-    private val curve = CubicPolynomial.parametrized(
-            sourceX = -2f,
-            sourceY = -1f,
-            targetX = 5f,
-            targetY = 1f,
-            sourceGradient = 1.5f
-    )
+    private val curve = CubicPolynomial().apply {
+        span(
+                sourceX = -2f,
+                sourceY = -1f,
+                targetX = 5f,
+                targetY = 1f,
+                sourceGradient = 1.5f
+        )
+    }
 
     @Test
     fun function() {
@@ -53,7 +55,7 @@ class CubicPolynomialTest {
 
     @Test
     fun extentWithSameResult() {
-        curve.extent(sourceX = 0f, targetX = 5f, targetY = 1f, keepSourceGradient = true)
+        curve.reSpan(sourceX = 0f, targetX = 5f, targetY = 1f, keepSourceGradient = true)
         assertEquals(-1.0f, curve(-2.0f), 0.1f)
         assertEquals(-0.3f, curve(-1.5f), 0.1f)
         assertEquals(0.2f, curve(-1.0f), 0.1f)
@@ -73,7 +75,7 @@ class CubicPolynomialTest {
 
     @Test
     fun extentResultingInDifferentCurve() {
-        curve.extent(sourceX = 0f, targetX = 3f, targetY = 0f, keepSourceGradient = true)
+        curve.reSpan(sourceX = 0f, targetX = 3f, targetY = 0f, keepSourceGradient = true)
         assertEquals(0.9f, curve(0.0f), 0.1f)
         assertEquals(1.0f, curve(0.5f), 0.1f)
         assertEquals(0.9f, curve(1.0f), 0.1f)
@@ -82,5 +84,4 @@ class CubicPolynomialTest {
         assertEquals(0.1f, curve(2.5f), 0.1f)
         assertEquals(0.0f, curve(3.0f), 0.1f)
     }
-
 }
