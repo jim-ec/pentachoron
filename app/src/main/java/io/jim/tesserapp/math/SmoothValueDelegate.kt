@@ -55,7 +55,7 @@ abstract class SmoothValueDelegate<R>(
      * or the last interval has already ended. In that case, the x at which the last interval ended
      * is mapped by [curve] and therefore does not change anymore.
      */
-    private val currentValue: Float
+    protected val currentValue: Float
         get() = if (transitioning) {
             curve(x.toFloat())
         }

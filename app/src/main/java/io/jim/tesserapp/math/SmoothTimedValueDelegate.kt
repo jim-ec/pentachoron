@@ -3,7 +3,7 @@ package io.jim.tesserapp.math
 /**
  * Provides a value that, if changed, transitions smoothly over time using an underlying curve.
  */
-class SmoothTimedValueDelegate<R>(
+open class SmoothTimedValueDelegate<R>(
         startValue: Float,
         transitionTimeInterval: Long
 ) : SmoothValueDelegate<R>(startValue, transitionTimeInterval) {

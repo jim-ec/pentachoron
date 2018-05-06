@@ -1,11 +1,8 @@
 package io.jim.tesserapp.ui
 
-import android.os.Handler
-import android.os.Looper
 import android.widget.SeekBar
 import android.widget.TextView
-import io.jim.tesserapp.math.SmoothTimedValueDelegate
-import java.util.*
+import io.jim.tesserapp.math.SmoothTimedValueProvider
 
 /**
  * Control for one rotation.
@@ -27,20 +24,26 @@ abstract class Controller(
     /**
      * Maps the seeker progress onto the [min]-[max] range.
      */
-    protected var currentSeekerValue by SmoothTimedValueDelegate<Controller>(0f, 300L)
+    protected var currentSeekerValue by SmoothTimedValueProvider<Controller>(
+            startValue = 0f,
+            transitionTimeInterval = 300L,
+            timerInterval = 10L
+    ) {
+        reevaluate()
+    }
 
     /**
      * The current value formatted into a string.
      */
     protected abstract val valueLabelText: String
 
-    private val timer = Timer().scheduleAtFixedRate(object : TimerTask() {
+    /*private val timer = Timer().scheduleAtFixedRate(object : TimerTask() {
         val handler = Handler(Looper.getMainLooper())
 
         override fun run() {
             handler.post(::reevaluate)
         }
-    }, 0, 10)
+    }, 0, 10)*/
 
     init {
         if (max < min)
