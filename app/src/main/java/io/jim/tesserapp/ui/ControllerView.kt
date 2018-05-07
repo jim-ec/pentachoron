@@ -126,21 +126,13 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                 },
 
                 // Camera distance:
-                object : Controller(
+                CameraDistanceController(
                         controllables,
+                        context,
                         findViewById(R.id.seekerCameraDistance),
-                        findViewById(R.id.valueCameraDistance),
-                        3f, 15f, CoordinateSystemView.DEFAULT_CAMERA_DISTANCE
-                ) {
-                    override fun set(controllable: Controllable, value: Float) {
-                        controllable.cameraDistance = value
-                    }
-
-                    override val valueLabelText: String
-                        get() = String.format(
-                                context.getString(R.string.transform_translation_value),
-                                currentSeekerValue
-                        )
+                        findViewById(R.id.valueCameraDistance)
+                ) { controllable, distance ->
+                    controllable.cameraDistance = distance
                 }
         )
     }

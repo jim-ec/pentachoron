@@ -33,7 +33,7 @@ class MatrixTest {
         assertEquals(7, vec.cols)
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test(expected = MathException::class)
     fun invalidMatrixDimension() {
         Matrix(0, -3)
     }
@@ -67,8 +67,8 @@ class MatrixTest {
             matrix[row, col] = (col + 3f) + (row * matrix.cols)
         }
 
-        vector.multiply(matrix, result)
         result.apply {
+            multiplication(vector, matrix)
             assertEquals(146f, x, 0.1f)
             assertEquals(160f, y, 0.1f)
             assertEquals(174f, z, 0.1f)
@@ -76,18 +76,18 @@ class MatrixTest {
         }
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test(expected = MathException::class)
     fun invalidMultiplicationLhs() {
         val invalidLhs = Matrix(1, 5)
         val invalidTarget = Matrix(1, 2)
-        invalidLhs.multiply(matrix, invalidTarget)
+        invalidTarget.multiplication(invalidLhs, matrix)
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test(expected = MathException::class)
     fun invalidMultiplicationTarget() {
         val validLhs = Matrix(1, 4)
         val invalidTarget = Matrix(4, 2)
-        validLhs.multiply(matrix, invalidTarget)
+        invalidTarget.multiplication(validLhs, matrix)
     }
 
     @Test(expected = Matrix.IsNotQuadraticException::class)
@@ -103,7 +103,7 @@ class MatrixTest {
     fun translation() {
         matrix.translation(2f, 3f, 4f)
         vector.load(listOf(5f, 6f, 7f, 1f))
-        vector.multiply(matrix, result)
+        result.multiplication(vector, matrix)
 
         result.apply {
             assertEquals(7f, x, 0.1f)
@@ -117,7 +117,7 @@ class MatrixTest {
     fun rotation() {
         matrix.rotation(1, 2, Pi / 2)
         vector.load(0f, 3f, 0f, 5f)
-        vector.multiply(matrix, result)
+        result.multiplication(vector, matrix)
         result.apply {
             assertEquals(0f, x, 0.1f)
             assertEquals(0f, y, 0.1f)
