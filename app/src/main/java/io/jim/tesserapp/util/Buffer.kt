@@ -21,7 +21,7 @@ abstract class Buffer(
         /**
          * The size of each element.
          */
-        protected val elementSize: Int
+        val elementSize: Int
 ) {
 
     /**

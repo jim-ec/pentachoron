@@ -12,6 +12,16 @@ import kotlin.math.sin
  */
 data class Matrix(val rows: Int, val cols: Int) {
 
+    /**
+     * Underlying float buffer. One buffer element is seen as one row.
+     */
+    private val floats = RandomAccessBuffer(rows, cols)
+
+    /**
+     * Construct a quadratic matrix with [size] rows and columns.
+     */
+    constructor(size: Int) : this(size, size)
+
     init {
         if (rows <= 0 || cols <= 0)
             throw MathException("Matrix must have non-null positive dimensions")
@@ -19,18 +29,10 @@ data class Matrix(val rows: Int, val cols: Int) {
     }
 
     /**
-     * Construct a quadratic matrix with [size] rows and columns.
+     * The element size a buffer must provide to be capable of serving as a write target.
+     * @see writeIntoBuffer
      */
-    constructor(size: Int) : this(size, size)
-
-    companion object {
-
-        /**
-         * Construct a matrix with one row and [size] columns, suitable for representing vectors.
-         */
-        fun vector(size: Int) = Matrix(1, size)
-
-    }
+    val bufferElementSize = rows * cols
 
     /**
      * X-component when this matrix represents a vector.
@@ -78,17 +80,21 @@ data class Matrix(val rows: Int, val cols: Int) {
         }
 
     /**
-     * Underlying float buffer. One buffer element is seen as one row.
-     */
-    private val floats = RandomAccessBuffer(rows, cols)
-
-    /**
      * Loads the identity matrix.
      */
     fun identity() {
         forEachComponent { row, col ->
             floats[row, col] = if (row == col) 1f else 0f
         }
+    }
+
+    companion object {
+
+        /**
+         * Construct a matrix with one row and [size] columns, suitable for representing vectors.
+         */
+        fun vector(size: Int) = Matrix(1, size)
+
     }
 
     /**
@@ -234,18 +240,6 @@ data class Matrix(val rows: Int, val cols: Int) {
 
             target[row, col] = sum
         }
-
-        /*for(row in 0 until rows) {
-            for(col in 0 until rhs.cols) {
-                var sum = 0f
-
-                for(i in 0 until cols) {
-                    sum += this[row, i] * rhs[i, col]
-                }
-
-                target[row, col] = sum
-            }
-        }*/
     }
 
     /**
@@ -256,6 +250,20 @@ data class Matrix(val rows: Int, val cols: Int) {
             for (col in 0 until cols) {
                 f(row, col)
             }
+        }
+    }
+
+    /**
+     * Writes this matrix into a float buffer.
+     * One element in [buffer] is considered as one matrix.
+     */
+    fun writeIntoBuffer(matrixOffset: Int, buffer: RandomAccessBuffer) {
+        if (bufferElementSize != buffer.elementSize)
+            throw MathException("Cannot write $this into buffer, wrong element size ${buffer.elementSize}")
+
+        forEachComponent { row, col ->
+            // Unlike floats, storing one element per row, the buffer stores one element per matrix:
+            buffer[matrixOffset, row * cols + col] = floats[row, col]
         }
     }
 

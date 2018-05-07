@@ -6,9 +6,10 @@ import org.junit.Test
 class SmoothTimedValueDelegateTest {
 
     /**
-     * Usually, a smooth value would use the [SmoothTimedValueDelegate] class, in order to bind the transition
-     * to time. But this time must be more exact and in addition, using that class would require
-     * us to use `Thread.sleep` in order to *wait* for the proper value.
+     * Usually, a smooth value would use the [SmoothTimedValueDelegate] class, in order to bind the
+     * transition to time.
+     * But this test must be more exact and in addition, using that class would require
+     * us to use [Thread.sleep] in order to *wait* for the proper value.
      *
      * Instead of that, this tests implements its own smooth value class, providing the x-axis
      * progression based on a counter, which is not related to time at all but to a simple

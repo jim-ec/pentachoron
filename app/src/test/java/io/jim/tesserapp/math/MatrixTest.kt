@@ -1,5 +1,6 @@
 package io.jim.tesserapp.math
 
+import io.jim.tesserapp.util.RandomAccessBuffer
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -122,6 +123,16 @@ class MatrixTest {
             assertEquals(0f, y, 0.1f)
             assertEquals(3f, z, 0.1f)
             assertEquals(5f, q, 0.1f)
+        }
+    }
+
+    @Test
+    fun writeIntoBuffer() {
+        val buffer = RandomAccessBuffer(10, matrix.bufferElementSize)
+        matrix.writeIntoBuffer(2, buffer)
+
+        matrix.forEachComponent { row, col ->
+            assertEquals(if (row == col) 1f else 0f, buffer[2, row * matrix.cols + col], 0.1f)
         }
     }
 }
