@@ -6,10 +6,17 @@ import kotlin.math.sin
 
 /**
  * A row-major matrix with [rows] rows and [cols] columns.
- * Neither [rows] nor [cols] can be smaller than 1.
- * Initially, a matrix is always an identity matrix.
+ *
+ * @constructor Construct an identity matrix.
+ * @throws MathException If either [rows] or [cols] are less than 1.
  */
 data class Matrix(val rows: Int, val cols: Int) {
+
+    init {
+        if (rows <= 0 || cols <= 0)
+            throw MathException("Matrix must have non-null positive dimensions")
+        identity()
+    }
 
     /**
      * Construct a quadratic matrix with [size] rows and columns.
@@ -75,12 +82,6 @@ data class Matrix(val rows: Int, val cols: Int) {
      */
     private val floats = RandomAccessBuffer(rows, cols)
 
-    init {
-        if (rows <= 0 || cols <= 0)
-            throw MathException("Matrix must have non-null positive dimensions")
-        identity()
-    }
-
     /**
      * Loads the identity matrix.
      */
@@ -92,7 +93,8 @@ data class Matrix(val rows: Int, val cols: Int) {
 
     /**
      * Loads a complete set of floats into the matrix.
-     * Each row is one float list in [rowList].
+     *
+     * @param rowList Lists containing floats. Each list is considered as one matrix row.
      * @throws MathException If [rowList] has not [rows] rows.
      * @throws MathException If any list in [rowList] has not [cols] columns.
      */
@@ -112,6 +114,9 @@ data class Matrix(val rows: Int, val cols: Int) {
 
     /**
      * Loads a complete set of floats into a vector matrix.
+     * @param coefficients Coefficients to load into the matrix.
+     * @throws MathException If this matrix is not a vector, meaning that is has more than one row.
+     * @throws MathException If coefficient counts does not match the matrix column counts.
      */
     fun load(vararg coefficients: Float) {
         if (rows != 1)
@@ -130,6 +135,10 @@ data class Matrix(val rows: Int, val cols: Int) {
     inner class IsNotQuadraticException :
             MathException("Matrix needs to be quadratic but is ${this@Matrix}")
 
+    /**
+     * Thrown when a transform is incompatible with a matrix in terms of dimension.
+     * @param transformDimension The incompatible transform dimension.
+     */
     inner class IncompatibleTransformDimension(transformDimension: Int) :
             MathException("${transformDimension}d transform not compatible with $this")
 

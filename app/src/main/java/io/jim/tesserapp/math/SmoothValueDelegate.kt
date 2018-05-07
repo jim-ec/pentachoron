@@ -6,6 +6,9 @@ import kotlin.reflect.KProperty
 /**
  * Provides a value that, if changed, transitions smoothly over a generic axis.
  * [SmoothTimedValueDelegate] implements time as that axis.
+ *
+ * @param startValue The start the property should has.
+ * @param transitionIntervalX The x-range it should take to fulfil one transition interval.
  */
 abstract class SmoothValueDelegate<R>(
         startValue: Float,

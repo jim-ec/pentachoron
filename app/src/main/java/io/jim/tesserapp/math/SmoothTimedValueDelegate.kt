@@ -2,6 +2,9 @@ package io.jim.tesserapp.math
 
 /**
  * Provides a value that, if changed, transitions smoothly over time using an underlying curve.
+ *
+ * @param startValue Start value of property.
+ * @param transitionTimeInterval Time it takes to reach a new value.
  */
 open class SmoothTimedValueDelegate<R>(
         startValue: Float,
