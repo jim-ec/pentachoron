@@ -231,29 +231,25 @@ data class Matrix(val rows: Int, val cols: Int) {
     }
 
     /**
-     * Multiply this matrix with a right-hand side matrix [rhs].
-     * The result is stored into [target].
-     * Only multiplications of the form MxP * PxN = MxN are valid.
+     * Multiply [lhs] and [rhs] matrix storing the result in this matrix.
+     *
+     * @throws MathException If the dimension requirement `MxP * PxN = MxN` is not met.
      */
-    fun multiply(rhs: Matrix, target: Matrix) {
-        if (cols != rhs.rows)
-            throw MathException("Cannot multiply $this and $rhs")
-        if (rows != target.rows || rhs.cols != target.cols)
-            throw MathException("Target matrix $target is incompatible for $this * $rhs")
+    fun multiplication(lhs: Matrix, rhs: Matrix) {
+        if (lhs.cols != rhs.rows)
+            throw MathException("Cannot multiply $lhs * $rhs")
+        if (lhs.rows != rows || rhs.cols != cols)
+            throw MathException("Target matrix $this is incompatible for $lhs * $rhs")
 
-        target.forEachComponent { row, col ->
+        forEachComponent { row, col ->
             var sum = 0f
 
-            for (i in 0 until cols) {
-                sum += this[row, i] * rhs[i, col]
+            for (i in 0 until lhs.cols) {
+                sum += lhs[row, i] * rhs[i, col]
             }
 
-            target[row, col] = sum
+            this[row, col] = sum
         }
-    }
-
-    fun multiplication(lhs: Matrix, rhs: Matrix) {
-        lhs.multiply(rhs = rhs, target = this)
     }
 
     /**
