@@ -37,14 +37,6 @@ abstract class Controller(
      */
     protected abstract val valueLabelText: String
 
-    /*private val timer = Timer().scheduleAtFixedRate(object : TimerTask() {
-        val handler = Handler(Looper.getMainLooper())
-
-        override fun run() {
-            handler.post(::reevaluate)
-        }
-    }, 0, 10)*/
-
     init {
         if (max < min)
             throw RuntimeException("Maximum must be greater than minimum")

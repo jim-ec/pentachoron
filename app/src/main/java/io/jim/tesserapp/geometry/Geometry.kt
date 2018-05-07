@@ -29,6 +29,10 @@ open class Geometry(
 
 ) {
 
+    private val positions = ArrayList<Vector>()
+
+    private val lines = ArrayList<LineIndices>()
+
     /**
      * Memory section this geometry can store its global matrix.
      */
@@ -41,9 +45,15 @@ open class Geometry(
     val modelIndex
         get() = globalMemory?.offset ?: throw NotRegisteredIntoMatrixBufferException()
 
-    private val localMemory = MatrixBuffer(LOCAL_MATRICES_PER_GEOMETRY).MemorySpace()
-    private val positions = ArrayList<Vector>()
-    private val lines = ArrayList<LineIndices>()
+    private val localMatrix = MatrixBuffer(1).MemorySpace()
+    private val rotationMatrix = MatrixBuffer(1).MemorySpace()
+    private val rotationMatrixX = MatrixBuffer(1).MemorySpace()
+    private val rotationMatrixWZY = MatrixBuffer(1).MemorySpace()
+    private val rotationMatrixY = MatrixBuffer(1).MemorySpace()
+    private val rotationMatrixWZ = MatrixBuffer(1).MemorySpace()
+    private val rotationMatrixZ = MatrixBuffer(1).MemorySpace()
+    private val rotationMatrixW = MatrixBuffer(1).MemorySpace()
+    private val translationMatrix = MatrixBuffer(1).MemorySpace()
 
     /**
      * Rotation around the x, y and z axis.
@@ -81,24 +91,6 @@ open class Geometry(
      */
     inner class NotRegisteredIntoMatrixBufferException
         : RuntimeException("Geometry $this not registered into matrix buffer")
-
-    private enum class MatrixIndex {
-        LOCAL,
-        ROTATION,
-        ROTATION_X,
-        ROTATION_WZY,
-        ROTATION_Y,
-        ROTATION_WZ,
-        ROTATION_Z,
-        ROTATION_W,
-        TRANSLATION;
-
-        val index: Int by lazy { MatrixIndex.values().indexOf(this) }
-    }
-
-    companion object {
-        private val LOCAL_MATRICES_PER_GEOMETRY: Int by lazy { MatrixIndex.values().size }
-    }
 
     /**
      * Add a series of vertices.
@@ -183,32 +175,37 @@ open class Geometry(
         val globalMemory = globalMemory ?: throw NotRegisteredIntoMatrixBufferException()
 
         // Rotation:
-        localMemory.rotation(MatrixIndex.ROTATION_X.index, 1, 2, rotation.x)
-        localMemory.rotation(MatrixIndex.ROTATION_Y.index, 2, 0, rotation.y)
-        localMemory.rotation(MatrixIndex.ROTATION_Z.index, 0, 1, rotation.z)
-        localMemory.rotation(MatrixIndex.ROTATION_W.index, 3, 0, rotation.w)
+        rotationMatrixX.rotation(a = 1, b = 2, radians = rotation.x)
+        rotationMatrixY.rotation(a = 2, b = 0, radians = rotation.y)
+        rotationMatrixZ.rotation(a = 0, b = 1, radians = rotation.z)
+        rotationMatrixW.rotation(a = 3, b = 0, radians = rotation.w)
 
-        localMemory.multiply(
-                lhs = MatrixIndex.ROTATION_Z.index, rhs = MatrixIndex.ROTATION_W.index,
-                matrix = MatrixIndex.ROTATION_WZ.index)
+        rotationMatrixWZ.multiply(
+                lhsMemorySpace = rotationMatrixZ,
+                rhsMemorySpace = rotationMatrixW
+        )
 
-        localMemory.multiply(
-                lhs = MatrixIndex.ROTATION_Y.index, rhs = MatrixIndex.ROTATION_WZ.index,
-                matrix = MatrixIndex.ROTATION_WZY.index)
+        rotationMatrixWZY.multiply(
+                lhsMemorySpace = rotationMatrixY,
+                rhsMemorySpace = rotationMatrixWZ
+        )
 
-        localMemory.multiply(
-                lhs = MatrixIndex.ROTATION_X.index, rhs = MatrixIndex.ROTATION_WZY.index,
-                matrix = MatrixIndex.ROTATION.index)
+        rotationMatrix.multiply(
+                lhsMemorySpace = rotationMatrixX,
+                rhsMemorySpace = rotationMatrixWZY
+        )
 
         // Translation:
-        localMemory.translation(MatrixIndex.TRANSLATION.index, translation)
+        translationMatrix.translation(0, translation)
 
         // Local:
-        localMemory.multiply(lhs = MatrixIndex.ROTATION.index, rhs = MatrixIndex.TRANSLATION.index,
-                matrix = MatrixIndex.LOCAL.index)
+        localMatrix.multiply(
+                lhsMemorySpace = rotationMatrix,
+                rhsMemorySpace = translationMatrix
+        )
 
         // Global:
-        globalMemory.copy(source = MatrixIndex.LOCAL.index, sourceMemorySpace = localMemory)
+        globalMemory.copy(sourceMemorySpace = localMatrix)
 
     }
 

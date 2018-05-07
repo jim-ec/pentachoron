@@ -48,7 +48,6 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         shader.uploadProjectionMatrix(projectionMatrix)
 
         sharedRenderData.geometryManager.vertexBufferRewritten += { buffer ->
-            println("Renderer: Upload vertex buffer to GPU")
             vertexBuffer.bind(shader, buffer)
         }
     }

@@ -111,7 +111,7 @@ class MatrixBuffer(
         /**
          * Load the identity into [matrix].
          */
-        fun identity(matrix: Int) {
+        fun identity(matrix: Int = 0) {
             forEachColumn { row ->
                 forEachColumn { col ->
                     this[matrix, row, col] = if (row == col) 1f else 0f
@@ -122,7 +122,7 @@ class MatrixBuffer(
         /**
          * Load a space-defining matrix into [matrix].
          */
-        fun space(matrix: Int, right: Vector, up: Vector, forward: Vector, base: Vector) {
+        fun space(matrix: Int = 0, right: Vector, up: Vector, forward: Vector, base: Vector) {
             this[matrix, RIGHT_ROW] = right
             this[matrix, UP_ROW] = up
             this[matrix, FORWARD_ROW] = forward
@@ -132,7 +132,7 @@ class MatrixBuffer(
         /**
          * Load a scale matrix into [matrix].
          */
-        fun scale(matrix: Int, v: Vector) {
+        fun scale(matrix: Int = 0, v: Vector) {
             forEachColumn { i ->
                 this[matrix, i, i] = v[i]
             }
@@ -142,7 +142,7 @@ class MatrixBuffer(
          * Load a rotation matrix into [matrix].
          * The rotation takes place on the given [a]-[b]-plane, the angle is defined in [radians].
          */
-        fun rotation(matrix: Int, a: Int, b: Int, radians: Float) {
+        fun rotation(matrix: Int = 0, a: Int, b: Int, radians: Float) {
             this[matrix, a, a] = cos(radians)
             this[matrix, a, b] = sin(radians)
             this[matrix, b, a] = -sin(radians)
@@ -152,7 +152,7 @@ class MatrixBuffer(
         /**
          * Load a translation matrix into [matrix].
          */
-        fun translation(matrix: Int, v: Vector) {
+        fun translation(matrix: Int = 0, v: Vector) {
             this[matrix, BASE_ROW] = v
         }
 
@@ -162,7 +162,7 @@ class MatrixBuffer(
          * @param near Near plane. If Vector lies on that plane (negated), it will be projected to 0.
          * @param far Far plane. If Vector lies on that plane (negated), it will be projected to 1.
          */
-        fun perspective2D(matrix: Int, near: Float, far: Float) {
+        fun perspective2D(matrix: Int = 0, near: Float, far: Float) {
             if (near <= 0.0 || far <= 0.0 || near > far)
                 throw MathException("Invalid near=$near or far=$far parameter")
             this[matrix, 2, 3] = -1.0f
@@ -179,7 +179,7 @@ class MatrixBuffer(
          * @param target Target position. W component should be 1.
          * @param refUp Target position. W component should be 0.
          */
-        fun lookAt(matrix: Int, eye: Vector, target: Vector, refUp: Vector) = apply {
+        fun lookAt(matrix: Int = 0, eye: Vector, target: Vector, refUp: Vector) = apply {
 
             val forward = (eye - target).normalize()
             val right = (refUp cross forward).normalize()
