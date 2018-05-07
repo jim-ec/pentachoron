@@ -17,7 +17,6 @@ class GeometryTest {
     fun computeModelMatrices() {
 
         val geometry = Geometry("Geometry").apply {
-            modelIndex.set(0)
             rotation.z = Pi / 2
             translation.x = 1f
             computeModelMatrix()
@@ -59,8 +58,7 @@ class GeometryTest {
         val c = Vector(1f, 1f, 0f, 0f)
         val d = Vector(0f, 1f, 0f, 0f)
         Quadrilateral("Test", a, b, c, d, Color.BLACK).apply {
-            modelIndex.set(0)
-            vertices.also {
+            vertices(modelIndex = -1).also {
                 assertEquals(8, it.size)
                 assertEquals(a, it[0].position, 0.1f)
                 assertEquals(b, it[1].position, 0.1f)

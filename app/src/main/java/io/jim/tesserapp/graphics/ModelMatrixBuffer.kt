@@ -25,19 +25,14 @@ data class ModelMatrixBuffer(
          */
         private val matrixDimension: Int
 
-) : Iterable<Geometry> {
-
-    /**
-     * Iterates over the registered geometries.
-     */
-    override fun iterator() = geometries.iterator()
+) {
 
     /**
      * Buffer containing global model matrices.
      */
     val buffer = RandomAccessBuffer(maxGeometries, matrixDimension * matrixDimension)
 
-    private val geometries = HashSet<Geometry>()
+    private val geometries = HashMap<Geometry, Int>()
 
     /**
      * Count of matrices from start to a specific point in matrix buffer, guaranteeing that all
@@ -84,14 +79,15 @@ data class ModelMatrixBuffer(
         if (activeGeometries >= maxGeometries)
             throw RuntimeException("Registration exceeds model matrix capacity")
 
-        if (!geometries.add(geometry)) {
+        if (geometries.contains(geometry)) {
             // Geometry already registered:
             return false
         }
 
         val retainedModelIndex = retainModelIndex()
-        geometry.modelIndex.set(retainedModelIndex)
+        geometries += Pair(geometry, retainedModelIndex)
 
+        // TODO: move that into [retainModelIndex]
         greatestRetainedModelIndex = max(greatestRetainedModelIndex, retainedModelIndex)
 
         return true
@@ -104,31 +100,37 @@ data class ModelMatrixBuffer(
      * Note that [geometry] must be previously registered into this buffer with [register].
      */
     fun unregister(geometry: Geometry): Boolean {
-        if (!geometries.remove(geometry)) {
-            // Geometry not registered:
-            return false
-        }
 
-        if (geometry.modelIndex.get() == greatestRetainedModelIndex) {
+        // If geometry is not registered, we return false to indicate that:
+        val modelIndex = geometries[geometry] ?: return false
+
+        // TODO: Move that into [releaseModelIndex]
+        if (modelIndex == greatestRetainedModelIndex) {
             // Geometry reserve the last-most matrix, so we can decrease the greatest index
             // and actually shrink the buffer:
             greatestRetainedModelIndex--
         }
-
         // We add the model index to the list of unused ones, releasing it from a specific geometry:
-        releaseModelIndex(geometry.modelIndex.get())
-        geometry.modelIndex.unset()
+        releaseModelIndex(modelIndex)
+
+        geometries -= geometry
 
         return true
     }
 
     fun computeModelMatrices() {
-        forEach { geometry ->
+        geometries.forEach { (geometry, modelIndex) ->
             if (with(geometry.modelMatrix) { cols != matrixDimension || rows != matrixDimension })
                 throw RuntimeException("Model matrix ${geometry.modelMatrix} must dimension $matrixDimension")
 
             geometry.computeModelMatrix()
-            geometry.modelMatrix.writeIntoBuffer(geometry.modelIndex.get(), buffer)
+            geometry.modelMatrix.writeIntoBuffer(modelIndex, buffer)
+        }
+    }
+
+    fun forEachVertex(f: (vertex: Vertex) -> Unit) {
+        geometries.forEach { (geometry, modelIndex) ->
+            geometry.vertices(modelIndex).forEach(f)
         }
     }
 

@@ -72,12 +72,8 @@ class GeometryManager(maxGeometries: Int) {
 
         // Rewrite vertex buffer:
         vertexBuffer.rewind()
-        modelMatrixBuffer.forEach { geometry ->
-            geometry.vertices.also { vertices ->
-                vertices.forEach { vertex ->
-                    vertexBuffer += vertex.floats
-                }
-            }
+        modelMatrixBuffer.forEachVertex { vertex ->
+            vertexBuffer += vertex.floats
         }
 
         vertexBufferRewritten.fire(vertexBuffer)
