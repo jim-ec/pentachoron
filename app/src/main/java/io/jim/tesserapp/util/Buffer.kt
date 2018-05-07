@@ -31,7 +31,11 @@ abstract class Buffer(
         private set
 
     private lateinit var byteBuffer: ByteBuffer
-    internal lateinit var floatBuffer: FloatBuffer
+
+    /**
+     * Underlying float buffer.
+     */
+    lateinit var floatBuffer: FloatBuffer
 
     init {
         increaseMemory()

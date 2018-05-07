@@ -51,8 +51,9 @@ open class Geometry(
      * Model index of this geometry.
      * Is only knowable after is has been registered into a model matrix buffer.
      */
-    val modelIndex
-        get() = globalMemory?.offset ?: throw NotRegisteredIntoMatrixBufferException()
+    //val modelIndex
+    //    get() = globalMemory?.offset ?: throw NotRegisteredIntoMatrixBufferException()
+    val modelIndex = ModelIndex()
 
     /**
      * Rotation around the x, y and z axis.
@@ -73,8 +74,8 @@ open class Geometry(
         get() =
             lines.flatMap {
                 listOf(
-                        Vertex(positions[it.from], it.color, modelIndex),
-                        Vertex(positions[it.to], it.color, modelIndex)
+                        Vertex(positions[it.from], it.color, modelIndex.get()),
+                        Vertex(positions[it.to], it.color, modelIndex.get())
                 )
             }
 

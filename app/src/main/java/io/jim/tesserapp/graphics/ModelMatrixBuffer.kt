@@ -30,7 +30,7 @@ data class ModelMatrixBuffer(
     /**
      * Buffer containing global model matrices.
      */
-    val modelMatrixBuffer = MatrixBuffer(maxGeometries)
+    val buffer = MatrixBuffer(maxGeometries)
 
     private val geometries = HashSet<Geometry>()
 
@@ -85,7 +85,8 @@ data class ModelMatrixBuffer(
         }
 
         val retainedModelIndex = retainModelIndex()
-        geometry.globalMemory = modelMatrixBuffer.MemorySpace(retainedModelIndex, 1)
+        geometry.globalMemory = buffer.MemorySpace(retainedModelIndex, 1)
+        geometry.modelIndex.set(retainedModelIndex)
 
         greatestRetainedModelIndex = max(greatestRetainedModelIndex, retainedModelIndex)
 
@@ -107,15 +108,16 @@ data class ModelMatrixBuffer(
             return false
         }
 
-        if (geometry.modelIndex == greatestRetainedModelIndex) {
+        if (geometry.modelIndex.get() == greatestRetainedModelIndex) {
             // Geometry reserve the last-most matrix, so we can decrease the greatest index
             // and actually shrink the buffer:
             greatestRetainedModelIndex--
         }
 
         // We add the model index to the list of unused ones, releasing it from a specific geometry:
-        releaseModelIndex(geometry.modelIndex)
+        releaseModelIndex(geometry.modelIndex.get())
         geometry.globalMemory = null
+        geometry.modelIndex.unset()
 
         return true
     }

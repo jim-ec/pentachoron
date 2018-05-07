@@ -4,6 +4,7 @@ import android.opengl.GLES10.GL_STACK_OVERFLOW
 import android.opengl.GLES10.GL_STACK_UNDERFLOW
 import android.opengl.GLES20.*
 import io.jim.tesserapp.math.MatrixBuffer
+import io.jim.tesserapp.util.RandomAccessBuffer
 
 /**
  * A shader pipeline with a vertex shader, fragment shader an locations of all attributes and
@@ -143,25 +144,34 @@ class Shader(maxModels: Int) {
     /**
      * Upload the first [matrixCount] matrices from [buffer] into the model matrix uniform array.
      */
+    @Deprecated("Upload matrices from a RandomAccessBuffer.")
     fun uploadModelMatrixBuffer(buffer: MatrixBuffer, matrixCount: Int) {
-        checkGlError("Uploading model buffer")
         glUniformMatrix4fv(modelMatrixLocation, matrixCount, false, buffer.array, 0)
+        checkGlError("Uploading model buffer")
+    }
+
+    /**
+     * Upload the first [uploadCounts] matrices from [buffer] into the model matrix uniform array.
+     */
+    fun uploadModelMatrixBuffer(buffer: RandomAccessBuffer, uploadCounts: Int) {
+        glUniformMatrix4fv(modelMatrixLocation, uploadCounts, false, buffer.floatBuffer)
+        checkGlError("Uploading model buffer")
     }
 
     /**
      * Upload the first matrix in [buffer] to the view matrix uniform.
      */
     fun uploadViewMatrix(buffer: MatrixBuffer) {
-        checkGlError("Uploading view matrix")
         glUniformMatrix4fv(viewMatrixLocation, 1, false, buffer.array, 0)
+        checkGlError("Uploading view matrix")
     }
 
     /**
      * Upload the first matrix in [buffer] to the projection matrix uniform.
      */
     fun uploadProjectionMatrix(buffer: MatrixBuffer) {
-        checkGlError("Uploading projection matrix")
         glUniformMatrix4fv(projectionMatrixLocation, 1, false, buffer.array, 0)
+        checkGlError("Uploading projection matrix")
     }
 
     /**

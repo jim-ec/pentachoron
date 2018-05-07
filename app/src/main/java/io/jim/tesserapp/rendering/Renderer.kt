@@ -75,7 +75,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
             // Upload model matrices:
             renderData.geometryManager.computeModelMatrices()
             shader.uploadModelMatrixBuffer(
-                    renderData.geometryManager.modelMatrixBuffer.modelMatrixBuffer,
+                    renderData.geometryManager.modelMatrixBuffer.buffer,
                     renderData.geometryManager.modelMatrixBuffer.activeGeometries)
 
             // Ensure vertex data is up-to-date:

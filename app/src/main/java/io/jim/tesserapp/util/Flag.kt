@@ -10,6 +10,10 @@ data class Flag(
 
     operator fun not() = !flag
 
+    fun isSet() = flag
+
+    fun isUnset() = !flag
+
     fun set() {
         setTo(true)
     }
