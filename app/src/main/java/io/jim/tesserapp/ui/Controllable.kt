@@ -21,9 +21,9 @@ interface Controllable {
     var rotationZ: Float
 
     /**
-     * Rotation around on the w-x plane.
+     * Rotation around on the q-x plane.
      */
-    var rotationW: Float
+    var rotationQ: Float
 
     /**
      * Translation along the x-axis.
@@ -36,9 +36,9 @@ interface Controllable {
     var translationY: Float
 
     /**
-     * Translation along the w-axis.
+     * Translation along the q-axis.
      */
-    var translationW: Float
+    var translationQ: Float
 
     /**
      * Translation along the z-axis.

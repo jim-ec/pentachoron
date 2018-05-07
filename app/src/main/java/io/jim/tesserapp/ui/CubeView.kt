@@ -20,7 +20,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
     val cubeController = object : Controllable {
 
         /**
-         * Rotates the cube around the x-axis.
+         * Rotate the cube around the x-axis.
          */
         override var rotationX: Float by Delegates.observable(0f) { _, _, newValue ->
             coordinateSystemView.sharedRenderData.synchronized {
@@ -29,7 +29,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         }
 
         /**
-         * Rotates the cube around the y-axis.
+         * Rotate the cube around the y-axis.
          */
         override var rotationY: Float by Delegates.observable(0f) { _, _, newValue ->
             coordinateSystemView.sharedRenderData.synchronized {
@@ -38,7 +38,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         }
 
         /**
-         * Rotates the cube around the z-axis.
+         * Rotate the cube around on the z-axis.
          */
         override var rotationZ: Float by Delegates.observable(0f) { _, _, newValue ->
             coordinateSystemView.sharedRenderData.synchronized {
@@ -47,11 +47,11 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         }
 
         /**
-         * Rotates the cube around the z-axis.
+         * Rotate the cube around on the q-x plane.
          */
-        override var rotationW: Float by Delegates.observable(0f) { _, _, newValue ->
+        override var rotationQ: Float by Delegates.observable(0f) { _, _, newValue ->
             coordinateSystemView.sharedRenderData.synchronized {
-                cube.rotation.w = newValue
+                cube.rotation.q = newValue
             }
         }
 
@@ -83,11 +83,11 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         }
 
         /**
-         * Translates the cube along the w-axis.
+         * Translates the cube along the q-axis.
          */
-        override var translationW: Float by Delegates.observable(0f) { _, _, newValue ->
+        override var translationQ: Float by Delegates.observable(0f) { _, _, newValue ->
             coordinateSystemView.sharedRenderData.synchronized {
-                cube.translation.w = newValue
+                cube.translation.q = newValue
             }
         }
 

@@ -194,7 +194,7 @@ class MatrixBuffer(
 
             transpose(matrix)
 
-            this[matrix, BASE_ROW] = multiply(Vector(-eye.x, -eye.y, -eye.z, eye.w), matrix)
+            this[matrix, BASE_ROW] = multiply(Vector(-eye.x, -eye.y, -eye.z, eye.q), matrix)
         }
 
         /**

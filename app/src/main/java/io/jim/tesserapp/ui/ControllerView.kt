@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.SeekBar
 import android.widget.Switch
 import io.jim.tesserapp.R
 import java.util.*
@@ -39,6 +40,10 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
             }
         }
 
+        // Disable 4th dimensional seeker as that is a feature not implemented yet:
+        findViewById<SeekBar>(R.id.seekerRotationQ).isEnabled = false
+        findViewById<SeekBar>(R.id.seekerTranslationQ).isEnabled = false
+
         controllers = listOf(
                 // X-Rotation:
                 RotationController(
@@ -70,14 +75,14 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                     controllable.rotationZ = rotation
                 },
 
-                // W-Rotation:
+                // Q-Rotation:
                 RotationController(
                         controllables,
                         context,
-                        findViewById(R.id.seekerRotationW),
-                        findViewById(R.id.valueRotationW)
+                        findViewById(R.id.seekerRotationQ),
+                        findViewById(R.id.valueRotationQ)
                 ) { controllable, rotation ->
-                    controllable.rotationW = rotation
+                    controllable.rotationQ = rotation
                 },
 
                 // X-Translation:
@@ -114,11 +119,10 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                 TranslationController(
                         controllables,
                         context,
-                        findViewById(R.id.seekerTranslationW),
-                        findViewById(R.id.valueTranslationW),
-                        startValue = 1f
+                        findViewById(R.id.seekerTranslationQ),
+                        findViewById(R.id.valueTranslationQ)
                 ) { controllable, translation ->
-                    controllable.translationW = translation
+                    controllable.translationQ = translation
                 },
 
                 // Camera distance:

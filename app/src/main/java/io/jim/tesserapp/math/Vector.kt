@@ -25,7 +25,7 @@ data class Vector(
         /**
          * The W component.
          */
-        var w: Float) {
+        var q: Float) {
 
     /**
      * Set the component at the given [index] to a given [value].
@@ -35,7 +35,7 @@ data class Vector(
             0 -> x = value
             1 -> y = value
             2 -> z = value
-            3 -> w = value
+            3 -> q = value
             else -> throw IndexOutOfBoundsException("4D vector has no ${index}th component")
         }
     }
@@ -47,7 +47,7 @@ data class Vector(
         0 -> x
         1 -> y
         2 -> z
-        3 -> w
+        3 -> q
         else -> throw IndexOutOfBoundsException("4D vector has no ${index}th component")
     }
 
@@ -60,7 +60,7 @@ data class Vector(
         sb.append(decimalFormat.format(x)).append('|')
         sb.append(decimalFormat.format(y)).append('|')
         sb.append(decimalFormat.format(z)).append('|')
-        sb.append(decimalFormat.format(w))
+        sb.append(decimalFormat.format(q))
         sb.setCharAt(sb.length - 1, ')')
         sb.toString()
     }
@@ -74,7 +74,7 @@ data class Vector(
     /**
      * Scalar this and [v].
      */
-    operator fun times(v: Vector) = x * v.x + y * v.y + z * v.z + w * v.w
+    operator fun times(v: Vector) = x * v.x + y * v.y + z * v.z + q * v.q
 
     /**
      * Normalize this vector.
@@ -84,47 +84,47 @@ data class Vector(
         x *= oneOverLength
         y *= oneOverLength
         z *= oneOverLength
-        w *= oneOverLength
+        q *= oneOverLength
     }
 
     /**
      * Add [v] added to this v.
      */
     operator fun plus(v: Vector) =
-            Vector(x + v.x, y + v.y, z + v.z, w + v.w)
+            Vector(x + v.x, y + v.y, z + v.z, q + v.q)
 
     /**
      * Subtract [v] from this vector.
      */
     operator fun minus(v: Vector) =
-            Vector(x - v.x, y - v.y, z - v.z, w - v.w)
+            Vector(x - v.x, y - v.y, z - v.z, q - v.q)
 
     /**
      * Scales this by [scale].
      */
     operator fun times(scale: Float) =
-            Vector(x * scale, y * scale, z * scale, w * scale)
+            Vector(x * scale, y * scale, z * scale, q * scale)
 
     /**
      * Divides this vector through [divisor].
      */
     operator fun div(divisor: Float) =
-            Vector(x / divisor, y / divisor, z / divisor, w / divisor)
+            Vector(x / divisor, y / divisor, z / divisor, q / divisor)
 
     /**
-     * Divides every component by this vector's w component.
+     * Divides every component by this vector's q component.
      */
     fun perspectiveDivide() {
-        val oneOverW = 1f / w
+        val oneOverW = 1f / q
         x *= oneOverW
         y *= oneOverW
         z *= oneOverW
-        w = 1f
+        q = 1f
     }
 
     /**
      * Compute the vector product of this direction and [v].
-     * This totally ignores the w component.
+     * This totally ignores the q component.
      */
     infix fun cross(v: Vector) =
             Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x, 0f)

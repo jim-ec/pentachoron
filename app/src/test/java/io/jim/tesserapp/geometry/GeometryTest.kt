@@ -40,7 +40,7 @@ class GeometryTest {
             assertEquals(1f, x, 0.1f)
             assertEquals(1f, y, 0.1f)
             assertEquals(0f, z, 0.1f)
-            assertEquals(1f, w, 0.1f)
+            assertEquals(1f, q, 0.1f)
         }
     }
 

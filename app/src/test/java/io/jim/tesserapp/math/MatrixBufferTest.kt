@@ -46,7 +46,7 @@ class MatrixBufferTest {
             assertEquals(90f, x, 0.1f)
             assertEquals(100f, y, 0.1f)
             assertEquals(110f, z, 0.1f)
-            assertEquals(120f, w, 0.1f)
+            assertEquals(120f, q, 0.1f)
         }
     }
 
@@ -66,7 +66,7 @@ class MatrixBufferTest {
             assertEquals(90f, x, 0.1f)
             assertEquals(100f, y, 0.1f)
             assertEquals(110f, z, 0.1f)
-            assertEquals(120f, w, 0.1f)
+            assertEquals(120f, q, 0.1f)
         }
     }
 
@@ -82,7 +82,7 @@ class MatrixBufferTest {
             assertEquals(90f, x, 0.1f)
             assertEquals(100f, y, 0.1f)
             assertEquals(110f, z, 0.1f)
-            assertEquals(120f, w, 0.1f)
+            assertEquals(120f, q, 0.1f)
         }
     }
 
@@ -114,7 +114,7 @@ class MatrixBufferTest {
             assertEquals(1f, x, 0.1f)
             assertEquals(4f, y, 0.1f)
             assertEquals(9f, z, 0.1f)
-            assertEquals(16f, w, 0.1f)
+            assertEquals(16f, q, 0.1f)
         }
     }
 
@@ -125,7 +125,7 @@ class MatrixBufferTest {
             assertEquals(0f, x, 0.1f)
             assertEquals(-5f, y, 0.1f)
             assertEquals(0f, z, 0.1f)
-            assertEquals(3f, w, 0.1f)
+            assertEquals(3f, q, 0.1f)
         }
     }
 
@@ -136,7 +136,7 @@ class MatrixBufferTest {
             assertEquals(2f, x, 0.1f)
             assertEquals(4f, y, 0.1f)
             assertEquals(6f, z, 0.1f)
-            assertEquals(1f, w, 0.1f)
+            assertEquals(1f, q, 0.1f)
         }
     }
 
@@ -154,7 +154,7 @@ class MatrixBufferTest {
             assertEquals(90f, x, 0.1f)
             assertEquals(100f, y, 0.1f)
             assertEquals(110f, z, 0.1f)
-            assertEquals(120f, w, 0.1f)
+            assertEquals(120f, q, 0.1f)
         }
     }
 

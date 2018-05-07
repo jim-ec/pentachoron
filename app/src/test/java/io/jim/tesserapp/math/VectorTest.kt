@@ -15,12 +15,12 @@ class VectorTest {
             assertEquals(1f, x, 0.1f)
             assertEquals(2f, y, 0.1f)
             assertEquals(5f, z, 0.1f)
-            assertEquals(4f, w, 0.1f)
+            assertEquals(4f, q, 0.1f)
 
             assertEquals(1f, x, 0.1f)
             assertEquals(2f, y, 0.1f)
             assertEquals(5f, z, 0.1f)
-            assertEquals(4f, w, 0.1f)
+            assertEquals(4f, q, 0.1f)
         }
     }
 
@@ -34,7 +34,7 @@ class VectorTest {
         assertEquals(4f, w.x, 0.1f)
         assertEquals(3f, w.y, 0.1f)
         assertEquals(9f, w.z, 0.1f)
-        assertEquals(1f, w.w, 0.1f)
+        assertEquals(1f, w.q, 0.1f)
     }
 
     @Test
@@ -46,7 +46,7 @@ class VectorTest {
         assertEquals(2f, w.x, 0.1f)
         assertEquals(-1f, w.y, 0.1f)
         assertEquals(-1f, w.z, 0.1f)
-        assertEquals(-1f, w.w, 0.1f)
+        assertEquals(-1f, w.q, 0.1f)
     }
 
     @Test
@@ -62,7 +62,7 @@ class VectorTest {
             assertEquals(1.5f, x, 0.1f)
             assertEquals(0.5f, y, 0.1f)
             assertEquals(2f, z, 0.1f)
-            assertEquals(0f, w, 0.1f)
+            assertEquals(0f, q, 0.1f)
         }
     }
 
@@ -72,7 +72,7 @@ class VectorTest {
             assertEquals(6f, x, 0.1f)
             assertEquals(2f, y, 0.1f)
             assertEquals(8f, z, 0.1f)
-            assertEquals(8f, w, 0.1f)
+            assertEquals(8f, q, 0.1f)
         }
     }
 
@@ -82,7 +82,7 @@ class VectorTest {
             assertEquals(-3f, x, 0.1f)
             assertEquals(-11f, y, 0.1f)
             assertEquals(5f, z, 0.1f)
-            assertEquals(0f, w, 0.1f)
+            assertEquals(0f, q, 0.1f)
         }
     }
 
