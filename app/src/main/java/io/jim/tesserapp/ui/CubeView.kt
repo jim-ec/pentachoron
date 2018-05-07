@@ -6,6 +6,8 @@ import android.widget.FrameLayout
 import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Quadrilateral
 import io.jim.tesserapp.graphics.Color
+import io.jim.tesserapp.math.Rotatable
+import io.jim.tesserapp.math.Translatable
 import io.jim.tesserapp.math.Vector
 import kotlin.properties.Delegates
 
@@ -19,76 +21,92 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
      */
     val cubeController = object : Controllable {
 
-        /**
-         * Rotate the cube around the x-axis.
-         */
-        override var rotationX: Float by Delegates.observable(0f) { _, _, newValue ->
-            coordinateSystemView.sharedRenderData.synchronized {
-                cube.rotation.x = newValue
-            }
+        override val rotation = object : Rotatable {
+
+            /**
+             * Rotate the cube around the x-axis.
+             */
+            override var x = 0f
+                set(value) {
+                    coordinateSystemView.sharedRenderData.synchronized {
+                        cube.rotation.x = value
+                    }
+                }
+
+            /**
+             * Rotate the cube around the y-axis.
+             */
+            override var y = 0f
+                set(value) {
+                    coordinateSystemView.sharedRenderData.synchronized {
+                        cube.rotation.y = value
+                    }
+                }
+
+            /**
+             * Rotate the cube around the z-axis.
+             */
+            override var z = 0f
+                set(value) {
+                    coordinateSystemView.sharedRenderData.synchronized {
+                        cube.rotation.z = value
+                    }
+                }
+
+            /**
+             *  Rotate the cube around on the q-x plane.
+             */
+            override var q = 0f
+                set(value) {
+                    coordinateSystemView.sharedRenderData.synchronized {
+                        cube.rotation.q = value
+                    }
+                }
+
         }
 
-        /**
-         * Rotate the cube around the y-axis.
-         */
-        override var rotationY: Float by Delegates.observable(0f) { _, _, newValue ->
-            coordinateSystemView.sharedRenderData.synchronized {
-                cube.rotation.y = newValue
-            }
-        }
+        override val translation = object : Translatable {
 
-        /**
-         * Rotate the cube around on the z-axis.
-         */
-        override var rotationZ: Float by Delegates.observable(0f) { _, _, newValue ->
-            coordinateSystemView.sharedRenderData.synchronized {
-                cube.rotation.z = newValue
-            }
-        }
+            /**
+             * Translates the cube along the x-axis.
+             */
+            override var x = 0f
+                set(value) {
+                    coordinateSystemView.sharedRenderData.synchronized {
+                        cube.translation.x = value
+                    }
+                }
 
-        /**
-         * Rotate the cube around on the q-x plane.
-         */
-        override var rotationQ: Float by Delegates.observable(0f) { _, _, newValue ->
-            coordinateSystemView.sharedRenderData.synchronized {
-                cube.rotation.q = newValue
-            }
-        }
+            /**
+             * Translates the cube along the y-axis.
+             */
+            override var y = 0f
+                set(value) {
+                    coordinateSystemView.sharedRenderData.synchronized {
+                        cube.translation.y = value
+                    }
+                }
 
-        /**
-         * Translates the cube along the x-axis.
-         */
-        override var translationX: Float by Delegates.observable(0f) { _, _, newValue ->
-            coordinateSystemView.sharedRenderData.synchronized {
-                cube.translation.x = newValue
-            }
-        }
+            /**
+             * Translates the cube along the z-axis.
+             */
+            override var z = 0f
+                set(value) {
+                    coordinateSystemView.sharedRenderData.synchronized {
+                        cube.translation.z = value
+                    }
+                }
 
-        /**
-         * Translates the cube along the y-axis.
-         */
-        override var translationY: Float by Delegates.observable(0f) { _, _, newValue ->
-            coordinateSystemView.sharedRenderData.synchronized {
-                cube.translation.y = newValue
-            }
-        }
+            /**
+             * Translates the cube along the q-axis.
+             */
+            override var q = 0f
+                set(value) {
+                    coordinateSystemView.sharedRenderData.synchronized {
+                        cube.translation.q = value
+                    }
+                }
 
-        /**
-         * Translates the cube along the z-axis.
-         */
-        override var translationZ: Float by Delegates.observable(0f) { _, _, newValue ->
-            coordinateSystemView.sharedRenderData.synchronized {
-                cube.translation.z = newValue
-            }
-        }
-
-        /**
-         * Translates the cube along the q-axis.
-         */
-        override var translationQ: Float by Delegates.observable(0f) { _, _, newValue ->
-            coordinateSystemView.sharedRenderData.synchronized {
-                cube.translation.q = newValue
-            }
         }
 
         /**

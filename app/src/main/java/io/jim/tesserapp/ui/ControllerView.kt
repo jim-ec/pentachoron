@@ -52,7 +52,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerRotationX),
                         findViewById(R.id.valueRotationX)
                 ) { controllable, rotation ->
-                    controllable.rotationX = rotation
+                    controllable.rotation.x = rotation
                 },
 
                 // Y-Rotation:
@@ -62,7 +62,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerRotationY),
                         findViewById(R.id.valueRotationY)
                 ) { controllable, rotation ->
-                    controllable.rotationY = rotation
+                    controllable.rotation.y = rotation
                 },
 
                 // Z-Rotation:
@@ -72,7 +72,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerRotationZ),
                         findViewById(R.id.valueRotationZ)
                 ) { controllable, rotation ->
-                    controllable.rotationZ = rotation
+                    controllable.rotation.z = rotation
                 },
 
                 // Q-Rotation:
@@ -82,7 +82,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerRotationQ),
                         findViewById(R.id.valueRotationQ)
                 ) { controllable, rotation ->
-                    controllable.rotationQ = rotation
+                    controllable.rotation.q = rotation
                 },
 
                 // X-Translation:
@@ -92,7 +92,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerTranslationX),
                         findViewById(R.id.valueTranslationX)
                 ) { controllable, translation ->
-                    controllable.translationX = translation
+                    controllable.translation.x = translation
                 },
 
                 // Y-Translation:
@@ -102,7 +102,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerTranslationY),
                         findViewById(R.id.valueTranslationY)
                 ) { controllable, translation ->
-                    controllable.translationY = translation
+                    controllable.translation.y = translation
                 },
 
                 // Z-Translation:
@@ -112,7 +112,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerTranslationZ),
                         findViewById(R.id.valueTranslationZ)
                 ) { controllable, translation ->
-                    controllable.translationZ = translation
+                    controllable.translation.z = translation
                 },
 
                 // W-Translation:
@@ -122,7 +122,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerTranslationQ),
                         findViewById(R.id.valueTranslationQ)
                 ) { controllable, translation ->
-                    controllable.translationQ = translation
+                    controllable.translation.q = translation
                 },
 
                 // Camera distance:
