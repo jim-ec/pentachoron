@@ -209,7 +209,7 @@ data class Matrix(val rows: Int, val cols: Int) {
         sb.append("[ ")
         for (row in 0 until rows) {
             for (col in 0 until cols) {
-                sb.append(decimalFormat.format(this[row, col]))
+                sb.append(formatNumber(this[row, col]))
                 if (col < cols - 1)
                     sb.append(" , ")
                 else if (row < rows - 1)

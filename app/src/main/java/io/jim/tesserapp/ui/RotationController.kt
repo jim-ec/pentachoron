@@ -5,6 +5,7 @@ import android.widget.SeekBar
 import android.widget.TextView
 import io.jim.tesserapp.R
 import io.jim.tesserapp.math.Pi
+import io.jim.tesserapp.math.formatNumber
 
 class RotationController(
         controllables: List<Controllable>,
@@ -21,6 +22,6 @@ class RotationController(
     }
 
     override val valueLabelText: String
-        get() = String.format(formatString, currentSeekerValue)
+        get() = String.format(formatString, formatNumber(currentSeekerValue))
 
 }

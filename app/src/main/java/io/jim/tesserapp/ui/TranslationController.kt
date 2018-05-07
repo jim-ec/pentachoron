@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.SeekBar
 import android.widget.TextView
 import io.jim.tesserapp.R
+import io.jim.tesserapp.math.formatNumber
 
 class TranslationController(
         controllables: List<Controllable>,
@@ -23,6 +24,6 @@ class TranslationController(
     }
 
     override val valueLabelText: String
-        get() = String.format(formatString, currentSeekerValue)
+        get() = String.format(formatString, formatNumber(currentSeekerValue))
 
 }

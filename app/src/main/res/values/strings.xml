@@ -7,14 +7,14 @@
     <string name="transform_rotation_y" translatable="false">Y</string>
     <string name="transform_rotation_z" translatable="false">Z</string>
     <string name="transform_rotation_q" translatable="false">Q</string>
-    <string name="transform_rotation_value_radians" translatable="false">%1$.2fπ</string>
+    <string name="transform_rotation_value_radians" translatable="false">%1$sπ</string>
 
     <string name="transform_translation">Translation</string>
     <string name="transform_translation_x" translatable="false">X</string>
     <string name="transform_translation_y" translatable="false">Y</string>
     <string name="transform_translation_z" translatable="false">Z</string>
     <string name="transform_translation_q" translatable="false">Q</string>
-    <string name="transform_translation_value" translatable="false">%1$.2f</string>
+    <string name="transform_translation_value" translatable="false">%1$s</string>
 
     <string name="transform_camera">Camera</string>
     <string name="transform_camera_distance">Distance</string>

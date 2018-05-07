@@ -57,10 +57,10 @@ data class Vector(
     override fun toString() = let {
         val sb = StringBuilder()
         sb.append('(')
-        sb.append(decimalFormat.format(x)).append('|')
-        sb.append(decimalFormat.format(y)).append('|')
-        sb.append(decimalFormat.format(z)).append('|')
-        sb.append(decimalFormat.format(q))
+        sb.append(formatNumber(x)).append('|')
+        sb.append(formatNumber(y)).append('|')
+        sb.append(formatNumber(z)).append('|')
+        sb.append(formatNumber(q))
         sb.setCharAt(sb.length - 1, ')')
         sb.toString()
     }

@@ -304,7 +304,7 @@ class MatrixBuffer(
                 sb.append("#%${digits}d: [ ".format(matrix))
                 forEachColumn { r ->
                     forEachColumn { c ->
-                        sb.append(decimalFormat.format(this[matrix, r, c]))
+                        sb.append(formatNumber(this[matrix, r, c]))
                         if (c < 3) sb.append(", ")
                     }
                     if (r < 3) sb.append(" | ")
