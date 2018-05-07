@@ -73,13 +73,17 @@ data class CubicPolynomial(
     /**
      * Compute `f([x])`.
      */
-    operator fun invoke(x: Float) =
-            (fun(x: Float) = a * x * x * x + b * x * x + c * x)(x - x0) + y0
+    operator fun invoke(x: Float): Float {
+        val dx = x - x0
+        return a * dx * dx * dx + b * dx * dx + c * dx + y0
+    }
 
     /**
      * Compute the derivation `f'([x])`.
      */
-    fun derivation(x: Float) =
-            (fun(x: Float) = 3 * a * x * x + 2 * b * x + c)(x - x0)
+    fun derivation(x: Float): Float {
+        val dx = x - x0
+        return 3 * a * dx * dx + 2 * b * dx + c
+    }
 
 }
