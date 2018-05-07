@@ -2,6 +2,7 @@ package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.graphics.Vertex
+import io.jim.tesserapp.math.Matrix
 import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.util.ListenerList
@@ -33,6 +34,14 @@ open class Geometry(
 
     private val lines = ArrayList<LineIndices>()
 
+    private val rotationMatrixY = Matrix(4)
+    private val rotationMatrixX = Matrix(4)
+    private val rotationMatrixZ = Matrix(4)
+    private val rotationMatrixZY = Matrix(4)
+    private val rotationMatrix = Matrix(4)
+    private val translationMatrix = Matrix(4)
+    private val localMatrix = Matrix(4)
+
     /**
      * Memory section this geometry can store its global matrix.
      */
@@ -44,16 +53,6 @@ open class Geometry(
      */
     val modelIndex
         get() = globalMemory?.offset ?: throw NotRegisteredIntoMatrixBufferException()
-
-    private val localMatrix = MatrixBuffer(1).MemorySpace()
-    private val rotationMatrix = MatrixBuffer(1).MemorySpace()
-    private val rotationMatrixX = MatrixBuffer(1).MemorySpace()
-    private val rotationMatrixWZY = MatrixBuffer(1).MemorySpace()
-    private val rotationMatrixY = MatrixBuffer(1).MemorySpace()
-    private val rotationMatrixWZ = MatrixBuffer(1).MemorySpace()
-    private val rotationMatrixZ = MatrixBuffer(1).MemorySpace()
-    private val rotationMatrixW = MatrixBuffer(1).MemorySpace()
-    private val translationMatrix = MatrixBuffer(1).MemorySpace()
 
     /**
      * Rotation around the x, y and z axis.
@@ -178,34 +177,29 @@ open class Geometry(
         rotationMatrixX.rotation(a = 1, b = 2, radians = rotation.x)
         rotationMatrixY.rotation(a = 2, b = 0, radians = rotation.y)
         rotationMatrixZ.rotation(a = 0, b = 1, radians = rotation.z)
-        rotationMatrixW.rotation(a = 3, b = 0, radians = rotation.w)
 
-        rotationMatrixWZ.multiply(
-                lhsMemorySpace = rotationMatrixZ,
-                rhsMemorySpace = rotationMatrixW
+        rotationMatrixZY.multiplication(
+                rhs = rotationMatrixZ,
+                lhs = rotationMatrixY
         )
 
-        rotationMatrixWZY.multiply(
-                lhsMemorySpace = rotationMatrixY,
-                rhsMemorySpace = rotationMatrixWZ
-        )
-
-        rotationMatrix.multiply(
-                lhsMemorySpace = rotationMatrixX,
-                rhsMemorySpace = rotationMatrixWZY
+        rotationMatrix.multiplication(
+                lhs = rotationMatrixZY,
+                rhs = rotationMatrixX
         )
 
         // Translation:
-        translationMatrix.translation(0, translation)
+        translationMatrix.translation(translation.x, translation.y, translation.z)
+
 
         // Local:
-        localMatrix.multiply(
-                lhsMemorySpace = rotationMatrix,
-                rhsMemorySpace = translationMatrix
+        localMatrix.multiplication(
+                lhs = rotationMatrix,
+                rhs = translationMatrix
         )
 
         // Global:
-        globalMemory.copy(sourceMemorySpace = localMatrix)
+        globalMemory.copy(sourceMatrix = localMatrix)
 
     }
 

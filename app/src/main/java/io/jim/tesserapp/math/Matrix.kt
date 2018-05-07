@@ -242,6 +242,10 @@ data class Matrix(val rows: Int, val cols: Int) {
         }
     }
 
+    fun multiplication(lhs: Matrix, rhs: Matrix) {
+        lhs.multiply(rhs = rhs, target = this)
+    }
+
     /**
      * Calls [f] for each coefficient.
      */
