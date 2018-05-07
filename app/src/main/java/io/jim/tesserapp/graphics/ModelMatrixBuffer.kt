@@ -7,11 +7,6 @@ import kotlin.math.max
 
 /**
  * Store model matrices.
- *
- * Register a geometry into this buffer associates the geometry with an own memory space,
- * which is never changed, unless the geometry is unregistered.
- *
- * You can iterate over the registered geometries with [iterator].
  */
 data class ModelMatrixBuffer(
 
@@ -42,21 +37,27 @@ data class ModelMatrixBuffer(
      * fragmented, containing empty, unused matrix slots among used ones.
      */
     val activeGeometries: Int
-        get() = greatestRetainedModelIndex + 1
+        get() = greatestUsedModelIndex + 1
 
-    private var greatestRetainedModelIndex = 0
+    private var greatestUsedModelIndex = 0
 
-    private val retainedModelIndices = TreeSet<Int>()
+    private val usedModelIndices = TreeSet<Int>()
 
     /**
      * Return the smallest available model index.
      * This automatically marks the returned index as used.
      */
-    private fun retainModelIndex(): Int {
+    private fun takeModelIndexAndMarkAsUsed(): Int {
         for (i in 0 until maxGeometries) {
-            if (!retainedModelIndices.contains(i)) {
+            if (!usedModelIndices.contains(i)) {
                 // Found next free model index!
-                retainedModelIndices += i
+
+                // Remember that now used model index:
+                usedModelIndices += i
+
+                // Remember the greatest model index ever used:
+                greatestUsedModelIndex = max(greatestUsedModelIndex, i)
+
                 return i
             }
         }
@@ -65,11 +66,18 @@ data class ModelMatrixBuffer(
 
     /**
      * Releases the [index], adding it to the list if unused indices.
-     * Unused indices can be retained by [retainModelIndex] at later time point.
      */
-    private fun releaseModelIndex(index: Int) {
-        if (!retainedModelIndices.remove(index))
+    private fun markModelIndexAsUnused(index: Int) {
+        if (!usedModelIndices.contains(index))
             throw RuntimeException("Index not releasable, because not retained")
+
+        if (index == greatestUsedModelIndex) {
+            // Geometry reserve the last-most matrix, so we can decrease the greatest index
+            // and actually shrink the buffer:
+            greatestUsedModelIndex--
+        }
+
+        usedModelIndices -= index
     }
 
     /**
@@ -84,11 +92,7 @@ data class ModelMatrixBuffer(
             return false
         }
 
-        val retainedModelIndex = retainModelIndex()
-        geometries += Pair(geometry, retainedModelIndex)
-
-        // TODO: move that into [retainModelIndex]
-        greatestRetainedModelIndex = max(greatestRetainedModelIndex, retainedModelIndex)
+        geometries += Pair(geometry, takeModelIndexAndMarkAsUsed())
 
         return true
     }
@@ -104,14 +108,8 @@ data class ModelMatrixBuffer(
         // If geometry is not registered, we return false to indicate that:
         val modelIndex = geometries[geometry] ?: return false
 
-        // TODO: Move that into [releaseModelIndex]
-        if (modelIndex == greatestRetainedModelIndex) {
-            // Geometry reserve the last-most matrix, so we can decrease the greatest index
-            // and actually shrink the buffer:
-            greatestRetainedModelIndex--
-        }
         // We add the model index to the list of unused ones, releasing it from a specific geometry:
-        releaseModelIndex(modelIndex)
+        markModelIndexAsUnused(modelIndex)
 
         geometries -= geometry
 
