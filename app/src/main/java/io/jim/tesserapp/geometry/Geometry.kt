@@ -3,7 +3,6 @@ package io.jim.tesserapp.geometry
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.graphics.Vertex
 import io.jim.tesserapp.math.Matrix
-import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.util.ListenerList
 
@@ -40,19 +39,13 @@ open class Geometry(
     private val rotationMatrixZY = Matrix(4)
     private val rotationMatrix = Matrix(4)
     private val translationMatrix = Matrix(4)
-    private val localMatrix = Matrix(4)
 
-    /**
-     * Memory section this geometry can store its global matrix.
-     */
-    var globalMemory: MatrixBuffer.MemorySpace? = null
+    val modelMatrix = Matrix(4)
 
     /**
      * Model index of this geometry.
      * Is only knowable after is has been registered into a model matrix buffer.
      */
-    //val modelIndex
-    //    get() = globalMemory?.offset ?: throw NotRegisteredIntoMatrixBufferException()
     val modelIndex = ModelIndex()
 
     /**
@@ -85,12 +78,6 @@ open class Geometry(
     val onGeometryChangedListeners = ListenerList()
 
     private data class LineIndices(val from: Int, val to: Int, var color: Color)
-
-    /**
-     * Thrown when trying to transform the geometry while not registered into a matrix buffer.
-     */
-    inner class NotRegisteredIntoMatrixBufferException
-        : RuntimeException("Geometry $this not registered into matrix buffer")
 
     /**
      * Add a series of vertices.
@@ -172,8 +159,6 @@ open class Geometry(
      */
     fun computeModelMatrix() {
 
-        val globalMemory = globalMemory ?: throw NotRegisteredIntoMatrixBufferException()
-
         // Rotation:
         rotationMatrixX.rotation(a = 1, b = 2, radians = rotation.x)
         rotationMatrixY.rotation(a = 2, b = 0, radians = rotation.y)
@@ -192,15 +177,11 @@ open class Geometry(
         // Translation:
         translationMatrix.translation(translation.x, translation.y, translation.z)
 
-
-        // Local:
-        localMatrix.multiplication(
+        // Model transform:
+        modelMatrix.multiplication(
                 lhs = rotationMatrix,
                 rhs = translationMatrix
         )
-
-        // Global:
-        globalMemory.copy(sourceMatrix = localMatrix)
 
     }
 

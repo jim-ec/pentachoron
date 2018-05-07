@@ -1,12 +1,11 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.math.MatrixBuffer
+import io.jim.tesserapp.math.Matrix
 import io.jim.tesserapp.math.Pi
 import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.util.assertEquals
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -14,29 +13,22 @@ import org.junit.Test
  */
 class GeometryTest {
 
-    companion object {
-        private const val maxModels = 10
-    }
-
-    private val globalBuffer = MatrixBuffer(maxModels)
-    private var activeGeometries = 0
-
-    private fun register(geometry: Geometry) {
-        assertTrue("No more  to register new geometry", activeGeometries < maxModels)
-        geometry.globalMemory = globalBuffer.MemorySpace(activeGeometries, 1)
-        activeGeometries++
-    }
-
     @Test
     fun computeModelMatrices() {
-        val geometry = Geometry("Geometry")
-        register(geometry)
 
-        geometry.rotation.z = Pi / 2
-        geometry.translation.x = 1f
-        geometry.computeModelMatrix()
+        val geometry = Geometry("Geometry").apply {
+            modelIndex.set(0)
+            rotation.z = Pi / 2
+            translation.x = 1f
+            computeModelMatrix()
+        }
 
-        geometry.globalMemory!!.multiply(lhs = Vector(1f, 0f, 0f, 1f)).apply {
+        Matrix.vector(4).apply {
+            multiplication(
+                    lhs = Matrix.vector(1f, 0f, 0f, 1f),
+                    rhs = geometry.modelMatrix
+            )
+
             assertEquals(1f, x, 0.1f)
             assertEquals(1f, y, 0.1f)
             assertEquals(0f, z, 0.1f)
@@ -67,7 +59,7 @@ class GeometryTest {
         val c = Vector(1f, 1f, 0f, 0f)
         val d = Vector(0f, 1f, 0f, 0f)
         Quadrilateral("Test", a, b, c, d, Color.BLACK).apply {
-            register(this)
+            modelIndex.set(0)
             vertices.also {
                 assertEquals(8, it.size)
                 assertEquals(a, it[0].position, 0.1f)

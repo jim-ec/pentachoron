@@ -142,15 +142,6 @@ class Shader(maxModels: Int) {
     }
 
     /**
-     * Upload the first [matrixCount] matrices from [buffer] into the model matrix uniform array.
-     */
-    @Deprecated("Upload matrices from a RandomAccessBuffer.")
-    fun uploadModelMatrixBuffer(buffer: MatrixBuffer, matrixCount: Int) {
-        glUniformMatrix4fv(modelMatrixLocation, matrixCount, false, buffer.array, 0)
-        checkGlError("Uploading model buffer")
-    }
-
-    /**
      * Upload the first [uploadCounts] matrices from [buffer] into the model matrix uniform array.
      */
     fun uploadModelMatrixBuffer(buffer: RandomAccessBuffer, uploadCounts: Int) {

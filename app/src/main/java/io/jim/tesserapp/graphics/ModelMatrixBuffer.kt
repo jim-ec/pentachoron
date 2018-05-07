@@ -1,7 +1,7 @@
 package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.math.MatrixBuffer
+import io.jim.tesserapp.util.RandomAccessBuffer
 import java.util.*
 import kotlin.math.max
 
@@ -18,7 +18,12 @@ data class ModelMatrixBuffer(
         /**
          * Maximum of individual geometries registrable into this buffer.
          */
-        private val maxGeometries: Int
+        private val maxGeometries: Int,
+
+        /**
+         * Each model matrix must have this side-length.
+         */
+        private val matrixDimension: Int
 
 ) : Iterable<Geometry> {
 
@@ -30,7 +35,7 @@ data class ModelMatrixBuffer(
     /**
      * Buffer containing global model matrices.
      */
-    val buffer = MatrixBuffer(maxGeometries)
+    val buffer = RandomAccessBuffer(maxGeometries, matrixDimension * matrixDimension)
 
     private val geometries = HashSet<Geometry>()
 
@@ -85,7 +90,6 @@ data class ModelMatrixBuffer(
         }
 
         val retainedModelIndex = retainModelIndex()
-        geometry.globalMemory = buffer.MemorySpace(retainedModelIndex, 1)
         geometry.modelIndex.set(retainedModelIndex)
 
         greatestRetainedModelIndex = max(greatestRetainedModelIndex, retainedModelIndex)
@@ -100,9 +104,6 @@ data class ModelMatrixBuffer(
      * Note that [geometry] must be previously registered into this buffer with [register].
      */
     fun unregister(geometry: Geometry): Boolean {
-        if (geometry.globalMemory == null)
-            throw RuntimeException("Geometry $geometry is not registered")
-
         if (!geometries.remove(geometry)) {
             // Geometry not registered:
             return false
@@ -116,10 +117,19 @@ data class ModelMatrixBuffer(
 
         // We add the model index to the list of unused ones, releasing it from a specific geometry:
         releaseModelIndex(geometry.modelIndex.get())
-        geometry.globalMemory = null
         geometry.modelIndex.unset()
 
         return true
+    }
+
+    fun computeModelMatrices() {
+        forEach { geometry ->
+            if (with(geometry.modelMatrix) { cols != matrixDimension || rows != matrixDimension })
+                throw RuntimeException("Model matrix ${geometry.modelMatrix} must dimension $matrixDimension")
+
+            geometry.computeModelMatrix()
+            geometry.modelMatrix.writeIntoBuffer(geometry.modelIndex.get(), buffer)
+        }
     }
 
 }

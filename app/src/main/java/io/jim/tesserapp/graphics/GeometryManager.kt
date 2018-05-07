@@ -16,7 +16,10 @@ class GeometryManager(maxGeometries: Int) {
      * Model matrix buffer.
      * When geometries are transformed, this buffer is updated automatically.
      */
-    val modelMatrixBuffer = ModelMatrixBuffer(maxGeometries)
+    val modelMatrixBuffer = ModelMatrixBuffer(
+            maxGeometries = maxGeometries,
+            matrixDimension = 4
+    )
 
     /**
      * Vertex buffer.
@@ -86,7 +89,7 @@ class GeometryManager(maxGeometries: Int) {
      * Recomputes model matrices.
      */
     fun computeModelMatrices() {
-        modelMatrixBuffer.forEach(Geometry::computeModelMatrix)
+        modelMatrixBuffer.computeModelMatrices()
     }
 
 }

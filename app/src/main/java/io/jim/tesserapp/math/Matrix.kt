@@ -95,6 +95,16 @@ data class Matrix(val rows: Int, val cols: Int) {
          */
         fun vector(size: Int) = Matrix(1, size)
 
+        /**
+         * Construct a matrix with one row and n columns, suitable for representing vectors.
+         * The count of columns is determined by the count of numbers passed to [coefficients].
+         *
+         * @param coefficients Coefficients to initialize the vector with.
+         */
+        fun vector(vararg coefficients: Float) = vector(coefficients.size).apply {
+            load(*coefficients)
+        }
+
     }
 
     /**
