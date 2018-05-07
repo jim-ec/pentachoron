@@ -279,16 +279,6 @@ class MatrixBuffer(
             }
         }
 
-        /**
-         * Copies [sourceMatrix] into this matrix buffer.
-         * @param index Index to copy [sourceMatrix] at.
-         */
-        fun copy(index: Int = 0, sourceMatrix: Matrix) {
-            sourceMatrix.forEachComponent { row, col ->
-                this[index, row, col] = sourceMatrix[row, col]
-            }
-        }
-
         override fun toString() =
                 "Memory at $offset spanning over $range ${if (range > 1) "buffer" else "matrix"}:\n"
 

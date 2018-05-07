@@ -2,6 +2,7 @@ package io.jim.tesserapp.math
 
 import io.jim.tesserapp.util.RandomAccessBuffer
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MatrixTest {
@@ -42,6 +43,16 @@ class MatrixTest {
     fun setGet() {
         matrix[2, 0] = 4f
         assertEquals(4f, matrix[2, 0], 0.1f)
+    }
+
+    @Test
+    fun writeIntoBuffer() {
+        val buffer = RandomAccessBuffer(10, matrix.bufferElementSize)
+        matrix.writeIntoBuffer(2, buffer)
+
+        matrix.forEachComponent { row, col ->
+            assertEquals(if (row == col) 1f else 0f, buffer[2, row * matrix.cols + col], 0.1f)
+        }
     }
 
     @Test
@@ -100,6 +111,7 @@ class MatrixTest {
         matrix.translation(2f, 5f)
     }
 
+    @Test
     fun translation() {
         matrix.translation(2f, 3f, 4f)
         vector.load(listOf(5f, 6f, 7f, 1f))
@@ -127,12 +139,113 @@ class MatrixTest {
     }
 
     @Test
-    fun writeIntoBuffer() {
-        val buffer = RandomAccessBuffer(10, matrix.bufferElementSize)
-        matrix.writeIntoBuffer(2, buffer)
+    fun scaleUniformly() {
+        matrix.scale(2f)
+        vector.load(listOf(5f, 6f, 7f, 1f))
+        result.multiplication(vector, matrix)
 
-        matrix.forEachComponent { row, col ->
-            assertEquals(if (row == col) 1f else 0f, buffer[2, row * matrix.cols + col], 0.1f)
+        result.apply {
+            assertEquals(10f, x, 0.1f)
+            assertEquals(12f, y, 0.1f)
+            assertEquals(14f, z, 0.1f)
+            assertEquals(1f, q, 0.1f)
+        }
+    }
+
+    @Test
+    fun scaleByIndividualFactors() {
+        matrix.scale(2f, 3f, 4f)
+        vector.load(listOf(5f, 6f, 7f, 1f))
+        result.multiplication(vector, matrix)
+
+        result.apply {
+            assertEquals(10f, x, 0.1f)
+            assertEquals(18f, y, 0.1f)
+            assertEquals(28f, z, 0.1f)
+            assertEquals(1f, q, 0.1f)
+        }
+    }
+
+    @Test
+    fun perspective2D() {
+        matrix.perspective2D(5f, 10f)
+
+        result.apply {
+            multiplication(Matrix.vector(2f, 3f, -10f, 1f), matrix)
+            perspectiveDivide()
+            assertEquals(1f, z, 0.1f)
+            assertEquals(2f / 10f, x, 0.1f)
+            assertEquals(3f / 10f, y, 0.1f)
+        }
+
+        result.apply {
+            multiplication(Matrix.vector(2f, 3f, -5f, 1f), matrix)
+            perspectiveDivide()
+            assertEquals(0f, z, 0.1f)
+            assertEquals(2f / 5f, x, 0.1f)
+            assertEquals(3f / 5f, y, 0.1f)
+        }
+
+        result.apply {
+            multiplication(Matrix.vector(2f, 3f, -7f, 1f), matrix)
+            perspectiveDivide()
+            assertTrue(0f < z && z < 1f)
+            assertEquals(2f / 7f, x, 0.1f)
+            assertEquals(3f / 7f, y, 0.1f)
+        }
+
+        result.apply {
+            multiplication(Matrix.vector(2f, 3f, -2f, 1f), matrix)
+            perspectiveDivide()
+            assertTrue(z < 0f)
+            assertEquals(2f / 2f, x, 0.1f)
+            assertEquals(3f / 2f, y, 0.1f)
+        }
+    }
+
+    @Test
+    fun lookAt() {
+        matrix.lookAt(
+                Vector(2f, 2f, 2f, 1f),
+                Vector(0f, 0f, 0f, 1f),
+                Vector(0f, 1f, 0f, 0f)
+        )
+
+        // Check the all matrix axis are unit vectors:
+        assertEquals(1f, matrix.toVector(0).length, 0.1f)
+        assertEquals(1f, matrix.toVector(1).length, 0.1f)
+        assertEquals(1f, matrix.toVector(2).length, 0.1f)
+
+        // Check that all matrix axis are perpendicular to each other:
+        assertEquals(0f, matrix.toVector(0) * matrix.toVector(1), 0.1f)
+        assertEquals(0f, matrix.toVector(1) * matrix.toVector(2), 0.1f)
+        assertEquals(0f, matrix.toVector(0) * matrix.toVector(2), 0.1f)
+
+        result.apply {
+            multiplication(lhs = Matrix.vector(0f, 0f, 0f, 1f), rhs = matrix)
+            assertEquals(0f, x, 0.1f)
+            assertEquals(0f, y, 0.1f)
+            assertTrue(z < 0f)
+        }
+    }
+
+    @Test
+    fun transpose() {
+        matrix.load(
+                listOf(1f, 5f, 9f, 13f),
+                listOf(2f, 6f, 10f, 14f),
+                listOf(3f, 7f, 11f, 15f),
+                listOf(4f, 8f, 12f, 16f))
+
+        matrix.transpose()
+
+        result.apply {
+            multiplication(lhs = Matrix.vector(1f, 2f, 3f, 4f), rhs = matrix)
+            assertEquals(90f, x, 0.1f)
+            assertEquals(100f, y, 0.1f)
+            assertEquals(110f, z, 0.1f)
+            assertEquals(120f, q, 0.1f)
         }
     }
 }
+
