@@ -73,6 +73,7 @@ data class Matrix(val rows: Int, val cols: Int) {
     /**
      * W-component when this matrix represents a vector.
      */
+    @Suppress("unused")
     var w: Float
         get() = this[0, 4]
         set(value) {
@@ -86,6 +87,23 @@ data class Matrix(val rows: Int, val cols: Int) {
         forEachComponent { row, col ->
             floats[row, col] = if (row == col) 1f else 0f
         }
+    }
+
+    /**
+     * Converts a row into a [Vector].
+     *
+     * @throws MathException If matrix has not 4 columns.
+     */
+    fun toVector(row: Int): Vector {
+        if (cols != 4)
+            throw MathException("Cannot create a 4d vector from a ${cols}d matrix row")
+
+        return Vector(
+                this[row, 0],
+                this[row, 1],
+                this[row, 2],
+                this[row, 3]
+        )
     }
 
     companion object {
@@ -159,6 +177,37 @@ data class Matrix(val rows: Int, val cols: Int) {
             MathException("${transformDimension}d transform not compatible with $this")
 
     /**
+     * Load a scale matrix.
+     * @param factors Scale amount for each matrix axis.
+     * @throws IncompatibleTransformDimension
+     * @throws IsNotQuadraticException
+     */
+    fun scale(vararg factors: Float) {
+        if (rows != cols)
+            throw IsNotQuadraticException()
+        if (factors.size != cols - 1)
+            throw IncompatibleTransformDimension(factors.size)
+
+        for (i in 0 until cols - 1) {
+            this[i, i] = factors[i]
+        }
+    }
+
+    /**
+     * Load a scale matrix.
+     * @param factor Scale amount for each matrix axis.
+     * @throws IsNotQuadraticException
+     */
+    fun scale(factor: Float) {
+        if (rows != cols)
+            throw IsNotQuadraticException()
+
+        for (i in 0 until cols - 1) {
+            this[i, i] = factor
+        }
+    }
+
+    /**
      * Load a translation.
      * This does not reset any parts of the matrix,
      * just the floats representing translation are modified.
@@ -191,6 +240,97 @@ data class Matrix(val rows: Int, val cols: Int) {
         this[a, b] = sin(radians)
         this[b, a] = -sin(radians)
         this[b, b] = cos(radians)
+    }
+
+    /**
+     * Load a 3D to 2D perspective matrix.
+     * The z component gets remapping between a near and far value.
+     * @param near Near plane. If Vector lies on that plane (negated), it will be projected to 0.
+     * @param far Far plane. If Vector lies on that plane (negated), it will be projected to 1.
+     */
+    fun perspective2D(near: Float, far: Float) {
+
+        if (near <= 0.0 || far <= 0.0 || near > far)
+            throw MathException("Invalid near=$near or far=$far parameter")
+
+        this[2, 3] = -1.0f
+        this[3, 3] = 0.0f
+        this[2, 2] = -far / (far - near)
+        this[3, 2] = -(far * near) / (far - near)
+    }
+
+    /**
+     * Load a look at matrix.
+     * The camera is constructed in such a way that it is positioned at [eye], Vectors to [target],
+     * and the upper edge is oriented in the [refUp] Vector.
+     * @param eye Eye position. W component should be 1.
+     * @param target Target position. W component should be 1.
+     * @param refUp Target position. W component should be 0.
+     */
+    fun lookAt(eye: Vector, target: Vector, refUp: Vector) = apply {
+
+        if (cols != 4 || rows != 4)
+            throw MathException("Look-at matrix computation works only with 4x4 matrices, but is $this")
+
+        val forward = (eye - target).normalize()
+        val right = (refUp cross forward).normalize()
+        val up = (forward cross right).normalize()
+
+        this[0, 0] = right.x
+        this[0, 1] = right.y
+        this[0, 2] = right.z
+
+        this[1, 0] = up.x
+        this[1, 1] = up.y
+        this[1, 2] = up.z
+
+        this[2, 0] = forward.x
+        this[2, 1] = forward.y
+        this[2, 2] = forward.z
+
+        this[3, 0] = 0f
+        this[3, 1] = 0f
+        this[3, 2] = 0f
+        this[3, 3] = 1f
+
+        transpose()
+
+        val base = Matrix.vector(4)
+        base.multiplication(
+                lhs = Matrix.vector(-eye.x, -eye.y, -eye.z, 1f),
+                rhs = this
+        )
+        for (col in 0 until 3)
+            this[3, col] = base[0, col]
+    }
+
+    /**
+     * Transpose the matrix.
+     */
+    fun transpose() {
+        var tmp: Float
+        forEachComponent { row, col ->
+            // Do neither swap the same coefficients twice nor the pivots at all:
+            if (row < col) {
+                tmp = this[row, col]
+                this[row, col] = this[col, row]
+                this[col, row] = tmp
+            }
+        }
+    }
+
+    /**
+     * Divides the vector matrix by its last component.
+     * @throws MathException If the matrix is not a vector.
+     */
+    fun perspectiveDivide() {
+        if (rows != 1)
+            throw MathException("Can only perform perspective divide on a vector matrix")
+
+        val oneOverLast = 1f / this[0, cols - 1]
+        for (i in 0 until cols - 1) {
+            this[0, i] *= oneOverLast
+        }
     }
 
     /**
