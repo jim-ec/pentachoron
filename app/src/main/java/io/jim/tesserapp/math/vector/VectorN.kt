@@ -53,7 +53,7 @@ open class VectorN(
      */
     operator fun set(index: Int, value: Float) {
         if (index < 0 || index >= dimension)
-            throw MathException("Cannot set ${index}th component to a ${dimensionString} vector")
+            throw MathException("Cannot set ${index}th component to a $dimensionString vector")
 
         floats[index] = value
     }

@@ -44,6 +44,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
         addLine(Vector(0f, 0f, 1f, 1f), Vector(0f, 0f, 5f, 1f))
     }
 
+    @Suppress("unused")
     private val axis = Lines("Axis").apply {
         addLine(Vector(0f, 0f, 0f, 1f), Vector(1f, 0f, 0f, 1f), Color(context, R.color.colorAxisX))
         addLine(Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f), Color(context, R.color.colorAxisY))

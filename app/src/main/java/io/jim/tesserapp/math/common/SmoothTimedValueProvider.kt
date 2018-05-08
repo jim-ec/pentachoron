@@ -22,20 +22,22 @@ class SmoothTimedValueProvider<R>(
 
     var oldValue = startValue
 
-    private val timer = Timer().scheduleAtFixedRate(object : TimerTask() {
-        val handler = Handler(Looper.getMainLooper())
+    init {
+        Timer().scheduleAtFixedRate(object : TimerTask() {
+            val handler = Handler(Looper.getMainLooper())
 
-        val checkForNewValue = Runnable {
-            val valueNow = currentValue
-            if (valueNow != oldValue) {
-                onChanged(valueNow)
-                oldValue = valueNow
+            val checkForNewValue = Runnable {
+                val valueNow = currentValue
+                if (valueNow != oldValue) {
+                    onChanged(valueNow)
+                    oldValue = valueNow
+                }
             }
-        }
 
-        override fun run() {
-            handler.post(checkForNewValue)
-        }
+            override fun run() {
+                handler.post(checkForNewValue)
+            }
 
-    }, 0L, timerInterval)
+        }, 0L, timerInterval)
+    }
 }

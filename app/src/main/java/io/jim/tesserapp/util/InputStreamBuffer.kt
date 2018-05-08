@@ -23,7 +23,7 @@ class InputStreamBuffer(
 
     /**
      * Append [floats] to the buffer.
-     * @throws InvalidElementException If the count of floats in the list do not match up with [elementSize].
+     * @throws Buffer.InvalidElementException If the count of floats in the list do not match up with [elementSize].
      */
     operator fun plusAssign(floats: List<Float>) {
         if (floats.size != elementSize)

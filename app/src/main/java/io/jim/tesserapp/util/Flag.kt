@@ -6,7 +6,7 @@ data class Flag(
 
 ) {
 
-    val listeners = ListenerListParam<Boolean>()
+    private val listeners = ListenerListParam<Boolean>()
 
     operator fun not() = !flag
 
