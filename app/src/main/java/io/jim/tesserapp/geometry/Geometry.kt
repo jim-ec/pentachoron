@@ -2,8 +2,8 @@ package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.graphics.Vertex
-import io.jim.tesserapp.math.Matrix
 import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.util.ListenerList
 
 /**

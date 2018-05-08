@@ -3,7 +3,7 @@ package io.jim.tesserapp.rendering
 import android.opengl.GLES10.GL_STACK_OVERFLOW
 import android.opengl.GLES10.GL_STACK_UNDERFLOW
 import android.opengl.GLES20.*
-import io.jim.tesserapp.math.Matrix
+import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.util.RandomAccessBuffer
 
 /**

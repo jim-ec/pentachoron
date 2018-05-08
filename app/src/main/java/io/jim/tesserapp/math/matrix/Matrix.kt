@@ -1,5 +1,8 @@
-package io.jim.tesserapp.math
+package io.jim.tesserapp.math.matrix
 
+import io.jim.tesserapp.math.MathException
+import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.math.formatNumber
 import io.jim.tesserapp.util.RandomAccessBuffer
 import kotlin.math.cos
 import kotlin.math.sin
@@ -295,9 +298,9 @@ open class Matrix(val rows: Int, val cols: Int) {
 
         transpose()
 
-        val base = Matrix.vector(4)
+        val base = vector(4)
         base.multiplication(
-                lhs = Matrix.vector(-eye.x, -eye.y, -eye.z, 1f),
+                lhs = vector(-eye.x, -eye.y, -eye.z, 1f),
                 rhs = this
         )
         for (col in 0 until 3)

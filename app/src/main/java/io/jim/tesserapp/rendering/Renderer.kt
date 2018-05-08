@@ -6,8 +6,8 @@ import android.opengl.GLSurfaceView
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.graphics.GeometryManager
 import io.jim.tesserapp.graphics.SharedRenderData
-import io.jim.tesserapp.math.Projection3dMatrix
-import io.jim.tesserapp.math.ViewMatrix
+import io.jim.tesserapp.math.matrix.Projection3dMatrix
+import io.jim.tesserapp.math.matrix.ViewMatrix
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
