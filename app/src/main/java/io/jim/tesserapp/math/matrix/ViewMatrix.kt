@@ -14,12 +14,21 @@ class ViewMatrix(
     private val matrixLookAt = Matrix(4)
     private val matrixScale = Matrix(4)
 
+    private val eye = Vector(1f, 0f, 0f, 1f)
+
+    companion object {
+        val upVector = Vector(0f, 1f, 0f, 0f)
+        val target = Vector(0f, 0f, 0f, 1f)
+    }
+
     fun compute() {
         matrixHorizontalRotation.rotation(2, 0, camera.horizontalRotation)
         matrixVerticalRotation.rotation(0, 1, camera.verticalRotation)
         matrixRotation.multiplication(matrixHorizontalRotation, matrixVerticalRotation)
 
-        matrixLookAt.lookAt(Vector(camera.distance, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
+        eye.x = camera.distance
+
+        matrixLookAt.lookAt(eye, target, upVector)
         matrixScale.scale(1f, camera.aspectRatio, 1f)
 
         matrixLookAtRotation.multiplication(matrixRotation, matrixLookAt)
