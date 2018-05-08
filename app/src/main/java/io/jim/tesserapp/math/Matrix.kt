@@ -15,7 +15,7 @@ data class Matrix(val rows: Int, val cols: Int) {
     /**
      * Underlying float buffer. One buffer element is seen as one row.
      */
-    private val floats = RandomAccessBuffer(rows, cols)
+    internal val floats = RandomAccessBuffer(rows, cols)
 
     /**
      * Construct a quadratic matrix with [size] rows and columns.
