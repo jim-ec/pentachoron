@@ -6,7 +6,7 @@ import android.opengl.GLSurfaceView
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.graphics.GeometryManager
 import io.jim.tesserapp.graphics.SharedRenderData
-import io.jim.tesserapp.math.Matrix
+import io.jim.tesserapp.math.Projection3dMatrix
 import io.jim.tesserapp.math.ViewMatrix
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -25,7 +25,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
 
-    private val projectionMatrix = Matrix(4)
+    private val projectionMatrix = Projection3dMatrix(near = 0.1f, far = 100f)
     private val viewMatrix = ViewMatrix(sharedRenderData.camera)
 
     companion object {
@@ -44,7 +44,6 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         shader = Shader(MAX_MODELS)
         vertexBuffer = VertexBuffer()
 
-        projectionMatrix.perspective2D(near = 0.1f, far = 100f)
         shader.uploadProjectionMatrix(projectionMatrix)
 
         sharedRenderData.geometryManager.vertexBufferRewritten += { buffer ->
