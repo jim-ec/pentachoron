@@ -4,7 +4,6 @@ import android.opengl.GLES10.GL_STACK_OVERFLOW
 import android.opengl.GLES10.GL_STACK_UNDERFLOW
 import android.opengl.GLES20.*
 import io.jim.tesserapp.math.Matrix
-import io.jim.tesserapp.math.MatrixBuffer
 import io.jim.tesserapp.util.RandomAccessBuffer
 
 /**
@@ -151,10 +150,10 @@ class Shader(maxModels: Int) {
     }
 
     /**
-     * Upload the first matrix in [buffer] to the view matrix uniform.
+     * Upload [matrix] to the view matrix uniform.
      */
-    fun uploadViewMatrix(buffer: MatrixBuffer) {
-        glUniformMatrix4fv(viewMatrixLocation, 1, false, buffer.array, 0)
+    fun uploadViewMatrix(matrix: Matrix) {
+        glUniformMatrix4fv(viewMatrixLocation, 1, false, matrix.floats.floatBuffer)
         checkGlError("Uploading view matrix")
     }
 

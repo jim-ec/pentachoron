@@ -66,25 +66,25 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        sharedRenderData.synchronized { renderData ->
+        sharedRenderData.synchronized { (geometryManager) ->
 
             // Recompute view matrix:
             viewMatrix.compute()
-            shader.uploadViewMatrix(viewMatrix.buffer)
+            shader.uploadViewMatrix(viewMatrix)
 
             // Upload model matrices:
-            renderData.geometryManager.computeModelMatrices()
+            geometryManager.computeModelMatrices()
             shader.uploadModelMatrixBuffer(
-                    renderData.geometryManager.modelMatrixBuffer.buffer,
-                    renderData.geometryManager.modelMatrixBuffer.activeGeometries)
+                    geometryManager.modelMatrixBuffer.buffer,
+                    geometryManager.modelMatrixBuffer.activeGeometries)
 
             // Ensure vertex data is up-to-date:
-            renderData.geometryManager.updateVertexBuffer()
+            geometryManager.updateVertexBuffer()
 
             // Draw actual geometry:
             glDrawArrays(
                     GL_LINES, 0,
-                    renderData.geometryManager.vertexBuffer.writtenElementCounts)
+                    geometryManager.vertexBuffer.writtenElementCounts)
         }
     }
 

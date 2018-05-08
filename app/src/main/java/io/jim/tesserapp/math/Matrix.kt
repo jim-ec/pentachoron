@@ -10,7 +10,7 @@ import kotlin.math.sin
  * @constructor Construct an identity matrix.
  * @throws MathException If either [rows] or [cols] are less than 1.
  */
-data class Matrix(val rows: Int, val cols: Int) {
+open class Matrix(val rows: Int, val cols: Int) {
 
     /**
      * Underlying float buffer. One buffer element is seen as one row.

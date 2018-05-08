@@ -2,31 +2,27 @@ package io.jim.tesserapp.math
 
 import io.jim.tesserapp.graphics.Camera
 
-data class ViewMatrix(
+class ViewMatrix(
         private val camera: Camera
-) {
+) : Matrix(4) {
 
-    val buffer = MatrixBuffer(10)
-    private val matricesMemory = buffer.MemorySpace()
-
-    private val matrixRotation = 2
-    private val matrixHorizontalRotation = 3
-    private val matrixVerticalRotation = 4
-    private val matrixLookAt = 5
-    private val matrixScale = 6
+    private val matrixLookAtRotation = Matrix(4)
+    private val matrixRotation = Matrix(4)
+    private val matrixHorizontalRotation = Matrix(4)
+    private val matrixVerticalRotation = Matrix(4)
+    private val matrixLookAt = Matrix(4)
+    private val matrixScale = Matrix(4)
 
     fun compute() {
-        matricesMemory.apply {
-            rotation(matrixHorizontalRotation, 2, 0, camera.horizontalRotation)
-            rotation(matrixVerticalRotation, 0, 1, camera.verticalRotation)
-            multiply(matrixHorizontalRotation, matrixVerticalRotation, matrixRotation)
+        matrixHorizontalRotation.rotation(2, 0, camera.horizontalRotation)
+        matrixVerticalRotation.rotation(0, 1, camera.verticalRotation)
+        matrixRotation.multiplication(matrixHorizontalRotation, matrixVerticalRotation)
 
-            lookAt(matrixLookAt, Vector(camera.distance, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
-            scale(matrixScale, Vector(1f, camera.aspectRatio, 1f, 1f))
+        matrixLookAt.lookAt(Vector(camera.distance, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f))
+        matrixScale.scale(1f, camera.aspectRatio, 1f)
 
-            multiply(matrixRotation, matrixLookAt, 1)
-            multiply(1, matrixScale, 0)
-        }
+        matrixLookAtRotation.multiplication(matrixRotation, matrixLookAt)
+        multiplication(matrixScale, matrixLookAtRotation)
     }
 
 }
