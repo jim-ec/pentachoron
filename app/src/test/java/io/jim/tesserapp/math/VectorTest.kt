@@ -1,5 +1,6 @@
 package io.jim.tesserapp.math
 
+import io.jim.tesserapp.util.assertEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import kotlin.math.sqrt
@@ -94,6 +95,15 @@ class VectorTest {
     @Test
     fun normalized() {
         assertEquals(1f, Vector(3f, 1f, 4f, 5f).normalize().length, 0.1f)
+    }
+
+    @Test
+    fun perspectiveDivision() {
+        assertEquals(
+                Vector(6f, 2f, 4f, 2f),
+                Vector(3f, 1f, 2f, 1f).apply { perspectiveDivide() },
+                0.1f
+        )
     }
 
 }
