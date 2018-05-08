@@ -1,5 +1,6 @@
 package io.jim.tesserapp.math
 
+import io.jim.tesserapp.math.common.formatNumber
 import kotlin.math.sqrt
 
 /**

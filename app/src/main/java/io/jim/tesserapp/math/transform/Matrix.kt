@@ -1,8 +1,8 @@
-package io.jim.tesserapp.math.matrix
+package io.jim.tesserapp.math.transform
 
-import io.jim.tesserapp.math.MathException
 import io.jim.tesserapp.math.Vector
-import io.jim.tesserapp.math.formatNumber
+import io.jim.tesserapp.math.common.MathException
+import io.jim.tesserapp.math.common.formatNumber
 import io.jim.tesserapp.util.RandomAccessBuffer
 import kotlin.math.cos
 import kotlin.math.sin

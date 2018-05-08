@@ -1,4 +1,4 @@
-package io.jim.tesserapp.math
+package io.jim.tesserapp.math.common
 
 /**
  * Represents a shift-able cubic polynomial function.

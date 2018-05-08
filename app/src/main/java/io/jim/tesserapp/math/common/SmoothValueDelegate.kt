@@ -1,4 +1,4 @@
-package io.jim.tesserapp.math
+package io.jim.tesserapp.math.common
 
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty

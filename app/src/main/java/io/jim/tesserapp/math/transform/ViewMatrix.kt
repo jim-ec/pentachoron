@@ -1,4 +1,4 @@
-package io.jim.tesserapp.math.matrix
+package io.jim.tesserapp.math.transform
 
 import io.jim.tesserapp.graphics.Camera
 import io.jim.tesserapp.math.Vector

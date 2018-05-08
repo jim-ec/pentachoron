@@ -1,4 +1,4 @@
-package io.jim.tesserapp.math
+package io.jim.tesserapp.math.common
 
 /**
  * Provides a value that, if changed, transitions smoothly over time using an underlying curve.

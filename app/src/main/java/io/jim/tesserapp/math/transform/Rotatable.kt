@@ -1,6 +1,6 @@
-package io.jim.tesserapp.math
+package io.jim.tesserapp.math.transform
 
-interface Translatable {
+interface Rotatable {
     var x: Float
     var y: Float
     var z: Float

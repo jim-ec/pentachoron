@@ -1,4 +1,4 @@
-package io.jim.tesserapp.math
+package io.jim.tesserapp.math.common
 
 import java.math.RoundingMode
 import java.text.DecimalFormat

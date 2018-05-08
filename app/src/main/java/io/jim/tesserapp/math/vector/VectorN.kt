@@ -1,7 +1,7 @@
 package io.jim.tesserapp.math.vector
 
-import io.jim.tesserapp.math.MathException
-import io.jim.tesserapp.math.formatNumber
+import io.jim.tesserapp.math.common.MathException
+import io.jim.tesserapp.math.common.formatNumber
 import kotlin.math.sqrt
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -103,7 +103,7 @@ open class VectorN(
 
     /**
      * Add [rhs] to this vector.
-     * @throws VectorN.IncompatibleVectorException If vector dimension differ
+     * @throws IncompatibleVectorException If vector dimension differ
      */
     operator fun plusAssign(rhs: VectorN) {
         if (dimension != rhs.dimension)
@@ -116,7 +116,7 @@ open class VectorN(
 
     /**
      * Subtract [rhs] from this vector.
-     * @throws VectorN.IncompatibleVectorException If vector dimension differ
+     * @throws IncompatibleVectorException If vector dimension differ
      */
     operator fun minusAssign(rhs: VectorN) {
         if (dimension != rhs.dimension)

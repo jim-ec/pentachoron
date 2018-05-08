@@ -1,4 +1,4 @@
-package io.jim.tesserapp.math
+package io.jim.tesserapp.math.common
 
 import android.os.Handler
 import android.os.Looper

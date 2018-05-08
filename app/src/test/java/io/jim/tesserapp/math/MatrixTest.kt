@@ -1,6 +1,8 @@
 package io.jim.tesserapp.math
 
-import io.jim.tesserapp.math.matrix.Matrix
+import io.jim.tesserapp.math.common.MathException
+import io.jim.tesserapp.math.common.Pi
+import io.jim.tesserapp.math.transform.Matrix
 import io.jim.tesserapp.util.RandomAccessBuffer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

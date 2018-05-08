@@ -8,8 +8,8 @@ import android.view.MotionEvent.*
 import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Lines
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.math.Pi
 import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.math.common.Pi
 import io.jim.tesserapp.rendering.Renderer
 
 /**

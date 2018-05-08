@@ -6,9 +6,9 @@ import android.widget.FrameLayout
 import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Quadrilateral
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.math.Rotatable
-import io.jim.tesserapp.math.Translatable
 import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.math.transform.Rotatable
+import io.jim.tesserapp.math.transform.Translatable
 import kotlin.properties.Delegates
 
 /**

@@ -2,7 +2,7 @@ package io.jim.tesserapp.ui
 
 import android.widget.SeekBar
 import android.widget.TextView
-import io.jim.tesserapp.math.SmoothTimedValueProvider
+import io.jim.tesserapp.math.common.SmoothTimedValueProvider
 
 /**
  * Control for one rotation.

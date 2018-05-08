@@ -4,7 +4,7 @@ import android.content.Context
 import android.widget.SeekBar
 import android.widget.TextView
 import io.jim.tesserapp.R
-import io.jim.tesserapp.math.formatNumber
+import io.jim.tesserapp.math.common.formatNumber
 
 class CameraDistanceController(
         controllables: List<Controllable>,

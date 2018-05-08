@@ -1,4 +1,4 @@
-package io.jim.tesserapp.math
+package io.jim.tesserapp.math.common
 
 /**
  * An error indicating a math-related error like zero-division due to invalid parameters.
