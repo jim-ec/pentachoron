@@ -10,7 +10,7 @@ import io.jim.tesserapp.util.InputStreamBuffer
  */
 class VertexBuffer {
 
-    private val handle = let {
+    private val handle = run {
         val status = IntArray(1)
         glGenBuffers(1, status, 0)
         status[0]

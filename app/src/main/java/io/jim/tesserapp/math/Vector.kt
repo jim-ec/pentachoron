@@ -55,7 +55,7 @@ data class Vector(
     /**
      * Represent this vector as a string.
      */
-    override fun toString() = let {
+    override fun toString() = run {
         val sb = StringBuilder()
         sb.append('(')
         sb.append(formatNumber(x)).append('|')
