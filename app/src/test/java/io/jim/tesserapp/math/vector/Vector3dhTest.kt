@@ -28,7 +28,7 @@ class Vector3dhTest {
     @Test
     fun multiply() {
         val projection = Projection3dMatrix()
-        val translation = Matrix(4).apply { translation(0f, 0f, 1f) }
+        val translation = Matrix(4).apply { translation(Vector3d(0f, 0f, 1f)) }
         val matrix = Matrix(4).apply { multiplication(translation, projection) }
 
         val result = Vector3dh()

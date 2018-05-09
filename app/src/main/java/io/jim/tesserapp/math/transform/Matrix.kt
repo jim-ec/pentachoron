@@ -41,42 +41,6 @@ open class Matrix(
     val bufferElementSize = rows * cols
 
     /**
-     * X-component when this matrix represents a vector.
-     */
-    var x: Float
-        get() = this[0, 0]
-        set(value) {
-            this[0, 0] = value
-        }
-
-    /**
-     * Y-component when this matrix represents a vector.
-     */
-    var y: Float
-        get() = this[0, 1]
-        set(value) {
-            this[0, 1] = value
-        }
-
-    /**
-     * Z-component when this matrix represents a vector.
-     */
-    var z: Float
-        get() = this[0, 2]
-        set(value) {
-            this[0, 2] = value
-        }
-
-    /**
-     * Q-component when this matrix represents a vector.
-     */
-    var q: Float
-        get() = this[0, 3]
-        set(value) {
-            this[0, 3] = value
-        }
-
-    /**
      * Loads the identity matrix.
      */
     fun identity() {
@@ -95,60 +59,24 @@ open class Matrix(
         }
     }
 
-    companion object {
-
-        /**
-         * Construct a matrix with one row and [size] columns, suitable for representing vectors.
-         */
-        fun vector(size: Int) = Matrix(1, size)
-
-        /**
-         * Construct a matrix with one row and n columns, suitable for representing vectors.
-         * The count of columns is determined by the count of numbers passed to [coefficients].
-         *
-         * @param coefficients Coefficients to initialize the vector with.
-         */
-        fun vector(vararg coefficients: Float) = vector(coefficients.size).apply {
-            load(*coefficients)
-        }
-
-    }
-
     /**
      * Loads a complete set of floats into the matrix.
      *
-     * @param rowList Lists containing floats. Each list is considered as one matrix row.
-     * @throws MathException If [rowList] has not [rows] rows.
-     * @throws MathException If any list in [rowList] has not [cols] columns.
+     * @param rowVectors Lists containing floats. Each list is considered as one matrix row.
+     * @throws MathException If [rowVectors] has not [rows] rows.
+     * @throws MathException If any list in [rowVectors] has not [cols] columns.
      */
-    fun load(vararg rowList: List<Float>) {
-        if (rowList.size != rows)
-            throw MathException("Row lists must match with matrix row count $rows")
+    fun load(vararg rowVectors: VectorN) {
+        if (rowVectors.size != rows)
+            throw MathException("Row count must match with matrix row count $rows")
 
-        rowList.forEachIndexed { rowIndex, row ->
-            if (row.size != cols)
-                throw MathException("Columns per row list must match with matrix column count $cols")
+        rowVectors.forEachIndexed { rowIndex, row ->
+            if (row.dimension != cols)
+                throw MathException("Columns per row vector must match with matrix column count $cols")
 
             row.forEachIndexed { colIndex, coefficient ->
                 this[rowIndex, colIndex] = coefficient
             }
-        }
-    }
-
-    /**
-     * Loads a complete set of floats into a vector matrix.
-     * @param coefficients Coefficients to load into the matrix.
-     * @throws MathException If this matrix is not a vector, meaning that is has more than one row.
-     * @throws MathException If coefficient counts does not match the matrix column counts.
-     */
-    fun load(vararg coefficients: Float) {
-        if (rows != 1)
-            throw MathException("Matrix must be a vector")
-        if (coefficients.size != cols)
-            throw MathException("Coefficient count must match with matrix columns")
-
-        coefficients.forEachIndexed { index, coefficient ->
-            this[0, index] = coefficient
         }
     }
 
@@ -171,11 +99,11 @@ open class Matrix(
      * @throws IncompatibleTransformDimension
      * @throws IsNotQuadraticException
      */
-    fun scale(vararg factors: Float) {
+    fun scale(factors: VectorN) {
         if (rows != cols)
             throw IsNotQuadraticException()
-        if (factors.size != cols - 1)
-            throw IncompatibleTransformDimension(factors.size)
+        if (factors.dimension != cols - 1)
+            throw IncompatibleTransformDimension(factors.dimension)
 
         for (i in 0 until cols - 1) {
             this[i, i] = factors[i]
@@ -203,13 +131,13 @@ open class Matrix(
      * @throws IncompatibleTransformDimension
      * @throws IsNotQuadraticException
      */
-    fun translation(vararg coefficients: Float) {
+    fun translation(v: VectorN) {
         if (rows != cols)
             throw IsNotQuadraticException()
-        if (coefficients.size != cols - 1)
-            throw IncompatibleTransformDimension(coefficients.size)
+        if (v.dimension != cols - 1)
+            throw IncompatibleTransformDimension(v.dimension)
 
-        coefficients.forEachIndexed { col, coefficient ->
+        v.forEachIndexed { col, coefficient ->
             this[rows - 1, col] = coefficient
         }
     }

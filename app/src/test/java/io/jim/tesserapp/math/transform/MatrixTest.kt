@@ -5,6 +5,7 @@ import io.jim.tesserapp.math.common.Pi
 import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.math.vector.Vector3dh
 import io.jim.tesserapp.math.vector.Vector4d
+import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.util.RandomAccessBuffer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -101,17 +102,17 @@ class MatrixTest {
 
     @Test(expected = Matrix.IsNotQuadraticException::class)
     fun translationNotQuadratic() {
-        Matrix(3, 4).translation(2f, 5f, 6f)
+        Matrix(3, 4).translation(Vector3d(2f, 5f, 6f))
     }
 
     @Test(expected = Matrix.IncompatibleTransformDimension::class)
     fun translationIncompatibleDimension() {
-        matrix.translation(2f, 5f)
+        matrix.translation(VectorN(2f, 5f))
     }
 
     @Test
     fun translation() {
-        matrix.translation(2f, 3f, 4f)
+        matrix.translation(VectorN(2f, 3f, 4f))
         vector.load(5f, 6f, 7f, 1f)
         result.multiplication(vector, matrix)
 
@@ -152,7 +153,7 @@ class MatrixTest {
 
     @Test
     fun scaleByIndividualFactors() {
-        matrix.scale(2f, 3f, 4f)
+        matrix.scale(VectorN(2f, 3f, 4f))
         vector.load(5f, 6f, 7f, 1f)
         result.multiplication(vector, matrix)
 
@@ -230,10 +231,10 @@ class MatrixTest {
     @Test
     fun transpose() {
         matrix.load(
-                listOf(1f, 5f, 9f, 13f),
-                listOf(2f, 6f, 10f, 14f),
-                listOf(3f, 7f, 11f, 15f),
-                listOf(4f, 8f, 12f, 16f))
+                VectorN(1f, 5f, 9f, 13f),
+                VectorN(2f, 6f, 10f, 14f),
+                VectorN(3f, 7f, 11f, 15f),
+                VectorN(4f, 8f, 12f, 16f))
 
         matrix.transpose()
 

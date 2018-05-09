@@ -175,7 +175,7 @@ open class Geometry(
         )
 
         // Translation:
-        translationMatrix.translation(translation.x, translation.y, translation.z)
+        translationMatrix.translation(translation)
 
         // Model transform:
         modelMatrix.multiplication(

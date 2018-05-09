@@ -33,7 +33,7 @@ class ViewMatrix(
                 target = target,
                 refUp = upVector
         )
-        matrixScale.scale(1f, camera.aspectRatio, 1f)
+        matrixScale.scale(Vector3d(1f, camera.aspectRatio, 1f))
 
         matrixLookAtRotation.multiplication(matrixRotation, matrixLookAt)
         multiplication(matrixScale, matrixLookAtRotation)
