@@ -1,8 +1,8 @@
 package io.jim.tesserapp.math.transform
 
-import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.Pi
+import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.util.RandomAccessBuffer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -209,9 +209,12 @@ class MatrixTest {
     @Test
     fun lookAt() {
         matrix.lookAt(
-                Vector(2f, 2f, 2f, 1f),
-                Vector(0f, 0f, 0f, 1f),
-                Vector(0f, 1f, 0f, 0f)
+                eye = Vector3d(2f, 2f, 2f),
+                target = Vector3d(0f, 0f, 0f),
+                refUp = Vector3d(0f, 1f, 0f),
+                outRight = Vector3d(),
+                outUp = Vector3d(),
+                outForward = Vector3d()
         )
 
         // Check the all matrix axis are unit vectors:

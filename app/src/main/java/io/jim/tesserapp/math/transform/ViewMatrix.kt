@@ -1,7 +1,7 @@
 package io.jim.tesserapp.math.transform
 
 import io.jim.tesserapp.graphics.Camera
-import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.math.vector.Vector3d
 
 class ViewMatrix(
         private val camera: Camera
@@ -14,11 +14,14 @@ class ViewMatrix(
     private val matrixLookAt = Matrix(4)
     private val matrixScale = Matrix(4)
 
-    private val eye = Vector(1f, 0f, 0f, 1f)
+    private val eye = Vector3d(1f, 0f, 0f)
+    private val outRight = Vector3d()
+    private val outUp = Vector3d()
+    private val outForward = Vector3d()
 
     companion object {
-        val upVector = Vector(0f, 1f, 0f, 0f)
-        val target = Vector(0f, 0f, 0f, 1f)
+        val upVector = Vector3d(0f, 1f, 0f)
+        val target = Vector3d(0f, 0f, 0f)
     }
 
     fun compute() {
@@ -28,7 +31,14 @@ class ViewMatrix(
 
         eye.x = camera.distance
 
-        matrixLookAt.lookAt(eye, target, upVector)
+        matrixLookAt.lookAt(
+                eye = eye,
+                target = target,
+                refUp = upVector,
+                outRight = outRight,
+                outUp = outUp,
+                outForward = outForward
+        )
         matrixScale.scale(1f, camera.aspectRatio, 1f)
 
         matrixLookAtRotation.multiplication(matrixRotation, matrixLookAt)

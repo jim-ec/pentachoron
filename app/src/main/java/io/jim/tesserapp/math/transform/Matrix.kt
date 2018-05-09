@@ -3,6 +3,7 @@ package io.jim.tesserapp.math.transform
 import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.formatNumber
+import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.util.RandomAccessBuffer
 import kotlin.math.cos
 import kotlin.math.sin
@@ -74,16 +75,6 @@ open class Matrix(
         get() = this[0, 3]
         set(value) {
             this[0, 3] = value
-        }
-
-    /**
-     * W-component when this matrix represents a vector.
-     */
-    @Suppress("unused")
-    var w: Float
-        get() = this[0, 4]
-        set(value) {
-            this[0, 4] = value
         }
 
     /**
@@ -280,27 +271,49 @@ open class Matrix(
      * @param eye Eye position. W component should be 1.
      * @param target Target position. W component should be 1.
      * @param refUp Target position. W component should be 0.
+     * @param outForward Vector in which the computed forward vector is stored.
+     * @param outRight Vector in which the computed right vector is stored.
+     * @param outUp Vector in which the computed up vector is stored.
      */
-    fun lookAt(eye: Vector, target: Vector, refUp: Vector) = apply {
+    fun lookAt(
+            eye: Vector3d,
+            target: Vector3d,
+            refUp: Vector3d,
+            outRight: Vector3d,
+            outUp: Vector3d,
+            outForward: Vector3d
+    ) = apply {
 
         if (cols != 4 || rows != 4)
             throw MathException("Look-at matrix computation works only with 4x4 matrices, but is $this")
 
-        val forward = (eye - target).normalize()
-        val right = (refUp cross forward).normalize()
-        val up = (forward cross right).normalize()
+        outForward.apply {
+            copyFrom(eye)
+            this -= target
+            normalize()
+        }
 
-        this[0, 0] = right.x
-        this[0, 1] = right.y
-        this[0, 2] = right.z
+        outRight.apply {
+            crossed(refUp, outForward)
+            normalize()
+        }
 
-        this[1, 0] = up.x
-        this[1, 1] = up.y
-        this[1, 2] = up.z
+        outUp.apply {
+            crossed(outForward, outRight)
+            normalize()
+        }
 
-        this[2, 0] = forward.x
-        this[2, 1] = forward.y
-        this[2, 2] = forward.z
+        this[0, 0] = outRight.x
+        this[0, 1] = outRight.y
+        this[0, 2] = outRight.z
+
+        this[1, 0] = outUp.x
+        this[1, 1] = outUp.y
+        this[1, 2] = outUp.z
+
+        this[2, 0] = outForward.x
+        this[2, 1] = outForward.y
+        this[2, 2] = outForward.z
 
         this[3, 0] = 0f
         this[3, 1] = 0f
