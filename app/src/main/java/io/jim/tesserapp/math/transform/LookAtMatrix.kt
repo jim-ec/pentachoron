@@ -2,11 +2,17 @@ package io.jim.tesserapp.math.transform
 
 import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.math.vector.Vector3dh
-import io.jim.tesserapp.math.vector.VectorCache
 
+/**
+ * Represents a look-at transform. Most likely use-case is camera-transform.
+ */
 class LookAtMatrix : Matrix(4) {
 
-    private val cache = VectorCache { Vector3dh() }
+    private val forward = Vector3dh()
+    private val right = Vector3dh()
+    private val up = Vector3dh()
+    private val negatedEye = Vector3dh()
+    private val base = Vector3dh()
 
     /**
      * Load a look at matrix.
@@ -21,32 +27,27 @@ class LookAtMatrix : Matrix(4) {
             target: Vector3d,
             refUp: Vector3d
     ) {
-        cache.startAcquiring()
 
-        val forward = cache.acquire().apply {
+        forward.apply {
             copyFrom(eye)
             this -= target
             normalize()
         }
 
-        val right = cache.acquire().apply {
+        right.apply {
             crossed(refUp, forward)
             normalize()
         }
 
-        val up = cache.acquire().apply {
+        up.apply {
             crossed(forward, right)
             normalize()
         }
 
-        val negatedEye = cache.acquire().apply {
+        negatedEye.apply {
             copyFrom(eye)
             negate()
         }
-
-        val base = cache.acquire()
-
-        cache.endAcquiring()
 
         this[0, 0] = right.x
         this[0, 1] = right.y
