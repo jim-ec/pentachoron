@@ -2,6 +2,7 @@ package io.jim.tesserapp.math.vector
 
 import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.formatNumber
+import io.jim.tesserapp.math.transform.MatrixMultipliable
 import kotlin.math.sqrt
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -16,16 +17,12 @@ import kotlin.reflect.KProperty
  */
 open class VectorN(
         private val dimension: Int
-) : Iterable<Float> {
+) : Iterable<Float>, MatrixMultipliable() {
 
     /**
      * The underlying float array.
      */
     private val floats = FloatArray(dimension) { 0f }
-
-    /*fun multiplied(lhs: VectorN, rhs: Matrix) {
-        if(dimension != lhs.dimension || dimension != rhs.rows) {}
-    }*/
 
     /**
      * Copy contents from [rhs] into this vector.
@@ -150,6 +147,15 @@ open class VectorN(
             set(index, get(index) * divisor)
         }
     }
+
+    override fun set(row: Int, col: Int, value: Float) {
+        set(col, value)
+    }
+
+    override fun get(row: Int, col: Int) = this[col]
+
+    final override val cols = dimension
+    final override val rows = 1
 
     /**
      * Thrown upon operations requiring two vectors to be compatible.

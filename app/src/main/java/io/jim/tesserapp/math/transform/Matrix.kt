@@ -13,7 +13,10 @@ import kotlin.math.sin
  * @constructor Construct an identity matrix.
  * @throws MathException If either [rows] or [cols] are less than 1.
  */
-open class Matrix(val rows: Int, val cols: Int) {
+open class Matrix(
+        final override val rows: Int,
+        final override val cols: Int
+) : MatrixMultipliable() {
 
     /**
      * Underlying float buffer. One buffer element is seen as one row.
@@ -339,14 +342,14 @@ open class Matrix(val rows: Int, val cols: Int) {
     /**
      * Set the float at [row]/[col] to [value].
      */
-    operator fun set(row: Int, col: Int, value: Float) {
+    public override operator fun set(row: Int, col: Int, value: Float) {
         floats[row, col] = value
     }
 
     /**
      * Return the float at [row]/[col].
      */
-    operator fun get(row: Int, col: Int) = floats[row, col]
+    public override operator fun get(row: Int, col: Int) = floats[row, col]
 
     /**
      * Shortly represents this matrix as a string.
@@ -371,39 +374,6 @@ open class Matrix(val rows: Int, val cols: Int) {
         }
         sb.append(" ]")
         return sb.toString()
-    }
-
-    /**
-     * Multiply [lhs] and [rhs] matrix storing the result in this matrix.
-     *
-     * @throws MathException If the dimension requirement `MxP * PxN = MxN` is not met.
-     */
-    fun multiplication(lhs: Matrix, rhs: Matrix) {
-        if (lhs.cols != rhs.rows)
-            throw MathException("Cannot multiply $lhs * $rhs")
-        if (lhs.rows != rows || rhs.cols != cols)
-            throw MathException("Target matrix $this is incompatible for $lhs * $rhs")
-
-        forEachComponent { row, col ->
-            var sum = 0f
-
-            for (i in 0 until lhs.cols) {
-                sum += lhs[row, i] * rhs[i, col]
-            }
-
-            this[row, col] = sum
-        }
-    }
-
-    /**
-     * Calls [f] for each coefficient.
-     */
-    inline fun forEachComponent(f: (row: Int, col: Int) -> Unit) {
-        for (row in 0 until rows) {
-            for (col in 0 until cols) {
-                f(row, col)
-            }
-        }
     }
 
     /**

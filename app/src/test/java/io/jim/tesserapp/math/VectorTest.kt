@@ -100,8 +100,8 @@ class VectorTest {
     @Test
     fun perspectiveDivision() {
         assertEquals(
-                Vector(6f, 2f, 4f, 2f),
-                Vector(3f, 1f, 2f, 1f).apply { perspectiveDivide() },
+                Vector(3f, 1f, 2f, 1f),
+                Vector(6f, 2f, 4f, 2f).apply { perspectiveDivide() },
                 0.1f
         )
     }
