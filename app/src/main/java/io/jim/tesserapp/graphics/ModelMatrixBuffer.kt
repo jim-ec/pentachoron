@@ -8,24 +8,24 @@ import kotlin.math.max
 /**
  * Store model matrices.
  */
-data class ModelMatrixBuffer(
-
-        /**
-         * Maximum of individual geometries registrable into this buffer.
-         */
-        private val maxGeometries: Int,
+class ModelMatrixBuffer(
 
         /**
          * Each model matrix must have this side-length.
          */
-        private val matrixDimension: Int
+        private val matrixDimension: Int,
+
+        /**
+         * Granularity at which the internal model matrix buffer grows.
+         */
+        geometryCountsGranularity: Int = 10
 
 ) {
 
     /**
      * Buffer containing global model matrices.
      */
-    val buffer = RandomAccessBuffer(maxGeometries, matrixDimension * matrixDimension)
+    val buffer = RandomAccessBuffer(geometryCountsGranularity, matrixDimension * matrixDimension)
 
     private val geometries = HashMap<Geometry, Int>()
 
@@ -48,7 +48,7 @@ data class ModelMatrixBuffer(
      * This automatically marks the returned index as used.
      */
     private fun takeModelIndexAndMarkAsUsed(): Int {
-        for (i in 0 until maxGeometries) {
+        for (i in 0 until buffer.capacity) {
             if (!usedModelIndices.contains(i)) {
                 // Found next free model index!
 
@@ -84,8 +84,6 @@ data class ModelMatrixBuffer(
      * Register [geometry] into the matrix buffer.
      */
     fun register(geometry: Geometry): Boolean {
-        if (activeGeometries >= maxGeometries)
-            throw RuntimeException("Registration exceeds model matrix capacity")
 
         if (geometries.contains(geometry)) {
             // Geometry already registered:

@@ -10,16 +10,13 @@ import io.jim.tesserapp.util.ListenerListParam
  *
  * This geometry buffer is only responsible for raw data, without incorporating with OpenGL at all.
  */
-class GeometryManager(maxGeometries: Int) {
+class GeometryManager {
 
     /**
      * Model matrix buffer.
      * When geometries are transformed, this buffer is updated automatically.
      */
-    val modelMatrixBuffer = ModelMatrixBuffer(
-            maxGeometries = maxGeometries,
-            matrixDimension = 4
-    )
+    val modelMatrixBuffer = ModelMatrixBuffer(matrixDimension = 4)
 
     /**
      * Vertex buffer.

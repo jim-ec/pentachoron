@@ -19,7 +19,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     /**
      * Render data shared across this render thread an others.
      */
-    val sharedRenderData = SharedRenderData(GeometryManager(MAX_MODELS))
+    val sharedRenderData = SharedRenderData(GeometryManager())
 
     private val clearColor = Color(context, android.R.color.background_light)
     private lateinit var shader: Shader
