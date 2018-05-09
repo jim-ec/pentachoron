@@ -173,6 +173,15 @@ open class VectorN(
         }
     }
 
+    /**
+     * Negates all components.
+     */
+    fun negate() {
+        forEachIndexed { index, float ->
+            this[index] = -float
+        }
+    }
+
     override fun set(row: Int, col: Int, value: Float) {
         set(col, value)
     }

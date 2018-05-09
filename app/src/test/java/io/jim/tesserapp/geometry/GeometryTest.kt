@@ -3,7 +3,7 @@ package io.jim.tesserapp.geometry
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.math.common.Pi
-import io.jim.tesserapp.math.transform.Matrix
+import io.jim.tesserapp.math.vector.Vector4d
 import io.jim.tesserapp.util.assertEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -22,9 +22,9 @@ class GeometryTest {
             computeModelMatrix()
         }
 
-        Matrix.vector(4).apply {
+        Vector4d().apply {
             multiplication(
-                    lhs = Matrix.vector(1f, 0f, 0f, 1f),
+                    lhs = Vector4d(1f, 0f, 0f, 1f),
                     rhs = geometry.modelMatrix
             )
 

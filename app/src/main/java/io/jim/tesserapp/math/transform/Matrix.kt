@@ -4,6 +4,8 @@ import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.formatNumber
 import io.jim.tesserapp.math.vector.Vector3d
+import io.jim.tesserapp.math.vector.Vector3dh
+import io.jim.tesserapp.math.vector.VectorCache
 import io.jim.tesserapp.util.RandomAccessBuffer
 import kotlin.math.cos
 import kotlin.math.sin
@@ -271,49 +273,52 @@ open class Matrix(
      * @param eye Eye position. W component should be 1.
      * @param target Target position. W component should be 1.
      * @param refUp Target position. W component should be 0.
-     * @param outForward Vector in which the computed forward vector is stored.
-     * @param outRight Vector in which the computed right vector is stored.
-     * @param outUp Vector in which the computed up vector is stored.
+     * @param cache A cache providing vector allocations needed while computing the view matrix.
      */
     fun lookAt(
             eye: Vector3d,
             target: Vector3d,
             refUp: Vector3d,
-            outRight: Vector3d,
-            outUp: Vector3d,
-            outForward: Vector3d
+            cache: VectorCache<Vector3dh>
     ) = apply {
 
-        if (cols != 4 || rows != 4)
-            throw MathException("Look-at matrix computation works only with 4x4 matrices, but is $this")
-
-        outForward.apply {
+        val forward = cache[0].apply {
             copyFrom(eye)
             this -= target
             normalize()
         }
 
-        outRight.apply {
-            crossed(refUp, outForward)
+        val right = cache[1].apply {
+            crossed(refUp, forward)
             normalize()
         }
 
-        outUp.apply {
-            crossed(outForward, outRight)
+        val up = cache[2].apply {
+            crossed(forward, right)
             normalize()
         }
 
-        this[0, 0] = outRight.x
-        this[0, 1] = outRight.y
-        this[0, 2] = outRight.z
+        val negatedEye = cache[3].apply {
+            copyFrom(eye)
+            negate()
+        }
 
-        this[1, 0] = outUp.x
-        this[1, 1] = outUp.y
-        this[1, 2] = outUp.z
+        val base = cache[4]
 
-        this[2, 0] = outForward.x
-        this[2, 1] = outForward.y
-        this[2, 2] = outForward.z
+        if (cols != 4 || rows != 4)
+            throw MathException("Look-at matrix computation works only with 4x4 matrices, but is $this")
+
+        this[0, 0] = right.x
+        this[0, 1] = right.y
+        this[0, 2] = right.z
+
+        this[1, 0] = up.x
+        this[1, 1] = up.y
+        this[1, 2] = up.z
+
+        this[2, 0] = forward.x
+        this[2, 1] = forward.y
+        this[2, 2] = forward.z
 
         this[3, 0] = 0f
         this[3, 1] = 0f
@@ -322,13 +327,12 @@ open class Matrix(
 
         transpose()
 
-        val base = vector(4)
         base.multiplication(
-                lhs = vector(-eye.x, -eye.y, -eye.z, 1f),
+                lhs = negatedEye,
                 rhs = this
         )
         for (col in 0 until 3)
-            this[3, col] = base[0, col]
+            this[3, col] = base[col]
     }
 
     /**
@@ -343,20 +347,6 @@ open class Matrix(
                 this[row, col] = this[col, row]
                 this[col, row] = tmp
             }
-        }
-    }
-
-    /**
-     * Divides the vector matrix by its last component.
-     * @throws MathException If the matrix is not a vector.
-     */
-    fun perspectiveDivide() {
-        if (rows != 1)
-            throw MathException("Can only perform perspective divide on a vector matrix")
-
-        val oneOverLast = 1f / this[0, cols - 1]
-        for (i in 0 until cols - 1) {
-            this[0, i] *= oneOverLast
         }
     }
 

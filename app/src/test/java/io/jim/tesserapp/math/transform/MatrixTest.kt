@@ -3,6 +3,9 @@ package io.jim.tesserapp.math.transform
 import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.Pi
 import io.jim.tesserapp.math.vector.Vector3d
+import io.jim.tesserapp.math.vector.Vector3dh
+import io.jim.tesserapp.math.vector.Vector4d
+import io.jim.tesserapp.math.vector.VectorCache
 import io.jim.tesserapp.util.RandomAccessBuffer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -11,8 +14,8 @@ import org.junit.Test
 class MatrixTest {
 
     private val matrix = Matrix(4)
-    private val vector = Matrix.vector(4)
-    private val result = Matrix.vector(4)
+    private val vector = Vector4d()
+    private val result = Vector4d()
 
     @Test
     fun initialization() {
@@ -21,13 +24,6 @@ class MatrixTest {
         matrix.forEachComponent { row, col ->
             assertEquals(if (row == col) 1f else 0f, matrix[row, col], 0.1f)
         }
-    }
-
-    @Test
-    fun constructVectorMatrix() {
-        val vec = Matrix.vector(4)
-        assertEquals(1, vec.rows)
-        assertEquals(4, vec.cols)
     }
 
     @Test
@@ -117,7 +113,7 @@ class MatrixTest {
     @Test
     fun translation() {
         matrix.translation(2f, 3f, 4f)
-        vector.load(listOf(5f, 6f, 7f, 1f))
+        vector.load(5f, 6f, 7f, 1f)
         result.multiplication(vector, matrix)
 
         result.apply {
@@ -144,7 +140,7 @@ class MatrixTest {
     @Test
     fun scaleUniformly() {
         matrix.scale(2f)
-        vector.load(listOf(5f, 6f, 7f, 1f))
+        vector.load(5f, 6f, 7f, 1f)
         result.multiplication(vector, matrix)
 
         result.apply {
@@ -158,7 +154,7 @@ class MatrixTest {
     @Test
     fun scaleByIndividualFactors() {
         matrix.scale(2f, 3f, 4f)
-        vector.load(listOf(5f, 6f, 7f, 1f))
+        vector.load(5f, 6f, 7f, 1f)
         result.multiplication(vector, matrix)
 
         result.apply {
@@ -173,33 +169,31 @@ class MatrixTest {
     fun perspective2D() {
         matrix.perspective2D(5f, 10f)
 
-        result.apply {
-            multiplication(Matrix.vector(2f, 3f, -10f, 1f), matrix)
-            perspectiveDivide()
+        val homogeneous = Vector3dh()
+
+        homogeneous.apply {
+            multiplication(Vector4d(2f, 3f, -10f, 1f), matrix)
             assertEquals(1f, z, 0.1f)
             assertEquals(2f / 10f, x, 0.1f)
             assertEquals(3f / 10f, y, 0.1f)
         }
 
-        result.apply {
-            multiplication(Matrix.vector(2f, 3f, -5f, 1f), matrix)
-            perspectiveDivide()
+        homogeneous.apply {
+            multiplication(Vector4d(2f, 3f, -5f, 1f), matrix)
             assertEquals(0f, z, 0.1f)
             assertEquals(2f / 5f, x, 0.1f)
             assertEquals(3f / 5f, y, 0.1f)
         }
 
-        result.apply {
-            multiplication(Matrix.vector(2f, 3f, -7f, 1f), matrix)
-            perspectiveDivide()
+        homogeneous.apply {
+            multiplication(Vector4d(2f, 3f, -7f, 1f), matrix)
             assertTrue(0f < z && z < 1f)
             assertEquals(2f / 7f, x, 0.1f)
             assertEquals(3f / 7f, y, 0.1f)
         }
 
-        result.apply {
-            multiplication(Matrix.vector(2f, 3f, -2f, 1f), matrix)
-            perspectiveDivide()
+        homogeneous.apply {
+            multiplication(Vector4d(2f, 3f, -2f, 1f), matrix)
             assertTrue(z < 0f)
             assertEquals(2f / 2f, x, 0.1f)
             assertEquals(3f / 2f, y, 0.1f)
@@ -208,13 +202,13 @@ class MatrixTest {
 
     @Test
     fun lookAt() {
+        val cache = VectorCache { Vector3dh() }
+
         matrix.lookAt(
                 eye = Vector3d(2f, 2f, 2f),
                 target = Vector3d(0f, 0f, 0f),
                 refUp = Vector3d(0f, 1f, 0f),
-                outRight = Vector3d(),
-                outUp = Vector3d(),
-                outForward = Vector3d()
+                cache = cache
         )
 
         // Check the all matrix axis are unit vectors:
@@ -228,7 +222,7 @@ class MatrixTest {
         assertEquals(0f, matrix.toVector(0) * matrix.toVector(2), 0.1f)
 
         result.apply {
-            multiplication(lhs = Matrix.vector(0f, 0f, 0f, 1f), rhs = matrix)
+            multiplication(lhs = Vector4d(0f, 0f, 0f, 1f), rhs = matrix)
             assertEquals(0f, x, 0.1f)
             assertEquals(0f, y, 0.1f)
             assertTrue(z < 0f)
@@ -246,7 +240,7 @@ class MatrixTest {
         matrix.transpose()
 
         result.apply {
-            multiplication(lhs = Matrix.vector(1f, 2f, 3f, 4f), rhs = matrix)
+            multiplication(lhs = Vector4d(1f, 2f, 3f, 4f), rhs = matrix)
             assertEquals(90f, x, 0.1f)
             assertEquals(100f, y, 0.1f)
             assertEquals(110f, z, 0.1f)

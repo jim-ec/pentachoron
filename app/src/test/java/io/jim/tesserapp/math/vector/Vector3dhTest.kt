@@ -16,6 +16,16 @@ class Vector3dhTest {
     }
 
     @Test
+    fun negate() {
+        vector.apply {
+            negate()
+            assertEquals(-1f, x, 0.1f)
+            assertEquals(-2f, y, 0.1f)
+            assertEquals(-3f, z, 0.1f)
+        }
+    }
+
+    @Test
     fun multiply() {
         val projection = Projection3dMatrix()
         val translation = Matrix(4).apply { translation(0f, 0f, 1f) }
