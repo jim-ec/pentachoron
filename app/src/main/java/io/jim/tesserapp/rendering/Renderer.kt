@@ -63,6 +63,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
      * Draw a single frame.
      */
     override fun onDrawFrame(gl: GL10?) {
+
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
         sharedRenderData.synchronized { (geometryManager) ->

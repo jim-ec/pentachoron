@@ -15,6 +15,7 @@ class ViewMatrix(
     private val matrixScale = Matrix(4)
 
     private val eye = Vector3d(1f, 0f, 0f)
+    private val scale = Vector3d(1f, 1f, 1f)
 
     companion object {
         val upVector = Vector3d(0f, 1f, 0f)
@@ -33,7 +34,9 @@ class ViewMatrix(
                 target = target,
                 refUp = upVector
         )
-        matrixScale.scale(Vector3d(1f, camera.aspectRatio, 1f))
+
+        scale.y = camera.aspectRatio
+        matrixScale.scale(scale)
 
         matrixLookAtRotation.multiplication(matrixRotation, matrixLookAt)
         multiplication(matrixScale, matrixLookAtRotation)
