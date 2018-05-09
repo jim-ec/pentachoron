@@ -1,7 +1,7 @@
 package io.jim.tesserapp.math.vector
 
 /**
- * A homogeneous 3d vector.
+ * A 3d vector.
  */
 open class Vector3d : VectorN(3) {
 
