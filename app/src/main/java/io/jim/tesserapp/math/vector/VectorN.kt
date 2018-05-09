@@ -20,6 +20,14 @@ open class VectorN(
 ) : Iterable<Float>, MatrixMultipliable() {
 
     /**
+     * Create a vector whose [dimension] is determined through the count of components passed
+     * to [components]. Initialize the vector components with [components].
+     */
+    constructor(vararg components: Float) : this(components.size) {
+        load(*components)
+    }
+
+    /**
      * The underlying float array.
      */
     private val floats = FloatArray(dimension) { 0f }
@@ -83,10 +91,28 @@ open class VectorN(
             else floats[index]
 
     /**
+     * Sets each vector component with the corresponding float in [components].
+     * @throws MathException If count of floats passed to [components] does not match with [dimension].
+     */
+    fun load(vararg components: Float) {
+        if (components.size != dimension)
+            throw MathException("Cannot load ${components.size} components into a $dimensionString vector")
+
+        components.forEachIndexed { index, component ->
+            this[index] = component
+        }
+    }
+
+    /**
      * Scalar this and [rhs].
      */
-    operator fun times(rhs: io.jim.tesserapp.math.vector.VectorN) =
-            reduceIndexed { index, acc, float -> acc + float * rhs[index] }
+    operator fun times(rhs: io.jim.tesserapp.math.vector.VectorN): Float {
+        var sum = 0f
+        forEachIndexed { index, float ->
+            sum += float * rhs[index]
+        }
+        return sum
+    }
 
     /**
      * Compute this vector's length.
@@ -116,14 +142,14 @@ open class VectorN(
             throw IncompatibleVectorException(rhs)
 
         rhs.forEachIndexed { index, float ->
-            set(index, get(index) + float)
+            set(index, get(index) - float)
         }
     }
 
     /**
      * Normalize this vector.
      */
-    fun normalize() = apply {
+    fun normalize() {
         val oneOverLength = 1f / length
         forEachIndexed { index, float ->
             set(index, float * oneOverLength)
@@ -144,7 +170,7 @@ open class VectorN(
      */
     operator fun divAssign(divisor: Float) {
         forEachIndexed { index, _ ->
-            set(index, get(index) * divisor)
+            set(index, get(index) / divisor)
         }
     }
 
