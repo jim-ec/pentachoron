@@ -280,33 +280,37 @@ open class Matrix(
             target: Vector3d,
             refUp: Vector3d,
             cache: VectorCache<Vector3dh>
-    ) = apply {
+    ) {
 
-        val forward = cache[0].apply {
+        if (cols != 4 || rows != 4)
+            throw MathException("Look-at matrix computation works only with 4x4 matrices, but is $this")
+
+        cache.startAcquiring()
+
+        val forward = cache.acquire().apply {
             copyFrom(eye)
             this -= target
             normalize()
         }
 
-        val right = cache[1].apply {
+        val right = cache.acquire().apply {
             crossed(refUp, forward)
             normalize()
         }
 
-        val up = cache[2].apply {
+        val up = cache.acquire().apply {
             crossed(forward, right)
             normalize()
         }
 
-        val negatedEye = cache[3].apply {
+        val negatedEye = cache.acquire().apply {
             copyFrom(eye)
             negate()
         }
 
-        val base = cache[4]
+        val base = cache.acquire()
 
-        if (cols != 4 || rows != 4)
-            throw MathException("Look-at matrix computation works only with 4x4 matrices, but is $this")
+        cache.endAcquiring()
 
         this[0, 0] = right.x
         this[0, 1] = right.y
