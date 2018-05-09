@@ -12,12 +12,43 @@ class Vector3dh(x: Float, y: Float, z: Float) : Vector3d(x, y, z) {
     constructor() : this(0f, 0f, 0f)
 
     /**
+     * Though this vector is 3d, it technically has 4 columns, including the virtual w-component.
+     */
+    override val cols = super.cols + 1
+
+    /**
+     * The dimension string should underline that the vector is not actually 3d.
+     */
+    override val dimensionString = "3dh"
+
+    /**
+     * Intercept getting the w-component, which is always 1.
+     */
+    override fun get(row: Int, col: Int): Float {
+        return if (col < 3)
+            super.get(row, col)
+        else
+            w
+    }
+
+    /**
+     * Intercept setting values to the fourth column, which will effectively lead to w-division.
+     */
+    override fun set(row: Int, col: Int, value: Float) {
+        if (col < 3)
+            super.set(row, col, value)
+        else {
+            w = value
+        }
+    }
+
+    /**
      * W-component. This is always 1.
-     * Setting this value will lead to homogeneous division.
+     * Setting this value will lead to w-division.
      */
     private var w = 1f
         set(value) {
-            this /= w
+            this /= value
         }
 
 }

@@ -259,10 +259,18 @@ open class Matrix(
         if (near <= 0.0 || far <= 0.0 || near > far)
             throw MathException("Invalid near=$near or far=$far parameter")
 
-        this[2, 3] = -1.0f
-        this[3, 3] = 0.0f
+        perspective2D()
+
         this[2, 2] = -far / (far - near)
         this[3, 2] = -(far * near) / (far - near)
+    }
+
+    /**
+     * Load a 3D to 2D perspective matrix without remapping z.
+     */
+    fun perspective2D() {
+        this[2, 3] = -1.0f
+        this[3, 3] = 0.0f
     }
 
     /**

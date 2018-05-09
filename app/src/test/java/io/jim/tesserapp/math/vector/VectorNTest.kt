@@ -1,5 +1,6 @@
 package io.jim.tesserapp.math.vector
 
+import io.jim.tesserapp.math.transform.Matrix
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import kotlin.math.sqrt
@@ -128,6 +129,26 @@ class VectorNTest {
             normalize()
 
             assertEquals(1f, length, 0.1f)
+        }
+    }
+
+    @Test
+    fun multiply() {
+        val vector = Vector4d(2f, 3f, 4f, 5f)
+
+        val matrix = Matrix(4)
+        matrix.forEachComponent { row, col ->
+            matrix[row, col] = (col + 3f) + (row * matrix.cols)
+        }
+
+        val result = Vector4d()
+
+        result.apply {
+            multiplication(vector, matrix)
+            assertEquals(146f, x, 0.1f)
+            assertEquals(160f, y, 0.1f)
+            assertEquals(174f, z, 0.1f)
+            assertEquals(188f, q, 0.1f)
         }
     }
 

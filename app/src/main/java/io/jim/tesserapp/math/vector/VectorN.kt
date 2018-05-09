@@ -16,7 +16,7 @@ import kotlin.reflect.KProperty
  * when doing the same calculations over and over again.
  */
 open class VectorN(
-        private val dimension: Int
+        val dimension: Int
 ) : Iterable<Float>, MatrixMultipliable() {
 
     /**
@@ -54,8 +54,7 @@ open class VectorN(
     /**
      * Return a string representing this vector's dimension.
      */
-    val dimensionString: String
-        get() = "${dimension}d"
+    open val dimensionString = "${dimension}d"
 
     /**
      * Represent this vector as a string.
@@ -180,8 +179,8 @@ open class VectorN(
 
     override fun get(row: Int, col: Int) = this[col]
 
-    final override val cols = dimension
-    final override val rows = 1
+    override val cols = dimension
+    override val rows = 1
 
     /**
      * Thrown upon operations requiring two vectors to be compatible.
