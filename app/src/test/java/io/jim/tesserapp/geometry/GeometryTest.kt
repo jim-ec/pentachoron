@@ -1,8 +1,8 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.math.common.Pi
+import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.math.vector.Vector4d
 import io.jim.tesserapp.util.assertEquals
 import org.junit.Assert.assertEquals
@@ -38,25 +38,25 @@ class GeometryTest {
     @Test
     fun extruding() {
         Lines("Test", Color.BLACK).apply {
-            addLine(Vector(1f, 1f, 0f, 1f), Vector(2f, 2f, 0f, 1f))
-            extrude(Vector(0f, 0f, 1f, 0f))
+            addLine(Vector3d(1f, 1f, 0f), Vector3d(2f, 2f, 0f))
+            extrude(Vector3d(0f, 0f, 1f))
         }
     }
 
     @Test
     fun clearLines() {
         Lines("Test", Color.BLACK).apply {
-            addLine(Vector(1f, 1f, 0f, 1f), Vector(2f, 2f, 0f, 1f))
+            addLine(Vector3d(1f, 1f, 0f), Vector3d(2f, 2f, 0f))
             clearLines()
         }
     }
 
     @Test
     fun vertexPoints() {
-        val a = Vector(0f, 0f, 0f, 0f)
-        val b = Vector(1f, 0f, 0f, 0f)
-        val c = Vector(1f, 1f, 0f, 0f)
-        val d = Vector(0f, 1f, 0f, 0f)
+        val a = Vector3d(0f, 0f, 0f)
+        val b = Vector3d(1f, 0f, 0f)
+        val c = Vector3d(1f, 1f, 0f)
+        val d = Vector3d(0f, 1f, 0f)
         Quadrilateral("Test", a, b, c, d, Color.BLACK).apply {
             vertices(modelIndex = -1).also {
                 assertEquals(8, it.size)

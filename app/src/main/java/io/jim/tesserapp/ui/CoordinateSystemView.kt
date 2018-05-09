@@ -8,8 +8,8 @@ import android.view.MotionEvent.*
 import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Lines
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.math.common.Pi
+import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.rendering.Renderer
 
 /**
@@ -24,31 +24,31 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
      */
     val sharedRenderData = renderer.sharedRenderData
 
-    private val touchStartPosition = Vector(0f, 0f, 0f, 0f)
+    private val touchStartPosition = Vector3d(0f, 0f, 0f)
     private var touchStartTime = 0L
 
     private val grid = Lines("Grid", Color(context, R.color.colorGrid)).apply {
         for (i in -5..-1) {
-            addLine(Vector(i.toFloat(), 0f, -5f, 1f), Vector(i.toFloat(), 0f, 5f, 1f))
-            addLine(Vector(-5f, 0f, i.toFloat(), 1f), Vector(5f, 0f, i.toFloat(), 1f))
+            addLine(Vector3d(i.toFloat(), 0f, -5f), Vector3d(i.toFloat(), 0f, 5f))
+            addLine(Vector3d(-5f, 0f, i.toFloat()), Vector3d(5f, 0f, i.toFloat()))
         }
         for (i in 1..5) {
-            addLine(Vector(i.toFloat(), 0f, -5f, 1f), Vector(i.toFloat(), 0f, 5f, 1f))
-            addLine(Vector(-5f, 0f, i.toFloat(), 1f), Vector(5f, 0f, i.toFloat(), 1f))
+            addLine(Vector3d(i.toFloat(), 0f, -5f), Vector3d(i.toFloat(), 0f, 5f))
+            addLine(Vector3d(-5f, 0f, i.toFloat()), Vector3d(5f, 0f, i.toFloat()))
         }
 
-        addLine(Vector(-5f, 0f, 0f, 1f), Vector(0f, 0f, 0f, 1f))
-        addLine(Vector(1f, 0f, 0f, 1f), Vector(5f, 0f, 0f, 1f))
+        addLine(Vector3d(-5f, 0f, 0f), Vector3d(0f, 0f, 0f))
+        addLine(Vector3d(1f, 0f, 0f), Vector3d(5f, 0f, 0f))
 
-        addLine(Vector(0f, 0f, -5f, 1f), Vector(0f, 0f, 0f, 1f))
-        addLine(Vector(0f, 0f, 1f, 1f), Vector(0f, 0f, 5f, 1f))
+        addLine(Vector3d(0f, 0f, -5f), Vector3d(0f, 0f, 0f))
+        addLine(Vector3d(0f, 0f, 1f), Vector3d(0f, 0f, 5f))
     }
 
     @Suppress("unused")
     private val axis = Lines("Axis").apply {
-        addLine(Vector(0f, 0f, 0f, 1f), Vector(1f, 0f, 0f, 1f), Color(context, R.color.colorAxisX))
-        addLine(Vector(0f, 0f, 0f, 1f), Vector(0f, 1f, 0f, 1f), Color(context, R.color.colorAxisY))
-        addLine(Vector(0f, 0f, 0f, 1f), Vector(0f, 0f, 1f, 1f), Color(context, R.color.colorAxisZ))
+        addLine(Vector3d(0f, 0f, 0f), Vector3d(1f, 0f, 0f), Color(context, R.color.colorAxisX))
+        addLine(Vector3d(0f, 0f, 0f), Vector3d(0f, 1f, 0f), Color(context, R.color.colorAxisY))
+        addLine(Vector3d(0f, 0f, 0f), Vector3d(0f, 0f, 1f), Color(context, R.color.colorAxisZ))
         sharedRenderData.geometryManager += this
     }
 

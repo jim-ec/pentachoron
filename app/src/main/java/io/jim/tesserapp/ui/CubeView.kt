@@ -6,9 +6,9 @@ import android.widget.FrameLayout
 import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Quadrilateral
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.math.transform.Rotatable
 import io.jim.tesserapp.math.transform.Translatable
+import io.jim.tesserapp.math.vector.Vector3d
 import kotlin.properties.Delegates
 
 /**
@@ -59,7 +59,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             override var q = 0f
                 set(value) {
                     coordinateSystemView.sharedRenderData.synchronized {
-                        cube.rotation.q = value
+                        //cube.rotation.q = value
                     }
                 }
 
@@ -103,7 +103,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             override var q = 0f
                 set(value) {
                     coordinateSystemView.sharedRenderData.synchronized {
-                        cube.translation.q = value
+                        //cube.translation.q = value
                     }
                 }
 
@@ -134,15 +134,15 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
      * The featuring cube.
      */
     private val cube = Quadrilateral("Cube",
-            Vector(1f, 1f, 1f, 1f),
-            Vector(-1f, 1f, 1f, 1f),
-            Vector(-1f, -1f, 1f, 1f),
-            Vector(1f, -1f, 1f, 1f),
+            Vector3d(1f, 1f, 1f),
+            Vector3d(-1f, 1f, 1f),
+            Vector3d(-1f, -1f, 1f),
+            Vector3d(1f, -1f, 1f),
             Color(context, R.color.colorAccent)
     ).apply {
         coordinateSystemView.sharedRenderData.synchronized { renderData ->
             renderData.geometryManager += this
-            extrude(Vector(0f, 0f, -2f, 0f))
+            extrude(Vector3d(0f, 0f, -2f))
         }
     }
 

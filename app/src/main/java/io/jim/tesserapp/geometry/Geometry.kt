@@ -2,8 +2,8 @@ package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.graphics.Vertex
-import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.math.transform.Matrix
+import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.util.ListenerList
 
 /**
@@ -29,7 +29,7 @@ open class Geometry(
 
 ) {
 
-    private val positions = ArrayList<Vector>()
+    private val positions = ArrayList<Vector3d>()
 
     private val lines = ArrayList<LineIndices>()
 
@@ -45,12 +45,12 @@ open class Geometry(
     /**
      * Rotation around the x, y and z axis.
      */
-    val rotation = Vector(0f, 0f, 0f, 0f)
+    val rotation = Vector3d(0f, 0f, 0f)
 
     /**
      * Translation.
      */
-    val translation = Vector(0f, 0f, 0f, 1f)
+    val translation = Vector3d(0f, 0f, 0f)
 
     /**
      * List of vertices, with resolved indices.
@@ -76,7 +76,7 @@ open class Geometry(
      * Add a series of vertices.
      * The actual lines are drawn from indices to these vertices.
      */
-    protected fun addPosition(position: Vector) {
+    protected fun addPosition(position: Vector3d) {
         positions += position
         onGeometryChangedListeners.fire()
     }
@@ -125,12 +125,19 @@ open class Geometry(
      * @param connectorColor Color of the lines connecting the original and generated lines.
      */
     fun extrude(
-            direction: Vector,
+            direction: Vector3d,
             keepColors: Boolean = false,
             connectorColor: Color = baseColor
     ) {
         val size = positions.size
-        positions += positions.map { it + direction }
+
+        for (i in 0 until size) {
+            positions += Vector3d().apply {
+                copyFrom(positions[i])
+                this += direction
+            }
+        }
+
         lines += lines.map {
             LineIndices(
                     it.from + size,

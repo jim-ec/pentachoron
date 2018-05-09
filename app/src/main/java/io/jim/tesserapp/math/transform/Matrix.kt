@@ -1,8 +1,8 @@
 package io.jim.tesserapp.math.transform
 
-import io.jim.tesserapp.math.Vector
 import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.formatNumber
+import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.util.RandomAccessBuffer
 import kotlin.math.cos
 import kotlin.math.sin
@@ -86,20 +86,13 @@ open class Matrix(
     }
 
     /**
-     * Converts a row into a [Vector].
-     *
-     * @throws MathException If matrix has not 4 columns.
+     * Converts a row into a [VectorN].
+     * The [VectorN.dimension] is determined by this matrix' column count.
      */
-    fun toVector(row: Int): Vector {
-        if (cols != 4)
-            throw MathException("Cannot create a 4d vector from a ${cols}d matrix row")
-
-        return Vector(
-                this[row, 0],
-                this[row, 1],
-                this[row, 2],
-                this[row, 3]
-        )
+    fun toVector(row: Int) = VectorN(cols).also {
+        for (i in 0 until it.dimension) {
+            it[i] = this[row, i]
+        }
     }
 
     companion object {

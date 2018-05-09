@@ -1,6 +1,6 @@
 package io.jim.tesserapp.graphics
 
-import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.util.BYTE_LENGTH
 
 /**
@@ -11,7 +11,7 @@ data class Vertex(
         /**
          * Position of vertex.
          */
-        val position: Vector,
+        val position: Vector3d,
 
         /**
          * Color of vertex.

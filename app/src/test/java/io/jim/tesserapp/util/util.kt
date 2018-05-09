@@ -1,20 +1,18 @@
 package io.jim.tesserapp.util
 
-import io.jim.tesserapp.math.Vector
+import io.jim.tesserapp.math.vector.VectorN
 import junit.framework.Assert.assertEquals
 
 @Suppress("unused")
-fun assertEquals(expected: Vector, actual: Vector, delta: Float) {
-    assertEquals(expected.x, actual.x, delta)
-    assertEquals(expected.y, actual.y, delta)
-    assertEquals(expected.z, actual.z, delta)
-    assertEquals(expected.q, actual.q, delta)
+fun assertEquals(expected: VectorN, actual: VectorN, delta: Float) {
+    expected.forEachIndexed { index, float ->
+        assertEquals(float, actual[index], delta)
+    }
 }
 
 @Suppress("unused")
-fun assertEquals(message: String, expected: Vector, actual: Vector, delta: Float) {
-    assertEquals(message, expected.x, actual.x, delta)
-    assertEquals(message, expected.y, actual.y, delta)
-    assertEquals(message, expected.z, actual.z, delta)
-    assertEquals(message, expected.q, actual.q, delta)
+fun assertEquals(message: String, expected: VectorN, actual: VectorN, delta: Float) {
+    expected.forEachIndexed { index, float ->
+        assertEquals(message, float, actual[index], delta)
+    }
 }
