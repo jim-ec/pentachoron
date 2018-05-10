@@ -28,10 +28,6 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     private val projectionMatrix = Projection3dMatrix(near = 0.1f, far = 100f)
     private val viewMatrix = ViewMatrix(sharedRenderData.camera)
 
-    companion object {
-        private const val MAX_MODELS = 100
-    }
-
     /**
      * Initialize data.
      */
@@ -41,7 +37,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         glEnable(GL_DEPTH_TEST)
         glLineWidth(4f)
 
-        shader = Shader(MAX_MODELS)
+        shader = Shader()
         vertexBuffer = VertexBuffer()
 
         shader.uploadProjectionMatrix(projectionMatrix)
@@ -75,8 +71,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
             // Upload model matrices:
             geometryManager.computeModelMatrices()
             shader.uploadModelMatrixBuffer(
-                    geometryManager.modelMatrixBuffer.buffer,
-                    geometryManager.modelMatrixBuffer.activeGeometries)
+                    geometryManager.modelMatrixBuffer.buffer)
 
             // Ensure vertex data is up-to-date:
             geometryManager.updateVertexBuffer()
