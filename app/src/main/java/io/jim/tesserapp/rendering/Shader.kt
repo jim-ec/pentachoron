@@ -87,13 +87,12 @@ class Shader(maxModels: Int) {
         if (fragmentShader < 0) throw GlException("Cannot create fragment shader")
         if (program < 0) throw GlException("Cannot create shader program")
 
-        val status = IntArray(1)
-
         vertexShader.also {
             glShaderSource(it, vertexShaderSource)
             glCompileShader(it)
-            glGetShaderiv(it, GL_COMPILE_STATUS, status, 0)
-            if (GL_TRUE != status[0]) {
+
+            glGetShaderiv(it, GL_COMPILE_STATUS, resultCode)
+            if (GL_TRUE != resultCode()) {
                 throw GlException("Cannot compile vertex shader: ${glGetShaderInfoLog(it)}")
             }
         }
@@ -101,9 +100,9 @@ class Shader(maxModels: Int) {
         fragmentShader.also {
             glShaderSource(it, fragmentShaderSource)
             glCompileShader(it)
-            glGetShaderiv(it, GL_COMPILE_STATUS, status, 0)
+            glGetShaderiv(it, GL_COMPILE_STATUS, resultCode)
             glGetError()
-            if (GL_TRUE != status[0]) {
+            if (GL_TRUE != resultCode()) {
                 throw GlException("Cannot compile fragment shader: ${glGetShaderInfoLog(it)}")
             }
         }
@@ -112,13 +111,13 @@ class Shader(maxModels: Int) {
             glAttachShader(it, vertexShader)
             glAttachShader(it, fragmentShader)
             glLinkProgram(it)
-            glGetProgramiv(it, GL_LINK_STATUS, status, 0)
-            if (GL_TRUE != status[0]) {
+            glGetProgramiv(it, GL_LINK_STATUS, resultCode)
+            if (GL_TRUE != resultCode()) {
                 throw GlException("Cannot link program: ${glGetProgramInfoLog(it)}")
             }
             glValidateProgram(it)
-            glGetProgramiv(it, GL_VALIDATE_STATUS, status, 0)
-            if (GL_TRUE != status[0]) {
+            glGetProgramiv(it, GL_VALIDATE_STATUS, resultCode)
+            if (GL_TRUE != resultCode()) {
                 throw GlException("Cannot validate program: ${glGetProgramInfoLog(it)}")
             }
             glUseProgram(it)

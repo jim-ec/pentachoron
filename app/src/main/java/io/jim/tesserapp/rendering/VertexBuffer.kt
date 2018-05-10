@@ -10,11 +10,7 @@ import io.jim.tesserapp.util.InputStreamBuffer
  */
 class VertexBuffer {
 
-    private val handle = run {
-        val status = IntArray(1)
-        glGenBuffers(1, status, 0)
-        status[0]
-    }
+    private val handle = resultCode { glGenBuffers(1, resultCode) }
 
     /**
      * Bind the vertex buffer and instruct the vertex attribute pointer a the given [shader].
