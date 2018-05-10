@@ -10,7 +10,9 @@ import io.jim.tesserapp.util.RandomAccessBuffer
  * A shader pipeline with a vertex shader, fragment shader an locations of all attributes and
  * uniforms.
  */
-class Shader(maxModels: Int) {
+class Shader(
+        initialModelMatrixCounts: Int = 10
+) {
 
     /**
      * Thrown upon OpenGL errors.
@@ -57,10 +59,21 @@ class Shader(maxModels: Int) {
     private val viewMatrixLocation: Int
     private val projectionMatrixLocation: Int
 
+    private val modelMatrixCountsLocation: Int
+    private val modelMatrixTexture = resultCode { glGenTextures(1, resultCode) }
+    var modelMatrixCounts = initialModelMatrixCounts
+        set(value) {
+            field = value
+            initializeModelMatrixTexture()
+        }
+
     private val vertexShaderSource = """
             uniform mat4 P;
             uniform mat4 V;
-            uniform mat4 M[$maxModels];
+            uniform mat4 M[$initialModelMatrixCounts];
+
+            uniform float modelMatrixCounts;
+            uniform sampler2D modelMatrixTexture;
 
             attribute vec3 position;
             attribute vec3 color;
@@ -68,11 +81,25 @@ class Shader(maxModels: Int) {
 
             varying vec3 vColor;
 
+            vec4 fetchModelMatrixCoefficient(in float row) {
+                float xOffset = 1.0 / (2.0 * 4.0 * modelMatrixCounts);
+                float x = (4.0 * modelIndex + row) / (4.0 * modelMatrixCounts);
+                float y = 0.5;
+                return texture2D(modelMatrixTexture, vec2(xOffset + x, y));
+            }
+
             void main() {
-                gl_Position = P * V * M[int(modelIndex)] * vec4(position, 1.0);
+                mat4 modelMatrix;
+                modelMatrix[0] = fetchModelMatrixCoefficient(0.0);
+                modelMatrix[1] = fetchModelMatrixCoefficient(1.0);
+                modelMatrix[2] = fetchModelMatrixCoefficient(2.0);
+                modelMatrix[3] = fetchModelMatrixCoefficient(3.0);
+
+                //gl_Position = P * V * M[int(modelIndex)] * vec4(position, 1.0);
+                gl_Position = P * V * modelMatrix * vec4(position, 1.0);
                 vColor = color;
             }
-        """
+        """.trim() // TODO: optimize calculations in fetchModelMatrixCoefficient()
 
     private val fragmentShaderSource = """
             varying mediump vec3 vColor;
@@ -80,7 +107,7 @@ class Shader(maxModels: Int) {
             void main() {
                 gl_FragColor = vec4(vColor, 1.0);
             }
-        """
+        """.trim()
 
     init {
         if (vertexShader < 0) throw GlException("Cannot create vertex shader")
@@ -133,11 +160,49 @@ class Shader(maxModels: Int) {
         if (positionAttributeLocation < 0) throw GlException("Cannot locate position attribute")
         if (colorAttributeLocation < 0) throw GlException("Cannot locate color attribute")
         if (modelIndexAttributeLocation < 0) throw GlException("Cannot locate model index attribute")
-        if (modelMatrixLocation < 0) throw GlException("Cannot locate model matrix uniform")
+        //if (modelMatrixLocation < 0) throw GlException("Cannot locate model matrix uniform")
         if (viewMatrixLocation < 0) throw GlException("Cannot locate view matrix uniform")
         if (projectionMatrixLocation < 0) throw GlException("Cannot locate projection matrix uniform")
 
+        modelMatrixCountsLocation = glGetUniformLocation(program, "modelMatrixCounts")
+        //TODO: if (modelMatrixCountsLocation < 0) throw GlException("Cannot locate model matrix counts uniform")
+
         checkGlError("Initialization")
+
+        initializeModelMatrixTexture()
+    }
+
+    /**
+     * Always called when [modelMatrixCounts] changes.
+     * Allocates and instructs the model matrix texture.
+     */
+    private fun initializeModelMatrixTexture() {
+        glBindTexture(GL_TEXTURE_2D, modelMatrixTexture)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+
+        println("Initialize model-matrix texture for $modelMatrixCounts matrices")
+
+        glTexImage2D(
+                GL_TEXTURE_2D,
+                0,
+                GL_RGBA,
+                modelMatrixCounts * 4,
+                1,
+                0,
+                GL_RGBA,
+                GL_FLOAT,
+                null
+        )
+
+        checkGlError("Initialize model-matrix texture")
+    }
+
+    private fun checkTextureContents(modelIndex: Float, row: Float) {
+        // float x = (4.0 * modelIndex + row) / (4.0 * modelMatrixCounts);
+        // float y = 0.5;
+
+        val x = (4f * modelIndex + row) / (4f * modelMatrixCounts)
     }
 
     /**
@@ -146,6 +211,20 @@ class Shader(maxModels: Int) {
     fun uploadModelMatrixBuffer(buffer: RandomAccessBuffer, uploadCounts: Int) {
         glUniformMatrix4fv(modelMatrixLocation, uploadCounts, false, buffer.floatBuffer)
         checkGlError("Uploading model buffer")
+
+        glUniform1f(modelMatrixCountsLocation, modelMatrixCounts.toFloat())
+
+        glBindTexture(GL_TEXTURE_2D, modelMatrixTexture)
+        glTexSubImage2D(
+                GL_TEXTURE_2D,
+                0,
+                0, 0,
+                modelMatrixCounts * 4,
+                1,
+                GL_RGBA, GL_FLOAT,
+                buffer.floatBuffer
+        )
+        checkGlError("Write model matrices to texture")
     }
 
     /**
