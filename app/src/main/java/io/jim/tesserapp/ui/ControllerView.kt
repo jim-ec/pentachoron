@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import android.widget.SeekBar
 import android.widget.Switch
 import io.jim.tesserapp.R
+import io.jim.tesserapp.graphics.SharedRenderData
 import io.jim.tesserapp.ui.controllers.*
 import java.util.*
 
@@ -18,18 +19,7 @@ import java.util.*
 class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
     private val controllables = ArrayList<Controllable>()
-    private val controllers: List<Controller>
-
-    /**
-     * Add a [controllable] to the list of targets this controller controls.
-     */
-    operator fun plusAssign(controllable: Controllable) {
-        controllables += controllable
-
-        controllers.forEach {
-            it.reevaluate()
-        }
-    }
+    private val controllers: MutableList<Controller>
 
     init {
         View.inflate(context, R.layout.view_controller, this)
@@ -45,7 +35,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         findViewById<SeekBar>(R.id.seekerRotationQ).isEnabled = false
         findViewById<SeekBar>(R.id.seekerTranslationQ).isEnabled = false
 
-        controllers = listOf(
+        controllers = mutableListOf(
                 // X-Rotation:
                 RotationController(
                         controllables,
@@ -124,18 +114,34 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.valueTranslationQ)
                 ) { controllable, translation ->
                     controllable.translation.q = translation
-                },
-
-                // Camera distance:
-                CameraDistanceController(
-                        controllables,
-                        context,
-                        findViewById(R.id.seekerCameraDistance),
-                        findViewById(R.id.valueCameraDistance)
-                ) { controllable, distance ->
-                    controllable.cameraDistance = distance
                 }
         )
+    }
+
+    /**
+     * Add a [controllable] to the list of targets this controller controls.
+     */
+    operator fun plusAssign(controllable: Controllable) {
+        controllables += controllable
+
+        controllable.setup(this)
+
+        controllers.forEach {
+            it.reevaluate()
+        }
+    }
+
+    fun controlCamera(renderData: SharedRenderData) {
+        val controller = CameraDistanceController(
+                renderData,
+                context,
+                findViewById(R.id.seekerCameraDistance),
+                findViewById(R.id.valueCameraDistance)
+        )
+
+        controller.reevaluate()
+
+        controllers += controller
     }
 
 }

@@ -1,27 +1,35 @@
 package io.jim.tesserapp.graphics
 
-data class Camera(
+import io.jim.tesserapp.math.common.SmoothTimedValueDelegate
 
-        /**
-         * Distance of camera position from center.
-         */
-        var distance: Float = 1f,
+class Camera {
 
-        /**
-         * Aspect ratio.
-         */
-        var aspectRatio: Float = 1f,
+    /**
+     * Aspect ratio.
+     */
+    var aspectRatio: Float = 1f
 
-        /**
-         * Rotation on the horizontal orbit.
-         * This is the base rotation.
-         */
-        var horizontalRotation: Float = 0f,
+    /**
+     * Distance of camera position from center.
+     */
+    var distance by SmoothTimedValueDelegate<Camera>(
+            startValue = 0f,
+            transitionTimeInterval = 300L
+    )
 
-        /**
-         * Rotation on the vertical orbit.
-         * This is the secondary rotation.
-         */
-        var verticalRotation: Float = 0f
+    /**
+     * Rotation on the horizontal orbit.
+     * This is the base rotation.
+     */
+    var horizontalRotation = 0f
 
-)
+    /**
+     * Rotation on the vertical orbit.
+     * This is the secondary rotation.
+     */
+    var verticalRotation by SmoothTimedValueDelegate<Camera>(
+            startValue = 0f,
+            transitionTimeInterval = 80L
+    )
+
+}

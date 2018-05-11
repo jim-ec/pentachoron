@@ -4,31 +4,32 @@ import android.content.Context
 import android.widget.SeekBar
 import android.widget.TextView
 import io.jim.tesserapp.R
-import io.jim.tesserapp.math.common.formatNumber
+import io.jim.tesserapp.graphics.SharedRenderData
 import io.jim.tesserapp.ui.CoordinateSystemView
 
 class CameraDistanceController(
-        controllables: List<Controllable>,
+        private val renderData: SharedRenderData,
         context: Context,
         seeker: SeekBar,
         valueLabel: TextView,
         min: Float = 3f,
-        max: Float = 15f,
-        private val setDistance: (controllable: Controllable, distance: Float) -> Unit
+        max: Float = 15f
 ) : Controller(
-        controllables,
+        ArrayList(), // TODO: temporary empty list
         seeker,
         valueLabel,
-        min, max, CoordinateSystemView.DEFAULT_CAMERA_DISTANCE
+        min, max, CoordinateSystemView.DEFAULT_CAMERA_DISTANCE,
+        context.getString(R.string.transform_translation_value)
 ) {
 
-    private val formatString = context.getString(R.string.transform_translation_value)
-
     override fun set(controllable: Controllable, value: Float) {
-        setDistance(controllable, value)
+        TODO("Camera controller set called")
     }
 
-    override val valueLabelText: String
-        get() = String.format(formatString, formatNumber(currentSeekerValue))
+    override fun setControlledValue(value: Float) {
+        renderData.synchronized {
+            renderData.camera.distance = currentSeekerValue
+        }
+    }
 
 }
