@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import android.widget.SeekBar
 import android.widget.Switch
 import io.jim.tesserapp.R
+import io.jim.tesserapp.ui.controllers.*
 import java.util.*
 
 

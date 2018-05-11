@@ -1,24 +1,26 @@
-package io.jim.tesserapp.ui
+package io.jim.tesserapp.ui.controllers
 
 import android.content.Context
 import android.widget.SeekBar
 import android.widget.TextView
 import io.jim.tesserapp.R
-import io.jim.tesserapp.math.common.Pi
 import io.jim.tesserapp.math.common.formatNumber
 
-class RotationController(
+class TranslationController(
         controllables: List<Controllable>,
         context: Context,
         seeker: SeekBar,
         valueLabel: TextView,
-        private val setRotation: (controllable: Controllable, rotation: Float) -> Unit
-) : Controller(controllables, seeker, valueLabel, 0f, 2f) {
+        min: Float = -5f,
+        max: Float = 5f,
+        startValue: Float = 0f,
+        private val setTranslation: (controllable: Controllable, translation: Float) -> Unit
+) : Controller(controllables, seeker, valueLabel, min, max, startValue) {
 
-    private val formatString = context.getString(R.string.transform_rotation_value_radians)
+    private val formatString = context.getString(R.string.transform_translation_value)
 
     override fun set(controllable: Controllable, value: Float) {
-        setRotation(controllable, value * Pi)
+        setTranslation(controllable, value)
     }
 
     override val valueLabelText: String

@@ -9,6 +9,7 @@ import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.transform.Rotatable
 import io.jim.tesserapp.math.transform.Translatable
 import io.jim.tesserapp.math.vector.Vector3d
+import io.jim.tesserapp.ui.controllers.Controllable
 import kotlin.properties.Delegates
 
 /**

@@ -1,10 +1,10 @@
-package io.jim.tesserapp.ui
+package io.jim.tesserapp.ui.controllers
 
 import io.jim.tesserapp.math.transform.Rotatable
 import io.jim.tesserapp.math.transform.Translatable
 
 /**
- * The set of GUI-controls set values through this interface.
+ * [Controller]s set values through this interface.
  */
 interface Controllable {
 

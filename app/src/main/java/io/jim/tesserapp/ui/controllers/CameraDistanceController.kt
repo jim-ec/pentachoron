@@ -1,10 +1,11 @@
-package io.jim.tesserapp.ui
+package io.jim.tesserapp.ui.controllers
 
 import android.content.Context
 import android.widget.SeekBar
 import android.widget.TextView
 import io.jim.tesserapp.R
 import io.jim.tesserapp.math.common.formatNumber
+import io.jim.tesserapp.ui.CoordinateSystemView
 
 class CameraDistanceController(
         controllables: List<Controllable>,

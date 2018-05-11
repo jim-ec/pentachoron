@@ -1,11 +1,11 @@
-package io.jim.tesserapp.ui
+package io.jim.tesserapp.ui.controllers
 
 import android.widget.SeekBar
 import android.widget.TextView
 import io.jim.tesserapp.math.common.SmoothTimedValueProvider
 
 /**
- * Control for one rotation.
+ * Control a single value, targeting single value of [Controllable].
  */
 abstract class Controller(
         private var controllables: List<Controllable>,
