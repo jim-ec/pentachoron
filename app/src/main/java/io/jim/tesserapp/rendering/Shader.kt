@@ -52,7 +52,6 @@ class Shader {
     private val viewMatrixLocation: Int
     private val projectionMatrixLocation: Int
 
-    private val modelMatrixCountsLocation: Int
     private val modelMatrixTexture = resultCode { GLES30.glGenTextures(1, resultCode) }
 
     @Suppress("MemberVisibilityCanBePrivate")
@@ -68,7 +67,6 @@ class Shader {
         uniform mat4 P;
         uniform mat4 V;
 
-        uniform float modelMatrixCounts;
         uniform sampler2D modelMatrixTexture;
 
         in vec3 position;
@@ -79,23 +77,24 @@ class Shader {
 
         /**
          * Fetch one model matrix row from the model matrix texture.
-         * @param row Row to be loaded. Must be within [0.0, 4.0[.
+         * @param row Row to be loaded. Must be within [0, 3].
          */
-        vec4 fetchModelMatrixCoefficient(in float row) {
-            float xOffset = 1.0 / (2.0 * 4.0 * modelMatrixCounts);
-            float x = (4.0 * modelIndex + row) / (4.0 * modelMatrixCounts);
-            float y = 0.5;
-            return texture(modelMatrixTexture, vec2(xOffset + x, y));
+        vec4 fetchModelMatrixCoefficient(in int row) {
+            return texelFetch(
+                modelMatrixTexture,
+                ivec2(4 * int(modelIndex) + row, 0),
+                0
+            );
         }
 
         void main() {
 
             // Build model matrix by loading data from  texture:
             mat4 modelMatrix;
-            modelMatrix[0] = fetchModelMatrixCoefficient(0.0);
-            modelMatrix[1] = fetchModelMatrixCoefficient(1.0);
-            modelMatrix[2] = fetchModelMatrixCoefficient(2.0);
-            modelMatrix[3] = fetchModelMatrixCoefficient(3.0);
+            modelMatrix[0] = fetchModelMatrixCoefficient(0);
+            modelMatrix[1] = fetchModelMatrixCoefficient(1);
+            modelMatrix[2] = fetchModelMatrixCoefficient(2);
+            modelMatrix[3] = fetchModelMatrixCoefficient(3);
 
             gl_Position = P * V * modelMatrix * vec4(position, 1.0);
             vColor = color;
@@ -168,7 +167,6 @@ class Shader {
         // Retrieve uniform locations:
         viewMatrixLocation = GLES30.glGetUniformLocation(program, "V")
         projectionMatrixLocation = GLES30.glGetUniformLocation(program, "P")
-        modelMatrixCountsLocation = GLES30.glGetUniformLocation(program, "modelMatrixCounts")
 
         checkGlError("Initialization")
 
@@ -207,8 +205,6 @@ class Shader {
      * Upload all matrices from [buffer] into the model matrix texture.
      */
     fun uploadModelMatrixBuffer(buffer: RandomAccessBuffer) {
-        GLES30.glUniform1f(modelMatrixCountsLocation, modelMatrixCounts.toFloat())
-
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, modelMatrixTexture)
         GLES30.glTexSubImage2D(
                 GLES30.GL_TEXTURE_2D,
