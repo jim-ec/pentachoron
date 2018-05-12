@@ -61,7 +61,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     }
 
     init {
-        setEGLContextClientVersion(2)
+        setEGLContextClientVersion(3)
         setRenderer(renderer)
         debugFlags = DEBUG_CHECK_GL_ERROR
         renderMode = RENDERMODE_CONTINUOUSLY
