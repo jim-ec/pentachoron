@@ -39,14 +39,16 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
 
         println("Open GLES version: ${GLES30.glGetString(GLES30.GL_VERSION)}")
         println("GLSL version: ${GLES30.glGetString(GLES30.GL_SHADING_LANGUAGE_VERSION)}")
+        println("Vendor: ${GLES30.glGetString(GLES30.GL_VENDOR)}")
 
         shader = Shader()
         vertexBuffer = VertexBuffer()
 
+        shader.bind()
         shader.uploadProjectionMatrix(projectionMatrix)
 
         sharedRenderData.geometryManager.vertexBufferRewritten += { buffer ->
-            vertexBuffer.bind(shader, buffer)
+            vertexBuffer.instructVertexAttributes(shader, buffer)
         }
     }
 
@@ -66,6 +68,8 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT or GLES30.GL_DEPTH_BUFFER_BIT)
 
         sharedRenderData.synchronized { (geometryManager) ->
+
+            shader.bind()
 
             // Recompute view matrix:
             viewMatrix.compute()

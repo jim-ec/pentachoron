@@ -1,4 +1,4 @@
-package io.jim.tesserapp.rendering
+package io.jim.tesserapp.rendering.engine
 
 import java.nio.IntBuffer
 
