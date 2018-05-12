@@ -37,6 +37,9 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         glEnable(GL_DEPTH_TEST)
         glLineWidth(4f)
 
+        println("Open GLES version: ${glGetString(GL_VERSION)}")
+        println("GLSL version: ${glGetString(GL_SHADING_LANGUAGE_VERSION)}")
+
         shader = Shader()
         vertexBuffer = VertexBuffer()
 

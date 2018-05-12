@@ -2,7 +2,7 @@ package io.jim.tesserapp.rendering
 
 import android.opengl.GLES10.GL_STACK_OVERFLOW
 import android.opengl.GLES10.GL_STACK_UNDERFLOW
-import android.opengl.GLES20.*
+import android.opengl.GLES30.*
 import io.jim.tesserapp.math.transform.Matrix
 import io.jim.tesserapp.util.RandomAccessBuffer
 
@@ -15,24 +15,24 @@ class Shader {
     /**
      * Thrown upon OpenGL errors.
      */
-    inner class GlException(msg: String) :
-            RuntimeException("OpenGL Error 0x${glGetError()} ($errorString): $msg")
+    inner class GlException(msg: String, error: Int = glGetError()) :
+            RuntimeException("OpenGL Error 0x$error (${errorString(error)}): $msg")
 
     /**
      * Return a string describing the current OpenGL error.
      */
-    private val errorString: String
-        get() = when (glGetError()) {
-            GL_NO_ERROR -> "no error"
-            GL_INVALID_ENUM -> "invalid enumeration"
-            GL_INVALID_VALUE -> "invalid value"
-            GL_INVALID_OPERATION -> "invalid operation"
-            GL_INVALID_FRAMEBUFFER_OPERATION -> "invalid framebuffer operation"
-            GL_OUT_OF_MEMORY -> "out of memory"
-            GL_STACK_UNDERFLOW -> "stack underflow"
-            GL_STACK_OVERFLOW -> "stack overflow"
-            else -> "unknown error"
-        }
+    private fun errorString(error: Int) =
+            when (error) {
+                GL_NO_ERROR -> "no error"
+                GL_INVALID_ENUM -> "invalid enumeration"
+                GL_INVALID_VALUE -> "invalid value"
+                GL_INVALID_OPERATION -> "invalid operation"
+                GL_INVALID_FRAMEBUFFER_OPERATION -> "invalid framebuffer operation"
+                GL_OUT_OF_MEMORY -> "out of memory"
+                GL_STACK_UNDERFLOW -> "stack underflow"
+                GL_STACK_OVERFLOW -> "stack overflow"
+                else -> "unknown error"
+            }
 
     /**
      * GLSL location of position attribute.
@@ -184,19 +184,21 @@ class Shader {
         glBindTexture(GL_TEXTURE_2D, modelMatrixTexture)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
 
         println("Initialize model-matrix texture for $modelMatrixCounts matrices")
 
         glTexImage2D(
-                GL_TEXTURE_2D,
-                0,
-                GL_RGBA,
-                modelMatrixCounts * 4,
-                1,
-                0,
-                GL_RGBA,
-                GL_FLOAT,
-                null
+                GL_TEXTURE_2D,              // target
+                0,                          // level
+                GL_RGBA,                    // internal format
+                modelMatrixCounts * 4,      //  width
+                1,                          // height
+                0,                          // border
+                GL_RGBA,                    // format
+                GL_FLOAT,                   // type
+                null                        // pixels
         )
 
         checkGlError("Initialize model-matrix texture")
@@ -242,8 +244,9 @@ class Shader {
      * @param currentAction Short description what the caller is currently about to do.
      */
     private fun checkGlError(currentAction: String) {
-        if (glGetError() != GL_NO_ERROR)
-            throw GlException("Occurred when: $currentAction")
+        val error = glGetError()
+        if (error != GL_NO_ERROR)
+            throw GlException("Occurred when: $currentAction", error)
     }
 
 }
