@@ -2,6 +2,7 @@ package io.jim.tesserapp.rendering
 
 import android.opengl.GLES30
 import io.jim.tesserapp.math.transform.Matrix
+import io.jim.tesserapp.rendering.engine.GlException
 import io.jim.tesserapp.util.RandomAccessBuffer
 
 /**
@@ -9,26 +10,6 @@ import io.jim.tesserapp.util.RandomAccessBuffer
  * uniforms.
  */
 class Shader {
-
-    /**
-     * Thrown upon OpenGL errors.
-     */
-    inner class GlException(msg: String, error: Int = GLES30.glGetError()) :
-            RuntimeException("OpenGL Error 0x$error (${errorString(error)}): $msg")
-
-    /**
-     * Return a string describing the current OpenGL error.
-     */
-    private fun errorString(error: Int) =
-            when (error) {
-                GLES30.GL_NO_ERROR -> "no error"
-                GLES30.GL_INVALID_ENUM -> "invalid enumeration"
-                GLES30.GL_INVALID_VALUE -> "invalid value"
-                GLES30.GL_INVALID_OPERATION -> "invalid operation"
-                GLES30.GL_INVALID_FRAMEBUFFER_OPERATION -> "invalid framebuffer operation"
-                GLES30.GL_OUT_OF_MEMORY -> "out of memory"
-                else -> "unknown error"
-            }
 
     /**
      * GLSL location of position attribute.
