@@ -80,13 +80,12 @@ class Shader {
 
             in vec3 position;
             in vec3 color;
-            in float modelIndex;
+            in int modelIndex;
 
             out vec3 vColor;
 
             void main() {
-
-                mat4 modelMatrix = modelMatrices[int(modelIndex)];
+                mat4 modelMatrix = modelMatrices[modelIndex];
 
                 gl_Position = P * V * modelMatrix * vec4(position, 1.0);
                 vColor = color;
