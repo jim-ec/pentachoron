@@ -63,49 +63,55 @@ class Shader {
         }
 
     private val vertexShaderSource = """
-            uniform mat4 P;
-            uniform mat4 V;
+        #version 300 es
 
-            uniform float modelMatrixCounts;
-            uniform sampler2D modelMatrixTexture;
+        uniform mat4 P;
+        uniform mat4 V;
 
-            attribute vec3 position;
-            attribute vec3 color;
-            attribute float modelIndex;
+        uniform float modelMatrixCounts;
+        uniform sampler2D modelMatrixTexture;
 
-            varying vec3 vColor;
+        in vec3 position;
+        in vec3 color;
+        in float modelIndex;
 
-            /**
-             * Fetch one model matrix row from the model matrix texture.
-             * @param row Row to be loaded. Must be within [0.0, 4.0[.
-             */
-            vec4 fetchModelMatrixCoefficient(in float row) {
-                float xOffset = 1.0 / (2.0 * 4.0 * modelMatrixCounts);
-                float x = (4.0 * modelIndex + row) / (4.0 * modelMatrixCounts);
-                float y = 0.5;
-                return texture2D(modelMatrixTexture, vec2(xOffset + x, y));
-            }
+        out vec3 vColor;
 
-            void main() {
+        /**
+         * Fetch one model matrix row from the model matrix texture.
+         * @param row Row to be loaded. Must be within [0.0, 4.0[.
+         */
+        vec4 fetchModelMatrixCoefficient(in float row) {
+            float xOffset = 1.0 / (2.0 * 4.0 * modelMatrixCounts);
+            float x = (4.0 * modelIndex + row) / (4.0 * modelMatrixCounts);
+            float y = 0.5;
+            return texture(modelMatrixTexture, vec2(xOffset + x, y));
+        }
 
-                // Build model matrix by loading data from  texture:
-                mat4 modelMatrix;
-                modelMatrix[0] = fetchModelMatrixCoefficient(0.0);
-                modelMatrix[1] = fetchModelMatrixCoefficient(1.0);
-                modelMatrix[2] = fetchModelMatrixCoefficient(2.0);
-                modelMatrix[3] = fetchModelMatrixCoefficient(3.0);
+        void main() {
 
-                gl_Position = P * V * modelMatrix * vec4(position, 1.0);
-                vColor = color;
-            }
+            // Build model matrix by loading data from  texture:
+            mat4 modelMatrix;
+            modelMatrix[0] = fetchModelMatrixCoefficient(0.0);
+            modelMatrix[1] = fetchModelMatrixCoefficient(1.0);
+            modelMatrix[2] = fetchModelMatrixCoefficient(2.0);
+            modelMatrix[3] = fetchModelMatrixCoefficient(3.0);
+
+            gl_Position = P * V * modelMatrix * vec4(position, 1.0);
+            vColor = color;
+        }
         """.trim()
 
     private val fragmentShaderSource = """
-            varying mediump vec3 vColor;
+        #version 300 es
 
-            void main() {
-                gl_FragColor = vec4(vColor, 1.0);
-            }
+        in mediump vec3 vColor;
+
+        out mediump vec4 fColor;
+
+        void main() {
+            fColor = vec4(vColor, 1.0);
+        }
         """.trim()
 
     init {
