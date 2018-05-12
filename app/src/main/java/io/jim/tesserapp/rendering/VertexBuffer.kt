@@ -48,10 +48,11 @@ class VertexBuffer {
 
         // Model index attribute:
         GLES30.glEnableVertexAttribArray(shader.modelIndexAttributeLocation)
-        GLES30.glVertexAttribIPointer(
+        GLES30.glVertexAttribPointer(
                 shader.modelIndexAttributeLocation,
                 Vertex.COMPONENTS_PER_MODEL_INDEX,
-                GLES30.GL_INT,
+                GLES30.GL_FLOAT,
+                false,
                 Vertex.STRIDE_BYTES,
                 Vertex.OFFSET_MODEL_INDEX_BYTES
         )

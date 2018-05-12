@@ -51,43 +51,25 @@ class Shader {
     private val program = GLES30.glCreateProgram()
     private val viewMatrixLocation: Int
     private val projectionMatrixLocation: Int
-
-    private val modelMatrixTexture = resultCode { GLES30.glGenTextures(1, resultCode) }
-    private val modelMatrixUbo = resultCode { GLES30.glGenBuffers(1, resultCode) }
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    var modelMatrixCounts = 10
-        set(value) {
-            field = value
-            initializeModelMatrixTexture()
-        }
+    private val modelMatrixLocation: Int
 
     companion object {
-
-        private const val MODEL_MATRIX_BLOCK_NAME = "ModelMatrixBlock"
 
         private val vertexShaderSource = """
             #version 300 es
 
             uniform mat4 P;
             uniform mat4 V;
-
-            uniform sampler2D modelMatrixTexture;
-
-            layout(std140) uniform $MODEL_MATRIX_BLOCK_NAME {
-                mat4 modelMatrices[10];
-            };
+            uniform mat4 M[100];
 
             in vec3 position;
             in vec3 color;
-            in int modelIndex;
+            in float modelIndex;
 
             out vec3 vColor;
 
             void main() {
-                mat4 modelMatrix = modelMatrices[modelIndex];
-
-                gl_Position = P * V * modelMatrix * vec4(position, 1.0);
+                gl_Position = P * V * M[int(modelIndex)] * vec4(position, 1.0);
                 vColor = color;
             }
 
@@ -162,84 +144,17 @@ class Shader {
         // Retrieve uniform locations:
         viewMatrixLocation = GLES30.glGetUniformLocation(program, "V")
         projectionMatrixLocation = GLES30.glGetUniformLocation(program, "P")
+        modelMatrixLocation = GLES30.glGetUniformLocation(program, "M")
 
         checkGlError("Initialization")
-
-        initializeModelMatrixTexture()
-    }
-
-    init {
-
-        GLES30.glBindBuffer(GLES30.GL_UNIFORM_BUFFER, modelMatrixUbo)
-
-        // Get block index:
-        val modelMatrixBlockIndex = GLES30.glGetUniformBlockIndex(program, MODEL_MATRIX_BLOCK_NAME)
-
-        // Get data size of block:
-        val dataSize = resultCode {
-            GLES30.glGetActiveUniformBlockiv(
-                    program,
-                    modelMatrixBlockIndex,
-                    GLES30.GL_UNIFORM_BLOCK_DATA_SIZE,
-                    resultCode
-            )
-        }
-
-        // Bind UBO and block to binding-point #0:
-        GLES30.glBindBufferBase(GLES30.GL_UNIFORM_BUFFER, 0, modelMatrixUbo)
-        GLES30.glUniformBlockBinding(program, modelMatrixBlockIndex, 0)
-
-        // Initially reserve memory for UBO:
-        GLES30.glBufferData(GLES30.GL_UNIFORM_BUFFER, dataSize, null, GLES30.GL_STATIC_DRAW)
     }
 
     /**
-     * Always called when [modelMatrixCounts] changes.
-     * Allocates and instructs the model matrix texture.
-     */
-    private fun initializeModelMatrixTexture() {
-        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, modelMatrixTexture)
-        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST)
-        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST)
-        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE)
-        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE)
-
-        println("Initialize model-matrix texture for $modelMatrixCounts matrices")
-
-        GLES30.glTexImage2D(
-                GLES30.GL_TEXTURE_2D,       // target
-                0,                          // level
-                GLES30.GL_RGBA,             // internal format
-                modelMatrixCounts * 4,      //  width
-                1,                          // height
-                0,                          // border
-                GLES30.GL_RGBA,             // format
-                GLES30.GL_FLOAT,            // type
-                null                        // pixels
-        )
-
-        checkGlError("Initialize model-matrix texture")
-    }
-
-    /**
-     * Upload the first [uploadCounts] matrices from [buffer] into the model matrix un
+     * Upload the first [uploadCounts] matrices from [buffer] into the model matrix uniform array.
      */
     fun uploadModelMatrixBuffer(buffer: RandomAccessBuffer, uploadCounts: Int) {
-
-        GLES30.glBindBuffer(GLES30.GL_UNIFORM_BUFFER, modelMatrixUbo)
-        GLES30.glBufferSubData(GLES30.GL_UNIFORM_BUFFER, 0, uploadCounts, buffer.floatBuffer)
-
-        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, modelMatrixTexture)
-        GLES30.glTexSubImage2D(
-                GLES30.GL_TEXTURE_2D,
-                0,
-                0, 0,
-                modelMatrixCounts * 4,
-                1,
-                GLES30.GL_RGBA, GLES30.GL_FLOAT,
-                buffer.floatBuffer
-        )
-        checkGlError("Write model matrices to texture")
+        GLES30.glUniformMatrix4fv(modelMatrixLocation, uploadCounts, false, buffer.floatBuffer)
+        checkGlError("Uploading model buffer")
     }
 
     /**
