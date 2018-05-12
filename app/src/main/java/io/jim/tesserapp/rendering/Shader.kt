@@ -1,8 +1,6 @@
 package io.jim.tesserapp.rendering
 
-import android.opengl.GLES10.GL_STACK_OVERFLOW
-import android.opengl.GLES10.GL_STACK_UNDERFLOW
-import android.opengl.GLES30.*
+import android.opengl.GLES30
 import io.jim.tesserapp.math.transform.Matrix
 import io.jim.tesserapp.util.RandomAccessBuffer
 
@@ -15,7 +13,7 @@ class Shader {
     /**
      * Thrown upon OpenGL errors.
      */
-    inner class GlException(msg: String, error: Int = glGetError()) :
+    inner class GlException(msg: String, error: Int = GLES30.glGetError()) :
             RuntimeException("OpenGL Error 0x$error (${errorString(error)}): $msg")
 
     /**
@@ -23,14 +21,12 @@ class Shader {
      */
     private fun errorString(error: Int) =
             when (error) {
-                GL_NO_ERROR -> "no error"
-                GL_INVALID_ENUM -> "invalid enumeration"
-                GL_INVALID_VALUE -> "invalid value"
-                GL_INVALID_OPERATION -> "invalid operation"
-                GL_INVALID_FRAMEBUFFER_OPERATION -> "invalid framebuffer operation"
-                GL_OUT_OF_MEMORY -> "out of memory"
-                GL_STACK_UNDERFLOW -> "stack underflow"
-                GL_STACK_OVERFLOW -> "stack overflow"
+                GLES30.GL_NO_ERROR -> "no error"
+                GLES30.GL_INVALID_ENUM -> "invalid enumeration"
+                GLES30.GL_INVALID_VALUE -> "invalid value"
+                GLES30.GL_INVALID_OPERATION -> "invalid operation"
+                GLES30.GL_INVALID_FRAMEBUFFER_OPERATION -> "invalid framebuffer operation"
+                GLES30.GL_OUT_OF_MEMORY -> "out of memory"
                 else -> "unknown error"
             }
 
@@ -50,14 +46,14 @@ class Shader {
      */
     val modelIndexAttributeLocation: Int
 
-    private val vertexShader = glCreateShader(GL_VERTEX_SHADER)
-    private val fragmentShader = glCreateShader(GL_FRAGMENT_SHADER)
-    private val program = glCreateProgram()
+    private val vertexShader = GLES30.glCreateShader(GLES30.GL_VERTEX_SHADER)
+    private val fragmentShader = GLES30.glCreateShader(GLES30.GL_FRAGMENT_SHADER)
+    private val program = GLES30.glCreateProgram()
     private val viewMatrixLocation: Int
     private val projectionMatrixLocation: Int
 
     private val modelMatrixCountsLocation: Int
-    private val modelMatrixTexture = resultCode { glGenTextures(1, resultCode) }
+    private val modelMatrixTexture = resultCode { GLES30.glGenTextures(1, resultCode) }
 
     @Suppress("MemberVisibilityCanBePrivate")
     var modelMatrixCounts = 10
@@ -118,58 +114,55 @@ class Shader {
         if (program < 0) throw GlException("Cannot create shader program")
 
         vertexShader.also {
-            glShaderSource(it, vertexShaderSource)
-            glCompileShader(it)
+            GLES30.glShaderSource(it, vertexShaderSource)
+            GLES30.glCompileShader(it)
 
-            glGetShaderiv(it, GL_COMPILE_STATUS, resultCode)
-            if (GL_TRUE != resultCode()) {
-                throw GlException("Cannot compile vertex shader: ${glGetShaderInfoLog(it)}")
+            GLES30.glGetShaderiv(it, GLES30.GL_COMPILE_STATUS, resultCode)
+            if (GLES30.GL_TRUE != resultCode()) {
+                throw GlException("Cannot compile vertex shader: ${GLES30.glGetShaderInfoLog(it)}")
             }
         }
 
         fragmentShader.also {
-            glShaderSource(it, fragmentShaderSource)
-            glCompileShader(it)
-            glGetShaderiv(it, GL_COMPILE_STATUS, resultCode)
-            glGetError()
-            if (GL_TRUE != resultCode()) {
-                throw GlException("Cannot compile fragment shader: ${glGetShaderInfoLog(it)}")
+            GLES30.glShaderSource(it, fragmentShaderSource)
+            GLES30.glCompileShader(it)
+            GLES30.glGetShaderiv(it, GLES30.GL_COMPILE_STATUS, resultCode)
+
+            if (GLES30.GL_TRUE != resultCode()) {
+                throw GlException("Cannot compile fragment shader: ${GLES30.glGetShaderInfoLog(it)}")
             }
         }
 
         program.also {
-            glAttachShader(it, vertexShader)
-            glAttachShader(it, fragmentShader)
-            glLinkProgram(it)
-            glGetProgramiv(it, GL_LINK_STATUS, resultCode)
-            if (GL_TRUE != resultCode()) {
-                throw GlException("Cannot link program: ${glGetProgramInfoLog(it)}")
+            // Link program together:
+            GLES30.glAttachShader(it, vertexShader)
+            GLES30.glAttachShader(it, fragmentShader)
+            GLES30.glLinkProgram(it)
+            GLES30.glGetProgramiv(it, GLES30.GL_LINK_STATUS, resultCode)
+            if (GLES30.GL_TRUE != resultCode()) {
+                throw GlException("Cannot link program: ${GLES30.glGetProgramInfoLog(it)}")
             }
-            glValidateProgram(it)
-            glGetProgramiv(it, GL_VALIDATE_STATUS, resultCode)
-            if (GL_TRUE != resultCode()) {
-                throw GlException("Cannot validate program: ${glGetProgramInfoLog(it)}")
+
+            // Validate program:
+            GLES30.glValidateProgram(it)
+            GLES30.glGetProgramiv(it, GLES30.GL_VALIDATE_STATUS, resultCode)
+            if (GLES30.GL_TRUE != resultCode()) {
+                throw GlException("Cannot validate program: ${GLES30.glGetProgramInfoLog(it)}")
             }
-            glUseProgram(it)
+
+            // Use the program for further draw calls:
+            GLES30.glUseProgram(it)
         }
 
-        positionAttributeLocation = glGetAttribLocation(program, "position")
-        if (positionAttributeLocation < 0) throw GlException("Cannot locate position attribute")
+        // Retrieve attribute locations:
+        positionAttributeLocation = GLES30.glGetAttribLocation(program, "position")
+        colorAttributeLocation = GLES30.glGetAttribLocation(program, "color")
+        modelIndexAttributeLocation = GLES30.glGetAttribLocation(program, "modelIndex")
 
-        colorAttributeLocation = glGetAttribLocation(program, "color")
-        if (colorAttributeLocation < 0) throw GlException("Cannot locate color attribute")
-
-        modelIndexAttributeLocation = glGetAttribLocation(program, "modelIndex")
-        if (modelIndexAttributeLocation < 0) throw GlException("Cannot locate model index attribute")
-
-        viewMatrixLocation = glGetUniformLocation(program, "V")
-        if (viewMatrixLocation < 0) throw GlException("Cannot locate view matrix uniform")
-
-        projectionMatrixLocation = glGetUniformLocation(program, "P")
-        if (projectionMatrixLocation < 0) throw GlException("Cannot locate projection matrix uniform")
-
-        modelMatrixCountsLocation = glGetUniformLocation(program, "modelMatrixCounts")
-        if (modelMatrixCountsLocation < 0) throw GlException("Cannot locate model matrix counts uniform")
+        // Retrieve uniform locations:
+        viewMatrixLocation = GLES30.glGetUniformLocation(program, "V")
+        projectionMatrixLocation = GLES30.glGetUniformLocation(program, "P")
+        modelMatrixCountsLocation = GLES30.glGetUniformLocation(program, "modelMatrixCounts")
 
         checkGlError("Initialization")
 
@@ -181,23 +174,23 @@ class Shader {
      * Allocates and instructs the model matrix texture.
      */
     private fun initializeModelMatrixTexture() {
-        glBindTexture(GL_TEXTURE_2D, modelMatrixTexture)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, modelMatrixTexture)
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST)
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST)
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE)
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE)
 
         println("Initialize model-matrix texture for $modelMatrixCounts matrices")
 
-        glTexImage2D(
-                GL_TEXTURE_2D,              // target
+        GLES30.glTexImage2D(
+                GLES30.GL_TEXTURE_2D,       // target
                 0,                          // level
-                GL_RGBA,                    // internal format
+                GLES30.GL_RGBA,             // internal format
                 modelMatrixCounts * 4,      //  width
                 1,                          // height
                 0,                          // border
-                GL_RGBA,                    // format
-                GL_FLOAT,                   // type
+                GLES30.GL_RGBA,             // format
+                GLES30.GL_FLOAT,            // type
                 null                        // pixels
         )
 
@@ -208,16 +201,16 @@ class Shader {
      * Upload all matrices from [buffer] into the model matrix texture.
      */
     fun uploadModelMatrixBuffer(buffer: RandomAccessBuffer) {
-        glUniform1f(modelMatrixCountsLocation, modelMatrixCounts.toFloat())
+        GLES30.glUniform1f(modelMatrixCountsLocation, modelMatrixCounts.toFloat())
 
-        glBindTexture(GL_TEXTURE_2D, modelMatrixTexture)
-        glTexSubImage2D(
-                GL_TEXTURE_2D,
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, modelMatrixTexture)
+        GLES30.glTexSubImage2D(
+                GLES30.GL_TEXTURE_2D,
                 0,
                 0, 0,
                 modelMatrixCounts * 4,
                 1,
-                GL_RGBA, GL_FLOAT,
+                GLES30.GL_RGBA, GLES30.GL_FLOAT,
                 buffer.floatBuffer
         )
         checkGlError("Write model matrices to texture")
@@ -227,7 +220,7 @@ class Shader {
      * Upload [matrix] to the view matrix uniform.
      */
     fun uploadViewMatrix(matrix: Matrix) {
-        glUniformMatrix4fv(viewMatrixLocation, 1, false, matrix.floats.floatBuffer)
+        GLES30.glUniformMatrix4fv(viewMatrixLocation, 1, false, matrix.floats.floatBuffer)
         checkGlError("Uploading view matrix")
     }
 
@@ -235,7 +228,7 @@ class Shader {
      * Upload [matrix] to the projection matrix uniform.
      */
     fun uploadProjectionMatrix(matrix: Matrix) {
-        glUniformMatrix4fv(projectionMatrixLocation, 1, false, matrix.floats.floatBuffer)
+        GLES30.glUniformMatrix4fv(projectionMatrixLocation, 1, false, matrix.floats.floatBuffer)
         checkGlError("Uploading projection matrix")
     }
 
@@ -244,8 +237,8 @@ class Shader {
      * @param currentAction Short description what the caller is currently about to do.
      */
     private fun checkGlError(currentAction: String) {
-        val error = glGetError()
-        if (error != GL_NO_ERROR)
+        val error = GLES30.glGetError()
+        if (error != GLES30.GL_NO_ERROR)
             throw GlException("Occurred when: $currentAction", error)
     }
 

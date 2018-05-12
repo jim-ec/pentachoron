@@ -1,7 +1,7 @@
 package io.jim.tesserapp.rendering
 
 import android.content.Context
-import android.opengl.GLES20.*
+import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.graphics.GeometryManager
@@ -32,13 +32,13 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
      * Initialize data.
      */
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-        glClearColor(clearColor.red, clearColor.green, clearColor.blue, 1.0f)
-        glDisable(GL_CULL_FACE)
-        glEnable(GL_DEPTH_TEST)
-        glLineWidth(4f)
+        GLES30.glClearColor(clearColor.red, clearColor.green, clearColor.blue, 1.0f)
+        GLES30.glDisable(GLES30.GL_CULL_FACE)
+        GLES30.glEnable(GLES30.GL_DEPTH_TEST)
+        GLES30.glLineWidth(4f)
 
-        println("Open GLES version: ${glGetString(GL_VERSION)}")
-        println("GLSL version: ${glGetString(GL_SHADING_LANGUAGE_VERSION)}")
+        println("Open GLES version: ${GLES30.glGetString(GLES30.GL_VERSION)}")
+        println("GLSL version: ${GLES30.glGetString(GLES30.GL_SHADING_LANGUAGE_VERSION)}")
 
         shader = Shader()
         vertexBuffer = VertexBuffer()
@@ -54,7 +54,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
      * Construct view matrix.
      */
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-        glViewport(0, 0, width, height)
+        GLES30.glViewport(0, 0, width, height)
         sharedRenderData.camera.aspectRatio = width.toFloat() / height.toFloat()
     }
 
@@ -63,7 +63,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
      */
     override fun onDrawFrame(gl: GL10?) {
 
-        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
+        GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT or GLES30.GL_DEPTH_BUFFER_BIT)
 
         sharedRenderData.synchronized { (geometryManager) ->
 
@@ -80,8 +80,8 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
             geometryManager.updateVertexBuffer()
 
             // Draw actual geometry:
-            glDrawArrays(
-                    GL_LINES, 0,
+            GLES30.glDrawArrays(
+                    GLES30.GL_LINES, 0,
                     geometryManager.vertexBuffer.writtenElementCounts)
         }
     }

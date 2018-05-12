@@ -1,6 +1,6 @@
 package io.jim.tesserapp.rendering
 
-import android.opengl.GLES20.*
+import android.opengl.GLES30
 import io.jim.tesserapp.graphics.Vertex
 import io.jim.tesserapp.util.BYTE_LENGTH
 import io.jim.tesserapp.util.InputStreamBuffer
@@ -10,48 +10,48 @@ import io.jim.tesserapp.util.InputStreamBuffer
  */
 class VertexBuffer {
 
-    private val handle = resultCode { glGenBuffers(1, resultCode) }
+    private val handle = resultCode { GLES30.glGenBuffers(1, resultCode) }
 
     /**
      * Bind the vertex buffer and instruct the vertex attribute pointer a the given [shader].
      */
     fun bind(shader: Shader, backingBuffer: InputStreamBuffer) {
 
-        glBindBuffer(GL_ARRAY_BUFFER, handle)
-        glBufferData(
-                GL_ARRAY_BUFFER,
+        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, handle)
+        GLES30.glBufferData(
+                GLES30.GL_ARRAY_BUFFER,
                 backingBuffer.writtenElementCounts * Vertex.COMPONENTS_PER_VERTEX * Float.BYTE_LENGTH,
                 backingBuffer.floatBuffer,
-                GL_STATIC_DRAW)
+                GLES30.GL_STATIC_DRAW)
 
         // Position attribute:
-        glEnableVertexAttribArray(shader.positionAttributeLocation)
-        glVertexAttribPointer(
+        GLES30.glEnableVertexAttribArray(shader.positionAttributeLocation)
+        GLES30.glVertexAttribPointer(
                 shader.positionAttributeLocation,
                 Vertex.COMPONENTS_PER_POSITION,
-                GL_FLOAT,
+                GLES30.GL_FLOAT,
                 false,
                 Vertex.STRIDE_BYTES,
                 Vertex.OFFSET_POSITION_BYTES
         )
 
         // Color attribute:
-        glEnableVertexAttribArray(shader.colorAttributeLocation)
-        glVertexAttribPointer(
+        GLES30.glEnableVertexAttribArray(shader.colorAttributeLocation)
+        GLES30.glVertexAttribPointer(
                 shader.colorAttributeLocation,
                 Vertex.COMPONENTS_PER_COLOR,
-                GL_FLOAT,
+                GLES30.GL_FLOAT,
                 false,
                 Vertex.STRIDE_BYTES,
                 Vertex.OFFSET_COLOR_BYTES
         )
 
         // Model index attribute:
-        glEnableVertexAttribArray(shader.modelIndexAttributeLocation)
-        glVertexAttribPointer(
+        GLES30.glEnableVertexAttribArray(shader.modelIndexAttributeLocation)
+        GLES30.glVertexAttribPointer(
                 shader.modelIndexAttributeLocation,
                 Vertex.COMPONENTS_PER_MODEL_INDEX,
-                GL_FLOAT,
+                GLES30.GL_FLOAT,
                 false,
                 Vertex.STRIDE_BYTES,
                 Vertex.OFFSET_MODEL_INDEX_BYTES
