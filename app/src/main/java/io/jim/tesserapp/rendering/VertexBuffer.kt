@@ -9,7 +9,8 @@ import io.jim.tesserapp.util.InputStreamBuffer
 /**
  * Uploads buffer data to an OpenGL vertex buffer.
  */
-class VertexBuffer(shader: Shader) : GlBuffer(GLES30.GL_ARRAY_BUFFER) {
+class VertexBuffer(shader: Shader, val backingBuffer: InputStreamBuffer)
+    : GlBuffer(GLES30.GL_ARRAY_BUFFER) {
 
     /**
      * Store vertex attribute pointers.
@@ -64,9 +65,9 @@ class VertexBuffer(shader: Shader) : GlBuffer(GLES30.GL_ARRAY_BUFFER) {
     }
 
     /**
-     * Write data in [backingBuffer] into this vertex buffer.
+     * Upload data from [backingBuffer].
      */
-    fun write(backingBuffer: InputStreamBuffer) {
+    fun write() {
         bound {
             allocate(
                     backingBuffer.writtenElementCounts * Vertex.COMPONENTS_PER_VERTEX,

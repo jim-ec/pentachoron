@@ -42,13 +42,13 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         println("Vendor: ${GLES30.glGetString(GLES30.GL_VENDOR)}")
 
         shader = Shader()
-        vertexBuffer = VertexBuffer(shader)
+        vertexBuffer = VertexBuffer(shader, sharedRenderData.geometryManager.vertexBuffer)
 
         shader.bind()
         shader.uploadProjectionMatrix(projectionMatrix)
 
-        sharedRenderData.geometryManager.vertexBufferRewritten += { buffer ->
-            vertexBuffer.write(buffer)
+        sharedRenderData.geometryManager.vertexBufferRewritten += {
+            vertexBuffer.write()
         }
     }
 

@@ -3,7 +3,7 @@ package io.jim.tesserapp.graphics
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.util.Flag
 import io.jim.tesserapp.util.InputStreamBuffer
-import io.jim.tesserapp.util.ListenerListParam
+import io.jim.tesserapp.util.ListenerList
 
 /**
  * Manages a geometry list, while providing backing buffers for vertex and matrix data.
@@ -27,7 +27,7 @@ class GeometryManager {
     /**
      * Listeners are called when the vertex buffer was rewritten and needs to be uploaded to OpenGL.
      */
-    val vertexBufferRewritten = ListenerListParam<InputStreamBuffer>()
+    val vertexBufferRewritten = ListenerList()
 
     private val vertexBufferUpdateRequested = Flag(false)
 
@@ -73,7 +73,7 @@ class GeometryManager {
             vertexBuffer += vertex.floats
         }
 
-        vertexBufferRewritten.fire(vertexBuffer)
+        vertexBufferRewritten.fire()
 
         vertexBufferUpdateRequested.unset()
     }
