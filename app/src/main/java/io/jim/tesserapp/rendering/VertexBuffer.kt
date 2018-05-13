@@ -21,12 +21,12 @@ class VertexBuffer(
         /**
          * Floats taken by one position attribute.
          */
-        const val FLOATS_PER_POSITION = 3
+        const val FLOATS_PER_POSITION = 4
 
         /**
          * Floats taken by one color attribute.
          */
-        const val FLOATS_PER_COLOR = 3
+        const val FLOATS_PER_COLOR = 4
 
         /**
          * Floats taken by one model index attribute.

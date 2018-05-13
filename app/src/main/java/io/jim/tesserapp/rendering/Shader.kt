@@ -41,14 +41,14 @@ class Shader : GlProgram(vertexShaderSource, fragmentShaderSource) {
             uniform mat4 V;
             uniform mat4 M[100];
 
-            in vec3 position;
-            in vec3 color;
+            in vec4 position;
+            in vec4 color;
             in float modelIndex;
 
-            out vec3 vColor;
+            out vec4 vColor;
 
             void main() {
-                gl_Position = P * V * M[int(modelIndex)] * vec4(position, 1.0);
+                gl_Position = P * V * M[int(modelIndex)] * position;
                 vColor = color;
             }
 
@@ -57,12 +57,12 @@ class Shader : GlProgram(vertexShaderSource, fragmentShaderSource) {
         private val fragmentShaderSource = """
             #version 300 es
 
-            in mediump vec3 vColor;
+            in mediump vec4 vColor;
 
             out mediump vec4 fColor;
 
             void main() {
-                fColor = vec4(vColor, 1.0);
+                fColor = vColor;
             }
 
             """.trim()

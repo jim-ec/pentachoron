@@ -72,8 +72,8 @@ class GeometryManager {
         vertexBuffer.rewind()
         modelMatrixBuffer.forEachVertex { position, (red, green, blue), modelIndex ->
             vertexBuffer += listOf(
-                    position.x, position.y, position.z,
-                    red, green, blue,
+                    position.x, position.y, position.z, 1f,
+                    red, green, blue, 1f,
                     modelIndex.toFloat()
             )
         }
