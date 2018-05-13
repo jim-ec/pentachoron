@@ -21,7 +21,10 @@ class Camera {
      * Rotation on the horizontal orbit.
      * This is the base rotation.
      */
-    var horizontalRotation = 0f
+    var horizontalRotation by SmoothTimedValueDelegate<Camera>(
+            startValue = 0f,
+            transitionTimeInterval = 80L
+    )
 
     /**
      * Rotation on the vertical orbit.

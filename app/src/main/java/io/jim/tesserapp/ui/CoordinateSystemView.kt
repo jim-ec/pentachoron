@@ -54,7 +54,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
 
     companion object {
         private const val CLICK_TIME_MS = 100L
-        private const val TOUCH_ROTATION_SENSITIVITY = 0.005f
+        private const val TOUCH_ROTATION_SENSITIVITY = 0.02f
         const val DEFAULT_CAMERA_DISTANCE = 8f
         const val DEFAULT_CAMERA_HORIZONTAL_ROTATION = -Pi / 8f
         const val DEFAULT_CAMERA_VERTICAL_ROTATION = Pi / 3f
