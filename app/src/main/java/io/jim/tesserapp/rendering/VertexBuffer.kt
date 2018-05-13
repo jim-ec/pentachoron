@@ -10,8 +10,8 @@ import io.jim.tesserapp.util.InputStreamBuffer
  */
 class VertexBuffer(
         shader: Shader,
-        val backingBuffer: InputStreamBuffer
-) : GlVertexBuffer() {
+        backingBuffer: InputStreamBuffer
+) : GlVertexBuffer(backingBuffer, FLOATS_PER_VERTEX, GLES30.GL_LINES) {
 
     companion object {
 
@@ -113,19 +113,6 @@ class VertexBuffer(
                         OFFSET_MODEL_INDEX
                 )
             }
-        }
-    }
-
-    /**
-     * Upload data from backing buffers.
-     */
-    override fun write() {
-        bound {
-            allocate(
-                    backingBuffer.writtenElementCounts * FLOATS_PER_VERTEX,
-                    backingBuffer.floatBuffer,
-                    GLES30.GL_STATIC_DRAW
-            )
         }
     }
 

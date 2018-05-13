@@ -4,7 +4,6 @@ import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.rendering.VertexBuffer
 import io.jim.tesserapp.util.Flag
 import io.jim.tesserapp.util.InputStreamBuffer
-import io.jim.tesserapp.util.ListenerList
 
 /**
  * Manages a geometry list, while providing backing buffers for vertex and matrix data.
@@ -23,13 +22,7 @@ class GeometryManager {
      * Vertex buffer.
      * Buffer data is updated automatically upon geometrical change.
      */
-    val vertexBuffer = InputStreamBuffer(100, VertexBuffer.FLOATS_PER_VERTEX)
-
-    /**
-     * Listeners are called when the vertex buffer was rewritten and needs to be uploaded to OpenGL.
-     * TODO: Move directly as callback into [updateVertexBuffer].
-     */
-    val vertexBufferRewritten = ListenerList()
+    val backingVertexBuffer = InputStreamBuffer(100, VertexBuffer.FLOATS_PER_VERTEX)
 
     private val vertexBufferUpdateRequested = Flag(false)
 
@@ -62,26 +55,26 @@ class GeometryManager {
     /**
      * Rewrite the vertex buffer if any vertex data changed.
      */
-    fun updateVertexBuffer() {
+    fun updateVertexBuffer(): Boolean {
 
         if (!vertexBufferUpdateRequested) {
             // No update was requested, so buffer rewrite is not necessary:
-            return
+            return false
         }
 
         // Rewrite vertex buffer:
-        vertexBuffer.rewind()
+        backingVertexBuffer.rewind()
         modelMatrixBuffer.forEachVertex { position, (red, green, blue), modelIndex ->
-            vertexBuffer += listOf(
+            backingVertexBuffer += listOf(
                     position.x, position.y, position.z, 1f,
                     red, green, blue, 1f,
                     0f, 0f, 0f, modelIndex.toFloat()
             )
         }
 
-        vertexBufferRewritten.fire()
-
         vertexBufferUpdateRequested.unset()
+
+        return true
     }
 
     /**

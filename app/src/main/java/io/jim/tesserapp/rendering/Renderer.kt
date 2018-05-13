@@ -54,14 +54,11 @@ class Renderer(context: Context, private val dpi: Float) : GLSurfaceView.Rendere
         shader = Shader()
         vertexBuffer = VertexBuffer(
                 shader,
-                sharedRenderData.geometryManager.vertexBuffer
+                sharedRenderData.geometryManager.backingVertexBuffer
         )
 
-        shader.bind()
-        shader.uploadProjectionMatrix(projectionMatrix)
-
-        sharedRenderData.geometryManager.vertexBufferRewritten += {
-            vertexBuffer.write()
+        shader.bound {
+            shader.uploadProjectionMatrix(projectionMatrix)
         }
     }
 
@@ -82,14 +79,10 @@ class Renderer(context: Context, private val dpi: Float) : GLSurfaceView.Rendere
 
         sharedRenderData.synchronized { (geometryManager) ->
 
-            shader.bind()
-
-            // Bind VAO:
-            vertexBuffer.vertexArrayBound {
+            shader.bound {
 
                 // Recompute view matrix:
-                viewMatrix.compute()
-                shader.uploadViewMatrix(viewMatrix)
+                shader.uploadViewMatrix(viewMatrix.apply { compute() })
 
                 // Upload model matrices:
                 geometryManager.computeModelMatrices()
@@ -98,12 +91,12 @@ class Renderer(context: Context, private val dpi: Float) : GLSurfaceView.Rendere
                         geometryManager.modelMatrixBuffer.activeGeometries)
 
                 // Ensure vertex data is up-to-date:
-                geometryManager.updateVertexBuffer()
+                if (geometryManager.updateVertexBuffer()) {
+                    vertexBuffer.write()
+                }
 
-                // Draw actual geometry:
-                GLES30.glDrawArrays(
-                        GLES30.GL_LINES, 0,
-                        geometryManager.vertexBuffer.writtenElementCounts)
+                // Bind VAO:
+                vertexBuffer.draw()
 
             }
         }

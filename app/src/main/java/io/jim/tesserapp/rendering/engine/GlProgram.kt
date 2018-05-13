@@ -39,8 +39,10 @@ open class GlProgram(
     /**
      * Use the program for further draw calls.
      */
-    fun bind() {
+    inline fun bound(f: () -> Unit) {
         GLES30.glUseProgram(programHandle)
+        f()
+        GLES30.glUseProgram(0)
     }
 
 }

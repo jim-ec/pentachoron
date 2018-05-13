@@ -1,11 +1,16 @@
 package io.jim.tesserapp.rendering.engine
 
 import android.opengl.GLES30
+import io.jim.tesserapp.util.InputStreamBuffer
 
 /**
  * Provide a VAO.
  */
-abstract class GlVertexBuffer : GlBuffer(GLES30.GL_ARRAY_BUFFER) {
+abstract class GlVertexBuffer(
+        val backingBuffer: InputStreamBuffer,
+        val floatsPerVertex: Int,
+        val drawMode: Int
+) : GlBuffer(GLES30.GL_ARRAY_BUFFER) {
 
     /**
      * Store vertex attribute pointers.
@@ -23,8 +28,29 @@ abstract class GlVertexBuffer : GlBuffer(GLES30.GL_ARRAY_BUFFER) {
     }
 
     /**
-     * Upload the buffer contents to the GPU.
+     * Upload data from backing buffers.
      */
-    abstract fun write()
+    fun write() {
+        bound {
+            allocate(
+                    backingBuffer.writtenElementCounts * floatsPerVertex,
+                    backingBuffer.floatBuffer,
+                    GLES30.GL_STATIC_DRAW
+            )
+        }
+    }
+
+    /**
+     * Draw vertex data with [drawMode].
+     * Counts is determined through [backingBuffer]'s [InputStreamBuffer.writtenElementCounts].
+     */
+    fun draw() {
+        vertexArrayBound {
+            GLES30.glDrawArrays(
+                    drawMode,
+                    0,
+                    backingBuffer.writtenElementCounts)
+        }
+    }
 
 }
