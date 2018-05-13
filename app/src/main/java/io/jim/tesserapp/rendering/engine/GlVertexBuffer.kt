@@ -6,7 +6,7 @@ import io.jim.tesserapp.util.InputStreamBuffer
 /**
  * Provide a VAO.
  */
-abstract class GlVertexBuffer(
+open class GlVertexBuffer(
         val backingBuffer: InputStreamBuffer,
         val floatsPerVertex: Int,
         val drawMode: Int

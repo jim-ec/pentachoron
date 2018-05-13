@@ -47,12 +47,12 @@ class Shader : GlProgram(
 
             in vec4 position;
             in vec4 color;
-            in float modelIndex;
+            in int modelIndex;
 
             out vec4 vColor;
 
             void main() {
-                gl_Position = P * V * M[int(modelIndex)] * position;
+                gl_Position = P * V * M[modelIndex] * position;
                 vColor = color;
             }
 

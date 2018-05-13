@@ -4,6 +4,7 @@ import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.rendering.VertexBuffer
 import io.jim.tesserapp.util.Flag
 import io.jim.tesserapp.util.InputStreamBuffer
+import io.jim.tesserapp.util.IntFloatReinterpreter
 
 /**
  * Manages a geometry list, while providing backing buffers for vertex and matrix data.
@@ -22,9 +23,11 @@ class GeometryManager {
      * Vertex buffer.
      * Buffer data is updated automatically upon geometrical change.
      */
-    val backingVertexBuffer = InputStreamBuffer(100, VertexBuffer.FLOATS_PER_VERTEX)
+    val backingVertexBuffer = InputStreamBuffer(100, VertexBuffer.VERTEX_FLOATS)
 
     private val vertexBufferUpdateRequested = Flag(false)
+
+    private val intFloatReinterpreter = IntFloatReinterpreter()
 
     /**
      * Registers [geometry] into this manager.
@@ -68,7 +71,7 @@ class GeometryManager {
             backingVertexBuffer += listOf(
                     position.x, position.y, position.z, 1f,
                     red, green, blue, 1f,
-                    0f, 0f, 0f, modelIndex.toFloat()
+                    0f, 0f, 0f, intFloatReinterpreter.toFloat(modelIndex)
             )
         }
 

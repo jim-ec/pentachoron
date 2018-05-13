@@ -11,43 +11,40 @@ import io.jim.tesserapp.util.InputStreamBuffer
 class VertexBuffer(
         shader: Shader,
         backingBuffer: InputStreamBuffer
-) : GlVertexBuffer(backingBuffer, FLOATS_PER_VERTEX, GLES30.GL_LINES) {
+) : GlVertexBuffer(backingBuffer, VERTEX_FLOATS, GLES30.GL_LINES) {
 
     companion object {
 
         /**
-         * Floats taken by one position attribute.
+         * Floats take by one attribute.
+         * Due to alignment, each attribute has 4 float values, regardless of how many
+         * it actually uses.
          */
-        private const val POSITION_FLOATS = 4
+        const val ATTRIBUTE_FLOATS = 4
 
         /**
-         * Floats taken by one color attribute.
+         * Counts of different attributes.
+         * - Position
+         * - Color
+         * - Model index
          */
-        private const val COLOR_FLOATS = 4
+        const val ATTRIBUTE_COUNTS = 3
 
         /**
          * Padding floats in front of the model index, to keep 4-float alignment.
          */
-        private const val MODEL_INDEX_PADDING = 3
-
-        /**
-         * Floats taken by one model index attribute.
-         */
-        private const val MODEL_INDEX_FLOATS = 1
+        const val MODEL_INDEX_PADDING = 3
 
         /**
          * Floats taken by one complete vertex.
          */
-        const val FLOATS_PER_VERTEX = POSITION_FLOATS +
-                COLOR_FLOATS +
-                MODEL_INDEX_PADDING +
-                MODEL_INDEX_FLOATS
+        const val VERTEX_FLOATS = ATTRIBUTE_COUNTS * ATTRIBUTE_FLOATS
 
         /**
          * Bytes taken by one complete vertex.
          */
         val BYTES_PER_VERTEX =
-                FLOATS_PER_VERTEX * Float.BYTE_LENGTH
+                VERTEX_FLOATS * Float.BYTE_LENGTH
 
         /**
          * Vertex stride, in bytes.
@@ -65,13 +62,13 @@ class VertexBuffer(
          * Color attribute offset, in bytes.
          */
         private val OFFSET_COLOR =
-                OFFSET_POSITION + POSITION_FLOATS * Float.BYTE_LENGTH
+                OFFSET_POSITION + ATTRIBUTE_FLOATS * Float.BYTE_LENGTH
 
         /**
          * Model index attribute offset, in bytes.
          */
         private val OFFSET_MODEL_INDEX =
-                OFFSET_COLOR + (COLOR_FLOATS + MODEL_INDEX_PADDING) * Float.BYTE_LENGTH
+                OFFSET_COLOR + (ATTRIBUTE_FLOATS + MODEL_INDEX_PADDING) * Float.BYTE_LENGTH
     }
 
     init {
@@ -84,7 +81,7 @@ class VertexBuffer(
                 GLES30.glEnableVertexAttribArray(shader.positionAttributeLocation)
                 GLES30.glVertexAttribPointer(
                         shader.positionAttributeLocation,
-                        POSITION_FLOATS,
+                        ATTRIBUTE_FLOATS,
                         GLES30.GL_FLOAT,
                         false,
                         STRIDE,
@@ -95,7 +92,7 @@ class VertexBuffer(
                 GLES30.glEnableVertexAttribArray(shader.colorAttributeLocation)
                 GLES30.glVertexAttribPointer(
                         shader.colorAttributeLocation,
-                        COLOR_FLOATS,
+                        ATTRIBUTE_FLOATS,
                         GLES30.GL_FLOAT,
                         false,
                         STRIDE,
@@ -104,11 +101,10 @@ class VertexBuffer(
 
                 // Model index attribute:
                 GLES30.glEnableVertexAttribArray(shader.modelIndexAttributeLocation)
-                GLES30.glVertexAttribPointer(
+                GLES30.glVertexAttribIPointer(
                         shader.modelIndexAttributeLocation,
-                        MODEL_INDEX_FLOATS,
-                        GLES30.GL_FLOAT,
-                        false,
+                        ATTRIBUTE_FLOATS,
+                        GLES30.GL_INT,
                         STRIDE,
                         OFFSET_MODEL_INDEX
                 )

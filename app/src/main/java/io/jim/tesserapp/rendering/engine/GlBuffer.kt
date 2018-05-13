@@ -49,6 +49,7 @@ open class GlBuffer(
                     data,
                     usage
             )
+            GlException.check("Allocate buffer memory")
         }
     }
 
@@ -73,7 +74,7 @@ open class GlBuffer(
             val buffer = byteBuffer.asFloatBuffer()
 
             if (buffer.capacity() % (vectorsPerInvocation * 4) != 0)
-                throw RuntimeException("Read buffer size is not a multiple of ${vectorsPerInvocation * 4}")
+                throw RuntimeException("Read buffer size=${buffer.capacity()} is not a multiple of ${vectorsPerInvocation * 4}")
 
             val list = MutableList(vectorsPerInvocation) { Vector4d() }
 

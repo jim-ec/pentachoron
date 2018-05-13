@@ -82,7 +82,7 @@ class Renderer(context: Context, private val dpi: Float) : GLSurfaceView.Rendere
             // Ensure vertex data is up-to-date:
             if (geometryManager.updateVertexBuffer()) {
                 vertexBuffer.write()
-                shader.transformFeedback?.allocate(vertexBuffer.backingBuffer.writtenElementCounts)
+                shader.transformFeedback?.allocate(vertexBuffer.backingBuffer.writtenElementCounts * VertexBuffer.ATTRIBUTE_FLOATS)
             }
 
             shader.bound {
