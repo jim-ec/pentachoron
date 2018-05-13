@@ -58,17 +58,30 @@ class GeometryTest {
         val c = Vector3d(1f, 1f, 0f)
         val d = Vector3d(0f, 1f, 0f)
         Quadrilateral("Test", a, b, c, d, Color.BLACK).apply {
-            vertices(modelIndex = -1).also {
-                assertEquals(8, it.size)
-                assertEquals(a, it[0].position, 0.1f)
-                assertEquals(b, it[1].position, 0.1f)
-                assertEquals(b, it[2].position, 0.1f)
-                assertEquals(c, it[3].position, 0.1f)
-                assertEquals(c, it[4].position, 0.1f)
-                assertEquals(d, it[5].position, 0.1f)
-                assertEquals(d, it[6].position, 0.1f)
-                assertEquals(a, it[7].position, 0.1f)
+            var invocationCount = 0
+
+            forEachVertex { position, (red, green, blue) ->
+
+                assertEquals(when (invocationCount) {
+                    0 -> a
+                    1 -> b
+                    2 -> b
+                    3 -> c
+                    4 -> c
+                    5 -> d
+                    6 -> d
+                    7 -> a
+                    else -> throw RuntimeException()
+                }, position, 0.1f)
+
+                assertEquals(0f, red, 0.1f)
+                assertEquals(0f, green, 0.1f)
+                assertEquals(0f, blue, 0.1f)
+
+                invocationCount++
             }
+
+            assertEquals(8, invocationCount)
         }
     }
 

@@ -1,7 +1,6 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.graphics.Vertex
 import io.jim.tesserapp.math.transform.Matrix
 import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.util.ListenerList
@@ -53,18 +52,8 @@ open class Geometry(
     val translation = Vector3d(0f, 0f, 0f)
 
     /**
-     * List of vertices, with resolved indices.
-     * The list might get invalidated over time.
-     * To query vertex points, this geometry must be registered firstly into a matrix buffer.
+     * Invoke [f] for each position and the color it's associated with.
      */
-    fun vertices(modelIndex: Int): List<Vertex> =
-            lines.flatMap {
-                listOf(
-                        Vertex(positions[it.from], it.color, modelIndex),
-                        Vertex(positions[it.to], it.color, modelIndex)
-                )
-            }
-
     inline fun forEachVertex(f: (position: Vector3d, color: Color) -> Unit) {
         lines.forEach {
             f(positions[it.from], it.color)

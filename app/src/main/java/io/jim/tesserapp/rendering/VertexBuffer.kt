@@ -1,7 +1,6 @@
 package io.jim.tesserapp.rendering
 
 import android.opengl.GLES30
-import io.jim.tesserapp.graphics.Vertex
 import io.jim.tesserapp.rendering.engine.GlBuffer
 import io.jim.tesserapp.rendering.engine.resultCode
 import io.jim.tesserapp.util.InputStreamBuffer
@@ -25,6 +24,12 @@ class VertexBuffer(
     val colorBuffer = GlBuffer(GLES30.GL_ARRAY_BUFFER)
     val modelIndexBuffer = GlBuffer(GLES30.GL_ARRAY_BUFFER)
 
+    companion object {
+        const val FLOATS_PER_POSITION = 3
+        const val FLOATS_PER_COLOR = 3
+        const val FLOATS_PER_MODEL_INDEX = 1
+    }
+
     init {
         // Instruct VAO:
         vertexArrayBound {
@@ -35,7 +40,7 @@ class VertexBuffer(
                 GLES30.glEnableVertexAttribArray(shader.positionAttributeLocation)
                 GLES30.glVertexAttribPointer(
                         shader.positionAttributeLocation,
-                        Vertex.COMPONENTS_PER_POSITION,
+                        FLOATS_PER_POSITION,
                         GLES30.GL_FLOAT,
                         false,
                         0,
@@ -50,7 +55,7 @@ class VertexBuffer(
                 GLES30.glEnableVertexAttribArray(shader.colorAttributeLocation)
                 GLES30.glVertexAttribPointer(
                         shader.colorAttributeLocation,
-                        Vertex.COMPONENTS_PER_COLOR,
+                        FLOATS_PER_COLOR,
                         GLES30.GL_FLOAT,
                         false,
                         0,
@@ -65,7 +70,7 @@ class VertexBuffer(
                 GLES30.glEnableVertexAttribArray(shader.modelIndexAttributeLocation)
                 GLES30.glVertexAttribPointer(
                         shader.modelIndexAttributeLocation,
-                        Vertex.COMPONENTS_PER_MODEL_INDEX,
+                        FLOATS_PER_MODEL_INDEX,
                         GLES30.GL_FLOAT,
                         false,
                         0,
@@ -87,21 +92,21 @@ class VertexBuffer(
     fun write() {
         positionBuffer.bound {
             positionBuffer.allocate(
-                    backingPositionBuffer.writtenElementCounts * Vertex.COMPONENTS_PER_POSITION,
+                    backingPositionBuffer.writtenElementCounts * FLOATS_PER_POSITION,
                     backingPositionBuffer.floatBuffer
             )
         }
 
         colorBuffer.bound {
             colorBuffer.allocate(
-                    backingColorBuffer.writtenElementCounts * Vertex.COMPONENTS_PER_COLOR,
+                    backingColorBuffer.writtenElementCounts * FLOATS_PER_COLOR,
                     backingColorBuffer.floatBuffer
             )
         }
 
         modelIndexBuffer.bound {
             positionBuffer.allocate(
-                    backingModelIndexBuffer.writtenElementCounts * Vertex.COMPONENTS_PER_MODEL_INDEX,
+                    backingModelIndexBuffer.writtenElementCounts * FLOATS_PER_MODEL_INDEX,
                     backingModelIndexBuffer.floatBuffer
             )
         }

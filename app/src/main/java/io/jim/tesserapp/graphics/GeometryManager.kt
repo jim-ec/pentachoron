@@ -1,6 +1,7 @@
 package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.rendering.VertexBuffer
 import io.jim.tesserapp.util.Flag
 import io.jim.tesserapp.util.InputStreamBuffer
 import io.jim.tesserapp.util.ListenerList
@@ -23,9 +24,9 @@ class GeometryManager {
      * Buffer data is updated automatically upon geometrical change.
      */
     //val vertexBuffer = InputStreamBuffer(100, Vertex.COMPONENTS_PER_VERTEX)
-    val positionBuffer = InputStreamBuffer(100, Vertex.COMPONENTS_PER_POSITION)
-    val colorBuffer = InputStreamBuffer(100, Vertex.COMPONENTS_PER_COLOR)
-    val modelIndexBuffer = InputStreamBuffer(100, Vertex.COMPONENTS_PER_MODEL_INDEX)
+    val positionBuffer = InputStreamBuffer(100, VertexBuffer.FLOATS_PER_POSITION)
+    val colorBuffer = InputStreamBuffer(100, VertexBuffer.FLOATS_PER_COLOR)
+    val modelIndexBuffer = InputStreamBuffer(100, VertexBuffer.FLOATS_PER_MODEL_INDEX)
 
     /**
      * Listeners are called when the vertex buffer was rewritten and needs to be uploaded to OpenGL.
@@ -74,9 +75,9 @@ class GeometryManager {
         positionBuffer.rewind()
         colorBuffer.rewind()
         modelIndexBuffer.rewind()
-        modelMatrixBuffer.forEachVertex { position, color, modelIndex ->
+        modelMatrixBuffer.forEachVertex { position, (red, green, blue), modelIndex ->
             positionBuffer += listOf(position.x, position.y, position.z)
-            colorBuffer += listOf(color.red, color.green, color.blue)
+            colorBuffer += listOf(red, green, blue)
             modelIndexBuffer += listOf(modelIndex.toFloat())
         }
 
