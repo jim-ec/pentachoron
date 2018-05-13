@@ -74,7 +74,7 @@ class GeometryManager {
             vertexBuffer += listOf(
                     position.x, position.y, position.z, 1f,
                     red, green, blue, 1f,
-                    modelIndex.toFloat()
+                    0f, 0f, 0f, modelIndex.toFloat()
             )
         }
 
