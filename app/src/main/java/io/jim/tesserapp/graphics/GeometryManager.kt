@@ -23,7 +23,6 @@ class GeometryManager {
      * Vertex buffer.
      * Buffer data is updated automatically upon geometrical change.
      */
-    //val vertexBuffer = InputStreamBuffer(100, Vertex.COMPONENTS_PER_VERTEX)
     val positionBuffer = InputStreamBuffer(100, VertexBuffer.FLOATS_PER_POSITION)
     val colorBuffer = InputStreamBuffer(100, VertexBuffer.FLOATS_PER_COLOR)
     val modelIndexBuffer = InputStreamBuffer(100, VertexBuffer.FLOATS_PER_MODEL_INDEX)

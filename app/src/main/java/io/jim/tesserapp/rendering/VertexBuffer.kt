@@ -2,7 +2,7 @@ package io.jim.tesserapp.rendering
 
 import android.opengl.GLES30
 import io.jim.tesserapp.rendering.engine.GlBuffer
-import io.jim.tesserapp.rendering.engine.resultCode
+import io.jim.tesserapp.rendering.engine.GlVertexBuffer
 import io.jim.tesserapp.util.InputStreamBuffer
 
 /**
@@ -13,12 +13,7 @@ class VertexBuffer(
         val backingPositionBuffer: InputStreamBuffer,
         val backingColorBuffer: InputStreamBuffer,
         val backingModelIndexBuffer: InputStreamBuffer
-) {
-
-    /**
-     * Store vertex attribute pointers.
-     */
-    val vertexArray = resultCode { GLES30.glGenVertexArrays(1, resultCode) }
+) : GlVertexBuffer() {
 
     val positionBuffer = GlBuffer(GLES30.GL_ARRAY_BUFFER)
     val colorBuffer = GlBuffer(GLES30.GL_ARRAY_BUFFER)
@@ -80,16 +75,10 @@ class VertexBuffer(
         }
     }
 
-    fun vertexArrayBound(f: () -> Unit) {
-        GLES30.glBindVertexArray(vertexArray)
-        f()
-        GLES30.glBindVertexArray(0)
-    }
-
     /**
      * Upload data from backing buffers.
      */
-    fun write() {
+    override fun write() {
         positionBuffer.bound {
             positionBuffer.allocate(
                     backingPositionBuffer.writtenElementCounts * FLOATS_PER_POSITION,
