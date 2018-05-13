@@ -14,7 +14,7 @@ class InputStreamBuffer(
      * construction time.
      */
     val writtenElementCounts
-        get() = lastActiveElementIndex + 1
+        get() = lastActiveElementIndex
 
     /**
      * Greatest index a value was written to since the last call to [rewind] or construction time.
