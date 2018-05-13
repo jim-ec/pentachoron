@@ -42,13 +42,13 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         println("Vendor: ${GLES30.glGetString(GLES30.GL_VENDOR)}")
 
         shader = Shader()
-        vertexBuffer = VertexBuffer()
+        vertexBuffer = VertexBuffer(shader)
 
         shader.bind()
         shader.uploadProjectionMatrix(projectionMatrix)
 
         sharedRenderData.geometryManager.vertexBufferRewritten += { buffer ->
-            vertexBuffer.instructVertexAttributes(shader, buffer)
+            vertexBuffer.write(buffer)
         }
     }
 
@@ -71,23 +71,28 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
 
             shader.bind()
 
-            // Recompute view matrix:
-            viewMatrix.compute()
-            shader.uploadViewMatrix(viewMatrix)
+            // Bind VAO:
+            vertexBuffer.vertexArrayBound {
 
-            // Upload model matrices:
-            geometryManager.computeModelMatrices()
-            shader.uploadModelMatrixBuffer(
-                    geometryManager.modelMatrixBuffer.buffer,
-                    geometryManager.modelMatrixBuffer.activeGeometries)
+                // Recompute view matrix:
+                viewMatrix.compute()
+                shader.uploadViewMatrix(viewMatrix)
 
-            // Ensure vertex data is up-to-date:
-            geometryManager.updateVertexBuffer()
+                // Upload model matrices:
+                geometryManager.computeModelMatrices()
+                shader.uploadModelMatrixBuffer(
+                        geometryManager.modelMatrixBuffer.buffer,
+                        geometryManager.modelMatrixBuffer.activeGeometries)
 
-            // Draw actual geometry:
-            GLES30.glDrawArrays(
-                    GLES30.GL_LINES, 0,
-                    geometryManager.vertexBuffer.writtenElementCounts)
+                // Ensure vertex data is up-to-date:
+                geometryManager.updateVertexBuffer()
+
+                // Draw actual geometry:
+                GLES30.glDrawArrays(
+                        GLES30.GL_LINES, 0,
+                        geometryManager.vertexBuffer.writtenElementCounts)
+
+            }
         }
     }
 
