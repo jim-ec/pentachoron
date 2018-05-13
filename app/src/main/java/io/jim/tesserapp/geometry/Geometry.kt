@@ -1,8 +1,11 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
+import io.jim.tesserapp.math.common.SmoothTimedValueDelegate
 import io.jim.tesserapp.math.transform.Matrix
 import io.jim.tesserapp.math.vector.Vector3d
+import io.jim.tesserapp.ui.controllers.Rotatable
+import io.jim.tesserapp.ui.controllers.Translatable
 import io.jim.tesserapp.util.ListenerList
 
 /**
@@ -44,12 +47,24 @@ open class Geometry(
     /**
      * Rotation around the x, y and z axis.
      */
-    val rotation = Vector3d(0f, 0f, 0f)
+    val rotation = object : Rotatable {
+        override var x by SmoothTimedValueDelegate<Rotatable>(0f, 200L)
+        override var y by SmoothTimedValueDelegate<Rotatable>(0f, 200L)
+        override var z by SmoothTimedValueDelegate<Rotatable>(0f, 200L)
+        override var q by SmoothTimedValueDelegate<Rotatable>(0f, 200L)
+    }
 
     /**
      * Translation.
      */
-    val translation = Vector3d(0f, 0f, 0f)
+    val translation = object : Translatable {
+        override var x by SmoothTimedValueDelegate<Translatable>(0f, 200L)
+        override var y by SmoothTimedValueDelegate<Translatable>(0f, 200L)
+        override var z by SmoothTimedValueDelegate<Translatable>(0f, 200L)
+        override var q by SmoothTimedValueDelegate<Translatable>(0f, 200L)
+    }
+
+    private val translationVector = Vector3d()
 
     /**
      * Invoke [f] for each position and the color it's associated with.
@@ -171,7 +186,8 @@ open class Geometry(
         )
 
         // Translation:
-        translationMatrix.translation(translation)
+        translationVector.load(translation.x, translation.y, translation.z)
+        translationMatrix.translation(translationVector)
 
         // Model transform:
         modelMatrix.multiplication(

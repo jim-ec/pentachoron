@@ -1,4 +1,4 @@
-package io.jim.tesserapp.math.transform
+package io.jim.tesserapp.ui.controllers
 
 interface Rotatable {
     var x: Float

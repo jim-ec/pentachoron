@@ -1,7 +1,5 @@
 package io.jim.tesserapp.ui.controllers
 
-import io.jim.tesserapp.math.transform.Rotatable
-import io.jim.tesserapp.math.transform.Translatable
 import io.jim.tesserapp.ui.ControllerView
 
 /**

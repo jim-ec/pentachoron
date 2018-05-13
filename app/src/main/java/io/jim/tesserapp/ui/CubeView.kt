@@ -6,10 +6,10 @@ import android.widget.FrameLayout
 import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Quadrilateral
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.math.transform.Rotatable
-import io.jim.tesserapp.math.transform.Translatable
 import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.ui.controllers.Controllable
+import io.jim.tesserapp.ui.controllers.Rotatable
+import io.jim.tesserapp.ui.controllers.Translatable
 import kotlin.properties.Delegates
 
 /**
@@ -108,7 +108,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             override var q = 0f
                 set(value) {
                     coordinateSystemView.sharedRenderData.synchronized {
-                        //cube.translation.q = value
+                        cube.translation.q = value
                     }
                 }
 
