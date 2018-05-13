@@ -22,7 +22,10 @@ class GeometryManager {
      * Vertex buffer.
      * Buffer data is updated automatically upon geometrical change.
      */
-    val vertexBuffer = InputStreamBuffer(100, Vertex.COMPONENTS_PER_VERTEX)
+    //val vertexBuffer = InputStreamBuffer(100, Vertex.COMPONENTS_PER_VERTEX)
+    val positionBuffer = InputStreamBuffer(100, Vertex.COMPONENTS_PER_POSITION)
+    val colorBuffer = InputStreamBuffer(100, Vertex.COMPONENTS_PER_COLOR)
+    val modelIndexBuffer = InputStreamBuffer(100, Vertex.COMPONENTS_PER_MODEL_INDEX)
 
     /**
      * Listeners are called when the vertex buffer was rewritten and needs to be uploaded to OpenGL.
@@ -68,9 +71,13 @@ class GeometryManager {
         }
 
         // Rewrite vertex buffer:
-        vertexBuffer.rewind()
-        modelMatrixBuffer.forEachVertex { vertex ->
-            vertexBuffer += vertex.floats
+        positionBuffer.rewind()
+        colorBuffer.rewind()
+        modelIndexBuffer.rewind()
+        modelMatrixBuffer.forEachVertex { position, color, modelIndex ->
+            positionBuffer += listOf(position.x, position.y, position.z)
+            colorBuffer += listOf(color.red, color.green, color.blue)
+            modelIndexBuffer += listOf(modelIndex.toFloat())
         }
 
         vertexBufferRewritten.fire()

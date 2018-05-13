@@ -42,7 +42,12 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         println("Vendor: ${GLES30.glGetString(GLES30.GL_VENDOR)}")
 
         shader = Shader()
-        vertexBuffer = VertexBuffer(shader, sharedRenderData.geometryManager.vertexBuffer)
+        vertexBuffer = VertexBuffer(
+                shader,
+                sharedRenderData.geometryManager.positionBuffer,
+                sharedRenderData.geometryManager.colorBuffer,
+                sharedRenderData.geometryManager.modelIndexBuffer
+        )
 
         shader.bind()
         shader.uploadProjectionMatrix(projectionMatrix)
@@ -90,7 +95,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
                 // Draw actual geometry:
                 GLES30.glDrawArrays(
                         GLES30.GL_LINES, 0,
-                        geometryManager.vertexBuffer.writtenElementCounts)
+                        geometryManager.positionBuffer.writtenElementCounts)
 
             }
         }

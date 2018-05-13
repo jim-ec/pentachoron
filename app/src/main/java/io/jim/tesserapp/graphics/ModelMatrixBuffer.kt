@@ -1,6 +1,7 @@
 package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.util.RandomAccessBuffer
 import java.util.*
 import kotlin.math.max
@@ -27,7 +28,7 @@ class ModelMatrixBuffer(
      */
     val buffer = RandomAccessBuffer(geometryCountsGranularity, matrixDimension * matrixDimension)
 
-    private val geometries = HashMap<Geometry, Int>()
+    val geometries = HashMap<Geometry, Int>()
 
     /**
      * Count of matrices from start to a specific point in matrix buffer, guaranteeing that all
@@ -124,9 +125,11 @@ class ModelMatrixBuffer(
         }
     }
 
-    fun forEachVertex(f: (vertex: Vertex) -> Unit) {
+    inline fun forEachVertex(f: (position: Vector3d, color: Color, modelIndex: Int) -> Unit) {
         geometries.forEach { (geometry, modelIndex) ->
-            geometry.vertices(modelIndex).forEach(f)
+            geometry.forEachVertex { position, color ->
+                f(position, color, modelIndex)
+            }
         }
     }
 

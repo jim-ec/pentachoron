@@ -29,9 +29,9 @@ open class Geometry(
 
 ) {
 
-    private val positions = ArrayList<Vector3d>()
+    val positions = ArrayList<Vector3d>()
 
-    private val lines = ArrayList<LineIndices>()
+    val lines = ArrayList<LineIndices>()
 
     private val rotationMatrixY = Matrix(4)
     private val rotationMatrixX = Matrix(4)
@@ -65,12 +65,19 @@ open class Geometry(
                 )
             }
 
+    inline fun forEachVertex(f: (position: Vector3d, color: Color) -> Unit) {
+        lines.forEach {
+            f(positions[it.from], it.color)
+            f(positions[it.to], it.color)
+        }
+    }
+
     /**
      * Listeners are fired every time a single point or line is added.
      */
     val onGeometryChangedListeners = ListenerList()
 
-    private data class LineIndices(val from: Int, val to: Int, var color: Color)
+    data class LineIndices(val from: Int, val to: Int, var color: Color)
 
     /**
      * Add a series of vertices.
