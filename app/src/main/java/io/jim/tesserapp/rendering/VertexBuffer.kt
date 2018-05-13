@@ -1,7 +1,6 @@
 package io.jim.tesserapp.rendering
 
 import android.opengl.GLES30
-import io.jim.tesserapp.rendering.engine.GlBuffer
 import io.jim.tesserapp.rendering.engine.GlVertexBuffer
 import io.jim.tesserapp.util.BYTE_LENGTH
 import io.jim.tesserapp.util.InputStreamBuffer
@@ -13,8 +12,6 @@ class VertexBuffer(
         shader: Shader,
         val backingBuffer: InputStreamBuffer
 ) : GlVertexBuffer() {
-
-    val vertexBuffer = GlBuffer(GLES30.GL_ARRAY_BUFFER)
 
     companion object {
 
@@ -81,7 +78,7 @@ class VertexBuffer(
         // Instruct VAO:
         vertexArrayBound {
 
-            vertexBuffer.bound {
+            bound {
 
                 // Position attribute:
                 GLES30.glEnableVertexAttribArray(shader.positionAttributeLocation)
@@ -123,8 +120,8 @@ class VertexBuffer(
      * Upload data from backing buffers.
      */
     override fun write() {
-        vertexBuffer.bound {
-            vertexBuffer.allocate(
+        bound {
+            allocate(
                     backingBuffer.writtenElementCounts * FLOATS_PER_VERTEX,
                     backingBuffer.floatBuffer,
                     GLES30.GL_STATIC_DRAW

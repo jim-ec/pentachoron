@@ -5,7 +5,7 @@ import android.opengl.GLES30
 /**
  * Provide a VAO.
  */
-abstract class GlVertexBuffer {
+abstract class GlVertexBuffer : GlBuffer(GLES30.GL_ARRAY_BUFFER) {
 
     /**
      * Store vertex attribute pointers.
