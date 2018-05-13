@@ -83,7 +83,8 @@ class VertexBuffer(
         positionBuffer.bound {
             positionBuffer.allocate(
                     backingPositionBuffer.writtenElementCounts * FLOATS_PER_POSITION,
-                    backingPositionBuffer.floatBuffer
+                    backingPositionBuffer.floatBuffer,
+                    GLES30.GL_STATIC_DRAW
             )
 
             println("Read back positions:")
@@ -96,14 +97,16 @@ class VertexBuffer(
         colorBuffer.bound {
             colorBuffer.allocate(
                     backingColorBuffer.writtenElementCounts * FLOATS_PER_COLOR,
-                    backingColorBuffer.floatBuffer
+                    backingColorBuffer.floatBuffer,
+                    GLES30.GL_STATIC_DRAW
             )
         }
 
         modelIndexBuffer.bound {
             positionBuffer.allocate(
                     backingModelIndexBuffer.writtenElementCounts * FLOATS_PER_MODEL_INDEX,
-                    backingModelIndexBuffer.floatBuffer
+                    backingModelIndexBuffer.floatBuffer,
+                    GLES30.GL_STATIC_DRAW
             )
         }
     }

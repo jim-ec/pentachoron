@@ -3,6 +3,7 @@ package io.jim.tesserapp.rendering.engine
 import android.opengl.GLES30
 import io.jim.tesserapp.util.BYTE_LENGTH
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 open class GlBuffer(
         val target: Int
@@ -11,85 +12,83 @@ open class GlBuffer(
     val bufferHandle = resultCode { GLES30.glGenBuffers(1, resultCode) }
 
     /**
-     * Count of floats currently being allocated.
+     * Buffer size in bytes.
      */
-    var floatSize = 0
-        private set
+    val size: Int
+        get() = resultCode {
+            GLES30.glGetBufferParameteriv(target, GLES30.GL_BUFFER_SIZE, resultCode)
+        }
 
-    fun allocate(floatCapacity: Int, initialData: java.nio.Buffer?, usage: Int = GLES30.GL_STATIC_DRAW) {
-        /*GLES30.glBufferData(
-                target,
-                floatCapacity * Float.BYTE_LENGTH,
-                initialData,
-                usage
-        )
-        floatSize = floatCapacity*/
-
+    /**
+     * Allocate memory and optionally write data in.
+     * @param floatCapacity Counts of float to be written.
+     * @param data Data to be written.
+     * @param usage Usage flags of memory.
+     */
+    fun allocate(floatCapacity: Int, data: java.nio.Buffer?, usage: Int) {
         GLES30.glBufferData(
                 target,
                 floatCapacity * Float.BYTE_LENGTH,
-                null,
+                data,
                 usage
         )
-        floatSize = floatCapacity
-
-        mapped(GLES30.GL_MAP_WRITE_BIT) { byteBuffer ->
-
-        }
     }
 
+    /**
+     * Calls [f] while this buffer is bound to its [target].
+     * Rebinding [target] within [f] is discouraged, as that can lead to hard-to-find bugs.
+     */
     inline fun bound(f: () -> Unit) {
         GLES30.glBindBuffer(target, bufferHandle)
         f()
         GLES30.glBindBuffer(target, 0)
     }
 
-    inline fun read(componentCounts: Int, f: (components: List<Float>, index: Int) -> Unit) {
+    /**
+     * Read the buffer contents out by calling [f] successively for each data entry.
+     * @param floatsPerEntry Defines of how  many floats a single invocation of [f] expect to take.
+     * @param f Takes a the current list of floats, as well as the index of the current entry.
+     */
+    inline fun read(floatsPerEntry: Int, f: (floats: List<Float>, index: Int) -> Unit) {
         bound {
 
             mapped(GLES30.GL_MAP_READ_BIT) { byteBuffer ->
 
                 val buffer = byteBuffer.asFloatBuffer()
 
-                for (i in 0 until buffer.capacity()) {
-                    println("Float[$i] = ${buffer[i]}")
-                }
+                if (buffer.capacity() % floatsPerEntry != 0)
+                    throw RuntimeException("Read buffer size is not a multiple of $floatsPerEntry")
 
-                if (buffer.capacity() % componentCounts != 0)
-                    throw RuntimeException("Read buffer size is not a multiple of $componentCounts")
+                val list = MutableList(floatsPerEntry) { 0f }
 
-                val list = MutableList(componentCounts) { 0f }
-
-                for (i in 0 until buffer.capacity() step componentCounts) {
-                    for (c in 0 until componentCounts) {
+                for (i in 0 until buffer.capacity() step floatsPerEntry) {
+                    for (c in 0 until floatsPerEntry) {
                         list[c] = buffer[i + c]
                     }
-                    f(list, i / componentCounts)
+                    f(list, i / floatsPerEntry)
                 }
 
             }
         }
     }
 
+    /**
+     * Calls [f] while this buffer is being mapped.
+     * @param access Access flags for the mapping, like in [GLES30.glMapBufferRange].
+     * @param f Takes the mapped buffer.
+     */
     inline fun mapped(access: Int, f: (byteBuffer: java.nio.ByteBuffer) -> Unit) {
-        val mappedBuffer = GLES30.glMapBufferRange(
-                target,
-                0,
-                floatSize * Float.BYTE_LENGTH,
-                access
-        )
+
+        val mappedBuffer = GLES30.glMapBufferRange(target, 0, size, access)
                 ?: throw GlException("Cannot map buffer")
 
-        f(mappedBuffer as ByteBuffer)
+        mappedBuffer as ByteBuffer
+        mappedBuffer.order(ByteOrder.nativeOrder())
+
+        f(mappedBuffer)
 
         GLES30.glUnmapBuffer(target)
         GlException.check("Cannot un-map buffer")
     }
-
-    /*
-    fun write(data: java.nio.Buffer, size: Int = floatCapacity, offset: Int = 0) {
-        GLES30.glBufferSubData(target, offset, size * Float.BYTE_LENGTH, data)
-    }
-    */
 
 }
