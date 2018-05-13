@@ -5,7 +5,8 @@ import android.opengl.GLES30
 
 open class GlProgram(
         vertexShaderSource: String,
-        fragmentShaderSource: String
+        fragmentShaderSource: String,
+        val transformFeedback: GlTransformFeedback? = null
 ) {
 
     val programHandle = GLES20.glCreateProgram()
@@ -15,6 +16,8 @@ open class GlProgram(
     init {
         GLES30.glAttachShader(programHandle, vertexShader.shaderHandle)
         GLES30.glAttachShader(programHandle, fragmentShader.shaderHandle)
+
+        transformFeedback?.setup(programHandle)
 
         // Link program together:
         GLES30.glLinkProgram(programHandle)

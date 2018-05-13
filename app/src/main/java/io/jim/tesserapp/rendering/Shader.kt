@@ -4,13 +4,14 @@ import android.opengl.GLES30
 import io.jim.tesserapp.math.transform.Matrix
 import io.jim.tesserapp.rendering.engine.GlException
 import io.jim.tesserapp.rendering.engine.GlProgram
+import io.jim.tesserapp.rendering.engine.GlTransformFeedback
 import io.jim.tesserapp.util.RandomAccessBuffer
 
 /**
  * A shader pipeline with a vertex shader, fragment shader an locations of all attributes and
  * uniforms.
  */
-class Shader : GlProgram(vertexShaderSource, fragmentShaderSource) {
+class Shader : GlProgram(vertexShaderSource, fragmentShaderSource, GlTransformFeedback("gl_Position")) {
 
     /**
      * GLSL location of position attribute.

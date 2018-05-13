@@ -27,6 +27,7 @@ class GeometryManager {
 
     /**
      * Listeners are called when the vertex buffer was rewritten and needs to be uploaded to OpenGL.
+     * TODO: Move directly as callback into [updateVertexBuffer].
      */
     val vertexBufferRewritten = ListenerList()
 
