@@ -14,7 +14,7 @@ import javax.microedition.khronos.opengles.GL10
 /**
  * Actually renders to OpenGL.
  */
-class Renderer(context: Context) : GLSurfaceView.Renderer {
+class Renderer(context: Context, private val dpi: Float) : GLSurfaceView.Renderer {
 
     /**
      * Render data shared across this render thread an others.
@@ -28,6 +28,14 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
     private val projectionMatrix = Projection3dMatrix(near = 0.1f, far = 100f)
     private val viewMatrix = ViewMatrix(sharedRenderData.camera)
 
+    companion object {
+
+        const val MM_PER_INCH = 25.4f
+
+        const val LINE_WIDTH_MM = 0.15f
+
+    }
+
     /**
      * Initialize data.
      */
@@ -35,10 +43,12 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         GLES30.glClearColor(clearColor.red, clearColor.green, clearColor.blue, 1.0f)
         GLES30.glDisable(GLES30.GL_CULL_FACE)
         GLES30.glEnable(GLES30.GL_DEPTH_TEST)
-        GLES30.glLineWidth(4f)
+
+        GLES30.glLineWidth(dpi / MM_PER_INCH * LINE_WIDTH_MM)
 
         println("Open GLES version: ${GLES30.glGetString(GLES30.GL_VERSION)}")
         println("GLSL version: ${GLES30.glGetString(GLES30.GL_SHADING_LANGUAGE_VERSION)}")
+        println("Renderer: ${GLES30.glGetString(GLES30.GL_RENDERER)}")
         println("Vendor: ${GLES30.glGetString(GLES30.GL_VENDOR)}")
 
         shader = Shader()

@@ -17,7 +17,7 @@ import io.jim.tesserapp.rendering.Renderer
  */
 class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceView(context, attrs) {
 
-    private val renderer = Renderer(context)
+    private val renderer = Renderer(context, resources.displayMetrics.xdpi)
 
     /**
      * Render data shared across render and other threads.
