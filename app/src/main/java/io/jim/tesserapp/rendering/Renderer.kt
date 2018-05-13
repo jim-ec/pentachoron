@@ -44,9 +44,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
         shader = Shader()
         vertexBuffer = VertexBuffer(
                 shader,
-                sharedRenderData.geometryManager.positionBuffer,
-                sharedRenderData.geometryManager.colorBuffer,
-                sharedRenderData.geometryManager.modelIndexBuffer
+                sharedRenderData.geometryManager.vertexBuffer
         )
 
         shader.bind()
@@ -95,7 +93,7 @@ class Renderer(context: Context) : GLSurfaceView.Renderer {
                 // Draw actual geometry:
                 GLES30.glDrawArrays(
                         GLES30.GL_LINES, 0,
-                        geometryManager.positionBuffer.writtenElementCounts)
+                        geometryManager.vertexBuffer.writtenElementCounts)
 
             }
         }

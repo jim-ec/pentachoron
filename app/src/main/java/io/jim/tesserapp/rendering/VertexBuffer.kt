@@ -1,9 +1,9 @@
 package io.jim.tesserapp.rendering
 
 import android.opengl.GLES30
-import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.rendering.engine.GlBuffer
 import io.jim.tesserapp.rendering.engine.GlVertexBuffer
+import io.jim.tesserapp.util.BYTE_LENGTH
 import io.jim.tesserapp.util.InputStreamBuffer
 
 /**
@@ -11,26 +11,59 @@ import io.jim.tesserapp.util.InputStreamBuffer
  */
 class VertexBuffer(
         shader: Shader,
-        val backingPositionBuffer: InputStreamBuffer,
-        val backingColorBuffer: InputStreamBuffer,
-        val backingModelIndexBuffer: InputStreamBuffer
+        val backingBuffer: InputStreamBuffer
 ) : GlVertexBuffer() {
 
-    val positionBuffer = GlBuffer(GLES30.GL_ARRAY_BUFFER)
-    val colorBuffer = GlBuffer(GLES30.GL_ARRAY_BUFFER)
-    val modelIndexBuffer = GlBuffer(GLES30.GL_ARRAY_BUFFER)
+    val vertexBuffer = GlBuffer(GLES30.GL_ARRAY_BUFFER)
 
     companion object {
+
+        /**
+         * Floats taken by one position attribute.
+         */
         const val FLOATS_PER_POSITION = 3
+
+        /**
+         * Floats taken by one color attribute.
+         */
         const val FLOATS_PER_COLOR = 3
+
+        /**
+         * Floats taken by one model index attribute.
+         */
         const val FLOATS_PER_MODEL_INDEX = 1
+
+        /**
+         * Floats taken by one complete vertex.
+         */
+        const val FLOATS_PER_VERTEX = FLOATS_PER_POSITION + FLOATS_PER_COLOR + FLOATS_PER_MODEL_INDEX
+
+        /**
+         * Vertex stride, in bytes.
+         */
+        val STRIDE = FLOATS_PER_VERTEX * Float.BYTE_LENGTH
+
+        /**
+         * Position attribute offset, in bytes.
+         */
+        val OFFSET_POSITION = 0 * Float.BYTE_LENGTH
+
+        /**
+         * Color attribute offset, in bytes.
+         */
+        val OFFSET_COLOR = OFFSET_POSITION + FLOATS_PER_POSITION * Float.BYTE_LENGTH
+
+        /**
+         * Model index attribute offset, in bytes.
+         */
+        val OFFSET_MODEL_INDEX = OFFSET_COLOR + FLOATS_PER_COLOR * Float.BYTE_LENGTH
     }
 
     init {
         // Instruct VAO:
         vertexArrayBound {
 
-            positionBuffer.bound {
+            vertexBuffer.bound {
 
                 // Position attribute:
                 GLES30.glEnableVertexAttribArray(shader.positionAttributeLocation)
@@ -39,13 +72,9 @@ class VertexBuffer(
                         FLOATS_PER_POSITION,
                         GLES30.GL_FLOAT,
                         false,
-                        0,
-                        0
+                        STRIDE,
+                        OFFSET_POSITION
                 )
-
-            }
-
-            colorBuffer.bound {
 
                 // Color attribute:
                 GLES30.glEnableVertexAttribArray(shader.colorAttributeLocation)
@@ -54,13 +83,9 @@ class VertexBuffer(
                         FLOATS_PER_COLOR,
                         GLES30.GL_FLOAT,
                         false,
-                        0,
-                        0
+                        STRIDE,
+                        OFFSET_COLOR
                 )
-
-            }
-
-            modelIndexBuffer.bound {
 
                 // Model index attribute:
                 GLES30.glEnableVertexAttribArray(shader.modelIndexAttributeLocation)
@@ -69,8 +94,8 @@ class VertexBuffer(
                         FLOATS_PER_MODEL_INDEX,
                         GLES30.GL_FLOAT,
                         false,
-                        0,
-                        0
+                        STRIDE,
+                        OFFSET_MODEL_INDEX
                 )
             }
         }
@@ -80,32 +105,10 @@ class VertexBuffer(
      * Upload data from backing buffers.
      */
     override fun write() {
-        positionBuffer.bound {
-            positionBuffer.allocate(
-                    backingPositionBuffer.writtenElementCounts * FLOATS_PER_POSITION,
-                    backingPositionBuffer.floatBuffer,
-                    GLES30.GL_STATIC_DRAW
-            )
-
-            println("Read back positions:")
-            positionBuffer.read(3) { components, index ->
-                val position = Vector3d(components[0], components[1], components[2])
-                println("Position[$index]:   $position")
-            }
-        }
-
-        colorBuffer.bound {
-            colorBuffer.allocate(
-                    backingColorBuffer.writtenElementCounts * FLOATS_PER_COLOR,
-                    backingColorBuffer.floatBuffer,
-                    GLES30.GL_STATIC_DRAW
-            )
-        }
-
-        modelIndexBuffer.bound {
-            positionBuffer.allocate(
-                    backingModelIndexBuffer.writtenElementCounts * FLOATS_PER_MODEL_INDEX,
-                    backingModelIndexBuffer.floatBuffer,
+        vertexBuffer.bound {
+            vertexBuffer.allocate(
+                    backingBuffer.writtenElementCounts * FLOATS_PER_VERTEX,
+                    backingBuffer.floatBuffer,
                     GLES30.GL_STATIC_DRAW
             )
         }
