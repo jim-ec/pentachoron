@@ -10,7 +10,7 @@ abstract class GlVertexBuffer(
         val backingBuffer: InputStreamBuffer,
         val floatsPerVertex: Int,
         val drawMode: Int
-) : GlBuffer(GLES30.GL_ARRAY_BUFFER) {
+) : GlBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_STATIC_DRAW) {
 
     /**
      * Store vertex attribute pointers.
@@ -31,13 +31,10 @@ abstract class GlVertexBuffer(
      * Upload data from backing buffers.
      */
     fun write() {
-        bound {
-            allocate(
-                    backingBuffer.writtenElementCounts * floatsPerVertex,
-                    backingBuffer.floatBuffer,
-                    GLES30.GL_STATIC_DRAW
-            )
-        }
+        allocate(
+                backingBuffer.writtenElementCounts * floatsPerVertex,
+                backingBuffer.floatBuffer
+        )
     }
 
     /**
@@ -50,6 +47,7 @@ abstract class GlVertexBuffer(
                     drawMode,
                     0,
                     backingBuffer.writtenElementCounts)
+            GlException.check("Draw vertex buffer")
         }
     }
 

@@ -79,6 +79,12 @@ class Renderer(context: Context, private val dpi: Float) : GLSurfaceView.Rendere
 
         sharedRenderData.synchronized { (geometryManager) ->
 
+            // Ensure vertex data is up-to-date:
+            if (geometryManager.updateVertexBuffer()) {
+                vertexBuffer.write()
+                shader.transformFeedback?.allocate(vertexBuffer.backingBuffer.writtenElementCounts)
+            }
+
             shader.bound {
 
                 // Recompute view matrix:
@@ -89,11 +95,6 @@ class Renderer(context: Context, private val dpi: Float) : GLSurfaceView.Rendere
                 shader.uploadModelMatrixBuffer(
                         geometryManager.modelMatrixBuffer.buffer,
                         geometryManager.modelMatrixBuffer.activeGeometries)
-
-                // Ensure vertex data is up-to-date:
-                if (geometryManager.updateVertexBuffer()) {
-                    vertexBuffer.write()
-                }
 
                 // Bind VAO:
                 vertexBuffer.draw()

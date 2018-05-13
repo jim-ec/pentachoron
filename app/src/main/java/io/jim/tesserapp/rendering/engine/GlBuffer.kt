@@ -1,12 +1,14 @@
 package io.jim.tesserapp.rendering.engine
 
 import android.opengl.GLES30
+import io.jim.tesserapp.math.vector.Vector4d
 import io.jim.tesserapp.util.BYTE_LENGTH
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 open class GlBuffer(
-        val target: Int
+        val target: Int,
+        val usage: Int
 ) {
 
     val bufferHandle = resultCode { GLES30.glGenBuffers(1, resultCode) }
@@ -16,59 +18,75 @@ open class GlBuffer(
      */
     val size: Int
         get() = resultCode {
-            GLES30.glGetBufferParameteriv(target, GLES30.GL_BUFFER_SIZE, resultCode)
+            bound {
+                GLES30.glGetBufferParameteriv(target, GLES30.GL_BUFFER_SIZE, resultCode)
+            }
+        }
+
+    /**
+     * Buffer size in floats.
+     */
+    val floatCount: Int
+        get() = size / 4
+
+    val binding: Int
+        get() = when (target) {
+            GLES30.GL_ARRAY_BUFFER -> GLES30.GL_ARRAY_BUFFER_BINDING
+            GLES30.GL_ELEMENT_ARRAY_BUFFER -> GLES30.GL_ELEMENT_ARRAY_BUFFER_BINDING
+            else -> throw RuntimeException("Unknown binding known for target $target")
         }
 
     /**
      * Allocate memory and optionally write data in.
      * @param floatCapacity Counts of float to be written.
      * @param data Data to be written.
-     * @param usage Usage flags of memory.
      */
-    fun allocate(floatCapacity: Int, data: java.nio.Buffer?, usage: Int) {
-        GLES30.glBufferData(
-                target,
-                floatCapacity * Float.BYTE_LENGTH,
-                data,
-                usage
-        )
+    open fun allocate(floatCapacity: Int, data: java.nio.Buffer? = null) {
+        bound {
+            GLES30.glBufferData(
+                    target,
+                    floatCapacity * Float.BYTE_LENGTH,
+                    data,
+                    usage
+            )
+        }
     }
 
     /**
      * Calls [f] while this buffer is bound to its [target].
-     * Rebinding [target] within [f] is discouraged, as that can lead to hard-to-find bugs.
      */
     inline fun bound(f: () -> Unit) {
+        val oldBinding = resultCode { GLES30.glGetIntegerv(binding, resultCode) }
         GLES30.glBindBuffer(target, bufferHandle)
         f()
-        GLES30.glBindBuffer(target, 0)
+        GLES30.glBindBuffer(target, oldBinding)
     }
 
     /**
-     * Read the buffer contents out by calling [f] successively for each data entry.
-     * @param floatsPerEntry Defines of how  many floats a single invocation of [f] expect to take.
-     * @param f Takes a the current list of floats, as well as the index of the current entry.
+     * Read the buffer contents out by calling [f] successively for each collection of vectors.
+     * @param vectorsPerInvocation Defines of how  many vectors a single invocation of [f] expect to take.
+     * @param f Takes the current list of vectors, as well as the index of the current invocation.
      */
-    inline fun read(floatsPerEntry: Int, f: (floats: List<Float>, index: Int) -> Unit) {
-        bound {
+    inline fun read(vectorsPerInvocation: Int, f: (vectors: List<Vector4d>, index: Int) -> Unit) {
+        mapped(GLES30.GL_MAP_READ_BIT) { byteBuffer ->
 
-            mapped(GLES30.GL_MAP_READ_BIT) { byteBuffer ->
+            val buffer = byteBuffer.asFloatBuffer()
 
-                val buffer = byteBuffer.asFloatBuffer()
+            if (buffer.capacity() % (vectorsPerInvocation * 4) != 0)
+                throw RuntimeException("Read buffer size is not a multiple of ${vectorsPerInvocation * 4}")
 
-                if (buffer.capacity() % floatsPerEntry != 0)
-                    throw RuntimeException("Read buffer size is not a multiple of $floatsPerEntry")
+            val list = MutableList(vectorsPerInvocation) { Vector4d() }
 
-                val list = MutableList(floatsPerEntry) { 0f }
-
-                for (i in 0 until buffer.capacity() step floatsPerEntry) {
-                    for (c in 0 until floatsPerEntry) {
-                        list[c] = buffer[i + c]
-                    }
-                    f(list, i / floatsPerEntry)
+            for (i in 0 until buffer.capacity() step (vectorsPerInvocation * 4)) {
+                for (c in 0 until vectorsPerInvocation) {
+                    list[c].x = buffer[i + c * 4 + 0]
+                    list[c].y = buffer[i + c * 4 + 1]
+                    list[c].z = buffer[i + c * 4 + 2]
+                    list[c].q = buffer[i + c * 4 + 3]
                 }
-
+                f(list, i / (vectorsPerInvocation * 4))
             }
+
         }
     }
 
@@ -78,17 +96,19 @@ open class GlBuffer(
      * @param f Takes the mapped buffer.
      */
     inline fun mapped(access: Int, f: (byteBuffer: java.nio.ByteBuffer) -> Unit) {
+        bound {
 
-        val mappedBuffer = GLES30.glMapBufferRange(target, 0, size, access)
-                ?: throw GlException("Cannot map buffer")
+            val mappedBuffer = GLES30.glMapBufferRange(target, 0, size, access)
+                    ?: throw GlException("Cannot map buffer")
 
-        mappedBuffer as ByteBuffer
-        mappedBuffer.order(ByteOrder.nativeOrder())
+            mappedBuffer as ByteBuffer
+            mappedBuffer.order(ByteOrder.nativeOrder())
 
-        f(mappedBuffer)
+            f(mappedBuffer)
 
-        GLES30.glUnmapBuffer(target)
-        GlException.check("Cannot un-map buffer")
+            GLES30.glUnmapBuffer(target)
+            GlException.check("Cannot un-map buffer")
+        }
     }
 
 }

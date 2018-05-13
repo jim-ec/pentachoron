@@ -11,7 +11,10 @@ import io.jim.tesserapp.util.RandomAccessBuffer
  * A shader pipeline with a vertex shader, fragment shader an locations of all attributes and
  * uniforms.
  */
-class Shader : GlProgram(vertexShaderSource, fragmentShaderSource, GlTransformFeedback("gl_Position")) {
+class Shader : GlProgram(
+        vertexShaderSource,
+        fragmentShaderSource,
+        GlTransformFeedback("gl_Position", GLES30.GL_LINES)) {
 
     /**
      * GLSL location of position attribute.

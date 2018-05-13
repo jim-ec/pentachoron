@@ -18,6 +18,7 @@ open class GlProgram(
         GLES30.glAttachShader(programHandle, fragmentShader.shaderHandle)
 
         transformFeedback?.setup(programHandle)
+        GlException.check("Setting up transform feedback")
 
         // Link program together:
         GLES30.glLinkProgram(programHandle)
@@ -41,7 +42,11 @@ open class GlProgram(
      */
     inline fun bound(f: () -> Unit) {
         GLES30.glUseProgram(programHandle)
-        f()
+
+        transformFeedback?.capturingTransformFeedback {
+            f()
+        } ?: f()
+
         GLES30.glUseProgram(0)
     }
 
