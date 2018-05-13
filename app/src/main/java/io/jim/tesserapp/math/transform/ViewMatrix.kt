@@ -18,8 +18,8 @@ class ViewMatrix(
     private val scale = Vector3d(1f, 1f, 1f)
 
     companion object {
-        val upVector = Vector3d(0f, 1f, 0f)
-        val target = Vector3d(0f, 0f, 0f)
+        private val upVector = Vector3d(0f, 1f, 0f)
+        private val target = Vector3d(0f, 0f, 0f)
     }
 
     fun compute() {

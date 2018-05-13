@@ -147,7 +147,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
     ).apply {
         coordinateSystemView.sharedRenderData.synchronized { renderData ->
             renderData.geometryManager += this
-            extrude(Vector3d(0f, 0f, -2f))
+            //extrude(Vector3d(0f, 0f, -2f))
         }
     }
 

@@ -1,6 +1,7 @@
 package io.jim.tesserapp.rendering
 
 import android.opengl.GLES30
+import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.rendering.engine.GlBuffer
 import io.jim.tesserapp.rendering.engine.GlVertexBuffer
 import io.jim.tesserapp.util.InputStreamBuffer
@@ -84,6 +85,12 @@ class VertexBuffer(
                     backingPositionBuffer.writtenElementCounts * FLOATS_PER_POSITION,
                     backingPositionBuffer.floatBuffer
             )
+
+            println("Read back positions:")
+            positionBuffer.read(3) { components, index ->
+                val position = Vector3d(components[0], components[1], components[2])
+                println("Position[$index]:   $position")
+            }
         }
 
         colorBuffer.bound {

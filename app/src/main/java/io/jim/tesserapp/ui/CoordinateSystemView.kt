@@ -5,9 +5,6 @@ import android.opengl.GLSurfaceView
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.*
-import io.jim.tesserapp.R
-import io.jim.tesserapp.geometry.Lines
-import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.common.Pi
 import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.rendering.Renderer
@@ -27,7 +24,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     private val touchStartPosition = Vector3d(0f, 0f, 0f)
     private var touchStartTime = 0L
 
-    private val grid = Lines("Grid", Color(context, R.color.colorGrid)).apply {
+    /*private val grid = Lines("Grid", Color(context, R.color.colorGrid)).apply {
         for (i in -5..-1) {
             addLine(Vector3d(i.toFloat(), 0f, -5f), Vector3d(i.toFloat(), 0f, 5f))
             addLine(Vector3d(-5f, 0f, i.toFloat()), Vector3d(5f, 0f, i.toFloat()))
@@ -42,15 +39,15 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
 
         addLine(Vector3d(0f, 0f, -5f), Vector3d(0f, 0f, 0f))
         addLine(Vector3d(0f, 0f, 1f), Vector3d(0f, 0f, 5f))
-    }
+    }*/
 
-    @Suppress("unused")
+    /*@Suppress("unused")
     private val axis = Lines("Axis").apply {
         addLine(Vector3d(0f, 0f, 0f), Vector3d(1f, 0f, 0f), Color(context, R.color.colorAxisX))
         addLine(Vector3d(0f, 0f, 0f), Vector3d(0f, 1f, 0f), Color(context, R.color.colorAxisY))
         addLine(Vector3d(0f, 0f, 0f), Vector3d(0f, 0f, 1f), Color(context, R.color.colorAxisZ))
         sharedRenderData.geometryManager += this
-    }
+    }*/
 
     companion object {
         private const val CLICK_TIME_MS = 100L
@@ -129,10 +126,10 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     fun enableGrid(enable: Boolean) {
         renderer.sharedRenderData.synchronized { renderData ->
             if (enable) {
-                renderData.geometryManager += grid
+                //renderData.geometryManager += grid
             }
             else {
-                renderData.geometryManager -= grid
+                //renderData.geometryManager -= grid
             }
         }
     }
