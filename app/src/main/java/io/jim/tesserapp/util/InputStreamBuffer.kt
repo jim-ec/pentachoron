@@ -20,6 +20,9 @@ class InputStreamBuffer(
 
 ) {
 
+    /**
+     * Underlying byte buffer.
+     */
     private var byteBuffer = allocateNativeMemory(capacityGranularity * elementSize * Float.BYTE_LENGTH)
 
     /**
@@ -28,21 +31,22 @@ class InputStreamBuffer(
     var floatBuffer = byteBuffer.asFloatBuffer()
             ?: throw RuntimeException("Cannot allocate float buffer")
 
-    init {
-        increaseMemory()
-    }
+    /**
+     * Capacity of this buffer, expressed in elements.
+     */
+    var capacity = 0
+        private set
 
     /**
      * The count of elements written to this buffer since the last call to [rewind] or
      * construction time.
      */
-    val writtenElementCounts
-        get() = lastActiveElementIndex
+    var writtenElementCounts = 0
+        private set
 
-    /**
-     * Greatest index a value was written to since the last call to [rewind] or construction time.
-     */
-    private var lastActiveElementIndex = 0
+    init {
+        increaseMemory()
+    }
 
     /**
      * Append [floats] to the buffer.
@@ -52,7 +56,7 @@ class InputStreamBuffer(
         if (floats.size != elementSize)
             throw InvalidElementException(floats.size)
 
-        if (floatBuffer.capacity() <= lastActiveElementIndex * elementSize) {
+        if (floatBuffer.capacity() <= writtenElementCounts * elementSize) {
             // Re-allocate memory.
             // Since the granularity must be at least 1, at most one re-allocation is necessary
             // per one call to plusAssign().
@@ -60,24 +64,19 @@ class InputStreamBuffer(
         }
 
         for (i in 0 until elementSize) {
-            floatBuffer.put(lastActiveElementIndex * elementSize + i, floats[i])
+            floatBuffer.put(writtenElementCounts * elementSize + i, floats[i])
         }
 
-        lastActiveElementIndex++
+        writtenElementCounts++
     }
 
     /**
-     * Reset [lastActiveElementIndex] to 0.
+     * Reset [writtenElementCounts] to 0.
+     * Next data write will start from buffer begin.
      */
     fun rewind() {
-        lastActiveElementIndex = 0
+        writtenElementCounts = 0
     }
-
-    /**
-     * Capacity of this buffer, expressed in elements.
-     */
-    var capacity = 0
-        private set
 
     /**
      * Increase the memory by [capacityGranularity] elements.
