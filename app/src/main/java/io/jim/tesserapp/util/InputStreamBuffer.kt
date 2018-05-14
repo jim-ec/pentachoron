@@ -52,7 +52,7 @@ class InputStreamBuffer(
         if (floats.size != floatsPerElement)
             throw InvalidElementException(floats.size)
 
-        if (floatBuffer.capacity() <= writtenElementCounts * floatsPerElement) {
+        if (writtenElementCounts * floatsPerElement >= floatBuffer.capacity()) {
             // Re-allocate memory.
             // Since the granularity must be at least 1, at most one re-allocation is necessary
             // per one call to plusAssign().
