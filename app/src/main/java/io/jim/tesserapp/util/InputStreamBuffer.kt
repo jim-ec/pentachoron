@@ -47,14 +47,19 @@ class InputStreamBuffer(
      * The count of elements written to this buffer since the last call to [rewind] or
      * construction time.
      */
-    var writtenElementCounts = 0
-        private set
+    val writtenElementCounts: Int
+        get() = writtenVectorCounts / vectorsPerElement
+
+    private var writtenVectorCounts = 0
 
     /**
      * Append [floats] to the buffer.
      * @throws InvalidElementException If the count of floats in the list do not match up with [floatsPerElement].
      */
     operator fun plusAssign(floats: List<Float>) {
+        if (floats.size % 4 != 0)
+            throw RuntimeException("Float count must be a multiple of 4")
+
         if (floats.size != floatsPerElement)
             throw InvalidElementException(floats.size)
 
@@ -67,7 +72,7 @@ class InputStreamBuffer(
             floatBuffer.put(writtenElementCounts * floatsPerElement + i, floats[i])
         }
 
-        writtenElementCounts++
+        writtenVectorCounts += floats.size / 4
     }
 
     /**
@@ -75,7 +80,7 @@ class InputStreamBuffer(
      * Next data write will start from buffer begin.
      */
     fun rewind() {
-        writtenElementCounts = 0
+        writtenVectorCounts = 0
     }
 
     /**

@@ -28,7 +28,7 @@ class InputStreamBufferTest {
 
     @Test(expected = InputStreamBuffer.InvalidElementException::class)
     fun invalidElement() {
-        buffer += listOf(3f, 4f, 5f)
+        buffer += listOf(3f, 4f, 5f, 1f)
     }
 
     @Test
