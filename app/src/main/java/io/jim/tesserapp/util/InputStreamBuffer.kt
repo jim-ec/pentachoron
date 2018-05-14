@@ -11,30 +11,30 @@ class InputStreamBuffer(
          *
          * Therefore, this is the initial element capacity as well.
          */
-        private val capacityGranularity: Int,
+        private val allocationGranularity: Int,
 
         /**
          * The size of each element.
          */
-        val elementSize: Int
+        val floatsPerElement: Int
 
 ) {
 
     /**
      * Underlying byte buffer.
      */
-    private var byteBuffer = allocateNativeMemory(capacityGranularity * elementSize * Float.BYTE_LENGTH)
+    private var byteBuffer = allocateNativeFloatMemory(allocationGranularity * floatsPerElement)
 
     /**
      * Underlying float buffer.
      */
     var floatBuffer = byteBuffer.asFloatBuffer()
-            ?: throw RuntimeException("Cannot allocate float buffer")
+            ?: throw RuntimeException("Cannot create float buffer view onto byte buffer")
 
     /**
      * Capacity of this buffer, expressed in elements.
      */
-    var capacity = 0
+    var capacity = allocationGranularity
         private set
 
     /**
@@ -44,27 +44,23 @@ class InputStreamBuffer(
     var writtenElementCounts = 0
         private set
 
-    init {
-        increaseMemory()
-    }
-
     /**
      * Append [floats] to the buffer.
-     * @throws InvalidElementException If the count of floats in the list do not match up with [elementSize].
+     * @throws InvalidElementException If the count of floats in the list do not match up with [floatsPerElement].
      */
     operator fun plusAssign(floats: List<Float>) {
-        if (floats.size != elementSize)
+        if (floats.size != floatsPerElement)
             throw InvalidElementException(floats.size)
 
-        if (floatBuffer.capacity() <= writtenElementCounts * elementSize) {
+        if (floatBuffer.capacity() <= writtenElementCounts * floatsPerElement) {
             // Re-allocate memory.
             // Since the granularity must be at least 1, at most one re-allocation is necessary
             // per one call to plusAssign().
             increaseMemory()
         }
 
-        for (i in 0 until elementSize) {
-            floatBuffer.put(writtenElementCounts * elementSize + i, floats[i])
+        for (i in 0 until floatsPerElement) {
+            floatBuffer.put(writtenElementCounts * floatsPerElement + i, floats[i])
         }
 
         writtenElementCounts++
@@ -79,13 +75,13 @@ class InputStreamBuffer(
     }
 
     /**
-     * Increase the memory by [capacityGranularity] elements.
+     * Increase the memory by [allocationGranularity] elements.
      */
     private fun increaseMemory() {
-        capacity += capacityGranularity
+        capacity += allocationGranularity
 
         // Allocate buffer:
-        val newByteBuffer = allocateNativeMemory(capacity * elementSize * Float.BYTE_LENGTH)
+        val newByteBuffer = allocateNativeFloatMemory(capacity * floatsPerElement)
 
         // Copy contents of old buffer into new buffer:
         newByteBuffer.put(byteBuffer)
@@ -93,6 +89,7 @@ class InputStreamBuffer(
 
         byteBuffer = newByteBuffer
         floatBuffer = byteBuffer.asFloatBuffer()
+                ?: throw RuntimeException("Cannot create float buffer view onto byte buffer")
     }
 
     /**
@@ -104,10 +101,10 @@ class InputStreamBuffer(
         if (elementIndex < 0 || elementIndex >= capacity)
             throw InvalidElementIndexException(elementIndex)
 
-        if (subIndex < 0 || subIndex >= elementSize)
+        if (subIndex < 0 || subIndex >= floatsPerElement)
             throw InvalidSubIndexException(subIndex)
 
-        return floatBuffer[elementIndex * elementSize + subIndex]
+        return floatBuffer[elementIndex * floatsPerElement + subIndex]
     }
 
     /**
@@ -123,9 +120,9 @@ class InputStreamBuffer(
         : RuntimeException("Invalid buffer sub-index $subIndex")
 
     /**
-     * Thrown when you try to write an element with a different list size than [elementSize].
+     * Thrown when you try to write an element with a different list size than [floatsPerElement].
      */
     inner class InvalidElementException(wrongFloatCount: Int)
-        : RuntimeException("Invalid element: $wrongFloatCount floats given instead of $elementSize")
+        : RuntimeException("Invalid element: $wrongFloatCount floats given instead of $floatsPerElement")
 
 }

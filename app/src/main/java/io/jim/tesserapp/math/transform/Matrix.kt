@@ -242,8 +242,8 @@ open class Matrix(
      * One element in [buffer] is considered as one matrix.
      */
     fun writeIntoBuffer(buffer: InputStreamBuffer) {
-        if (bufferElementSize != buffer.elementSize)
-            throw MathException("Cannot write $this into buffer, wrong element size ${buffer.elementSize}")
+        if (bufferElementSize != buffer.floatsPerElement)
+            throw MathException("Cannot write $this into buffer, wrong element size ${buffer.floatsPerElement}")
 
         val list = ArrayList<Float>(rows * cols)
         forEachComponent { row, col ->
