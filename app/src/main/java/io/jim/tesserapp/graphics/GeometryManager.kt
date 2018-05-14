@@ -17,13 +17,13 @@ class GeometryManager {
      * Model matrix buffer.
      * When geometries are transformed, this buffer is updated automatically.
      */
-    val modelMatrixBuffer = ModelMatrixList(matrixDimension = 4)
+    val modelMatrixBuffer = ModelMatrixList()
 
     /**
      * Vertex buffer.
      * Buffer data is updated automatically upon geometrical change.
      */
-    val backingVertexBuffer = InputStreamBuffer(100, VertexBuffer.VERTEX_FLOATS)
+    val backingVertexBuffer = InputStreamBuffer(100, VertexBuffer.ATTRIBUTE_COUNTS)
 
     private val vertexBufferUpdateRequested = Flag(false)
 

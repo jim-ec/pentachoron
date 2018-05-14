@@ -46,7 +46,7 @@ class MatrixTest {
 
     @Test
     fun writeIntoBuffer() {
-        val buffer = InputStreamBuffer(10, matrix.bufferElementSize)
+        val buffer = InputStreamBuffer(10, matrix.rows)
 
         // Write matrix successively into buffer until the 2nd index is written:
         matrix.writeIntoBuffer(buffer)

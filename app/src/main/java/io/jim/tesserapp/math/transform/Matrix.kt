@@ -36,12 +36,6 @@ open class Matrix(
     }
 
     /**
-     * The element size a buffer must provide to be capable of serving as a write target.
-     * @see writeIntoBuffer
-     */
-    val bufferElementSize = rows * cols
-
-    /**
      * Loads the identity matrix.
      */
     fun identity() {
@@ -242,8 +236,10 @@ open class Matrix(
      * One element in [buffer] is considered as one matrix.
      */
     fun writeIntoBuffer(buffer: InputStreamBuffer) {
-        if (bufferElementSize != buffer.floatsPerElement)
-            throw MathException("Cannot write $this into buffer, wrong element size ${buffer.floatsPerElement}")
+        if (cols != 4)
+            throw RuntimeException("Due to alignment only Nx4 matrices can be written into buffers")
+        if (rows != buffer.vectorsPerElement)
+            throw MathException("Cannot write $this into buffer, rows must match with vectors per element")
 
         val list = ArrayList<Float>(rows * cols)
         forEachComponent { row, col ->

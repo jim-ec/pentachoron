@@ -1,24 +1,30 @@
 package io.jim.tesserapp.util
 
 /**
- * A buffer, capable of resizing.
+ * A buffer aligned to 4-float sized vectors, capable of resizing.
+ *
  * Contents are kept in elements, equally sized memory sections.
+ * Each element consist of a defined number of 4-float vectors.
+ *
+ * Consider the nomenclature:
+ * - A buffer consists of one or more **elements**.
+ * - Each element consists of one or more **vector**.
+ * - Each vector consists of exactly **4 floats**, due to alignment.
  */
 class InputStreamBuffer(
+
         /**
-         * As soon as the buffers needs more memory to store the elements,
-         * the buffer gets re-allocated, gaining space for this count of elements.
-         *
-         * Therefore, this is the initial element capacity as well.
+         * Size of memory units this buffer allocates when resizing, expressed in elements.
          */
         private val allocationGranularity: Int,
 
         /**
-         * The size of each element.
+         * Counts of vectors each element consists of.
          */
-        val floatsPerElement: Int
-
+        val vectorsPerElement: Int
 ) {
+
+    private val floatsPerElement = vectorsPerElement * 4
 
     /**
      * Underlying byte buffer.
@@ -34,8 +40,8 @@ class InputStreamBuffer(
     /**
      * Capacity of this buffer, expressed in elements.
      */
-    var capacity = allocationGranularity
-        private set
+    val elementCapacity: Int
+        get() = floatBuffer.capacity() / floatsPerElement
 
     /**
      * The count of elements written to this buffer since the last call to [rewind] or
@@ -52,10 +58,8 @@ class InputStreamBuffer(
         if (floats.size != floatsPerElement)
             throw InvalidElementException(floats.size)
 
+        // Check if memory must be extended:
         if (writtenElementCounts * floatsPerElement >= floatBuffer.capacity()) {
-            // Re-allocate memory.
-            // Since the granularity must be at least 1, at most one re-allocation is necessary
-            // per one call to plusAssign().
             increaseMemory()
         }
 
@@ -78,10 +82,10 @@ class InputStreamBuffer(
      * Increase the memory by [allocationGranularity] elements.
      */
     private fun increaseMemory() {
-        capacity += allocationGranularity
 
         // Allocate buffer:
-        val newByteBuffer = allocateNativeFloatMemory(capacity * floatsPerElement)
+        val newByteBuffer = allocateNativeFloatMemory(floatBuffer.capacity()
+                + allocationGranularity * floatsPerElement)
 
         // Copy contents of old buffer into new buffer:
         newByteBuffer.put(byteBuffer)
@@ -98,7 +102,7 @@ class InputStreamBuffer(
      * @param subIndex Index of float to be returned within that element.
      */
     operator fun get(elementIndex: Int, subIndex: Int): Float {
-        if (elementIndex < 0 || elementIndex >= capacity)
+        if (elementIndex < 0 || elementIndex >= elementCapacity)
             throw InvalidElementIndexException(elementIndex)
 
         if (subIndex < 0 || subIndex >= floatsPerElement)

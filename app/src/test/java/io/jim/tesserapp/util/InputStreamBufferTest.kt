@@ -5,11 +5,11 @@ import org.junit.Test
 
 class InputStreamBufferTest {
 
-    private val buffer = InputStreamBuffer(2, 2)
+    private val buffer = InputStreamBuffer(allocationGranularity = 2, vectorsPerElement = 2)
 
     @Test
     fun initialCapacity() {
-        assertEquals(2, buffer.capacity)
+        assertEquals(2, buffer.elementCapacity)
         assertEquals(0f, buffer[0, 0], 0.1f)
         assertEquals(0f, buffer[0, 1], 0.1f)
         assertEquals(0f, buffer[1, 0], 0.1f)
@@ -23,7 +23,7 @@ class InputStreamBufferTest {
 
     @Test(expected = InputStreamBuffer.InvalidSubIndexException::class)
     fun invalidSubIndex() {
-        buffer[0, 3]
+        buffer[0, 8]
     }
 
     @Test(expected = InputStreamBuffer.InvalidElementException::class)
@@ -33,19 +33,19 @@ class InputStreamBufferTest {
 
     @Test
     fun writeRead() {
-        buffer += listOf(8f, 9f)
-        buffer += listOf(1f, 2f)
+        buffer += listOf(8f, 9f, 0f, 0f, 0f, 0f, 0f, 0f)
+        buffer += listOf(1f, 2f, 0f, 0f, 0f, 0f, 0f, 0f)
         assertEquals(1f, buffer[1, 0], 0.1f)
         assertEquals(2f, buffer[1, 1], 0.1f)
     }
 
     @Test
     fun increaseMemoryAndPreserveOldData() {
-        buffer += listOf(4f, 5f)
-        buffer += listOf(7f, 8f)
-        buffer += listOf(1f, 2f)
+        buffer += listOf(4f, 5f, 0f, 0f, 0f, 0f, 0f, 0f)
+        buffer += listOf(7f, 8f, 0f, 0f, 0f, 0f, 0f, 0f)
+        buffer += listOf(1f, 2f, 0f, 0f, 0f, 0f, 0f, 0f)
 
-        assertEquals(4, buffer.capacity)
+        assertEquals(4, buffer.elementCapacity)
 
         assertEquals(4f, buffer[0, 0], 0.1f)
         assertEquals(5f, buffer[0, 1], 0.1f)

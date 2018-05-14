@@ -11,11 +11,6 @@ import java.util.*
 class ModelMatrixList(
 
         /**
-         * Each model matrix must have this side-length.
-         */
-        private val matrixDimension: Int,
-
-        /**
          * Granularity at which the internal model matrix buffer grows.
          */
         geometryCountsGranularity: Int = 10
@@ -25,7 +20,7 @@ class ModelMatrixList(
     /**
      * Buffer containing global model matrices.
      */
-    val buffer = InputStreamBuffer(geometryCountsGranularity, matrixDimension * matrixDimension)
+    val buffer = InputStreamBuffer(geometryCountsGranularity, 4)
 
     val geometries = ArrayList<Geometry>()
 
@@ -57,8 +52,8 @@ class ModelMatrixList(
         buffer.rewind()
 
         geometries.forEach { geometry ->
-            if (with(geometry.modelMatrix) { cols != matrixDimension || rows != matrixDimension })
-                throw RuntimeException("Model matrix ${geometry.modelMatrix} must dimension $matrixDimension")
+            if (with(geometry.modelMatrix) { cols != 4 || rows != 4 })
+                throw RuntimeException("Model matrix ${geometry.modelMatrix} must be 4x4")
 
             geometry.computeModelMatrix()
             geometry.modelMatrix.writeIntoBuffer(buffer)
