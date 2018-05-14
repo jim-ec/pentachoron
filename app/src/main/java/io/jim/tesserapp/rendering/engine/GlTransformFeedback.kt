@@ -12,7 +12,7 @@ class GlTransformFeedback(val varying: String, val mode: Int)
     var allocated = false
         private set
 
-    var lastDump = 0L
+    //var lastDump = 0L
 
     fun setup(programHandle: Int) {
         GLES30.glTransformFeedbackVaryings(
@@ -44,14 +44,14 @@ class GlTransformFeedback(val varying: String, val mode: Int)
 
             GLES30.glFlush()
 
-            if (System.currentTimeMillis() - lastDump > 1000) {
+            /*if (System.currentTimeMillis() - lastDump > 1000) {
                 lastDump = System.currentTimeMillis()
                 println("-----------------------------------------------------------------")
                 read(1) { vectors, index ->
                     vectors[0] /= vectors[0].q
                     println("TF[$index]: $varying=${vectors[0]}")
                 }
-            }
+            }*/
         }
         else {
             f()
