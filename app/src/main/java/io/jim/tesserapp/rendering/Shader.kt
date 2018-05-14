@@ -5,7 +5,7 @@ import io.jim.tesserapp.math.transform.Matrix
 import io.jim.tesserapp.rendering.engine.GlException
 import io.jim.tesserapp.rendering.engine.GlProgram
 import io.jim.tesserapp.rendering.engine.GlTransformFeedback
-import io.jim.tesserapp.util.Buffer
+import io.jim.tesserapp.util.InputStreamBuffer
 
 /**
  * A shader pipeline with a vertex shader, fragment shader an locations of all attributes and
@@ -76,7 +76,7 @@ class Shader : GlProgram(
     /**
      * Upload the first [uploadCounts] matrices from [buffer] into the model matrix uniform array.
      */
-    fun uploadModelMatrixBuffer(buffer: Buffer, uploadCounts: Int) {
+    fun uploadModelMatrixBuffer(buffer: InputStreamBuffer, uploadCounts: Int) {
         GLES30.glUniformMatrix4fv(modelMatrixLocation, uploadCounts, false, buffer.floatBuffer)
         GlException.check("Uploading model buffer")
     }

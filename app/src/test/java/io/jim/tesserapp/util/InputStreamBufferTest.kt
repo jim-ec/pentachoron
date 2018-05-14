@@ -16,17 +16,17 @@ class InputStreamBufferTest {
         assertEquals(0f, buffer[1, 1], 0.1f)
     }
 
-    @Test(expected = Buffer.InvalidElementIndexException::class)
+    @Test(expected = InputStreamBuffer.InvalidElementIndexException::class)
     fun invalidElementIndex() {
         buffer[3, 0]
     }
 
-    @Test(expected = Buffer.InvalidSubIndexException::class)
+    @Test(expected = InputStreamBuffer.InvalidSubIndexException::class)
     fun invalidSubIndex() {
         buffer[0, 3]
     }
 
-    @Test(expected = Buffer.InvalidElementException::class)
+    @Test(expected = InputStreamBuffer.InvalidElementException::class)
     fun invalidElement() {
         buffer += listOf(3f, 4f, 5f)
     }
