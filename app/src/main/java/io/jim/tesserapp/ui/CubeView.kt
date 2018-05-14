@@ -34,7 +34,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             override var x = 0f
                 set(value) {
                     coordinateSystemView.sharedRenderData.synchronized {
-                        cube.rotation.x = value
+                        cube.smoothRotation.x = value
                     }
                 }
 
@@ -44,7 +44,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             override var y = 0f
                 set(value) {
                     coordinateSystemView.sharedRenderData.synchronized {
-                        cube.rotation.y = value
+                        cube.smoothRotation.y = value
                     }
                 }
 
@@ -54,7 +54,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             override var z = 0f
                 set(value) {
                     coordinateSystemView.sharedRenderData.synchronized {
-                        cube.rotation.z = value
+                        cube.smoothRotation.z = value
                     }
                 }
 
@@ -78,7 +78,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             override var x = 0f
                 set(value) {
                     coordinateSystemView.sharedRenderData.synchronized {
-                        cube.translation.x = value
+                        cube.smoothTranslation.x = value
                     }
                 }
 
@@ -88,7 +88,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             override var y = 0f
                 set(value) {
                     coordinateSystemView.sharedRenderData.synchronized {
-                        cube.translation.y = value
+                        cube.smoothTranslation.y = value
                     }
                 }
 
@@ -98,7 +98,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             override var z = 0f
                 set(value) {
                     coordinateSystemView.sharedRenderData.synchronized {
-                        cube.translation.z = value
+                        cube.smoothTranslation.z = value
                     }
                 }
 
@@ -108,7 +108,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             override var q = 0f
                 set(value) {
                     coordinateSystemView.sharedRenderData.synchronized {
-                        cube.translation.q = value
+                        cube.smoothTranslation.q = value
                     }
                 }
 

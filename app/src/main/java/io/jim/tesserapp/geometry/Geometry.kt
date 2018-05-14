@@ -4,6 +4,7 @@ import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.common.SmoothTimedValueDelegate
 import io.jim.tesserapp.math.transform.Matrix
 import io.jim.tesserapp.math.vector.Vector3d
+import io.jim.tesserapp.math.vector.Vector4d
 import io.jim.tesserapp.ui.controllers.Rotatable
 import io.jim.tesserapp.ui.controllers.Translatable
 import io.jim.tesserapp.util.ListenerList
@@ -45,9 +46,10 @@ open class Geometry(
     val modelMatrix = Matrix(4)
 
     /**
-     * Rotation around the x, y and z axis.
+     * Smooth rotation around the x, y and z axis.
+     * Final rotation is component-wise summed up from [rotation] and [smoothRotation].
      */
-    val rotation = object : Rotatable {
+    val smoothRotation = object : Rotatable {
         override var x by SmoothTimedValueDelegate<Rotatable>(0f, 200L)
         override var y by SmoothTimedValueDelegate<Rotatable>(0f, 200L)
         override var z by SmoothTimedValueDelegate<Rotatable>(0f, 200L)
@@ -55,14 +57,27 @@ open class Geometry(
     }
 
     /**
-     * Translation.
+     * Smooth translation.
+     * Final translation is component-wise summed up from [translation] and [smoothTranslation].
      */
-    val translation = object : Translatable {
+    val smoothTranslation = object : Translatable {
         override var x by SmoothTimedValueDelegate<Translatable>(0f, 200L)
         override var y by SmoothTimedValueDelegate<Translatable>(0f, 200L)
         override var z by SmoothTimedValueDelegate<Translatable>(0f, 200L)
         override var q by SmoothTimedValueDelegate<Translatable>(0f, 200L)
     }
+
+    /**
+     * Rotation. Unlike [smoothRotation] this rotation is not smoothed.
+     * Final rotation is component-wise summed up from [rotation] and [smoothRotation].
+     */
+    val rotation = Vector4d()
+
+    /**
+     * Translation. Unlike [smoothTranslation] this translation vector is not smoothed.
+     * Final translation is component-wise summed up from [translation] and [smoothTranslation].
+     */
+    val translation = Vector4d()
 
     private val translationVector = Vector3d()
 
@@ -171,9 +186,9 @@ open class Geometry(
     fun computeModelMatrix() {
 
         // Rotation:
-        rotationMatrixX.rotation(a = 1, b = 2, radians = rotation.x)
-        rotationMatrixY.rotation(a = 2, b = 0, radians = rotation.y)
-        rotationMatrixZ.rotation(a = 0, b = 1, radians = rotation.z)
+        rotationMatrixX.rotation(a = 1, b = 2, radians = rotation.x + smoothRotation.x)
+        rotationMatrixY.rotation(a = 2, b = 0, radians = rotation.y + smoothRotation.y)
+        rotationMatrixZ.rotation(a = 0, b = 1, radians = rotation.z + smoothRotation.z)
 
         rotationMatrixZY.multiplication(
                 rhs = rotationMatrixZ,
@@ -186,7 +201,11 @@ open class Geometry(
         )
 
         // Translation:
-        translationVector.load(translation.x, translation.y, translation.z)
+        translationVector.load(
+                translation.x + smoothTranslation.x,
+                translation.y + smoothTranslation.y,
+                translation.z + smoothTranslation.z
+        )
         translationMatrix.translation(translationVector)
 
         // Model transform:
