@@ -17,7 +17,7 @@ class GeometryManager {
      * Model matrix buffer.
      * When geometries are transformed, this buffer is updated automatically.
      */
-    val modelMatrixBuffer = ModelMatrixBuffer(matrixDimension = 4)
+    val modelMatrixBuffer = ModelMatrixList(matrixDimension = 4)
 
     /**
      * Vertex buffer.
