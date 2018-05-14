@@ -68,11 +68,18 @@ class GeometryManager {
         // Rewrite vertex buffer:
         backingVertexBuffer.rewind()
         modelMatrixBuffer.forEachVertex { position, (red, green, blue), modelIndex ->
+            /*
             backingVertexBuffer += listOf(
                     position.x, position.y, position.z, 1f,
                     red, green, blue, 1f,
                     0f, 0f, 0f, intFloatReinterpreter.toFloat(modelIndex)
             )
+            */
+            backingVertexBuffer.record { buffer ->
+                buffer.write(position.x, position.y, position.z, 1f)
+                buffer.write(red, green, blue, 1f)
+                buffer.write(0f, 0f, 0f, intFloatReinterpreter.toFloat(modelIndex))
+            }
         }
 
         vertexBufferUpdateRequested.unset()

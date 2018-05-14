@@ -50,7 +50,8 @@ class InputStreamBuffer(
     val writtenElementCounts: Int
         get() = writtenVectorCounts / vectorsPerElement
 
-    private var writtenVectorCounts = 0
+    var writtenVectorCounts = 0
+        private set
 
     /**
      * Append [floats] to the buffer.
@@ -73,6 +74,31 @@ class InputStreamBuffer(
         }
 
         writtenVectorCounts += floats.size / 4
+    }
+
+    fun write(x: Float, y: Float, z: Float, q: Float) {
+
+        // Check if memory must be extended:
+        if (writtenElementCounts * floatsPerElement >= floatBuffer.capacity()) {
+            increaseMemory()
+        }
+
+        floatBuffer.put(writtenVectorCounts * 4 + 0, x)
+        floatBuffer.put(writtenVectorCounts * 4 + 1, y)
+        floatBuffer.put(writtenVectorCounts * 4 + 2, z)
+        floatBuffer.put(writtenVectorCounts * 4 + 3, q)
+
+        writtenVectorCounts++
+    }
+
+    inline fun record(f: (buffer: InputStreamBuffer) -> Unit) {
+        val oldVectorCounts = writtenVectorCounts
+
+        f(this)
+
+        val excessVectors = writtenVectorCounts - oldVectorCounts
+        if (excessVectors > 0)
+            throw RuntimeException("Recording $excessVectors excess vectors")
     }
 
     /**

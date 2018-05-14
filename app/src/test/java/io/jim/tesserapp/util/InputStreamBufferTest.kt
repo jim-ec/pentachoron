@@ -26,9 +26,11 @@ class InputStreamBufferTest {
         buffer[0, 8]
     }
 
-    @Test(expected = InputStreamBuffer.InvalidElementException::class)
+    @Test(expected = RuntimeException::class)
     fun invalidElement() {
-        buffer += listOf(3f, 4f, 5f, 1f)
+        buffer.record {
+            buffer.write(3f, 4f, 5f, 1f)
+        }
     }
 
     @Test
