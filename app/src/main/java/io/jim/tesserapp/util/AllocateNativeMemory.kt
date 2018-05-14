@@ -7,6 +7,7 @@ import java.nio.ByteOrder
  * Returns natively allocated memory, considering the native byte endianness.
  */
 fun allocateNativeMemory(bytes: Int) =
-        ByteBuffer.allocateDirect(bytes).apply {
+        ByteBuffer.allocateDirect(bytes)?.apply {
             order(ByteOrder.nativeOrder())
         }
+                ?: throw RuntimeException("Cannot allocate native memory")
