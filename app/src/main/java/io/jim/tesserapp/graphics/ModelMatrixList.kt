@@ -2,7 +2,7 @@ package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.math.vector.Vector3d
-import io.jim.tesserapp.util.RandomAccessBuffer
+import io.jim.tesserapp.util.InputStreamBuffer
 import java.util.*
 
 /**
@@ -25,7 +25,7 @@ class ModelMatrixList(
     /**
      * Buffer containing global model matrices.
      */
-    val buffer = RandomAccessBuffer(geometryCountsGranularity, matrixDimension * matrixDimension)
+    val buffer = InputStreamBuffer(geometryCountsGranularity, matrixDimension * matrixDimension)
 
     val geometries = ArrayList<Geometry>()
 
@@ -54,12 +54,14 @@ class ModelMatrixList(
             geometries.remove(geometry)
 
     fun computeModelMatrices() {
-        geometries.forEachIndexed { modelIndex, geometry ->
+        buffer.rewind()
+
+        geometries.forEach { geometry ->
             if (with(geometry.modelMatrix) { cols != matrixDimension || rows != matrixDimension })
                 throw RuntimeException("Model matrix ${geometry.modelMatrix} must dimension $matrixDimension")
 
             geometry.computeModelMatrix()
-            geometry.modelMatrix.writeIntoBuffer(modelIndex, buffer)
+            geometry.modelMatrix.writeIntoBuffer(buffer)
         }
     }
 

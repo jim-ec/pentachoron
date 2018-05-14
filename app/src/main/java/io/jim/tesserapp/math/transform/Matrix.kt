@@ -3,7 +3,7 @@ package io.jim.tesserapp.math.transform
 import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.formatNumber
 import io.jim.tesserapp.math.vector.VectorN
-import io.jim.tesserapp.util.RandomAccessBuffer
+import io.jim.tesserapp.util.InputStreamBuffer
 import java.nio.FloatBuffer
 import kotlin.math.cos
 import kotlin.math.sin
@@ -241,14 +241,15 @@ open class Matrix(
      * Writes this matrix into a float buffer.
      * One element in [buffer] is considered as one matrix.
      */
-    fun writeIntoBuffer(matrixOffset: Int, buffer: RandomAccessBuffer) {
+    fun writeIntoBuffer(buffer: InputStreamBuffer) {
         if (bufferElementSize != buffer.elementSize)
             throw MathException("Cannot write $this into buffer, wrong element size ${buffer.elementSize}")
 
+        val list = ArrayList<Float>(rows * cols)
         forEachComponent { row, col ->
-            // Unlike floats, storing one element per row, the buffer stores one element per matrix:
-            buffer[matrixOffset, row * cols + col] = floats[row * cols + col]
+            list += floats[row * cols + col]
         }
+        buffer += list
     }
 
 }

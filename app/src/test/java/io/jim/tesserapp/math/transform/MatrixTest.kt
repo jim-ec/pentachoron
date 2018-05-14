@@ -6,7 +6,7 @@ import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.math.vector.Vector3dh
 import io.jim.tesserapp.math.vector.Vector4d
 import io.jim.tesserapp.math.vector.VectorN
-import io.jim.tesserapp.util.RandomAccessBuffer
+import io.jim.tesserapp.util.InputStreamBuffer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -46,8 +46,12 @@ class MatrixTest {
 
     @Test
     fun writeIntoBuffer() {
-        val buffer = RandomAccessBuffer(10, matrix.bufferElementSize)
-        matrix.writeIntoBuffer(2, buffer)
+        val buffer = InputStreamBuffer(10, matrix.bufferElementSize)
+
+        // Write matrix successively into buffer until the 2nd index is written:
+        matrix.writeIntoBuffer(buffer)
+        matrix.writeIntoBuffer(buffer)
+        matrix.writeIntoBuffer(buffer)
 
         matrix.forEachComponent { row, col ->
             assertEquals(if (row == col) 1f else 0f, buffer[2, row * matrix.cols + col], 0.1f)
