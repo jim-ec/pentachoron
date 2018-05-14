@@ -85,7 +85,7 @@ class Shader : GlProgram(
      * Upload [matrix] to the view matrix uniform.
      */
     fun uploadViewMatrix(matrix: Matrix) {
-        GLES30.glUniformMatrix4fv(viewMatrixLocation, 1, false, matrix.floats.floatBuffer)
+        GLES30.glUniformMatrix4fv(viewMatrixLocation, 1, false, matrix.floats)
         GlException.check("Uploading view matrix")
     }
 
@@ -93,7 +93,7 @@ class Shader : GlProgram(
      * Upload [matrix] to the projection matrix uniform.
      */
     fun uploadProjectionMatrix(matrix: Matrix) {
-        GLES30.glUniformMatrix4fv(projectionMatrixLocation, 1, false, matrix.floats.floatBuffer)
+        GLES30.glUniformMatrix4fv(projectionMatrixLocation, 1, false, matrix.floats)
         GlException.check("Uploading projection matrix")
     }
 

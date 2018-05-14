@@ -4,6 +4,7 @@ import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.formatNumber
 import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.util.RandomAccessBuffer
+import java.nio.FloatBuffer
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -19,9 +20,9 @@ open class Matrix(
 ) : MatrixMultipliable() {
 
     /**
-     * Underlying float buffer. One buffer element is seen as one row.
+     * Underlying float buffer.
      */
-    internal val floats = RandomAccessBuffer(rows, cols)
+    internal val floats = FloatBuffer.allocate(rows * cols)
 
     /**
      * Construct a quadratic matrix with [size] rows and columns.
@@ -45,7 +46,7 @@ open class Matrix(
      */
     fun identity() {
         forEachComponent { row, col ->
-            floats[row, col] = if (row == col) 1f else 0f
+            floats.put(row * cols + col, if (row == col) 1f else 0f)
         }
     }
 
@@ -203,13 +204,13 @@ open class Matrix(
      * Set the float at [row]/[col] to [value].
      */
     public override operator fun set(row: Int, col: Int, value: Float) {
-        floats[row, col] = value
+        floats.put(row * cols + col, value)
     }
 
     /**
      * Return the float at [row]/[col].
      */
-    public override operator fun get(row: Int, col: Int) = floats[row, col]
+    public override operator fun get(row: Int, col: Int) = floats[row * cols + col]
 
     /**
      * Shortly represents this matrix as a string.
@@ -246,7 +247,7 @@ open class Matrix(
 
         forEachComponent { row, col ->
             // Unlike floats, storing one element per row, the buffer stores one element per matrix:
-            buffer[matrixOffset, row * cols + col] = floats[row, col]
+            buffer[matrixOffset, row * cols + col] = floats[row * cols + col]
         }
     }
 
