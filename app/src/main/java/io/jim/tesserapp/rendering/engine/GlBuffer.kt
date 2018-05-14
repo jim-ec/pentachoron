@@ -38,14 +38,14 @@ open class GlBuffer(
 
     /**
      * Allocate memory and optionally write data in.
-     * @param floatCapacity Counts of float to be written.
+     * @param vectorCapacity Counts of 4d vectors to be written.
      * @param data Data to be written.
      */
-    open fun allocate(floatCapacity: Int, data: java.nio.Buffer? = null) {
+    open fun allocate(vectorCapacity: Int, data: java.nio.Buffer? = null) {
         bound {
             GLES30.glBufferData(
                     target,
-                    floatCapacity * Float.BYTE_LENGTH,
+                    vectorCapacity * 4 * Float.BYTE_LENGTH,
                     data,
                     usage
             )

@@ -8,7 +8,7 @@ import io.jim.tesserapp.util.InputStreamBuffer
  */
 open class GlVertexBuffer(
         val backingBuffer: InputStreamBuffer,
-        val floatsPerVertex: Int,
+        val vectorsPerVertex: Int,
         val drawMode: Int
 ) : GlBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_STATIC_DRAW) {
 
@@ -32,7 +32,7 @@ open class GlVertexBuffer(
      */
     fun write() {
         allocate(
-                backingBuffer.writtenElementCounts * floatsPerVertex,
+                backingBuffer.writtenElementCounts * vectorsPerVertex,
                 backingBuffer.floatBuffer
         )
     }

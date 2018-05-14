@@ -22,8 +22,8 @@ class GlTransformFeedback(val varying: String, val mode: Int)
         )
     }
 
-    override fun allocate(floatCapacity: Int, data: Buffer?) {
-        super.allocate(floatCapacity, data)
+    override fun allocate(vectorCapacity: Int, data: Buffer?) {
+        super.allocate(vectorCapacity, data)
         allocated = true
     }
 
