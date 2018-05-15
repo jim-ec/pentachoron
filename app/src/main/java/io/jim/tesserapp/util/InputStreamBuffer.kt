@@ -76,6 +76,19 @@ class InputStreamBuffer(
         writtenVectorCounts += floats.size / 4
     }
 
+    /**
+     * Write a single vector into the buffer.
+     * If necessary, memory is increased by [allocationGranularity] elements.
+     *
+     * No check is done to ensure that this writes a proper number of vectors into the buffer.
+     * If used directly, this can lead to excess vectors if their count does not match up with
+     * vectors taken by a single element.
+     *
+     * To write vectors into the buffer in a safer manner, meaning that excess vectors lead to
+     * an exception, use [record] as a block function.
+     *
+     * @see record
+     */
     fun write(x: Float, y: Float, z: Float, q: Float) {
 
         // Check if memory must be extended:
@@ -91,12 +104,20 @@ class InputStreamBuffer(
         writtenVectorCounts++
     }
 
+    /**
+     * Invoke [f]. Count of written vectors after the call is compared to the count of vectors
+     * present before the call. If that count does not match up with vectors taken by `n` element,
+     * determined through [vectorsPerElement], an exception is thrown.
+     *
+     * So this is a safer way to write vectors into the buffer, instead of using [write] without
+     * this block function.
+     */
     inline fun record(f: (buffer: InputStreamBuffer) -> Unit) {
         val oldVectorCounts = writtenVectorCounts
 
         f(this)
 
-        val excessVectors = writtenVectorCounts - oldVectorCounts
+        val excessVectors = (writtenVectorCounts - oldVectorCounts) % vectorsPerElement
         if (excessVectors > 0)
             throw RuntimeException("Recording $excessVectors excess vectors")
     }
