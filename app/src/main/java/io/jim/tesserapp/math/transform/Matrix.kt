@@ -241,11 +241,16 @@ open class Matrix(
         if (rows != buffer.vectorsPerElement)
             throw MathException("Cannot write $this into buffer, rows must match with vectors per element")
 
-        val list = ArrayList<Float>(rows * cols)
-        forEachComponent { row, col ->
-            list += floats[row * cols + col]
+        buffer.record {
+            for (row in 0 until rows) {
+                buffer.write(
+                        floats[row * cols + 0],
+                        floats[row * cols + 1],
+                        floats[row * cols + 2],
+                        floats[row * cols + 3]
+                )
+            }
         }
-        buffer += list
     }
 
 }

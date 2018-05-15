@@ -49,7 +49,7 @@ class ModelMatrixList(
             geometries.remove(geometry)
 
     fun computeModelMatrices() {
-        buffer.rewind()
+        buffer.finalize()
 
         geometries.forEach { geometry ->
             if (with(geometry.modelMatrix) { cols != 4 || rows != 4 })

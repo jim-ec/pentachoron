@@ -35,17 +35,31 @@ class InputStreamBufferTest {
 
     @Test
     fun writeRead() {
-        buffer += listOf(8f, 9f, 0f, 0f, 0f, 0f, 0f, 0f)
-        buffer += listOf(1f, 2f, 0f, 0f, 0f, 0f, 0f, 0f)
+        buffer.record {
+            buffer.write(8f, 9f, 0f, 0f)
+            buffer.write(0f, 0f, 0f, 0f)
+
+            buffer.write(1f, 2f, 0f, 0f)
+            buffer.write(0f, 0f, 0f, 0f)
+        }
+
         assertEquals(1f, buffer[1, 0], 0.1f)
         assertEquals(2f, buffer[1, 1], 0.1f)
     }
 
     @Test
     fun increaseMemoryAndPreserveOldData() {
-        buffer += listOf(4f, 5f, 0f, 0f, 0f, 0f, 0f, 0f)
-        buffer += listOf(7f, 8f, 0f, 0f, 0f, 0f, 0f, 0f)
-        buffer += listOf(1f, 2f, 0f, 0f, 0f, 0f, 0f, 0f)
+
+        buffer.record {
+            buffer.write(4f, 5f, 0f, 0f)
+            buffer.write(0f, 0f, 0f, 0f)
+
+            buffer.write(7f, 8f, 0f, 0f)
+            buffer.write(0f, 0f, 0f, 0f)
+
+            buffer.write(1f, 2f, 0f, 0f)
+            buffer.write(0f, 0f, 0f, 0f)
+        }
 
         assertEquals(4, buffer.elementCapacity)
 

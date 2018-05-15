@@ -44,7 +44,7 @@ class InputStreamBuffer(
         get() = floatBuffer.capacity() / floatsPerElement
 
     /**
-     * The count of elements written to this buffer since the last call to [rewind] or
+     * The count of elements written to this buffer since the last call to [finalize] or
      * construction time.
      */
     val writtenElementCounts: Int
@@ -52,29 +52,6 @@ class InputStreamBuffer(
 
     var writtenVectorCounts = 0
         private set
-
-    /**
-     * Append [floats] to the buffer.
-     * @throws InvalidElementException If the count of floats in the list do not match up with [floatsPerElement].
-     */
-    operator fun plusAssign(floats: List<Float>) {
-        if (floats.size % 4 != 0)
-            throw RuntimeException("Float count must be a multiple of 4")
-
-        if (floats.size != floatsPerElement)
-            throw InvalidElementException(floats.size)
-
-        // Check if memory must be extended:
-        if (writtenElementCounts * floatsPerElement >= floatBuffer.capacity()) {
-            increaseMemory()
-        }
-
-        for (i in 0 until floatsPerElement) {
-            floatBuffer.put(writtenElementCounts * floatsPerElement + i, floats[i])
-        }
-
-        writtenVectorCounts += floats.size / 4
-    }
 
     /**
      * Write a single vector into the buffer.
@@ -111,6 +88,9 @@ class InputStreamBuffer(
      *
      * So this is a safer way to write vectors into the buffer, instead of using [write] without
      * this block function.
+     *
+     * @throws ExcessVectorRecordedException If recorded vector counts does not match up with
+     * vectors consumed per element.
      */
     inline fun record(f: (buffer: InputStreamBuffer) -> Unit) {
         val oldVectorCounts = writtenVectorCounts
@@ -119,14 +99,14 @@ class InputStreamBuffer(
 
         val excessVectors = (writtenVectorCounts - oldVectorCounts) % vectorsPerElement
         if (excessVectors > 0)
-            throw RuntimeException("Recording $excessVectors excess vectors")
+            throw ExcessVectorRecordedException(excessVectors)
     }
 
     /**
      * Reset [writtenElementCounts] to 0.
      * Next data write will start from buffer begin.
      */
-    fun rewind() {
+    fun finalize() {
         writtenVectorCounts = 0
     }
 
@@ -166,19 +146,20 @@ class InputStreamBuffer(
     /**
      * Thrown when you try to access an invalid index.
      */
-    class InvalidElementIndexException(elementIndex: Int)
+    inner class InvalidElementIndexException(elementIndex: Int)
         : RuntimeException("Invalid buffer element index $elementIndex")
 
     /**
      * Thrown when you try to access an invalid index.
      */
-    class InvalidSubIndexException(subIndex: Int)
+    inner class InvalidSubIndexException(subIndex: Int)
         : RuntimeException("Invalid buffer sub-index $subIndex")
 
     /**
-     * Thrown when you try to write an element with a different list size than [floatsPerElement].
+     * Thrown when you try to access an invalid index.
      */
-    inner class InvalidElementException(wrongFloatCount: Int)
-        : RuntimeException("Invalid element: $wrongFloatCount floats given instead of $floatsPerElement")
+    inner class ExcessVectorRecordedException(excessVectorCounts: Int)
+        : RuntimeException("Recording $excessVectorCounts excess vectors, " +
+            "$vectorsPerElement vectors consumed per element")
 
 }

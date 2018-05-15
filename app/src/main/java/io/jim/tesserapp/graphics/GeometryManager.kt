@@ -66,7 +66,7 @@ class GeometryManager {
         }
 
         // Rewrite vertex buffer:
-        backingVertexBuffer.rewind()
+        backingVertexBuffer.finalize()
         modelMatrixBuffer.forEachVertex { position, (red, green, blue), modelIndex ->
             /*
             backingVertexBuffer += listOf(
