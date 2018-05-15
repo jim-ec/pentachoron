@@ -8,7 +8,6 @@ import io.jim.tesserapp.util.InputStreamBuffer
  */
 open class GlVertexBuffer(
         val backingBuffer: InputStreamBuffer,
-        val vectorsPerVertex: Int,
         val drawMode: Int
 ) : GlBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_STATIC_DRAW) {
 
@@ -20,8 +19,13 @@ open class GlVertexBuffer(
     /**
      * Invokes [f] while the internal VAO is being bound.
      * Do not bind any other VAO during this call.
+     * @throws RuntimeException
      */
     fun vertexArrayBound(f: () -> Unit) {
+
+        if (0 != resultCode { GLES30.glGetIntegerv(GLES30.GL_VERTEX_ARRAY_BINDING, resultCode) })
+            throw RuntimeException("Cannot bind VAO, another one is currently bound")
+
         GLES30.glBindVertexArray(vertexArray)
         f()
         GLES30.glBindVertexArray(0)
@@ -32,7 +36,7 @@ open class GlVertexBuffer(
      */
     fun write() {
         allocate(
-                backingBuffer.writtenElementCounts * vectorsPerVertex,
+                backingBuffer.writtenVectorCounts,
                 backingBuffer.floatBuffer
         )
     }

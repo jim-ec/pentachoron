@@ -11,7 +11,7 @@ import io.jim.tesserapp.util.InputStreamBuffer
 class VertexBuffer(
         shader: Shader,
         backingBuffer: InputStreamBuffer
-) : GlVertexBuffer(backingBuffer, ATTRIBUTE_COUNTS, GLES30.GL_LINES) {
+) : GlVertexBuffer(backingBuffer, GLES30.GL_LINES) {
 
     companion object {
 

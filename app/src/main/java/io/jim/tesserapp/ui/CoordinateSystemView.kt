@@ -6,7 +6,8 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.*
 import io.jim.tesserapp.R
-import io.jim.tesserapp.geometry.Lines
+import io.jim.tesserapp.geometry.Axis
+import io.jim.tesserapp.geometry.Grid
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.common.Pi
 import io.jim.tesserapp.math.vector.Vector3d
@@ -27,30 +28,7 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     private val touchStartPosition = Vector3d(0f, 0f, 0f)
     private var touchStartTime = 0L
 
-    private val grid = Lines("Grid", Color(context, R.color.colorGrid)).apply {
-        for (i in -5..-1) {
-            addLine(Vector3d(i.toFloat(), 0f, -5f), Vector3d(i.toFloat(), 0f, 5f))
-            addLine(Vector3d(-5f, 0f, i.toFloat()), Vector3d(5f, 0f, i.toFloat()))
-        }
-        for (i in 1..5) {
-            addLine(Vector3d(i.toFloat(), 0f, -5f), Vector3d(i.toFloat(), 0f, 5f))
-            addLine(Vector3d(-5f, 0f, i.toFloat()), Vector3d(5f, 0f, i.toFloat()))
-        }
-
-        addLine(Vector3d(-5f, 0f, 0f), Vector3d(0f, 0f, 0f))
-        addLine(Vector3d(1f, 0f, 0f), Vector3d(5f, 0f, 0f))
-
-        addLine(Vector3d(0f, 0f, -5f), Vector3d(0f, 0f, 0f))
-        addLine(Vector3d(0f, 0f, 1f), Vector3d(0f, 0f, 5f))
-    }
-
-    @Suppress("unused")
-    private val axis = Lines("Axis").apply {
-        addLine(Vector3d(0f, 0f, 0f), Vector3d(1f, 0f, 0f), Color(context, R.color.colorAxisX))
-        addLine(Vector3d(0f, 0f, 0f), Vector3d(0f, 1f, 0f), Color(context, R.color.colorAxisY))
-        addLine(Vector3d(0f, 0f, 0f), Vector3d(0f, 0f, 1f), Color(context, R.color.colorAxisZ))
-        sharedRenderData.geometryManager += this
-    }
+    private val grid = Grid(color = Color(context, R.color.colorGrid))
 
     companion object {
         private const val CLICK_TIME_MS = 100L
@@ -61,10 +39,19 @@ class CoordinateSystemView(context: Context, attrs: AttributeSet?) : GLSurfaceVi
     }
 
     init {
+
+        // Setup renderer:
         setEGLContextClientVersion(3)
         setRenderer(renderer)
         debugFlags = DEBUG_CHECK_GL_ERROR
         renderMode = RENDERMODE_CONTINUOUSLY
+
+        // Create axis:
+        sharedRenderData.geometryManager += Axis(
+                xAxisColor = Color(context, R.color.colorAxisX),
+                yAxisColor = Color(context, R.color.colorAxisY),
+                zAxisColor = Color(context, R.color.colorAxisZ)
+        )
 
         // Create grid:
         enableGrid(true)

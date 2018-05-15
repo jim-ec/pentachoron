@@ -6,7 +6,7 @@ import io.jim.tesserapp.math.vector.Vector3d
 /**
  * A geometry containing a list of lines.
  */
-class Lines(name: String, baseColor: Color = Color.BLACK) : Geometry(name, baseColor) {
+open class Lines(name: String, baseColor: Color = Color.BLACK) : Geometry(name, baseColor) {
 
     private var index = 0
 
