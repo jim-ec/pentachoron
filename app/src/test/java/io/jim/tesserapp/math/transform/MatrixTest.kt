@@ -54,7 +54,7 @@ class MatrixTest {
         matrix.writeIntoBuffer(buffer)
 
         matrix.forEachComponent { row, col ->
-            assertEquals(if (row == col) 1f else 0f, buffer[2, row * matrix.cols + col], 0.1f)
+            assertEquals(if (row == col) 1f else 0f, buffer[2, row, col], 0.1f)
         }
     }
 

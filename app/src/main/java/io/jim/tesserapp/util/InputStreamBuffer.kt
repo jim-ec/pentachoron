@@ -131,29 +131,23 @@ class InputStreamBuffer(
     /**
      * Return a single float of an element.
      * @param elementIndex Index of element to be queried.
-     * @param subIndex Index of float to be returned within that element.
+     * @param vectorIndex Index of vector within that element.
+     * @param floatIndex Index of float within that vector.
      */
-    operator fun get(elementIndex: Int, subIndex: Int): Float {
+    operator fun get(elementIndex: Int, vectorIndex: Int, floatIndex: Int): Float {
         if (elementIndex < 0 || elementIndex >= elementCapacity)
-            throw InvalidElementIndexException(elementIndex)
+            throw RuntimeException("Invalid element index $elementIndex")
 
-        if (subIndex < 0 || subIndex >= floatsPerElement)
-            throw InvalidSubIndexException(subIndex)
+        if (vectorIndex < 0 || vectorIndex >= vectorsPerElement)
+            throw RuntimeException("Invalid vector index $vectorIndex")
 
-        return floatBuffer[elementIndex * floatsPerElement + subIndex]
+        if (floatIndex < 0 || floatIndex >= 4)
+            throw RuntimeException("Invalid float index $floatIndex")
+
+        return floatBuffer[elementIndex * floatsPerElement +
+                vectorIndex * 4 +
+                floatIndex]
     }
-
-    /**
-     * Thrown when you try to access an invalid index.
-     */
-    inner class InvalidElementIndexException(elementIndex: Int)
-        : RuntimeException("Invalid buffer element index $elementIndex")
-
-    /**
-     * Thrown when you try to access an invalid index.
-     */
-    inner class InvalidSubIndexException(subIndex: Int)
-        : RuntimeException("Invalid buffer sub-index $subIndex")
 
     /**
      * Thrown when you try to access an invalid index.
