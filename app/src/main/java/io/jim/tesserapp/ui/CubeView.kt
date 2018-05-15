@@ -15,7 +15,11 @@ import kotlin.properties.Delegates
 /**
  * A coordinate system view featuring a cube.
  */
-class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
+class CubeView : FrameLayout {
+
+    constructor(context: Context) : super(context)
+
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     /**
      * Controls the cube.
@@ -133,7 +137,7 @@ class CubeView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         }
     }
 
-    private val coordinateSystemView = CoordinateSystemView(context, null)
+    private val coordinateSystemView = GraphicsView(context, null)
 
     /**
      * The featuring cube.

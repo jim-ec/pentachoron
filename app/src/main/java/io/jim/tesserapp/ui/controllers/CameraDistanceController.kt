@@ -5,7 +5,7 @@ import android.widget.SeekBar
 import android.widget.TextView
 import io.jim.tesserapp.R
 import io.jim.tesserapp.graphics.SharedRenderData
-import io.jim.tesserapp.ui.CoordinateSystemView
+import io.jim.tesserapp.ui.GraphicsView
 
 class CameraDistanceController(
         private val renderData: SharedRenderData,
@@ -18,7 +18,7 @@ class CameraDistanceController(
         ArrayList(), // TODO: temporary empty list
         seeker,
         valueLabel,
-        min, max, CoordinateSystemView.DEFAULT_CAMERA_DISTANCE,
+        min, max, GraphicsView.DEFAULT_CAMERA_DISTANCE,
         context.getString(R.string.transform_translation_value)
 ) {
 
