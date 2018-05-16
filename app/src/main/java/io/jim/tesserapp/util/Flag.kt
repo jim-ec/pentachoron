@@ -6,8 +6,6 @@ data class Flag(
 
 ) {
 
-    private val listeners = ListenerListParam<Boolean>()
-
     operator fun not() = !flag
 
     fun isSet() = flag
@@ -27,7 +25,6 @@ data class Flag(
             return
         }
         flag = newFlag
-        listeners.fire(newFlag)
     }
 
 }
