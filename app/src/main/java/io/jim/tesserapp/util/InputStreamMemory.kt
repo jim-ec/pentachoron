@@ -152,13 +152,16 @@ class InputStreamMemory(
      * @param vectorIndex Index of vector within that element.
      * @param floatIndex Index of float within that vector.
      *
-     * @throws RuntimeException If [elementIndex] is either negative or references an element
-     *                          outside the current memory capacity.
+     * @throws RuntimeException
+     * If [elementIndex] is either negative or references an element
+     * outside the current memory capacity.
      *
-     * @throws RuntimeException If [vectorIndex] is either negative or references a vector
-     *                          outside the count of vectors hold by a single element.
+     * @throws RuntimeException
+     * If [vectorIndex] is either negative or references a vector
+     * outside the count of vectors hold by a single element.
      *
-     * @throws RuntimeException If [floatIndex] is outside the range `[0,3]`.
+     * @throws RuntimeException
+     * If [floatIndex] is outside the range `[0,3]`.
      *
      */
     operator fun get(elementIndex: Int, vectorIndex: Int, floatIndex: Int): Float {

@@ -237,11 +237,12 @@ open class Matrix(
      * One element in [memory] is considered as one matrix.
      * Each vector within one element is considered as one matrix row.
      *
-     * @throws RuntimeException If this matrix has not 4 columns, since only they can written
-     *                          in such a memory.
+     * @throws RuntimeException
+     * If this matrix has not 4 columns, since only they can written in such a memory.
      *
-     * @throws RuntimeException If the [memory]'s [InputStreamMemory.vectorsPerElement] does not
-     *                          match  with this matrix' row count.
+     * @throws RuntimeException
+     * If the [memory]'s [InputStreamMemory.vectorsPerElement] does not
+     * match  with this matrix' row count.
      */
     fun writeToMemory(memory: InputStreamMemory) {
         if (cols != 4)

@@ -5,7 +5,7 @@ import io.jim.tesserapp.math.transform.Matrix
 import io.jim.tesserapp.rendering.engine.GlException
 import io.jim.tesserapp.rendering.engine.GlProgram
 import io.jim.tesserapp.rendering.engine.GlTransformFeedback
-import io.jim.tesserapp.util.InputStreamMemory
+import java.nio.FloatBuffer
 
 /**
  * A shader pipeline with a vertex shader, fragment shader an locations of all attributes and
@@ -74,10 +74,20 @@ class Shader : GlProgram(
     }
 
     /**
-     * Upload the first [uploadCounts] matrices from [memory] into the model matrix uniform array.
+     * Upload matrices from [floatMemory] to GL.
+     *
+     * @param uploadCounts Counts of model matrices to be uploaded.
+     *
+     * @throws RuntimeException
+     * If [floatMemory]'s [FloatBuffer.position] is not 0.
+     * This is not actually an error, but a strong indicator for a bug,
+     * since buffers need to rewind their positions before using [GLES30.glUniformMatrix4fv].
      */
-    fun uploadModelMatrices(memory: InputStreamMemory, uploadCounts: Int) {
-        GLES30.glUniformMatrix4fv(modelMatrixLocation, uploadCounts, false, memory.floatMemory)
+    fun uploadModelMatrices(floatMemory: FloatBuffer, uploadCounts: Int) {
+        if (floatMemory.position() != 0)
+            throw RuntimeException("Float memory position must be 0 to upload to GL")
+
+        GLES30.glUniformMatrix4fv(modelMatrixLocation, uploadCounts, false, floatMemory)
         GlException.check("Uploading model matrices")
     }
 

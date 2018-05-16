@@ -99,7 +99,7 @@ class Renderer(context: Context, private val dpi: Float) : GLSurfaceView.Rendere
 
                 // ... and upload the to GL:
                 shader.uploadModelMatrices(
-                        geometryManager.modelMatrixMemory,
+                        geometryManager.modelMatrixFloatMemory,
                         geometryManager.geometryCounts)
 
                 // Draw the vertex buffer:

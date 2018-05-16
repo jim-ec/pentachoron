@@ -5,6 +5,7 @@ import io.jim.tesserapp.rendering.VertexBuffer
 import io.jim.tesserapp.util.Flag
 import io.jim.tesserapp.util.InputStreamMemory
 import io.jim.tesserapp.util.IntFloatReinterpreter
+import java.nio.FloatBuffer
 import java.util.*
 
 /**
@@ -24,13 +25,19 @@ class DrawDataProvider {
     /**
      * Memory model matrices.
      */
-    val modelMatrixMemory = InputStreamMemory(allocationGranularity = 10, vectorsPerElement = 4)
+    private val modelMatrixMemory = InputStreamMemory(allocationGranularity = 10, vectorsPerElement = 4)
 
     /**
      * Count of managed geometries.
      */
     val geometryCounts: Int
         get() = geometries.size
+
+    /**
+     * Float memory containing model matrices, ready to be uploaded to GL.
+     */
+    val modelMatrixFloatMemory: FloatBuffer
+        get() = modelMatrixMemory.floatMemory
 
     /**
      * List containing all managed geometries.
