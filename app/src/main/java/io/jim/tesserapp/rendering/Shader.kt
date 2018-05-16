@@ -1,5 +1,6 @@
 package io.jim.tesserapp.rendering
 
+import android.content.res.AssetManager
 import android.opengl.GLES30
 import io.jim.tesserapp.math.transform.Matrix
 import io.jim.tesserapp.rendering.engine.GlException
@@ -11,10 +12,11 @@ import java.nio.FloatBuffer
  * A shader pipeline with a vertex shader, fragment shader an locations of all attributes and
  * uniforms.
  */
-class Shader : GlProgram(
-        vertexShaderSource,
-        fragmentShaderSource,
-        GlTransformFeedback("gl_Position", GLES30.GL_LINES)) {
+class Shader(assets: AssetManager) : GlProgram(
+        assets = assets,
+        vertexShaderFile = "lines.vert",
+        fragmentShaderFile = "lines.frag",
+        transformFeedback = GlTransformFeedback("gl_Position", GLES30.GL_LINES)) {
 
     /**
      * GLSL location of position attribute.
@@ -35,43 +37,6 @@ class Shader : GlProgram(
     private val viewMatrixLocation = GLES30.glGetUniformLocation(programHandle, "V")
     private val projectionMatrixLocation = GLES30.glGetUniformLocation(programHandle, "P")
     private val modelMatrixLocation = GLES30.glGetUniformLocation(programHandle, "M")
-
-    companion object {
-
-        private val vertexShaderSource = """
-            #version 300 es
-
-            uniform mat4 P;
-            uniform mat4 V;
-            uniform mat4 M[100];
-
-            in vec4 position;
-            in vec4 color;
-            in int modelIndex;
-
-            out vec4 vColor;
-
-            void main() {
-                gl_Position = P * V * M[modelIndex] * position;
-                vColor = color;
-            }
-
-            """.trim()
-
-        private val fragmentShaderSource = """
-            #version 300 es
-
-            in mediump vec4 vColor;
-
-            out mediump vec4 fColor;
-
-            void main() {
-                fColor = vColor;
-            }
-
-            """.trim()
-
-    }
 
     /**
      * Upload matrices from [floatMemory] to GL.

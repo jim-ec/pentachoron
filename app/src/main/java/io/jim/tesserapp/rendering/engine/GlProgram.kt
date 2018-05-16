@@ -1,13 +1,15 @@
 package io.jim.tesserapp.rendering.engine
 
+import android.content.res.AssetManager
 import android.opengl.GLES20
 import android.opengl.GLES30
 
 /**
  * Encapsulate a GL program, containing a vertex and fragment shader.
  *
- * @param vertexShaderSource Vertex shader source code.
- * @param fragmentShaderSource Fragment shader source code.
+ * @param assets Asset manager used to open shader source files.
+ * @param vertexShaderFile File name of vertex shader source code.
+ * @param fragmentShaderFile File name of fragment shader source code.
  *
  * @property transformFeedback
  * Transform feedback used with this program.
@@ -16,26 +18,27 @@ import android.opengl.GLES30
  * If a transform feedback object is present, drawing happens inside its
  * [GlTransformFeedback.capturingTransformFeedback] block.
  */
-open class GlProgram(
-        vertexShaderSource: String,
-        fragmentShaderSource: String,
+open class GlProgram protected constructor(
+        assets: AssetManager,
+        vertexShaderFile: String,
+        fragmentShaderFile: String,
         val transformFeedback: GlTransformFeedback? = null
 ) {
+
+    /**
+     * This program's vertex shader.
+     */
+    val vertexShader = GlShader(assets, vertexShaderFile)
+
+    /**
+     * This program's fragment shader.
+     */
+    val fragmentShader = GlShader(assets, fragmentShaderFile)
 
     /**
      * Actual program handle retrieved from GL.
      */
     val programHandle = GLES20.glCreateProgram()
-
-    /**
-     * This program's vertex shader.
-     */
-    val vertexShader = GlShader(GLES30.GL_VERTEX_SHADER, vertexShaderSource)
-
-    /**
-     * This program's fragment shader.
-     */
-    val fragmentShader = GlShader(GLES30.GL_FRAGMENT_SHADER, fragmentShaderSource)
 
     init {
         GLES30.glAttachShader(programHandle, vertexShader.shaderHandle)

@@ -14,7 +14,7 @@ import javax.microedition.khronos.opengles.GL10
 /**
  * Actually renders to OpenGL.
  */
-class Renderer(context: Context, private val dpi: Float) : GLSurfaceView.Renderer {
+class Renderer(private val context: Context, private val dpi: Float) : GLSurfaceView.Renderer {
 
     /**
      * Render data shared across this render thread an others.
@@ -58,7 +58,7 @@ class Renderer(context: Context, private val dpi: Float) : GLSurfaceView.Rendere
         println("Vendor: ${GLES30.glGetString(GLES30.GL_VENDOR)}")
 
         // Construct shader:
-        shader = Shader()
+        shader = Shader(context.assets)
 
         // Construct vertex buffer:
         vertexBuffer = VertexBuffer(
