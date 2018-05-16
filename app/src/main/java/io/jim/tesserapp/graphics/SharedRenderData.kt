@@ -9,7 +9,7 @@ data class SharedRenderData(
         /**
          * Geometry manager.
          */
-        val geometryManager: GeometryManager
+        val drawDataProvider: DrawDataProvider
 
 ) {
 

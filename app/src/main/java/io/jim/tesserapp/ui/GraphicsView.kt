@@ -51,7 +51,7 @@ class GraphicsView : GLSurfaceView {
         renderMode = RENDERMODE_CONTINUOUSLY
 
         // Create axis:
-        sharedRenderData.geometryManager += Axis(
+        sharedRenderData.drawDataProvider += Axis(
                 xAxisColor = Color(context, R.color.colorAxisX),
                 yAxisColor = Color(context, R.color.colorAxisY),
                 zAxisColor = Color(context, R.color.colorAxisZ)
@@ -120,10 +120,10 @@ class GraphicsView : GLSurfaceView {
     fun enableGrid(enable: Boolean) {
         renderer.sharedRenderData.synchronized { renderData ->
             if (enable) {
-                renderData.geometryManager += grid
+                renderData.drawDataProvider += grid
             }
             else {
-                renderData.geometryManager -= grid
+                renderData.drawDataProvider -= grid
             }
         }
     }

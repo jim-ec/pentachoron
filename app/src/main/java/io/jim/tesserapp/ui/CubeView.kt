@@ -150,7 +150,7 @@ class CubeView : FrameLayout {
             Color(context, R.color.colorAccent)
     ).apply {
         coordinateSystemView.sharedRenderData.synchronized { renderData ->
-            renderData.geometryManager += this
+            renderData.drawDataProvider += this
             extrude(Vector3d(0f, 0f, -2f))
         }
     }

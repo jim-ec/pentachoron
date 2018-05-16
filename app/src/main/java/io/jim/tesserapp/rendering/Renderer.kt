@@ -4,7 +4,7 @@ import android.content.Context
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.graphics.GeometryManager
+import io.jim.tesserapp.graphics.DrawDataProvider
 import io.jim.tesserapp.graphics.SharedRenderData
 import io.jim.tesserapp.math.transform.Projection3dMatrix
 import io.jim.tesserapp.math.transform.ViewMatrix
@@ -19,7 +19,7 @@ class Renderer(context: Context, private val dpi: Float) : GLSurfaceView.Rendere
     /**
      * Render data shared across this render thread an others.
      */
-    val sharedRenderData = SharedRenderData(GeometryManager())
+    val sharedRenderData = SharedRenderData(DrawDataProvider())
 
     private val clearColor = Color(context, android.R.color.background_light)
     private lateinit var shader: Shader
@@ -57,7 +57,7 @@ class Renderer(context: Context, private val dpi: Float) : GLSurfaceView.Rendere
         // Construct vertex buffer:
         vertexBuffer = VertexBuffer(
                 shader,
-                sharedRenderData.geometryManager.vertexMemory
+                sharedRenderData.drawDataProvider.vertexMemory
         )
     }
 
@@ -99,8 +99,8 @@ class Renderer(context: Context, private val dpi: Float) : GLSurfaceView.Rendere
 
                 // ... and upload the to GL:
                 shader.uploadModelMatrices(
-                        geometryManager.modelMatrixList.memory,
-                        geometryManager.modelMatrixList.activeGeometries)
+                        geometryManager.modelMatrixMemory,
+                        geometryManager.geometryCounts)
 
                 // Draw the vertex buffer:
                 vertexBuffer.draw()
