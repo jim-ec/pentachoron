@@ -2,6 +2,9 @@ package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.math.common.SmoothTimedValueDelegate
 
+/**
+ * Encapsulate camera parameters.
+ */
 class Camera {
 
     /**

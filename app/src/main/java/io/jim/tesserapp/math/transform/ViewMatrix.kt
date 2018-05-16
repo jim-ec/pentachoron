@@ -3,6 +3,14 @@ package io.jim.tesserapp.math.transform
 import io.jim.tesserapp.graphics.Camera
 import io.jim.tesserapp.math.vector.Vector3d
 
+/**
+ * Represent a `4x4` view matrix, including a look-at based transform, screen ration as well as
+ * orbital rotation.
+ *
+ * The exact parameters defining each transform are taken from the [camera].
+ * When these parameters change, this view matrix is not recomputed automatically, but rather
+ * through a call to [compute].
+ */
 class ViewMatrix(
         private val camera: Camera
 ) : Matrix(4) {
@@ -22,6 +30,9 @@ class ViewMatrix(
         private val target = Vector3d(0f, 0f, 0f)
     }
 
+    /**
+     * Recomputes view matrix.
+     */
     fun compute() {
         matrixHorizontalRotation.rotation(2, 0, camera.horizontalRotation)
         matrixVerticalRotation.rotation(0, 1, camera.verticalRotation)

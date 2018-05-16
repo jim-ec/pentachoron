@@ -3,6 +3,9 @@ package io.jim.tesserapp.geometry
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.vector.Vector3d
 
+/**
+ * Axis indicator geometry.
+ */
 class Axis(
         name: String = "Axis",
         xAxisColor: Color,

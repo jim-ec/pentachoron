@@ -26,9 +26,21 @@ open class Geometry(
 
 ) {
 
+    /**
+     * List containing all positions.
+     */
     val positions = ArrayList<Vector3d>()
 
+    /**
+     * List containing all lines constructed from [positions] using indices.
+     */
     val lines = ArrayList<LineIndices>()
+
+    /**
+     * This geometries model matrix.
+     * [computeModelMatrix] must be called in order to keep the model matrix up-to-date.
+     */
+    val modelMatrix = Matrix(4)
 
     private val rotationMatrixY = Matrix(4)
     private val rotationMatrixX = Matrix(4)
@@ -36,8 +48,6 @@ open class Geometry(
     private val rotationMatrixZY = Matrix(4)
     private val rotationMatrix = Matrix(4)
     private val translationMatrix = Matrix(4)
-
-    val modelMatrix = Matrix(4)
 
     /**
      * Smooth rotation around the x, y and z axis.
@@ -89,8 +99,6 @@ open class Geometry(
      * Listeners are fired every time a single point or line is added.
      */
     val onGeometryChanged = Callback()
-
-    data class LineIndices(val from: Int, val to: Int, var color: Color)
 
     /**
      * Add a series of vertices.

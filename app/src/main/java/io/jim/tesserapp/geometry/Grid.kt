@@ -3,6 +3,10 @@ package io.jim.tesserapp.geometry
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.vector.Vector3d
 
+/**
+ * Geometry representing a flat, orthogonal grid.
+ * The center is cut out so that an [Axis] geometry fits into the grid without overlapping lines.
+ */
 class Grid(
         name: String = "Grid",
         color: Color

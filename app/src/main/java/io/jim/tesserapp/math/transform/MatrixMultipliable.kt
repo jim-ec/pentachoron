@@ -2,12 +2,30 @@ package io.jim.tesserapp.math.transform
 
 import io.jim.tesserapp.math.common.MathException
 
+/**
+ * A mathematical object which can be used for matrix multiplications.
+ * These are matrices and vectors.
+ */
 abstract class MatrixMultipliable {
 
+    /**
+     * Rows taken account into matrix multiplication.
+     */
     abstract val rows: Int
+
+    /**
+     * Columns taken account into matrix multiplication.
+     */
     abstract val cols: Int
 
+    /**
+     * Set value at a specific matrix cell to [value].
+     */
     protected abstract operator fun set(row: Int, col: Int, value: Float)
+
+    /**
+     * Get value at a specific matrix cell.
+     */
     protected abstract operator fun get(row: Int, col: Int): Float
 
     /**

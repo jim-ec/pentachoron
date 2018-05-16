@@ -8,12 +8,14 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 /**
- * A vector with [dimension] components.
+ * An n-dimensional vector.
  *
  * Most methods are designed to reduce allocations, and therefore usually operate on the
  * current vector object, rather than creating a new, modified one.
  * That enables you to provide pre-allocated vectors, while avoiding allocating mass of vectors
  * when doing the same calculations over and over again.
+ *
+ * @property dimension Dimension of this vector. Determines count of numbers [floats] holds.
  */
 open class VectorN(
         val dimension: Int
