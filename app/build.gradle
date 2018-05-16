@@ -24,6 +24,7 @@ android {
 dokka {
     outputFormat = 'html'
     outputDirectory = "$buildDir/javadoc"
+    includeNonPublic = true
 }
 
 dependencies {
