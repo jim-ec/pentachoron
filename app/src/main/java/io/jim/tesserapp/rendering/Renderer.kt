@@ -30,8 +30,14 @@ class Renderer(context: Context, private val dpi: Float) : GLSurfaceView.Rendere
 
     companion object {
 
+        /**
+         * Converts inches to millimeters.
+         */
         const val MM_PER_INCH = 25.4f
 
+        /**
+         * Specifies width of lines, in millimeters.
+         */
         const val LINE_WIDTH_MM = 0.15f
 
     }

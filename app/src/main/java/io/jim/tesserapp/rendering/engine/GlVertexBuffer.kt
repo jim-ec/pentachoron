@@ -4,7 +4,10 @@ import android.opengl.GLES30
 import io.jim.tesserapp.util.InputStreamMemory
 
 /**
- * Provide a VAO.
+ * GL VAO.
+ *
+ * @property memory Interleaved memory from which the vertices are taken from.
+ * @property drawMode Mode how to draw the vertices, e.g. [GLES30.GL_TRIANGLE_STRIP].
  */
 open class GlVertexBuffer(
         val memory: InputStreamMemory,

@@ -4,17 +4,28 @@ import android.opengl.GLES30
 import java.nio.Buffer
 
 /**
- * @property mode Transform feedback mode, like [GLES30.GL_TRIANGLES].
+ * Captures transform feedback when drawing with a [GlProgram].
+ *
+ * @property varying Varying to be captured.
+ * @property mode Transform feedback mode, e.g. [GLES30.GL_TRIANGLES].
  */
 class GlTransformFeedback(val varying: String, val mode: Int)
     : GlBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_STATIC_READ) {
 
+    /**
+     * Indicates whether the transform feedback object has already allocated its memory.
+     * If not, no capturing occurs.
+     */
     var allocated = false
         private set
 
     //var lastDump = 0L
 
-    fun setup(programHandle: Int) {
+    /**
+     * Setup the feedback capturing information.
+     * Is automatically called by [GlProgram] when creating its program instance.
+     */
+    internal fun setup(programHandle: Int) {
         GLES30.glTransformFeedbackVaryings(
                 programHandle,
                 arrayOf(varying),

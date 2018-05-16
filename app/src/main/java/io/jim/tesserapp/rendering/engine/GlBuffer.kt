@@ -6,11 +6,23 @@ import io.jim.tesserapp.util.BYTE_LENGTH
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
+/**
+ * GL Buffer.
+ *
+ * Does not actually store memory, since e.g. reading causes a buffer to be created through
+ * mapping.
+ *
+ * @property target The GL target this buffer is bound to, e.g. [GLES30.GL_ARRAY_BUFFER].
+ * @property usage How this buffer is intended to be used, see [GLES30.glBufferData].
+ */
 open class GlBuffer(
         val target: Int,
         val usage: Int
 ) {
 
+    /**
+     * The actual handle retrieved from GL.
+     */
     val bufferHandle = resultCode { GLES30.glGenBuffers(1, resultCode) }
 
     /**

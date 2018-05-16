@@ -3,14 +3,38 @@ package io.jim.tesserapp.rendering.engine
 import android.opengl.GLES20
 import android.opengl.GLES30
 
+/**
+ * Encapsulate a GL program, containing a vertex and fragment shader.
+ *
+ * @param vertexShaderSource Vertex shader source code.
+ * @param fragmentShaderSource Fragment shader source code.
+ *
+ * @property transformFeedback
+ * Transform feedback used with this program.
+ * Its [GlTransformFeedback.setup] function is called after attaching both shaders and
+ * before linking the actual program.
+ * If a transform feedback object is present, drawing happens inside its
+ * [GlTransformFeedback.capturingTransformFeedback] block.
+ */
 open class GlProgram(
         vertexShaderSource: String,
         fragmentShaderSource: String,
         val transformFeedback: GlTransformFeedback? = null
 ) {
 
+    /**
+     * Actual program handle retrieved from GL.
+     */
     val programHandle = GLES20.glCreateProgram()
+
+    /**
+     * This program's vertex shader.
+     */
     val vertexShader = GlShader(GLES30.GL_VERTEX_SHADER, vertexShaderSource)
+
+    /**
+     * This program's fragment shader.
+     */
     val fragmentShader = GlShader(GLES30.GL_FRAGMENT_SHADER, fragmentShaderSource)
 
     init {
@@ -38,14 +62,20 @@ open class GlProgram(
     }
 
     /**
-     * Use the program for further draw calls.
+     * Use this program for further draw calls.
+     *
+     * @throws RuntimeException If another program is currently in use.
      */
     inline fun bound(f: () -> Unit) {
+        if (0 != resultCode { GLES30.glGetIntegerv(GLES30.GL_CURRENT_PROGRAM, resultCode) })
+            throw RuntimeException("Another program is currently used.")
+
         GLES30.glUseProgram(programHandle)
 
-        transformFeedback?.capturingTransformFeedback {
-            f()
-        } ?: f()
+        // If a transform feedback is attached, do drawing while capture feedback.
+        // Otherwise, just do the draw code:
+        transformFeedback?.capturingTransformFeedback { f() }
+                ?: f()
 
         GLES30.glUseProgram(0)
     }

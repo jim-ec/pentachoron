@@ -36,6 +36,7 @@ fun floatResultCode() = floatResultCode[0]
 /**
  * Execute [f], returning result code after-wards.
  */
+@Suppress("unused")
 inline fun floatResultCode(f: () -> Unit): Float {
     f()
     return floatResultCode()
