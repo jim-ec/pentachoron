@@ -4,7 +4,7 @@ import java.nio.ByteBuffer
 
 /**
  * Convert integers to floating-points by keeping them byte-wise equally.
- * With this way, we can pass integer data into a float-buffer.
+ * With this way, we can pass integer data into a float-memory.
  */
 class IntFloatReinterpreter {
 

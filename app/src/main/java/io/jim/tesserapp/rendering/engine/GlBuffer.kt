@@ -16,7 +16,7 @@ open class GlBuffer(
     /**
      * Buffer size in bytes.
      */
-    val size: Int
+    val byteCount: Int
         get() = resultCode {
             bound {
                 GLES30.glGetBufferParameteriv(target, GLES30.GL_BUFFER_SIZE, resultCode)
@@ -27,8 +27,11 @@ open class GlBuffer(
      * Buffer size in floats.
      */
     val floatCount: Int
-        get() = size / 4
+        get() = byteCount / 4
 
+    /**
+     * Maps GL targets to their binding-query constant counterparts.
+     */
     val binding: Int
         get() = when (target) {
             GLES30.GL_ARRAY_BUFFER -> GLES30.GL_ARRAY_BUFFER_BINDING
@@ -49,7 +52,7 @@ open class GlBuffer(
                     data,
                     usage
             )
-            GlException.check("Allocate buffer memory")
+            GlException.check("Allocate memory memory")
         }
     }
 
@@ -64,9 +67,16 @@ open class GlBuffer(
     }
 
     /**
-     * Read the buffer contents out by calling [f] successively for each collection of vectors.
-     * @param vectorsPerInvocation Defines of how  many vectors a single invocation of [f] expect to take.
-     * @param f Takes the current list of vectors, as well as the index of the current invocation.
+     * Read the buffer contents out by calling [f] successively
+     * for each collection of vectors.
+     *
+     * @param vectorsPerInvocation Defines of how  many vectors a single
+     *                             invocation of [f] expect to take.
+     *
+     * @param f Takes the current list of vectors, as well as the index
+     *          of the current invocation.
+     *
+     * @throws RuntimeException If the mapped buffer's size is not a multiple of four floats.
      */
     inline fun read(vectorsPerInvocation: Int, f: (vectors: List<Vector4d>, index: Int) -> Unit) {
         mapped(GLES30.GL_MAP_READ_BIT) { byteBuffer ->
@@ -74,7 +84,7 @@ open class GlBuffer(
             val buffer = byteBuffer.asFloatBuffer()
 
             if (buffer.capacity() % (vectorsPerInvocation * 4) != 0)
-                throw RuntimeException("Read buffer size=${buffer.capacity()} is not a multiple of ${vectorsPerInvocation * 4}")
+                throw RuntimeException("Read memory size=${buffer.capacity()} is not a multiple of ${vectorsPerInvocation * 4}")
 
             val list = MutableList(vectorsPerInvocation) { Vector4d() }
 
@@ -93,14 +103,19 @@ open class GlBuffer(
 
     /**
      * Calls [f] while this buffer is being mapped.
+     * After [f] returns, the buffer is automatically unmapped again.
+     *
      * @param access Access flags for the mapping, like in [GLES30.glMapBufferRange].
-     * @param f Takes the mapped buffer.
+     * @param f Gets the mapped buffer.
+     *
+     * @throws GlException If buffer cannot be mapped, thrown before calling [f].
+     * @throws GlException If buffer cannot be unmapped, thrown after calling [f].
      */
     inline fun mapped(access: Int, f: (byteBuffer: java.nio.ByteBuffer) -> Unit) {
         bound {
 
-            val mappedBuffer = GLES30.glMapBufferRange(target, 0, size, access)
-                    ?: throw GlException("Cannot map buffer")
+            val mappedBuffer = GLES30.glMapBufferRange(target, 0, byteCount, access)
+                    ?: throw GlException("Cannot map memory")
 
             mappedBuffer as ByteBuffer
             mappedBuffer.order(ByteOrder.nativeOrder())
@@ -108,7 +123,7 @@ open class GlBuffer(
             f(mappedBuffer)
 
             GLES30.glUnmapBuffer(target)
-            GlException.check("Cannot un-map buffer")
+            GlException.check("Cannot un-map memory")
         }
     }
 

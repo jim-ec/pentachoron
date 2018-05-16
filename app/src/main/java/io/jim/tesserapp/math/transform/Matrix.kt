@@ -3,7 +3,7 @@ package io.jim.tesserapp.math.transform
 import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.formatNumber
 import io.jim.tesserapp.math.vector.VectorN
-import io.jim.tesserapp.util.InputStreamBuffer
+import io.jim.tesserapp.util.InputStreamMemory
 import java.nio.FloatBuffer
 import kotlin.math.cos
 import kotlin.math.sin
@@ -232,18 +232,26 @@ open class Matrix(
     }
 
     /**
-     * Writes this matrix into a float buffer.
-     * One element in [buffer] is considered as one matrix.
+     * Write this matrix into an [InputStreamMemory].
+     *
+     * One element in [memory] is considered as one matrix.
+     * Each vector within one element is considered as one matrix row.
+     *
+     * @throws RuntimeException If this matrix has not 4 columns, since only they can written
+     *                          in such a memory.
+     *
+     * @throws RuntimeException If the [memory]'s [InputStreamMemory.vectorsPerElement] does not
+     *                          match  with this matrix' row count.
      */
-    fun writeIntoBuffer(buffer: InputStreamBuffer) {
+    fun writeToMemory(memory: InputStreamMemory) {
         if (cols != 4)
-            throw RuntimeException("Due to alignment only Nx4 matrices can be written into buffers")
-        if (rows != buffer.vectorsPerElement)
-            throw MathException("Cannot write $this into buffer, rows must match with vectors per element")
+            throw RuntimeException("Due to alignment only Nx4 matrices can be written into memory")
+        if (rows != memory.vectorsPerElement)
+            throw RuntimeException("Row counts do not match with memory's vectors per element")
 
-        buffer.record {
+        memory.record {
             for (row in 0 until rows) {
-                buffer.write(
+                memory.write(
                         floats[row * cols + 0],
                         floats[row * cols + 1],
                         floats[row * cols + 2],

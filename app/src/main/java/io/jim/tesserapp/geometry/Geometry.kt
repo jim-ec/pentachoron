@@ -11,12 +11,6 @@ import io.jim.tesserapp.util.ListenerList
 
 /**
  * A geometrical structure consisting of vertices.
- *
- * Matrix data is not stored in this class, but instead, each geometry gets memory spaces, providing
- * reserved memory section into a large matrix buffer to store matrix data.
- *
- * This implies that unless the geometry is registered into such a matrix buffer, you cannot
- * transform or even query transformation at all.
  */
 open class Geometry(
 

@@ -6,7 +6,7 @@ import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.math.vector.Vector3dh
 import io.jim.tesserapp.math.vector.Vector4d
 import io.jim.tesserapp.math.vector.VectorN
-import io.jim.tesserapp.util.InputStreamBuffer
+import io.jim.tesserapp.util.InputStreamMemory
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -45,16 +45,16 @@ class MatrixTest {
     }
 
     @Test
-    fun writeIntoBuffer() {
-        val buffer = InputStreamBuffer(10, matrix.rows)
+    fun writeToMemory() {
+        val memory = InputStreamMemory(10, matrix.rows)
 
-        // Write matrix successively into buffer until the 2nd index is written:
-        matrix.writeIntoBuffer(buffer)
-        matrix.writeIntoBuffer(buffer)
-        matrix.writeIntoBuffer(buffer)
+        // Write matrix successively into memory until the 2nd index is written:
+        matrix.writeToMemory(memory)
+        matrix.writeToMemory(memory)
+        matrix.writeToMemory(memory)
 
         matrix.forEachComponent { row, col ->
-            assertEquals(if (row == col) 1f else 0f, buffer[2, row, col], 0.1f)
+            assertEquals(if (row == col) 1f else 0f, memory[2, row, col], 0.1f)
         }
     }
 

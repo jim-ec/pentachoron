@@ -1,13 +1,13 @@
 package io.jim.tesserapp.rendering.engine
 
 import android.opengl.GLES30
-import io.jim.tesserapp.util.InputStreamBuffer
+import io.jim.tesserapp.util.InputStreamMemory
 
 /**
  * Provide a VAO.
  */
 open class GlVertexBuffer(
-        val backingBuffer: InputStreamBuffer,
+        val memory: InputStreamMemory,
         val drawMode: Int
 ) : GlBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_STATIC_DRAW) {
 
@@ -19,7 +19,8 @@ open class GlVertexBuffer(
     /**
      * Invokes [f] while the internal VAO is being bound.
      * Do not bind any other VAO during this call.
-     * @throws RuntimeException
+     *
+     * @throws RuntimeException If another VAO is currently bound to GL.
      */
     fun vertexArrayBound(f: () -> Unit) {
 
@@ -32,26 +33,28 @@ open class GlVertexBuffer(
     }
 
     /**
-     * Upload data from backing buffers.
+     * Upload data from [memory] to GL.
      */
-    fun write() {
+    fun upload() {
         allocate(
-                backingBuffer.writtenVectorCounts,
-                backingBuffer.floatBuffer
+                memory.writtenVectorCounts,
+                memory.floatMemory
         )
     }
 
     /**
      * Draw vertex data with [drawMode].
-     * Counts is determined through [backingBuffer]'s [InputStreamBuffer.writtenElementCounts].
+     * Counts is determined through [memory]'s [InputStreamMemory.writtenElementCounts].
+     *
+     * @throws GlException If drawing failed.
      */
     fun draw() {
         vertexArrayBound {
             GLES30.glDrawArrays(
                     drawMode,
                     0,
-                    backingBuffer.writtenElementCounts)
-            GlException.check("Draw vertex buffer")
+                    memory.writtenElementCounts)
+            GlException.check("Draw vertex memory")
         }
     }
 

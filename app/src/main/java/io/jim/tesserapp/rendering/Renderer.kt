@@ -51,15 +51,14 @@ class Renderer(context: Context, private val dpi: Float) : GLSurfaceView.Rendere
         println("Renderer: ${GLES30.glGetString(GLES30.GL_RENDERER)}")
         println("Vendor: ${GLES30.glGetString(GLES30.GL_VENDOR)}")
 
+        // Construct shader:
         shader = Shader()
+
+        // Construct vertex buffer:
         vertexBuffer = VertexBuffer(
                 shader,
-                sharedRenderData.geometryManager.backingVertexBuffer
+                sharedRenderData.geometryManager.vertexMemory
         )
-
-        shader.bound {
-            shader.uploadProjectionMatrix(projectionMatrix)
-        }
     }
 
     /**
@@ -80,23 +79,30 @@ class Renderer(context: Context, private val dpi: Float) : GLSurfaceView.Rendere
         sharedRenderData.synchronized { (geometryManager) ->
 
             // Ensure vertex data is up-to-date:
-            if (geometryManager.updateVertexBuffer()) {
-                vertexBuffer.write()
-                shader.transformFeedback?.allocate(vertexBuffer.backingBuffer.writtenElementCounts)
+            if (geometryManager.rewriteVertexMemoryFromIfOutdated()) {
+
+                // Vertex memory was rewritten and therefore needs to be re-uploaded to GL:
+                vertexBuffer.upload()
+
+                // Since that can change the vertex buffer's size, reallocate TBO as well:
+                shader.transformFeedback?.allocate(vertexBuffer.memory.writtenElementCounts)
             }
 
             shader.bound {
 
-                // Recompute view matrix:
+                // Recompute and upload view and perspective matrices:
                 shader.uploadViewMatrix(viewMatrix.apply { compute() })
+                shader.uploadProjectionMatrix(projectionMatrix)
 
-                // Upload model matrices:
+                // Recompute model matrices ...
                 geometryManager.computeModelMatrices()
-                shader.uploadModelMatrixBuffer(
-                        geometryManager.modelMatrixBuffer.buffer,
-                        geometryManager.modelMatrixBuffer.activeGeometries)
 
-                // Bind VAO:
+                // ... and upload the to GL:
+                shader.uploadModelMatrices(
+                        geometryManager.modelMatrixList.memory,
+                        geometryManager.modelMatrixList.activeGeometries)
+
+                // Draw the vertex buffer:
                 vertexBuffer.draw()
 
             }
