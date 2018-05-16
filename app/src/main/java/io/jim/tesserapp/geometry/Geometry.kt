@@ -7,7 +7,7 @@ import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.math.vector.Vector4d
 import io.jim.tesserapp.ui.controllers.Rotatable
 import io.jim.tesserapp.ui.controllers.Translatable
-import io.jim.tesserapp.util.ListenerList
+import io.jim.tesserapp.util.Callback
 
 /**
  * A geometrical structure consisting of vertices.
@@ -88,7 +88,7 @@ open class Geometry(
     /**
      * Listeners are fired every time a single point or line is added.
      */
-    val onGeometryChangedListeners = ListenerList()
+    val onGeometryChanged = Callback()
 
     data class LineIndices(val from: Int, val to: Int, var color: Color)
 
@@ -98,7 +98,7 @@ open class Geometry(
      */
     protected fun addPosition(position: Vector3d) {
         positions += position
-        onGeometryChangedListeners.fire()
+        onGeometryChanged()
     }
 
     /**
@@ -106,7 +106,7 @@ open class Geometry(
      */
     protected fun addLine(a: Int, b: Int, color: Color = baseColor) {
         lines += LineIndices(a, b, color)
-        onGeometryChangedListeners.fire()
+        onGeometryChanged()
     }
 
     /**
@@ -116,7 +116,7 @@ open class Geometry(
     @Suppress("unused", "MemberVisibilityCanBePrivate")
     fun colorizeLine(lineIndex: Int, color: Color) {
         lines[lineIndex].color = color
-        onGeometryChangedListeners.fire()
+        onGeometryChanged()
     }
 
     /**
@@ -134,7 +134,7 @@ open class Geometry(
     protected fun clearGeometry() {
         positions.clear()
         lines.clear()
-        onGeometryChangedListeners.fire()
+        onGeometryChanged()
     }
 
     /**

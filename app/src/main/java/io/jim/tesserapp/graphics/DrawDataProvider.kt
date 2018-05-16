@@ -65,7 +65,7 @@ class DrawDataProvider {
             // Geometry has been successfully added.
 
             // Listen to geometrical changes:
-            geometry.onGeometryChangedListeners += vertexMemoryRewriteRequested::set
+            geometry.onGeometryChanged.set(vertexMemoryRewriteRequested::set)
 
             // Since new geometry has been added, vertex memory must be rewritten
             // to include the new vertex data:
@@ -82,7 +82,7 @@ class DrawDataProvider {
             // Geometry has been successfully removed.
 
             // Un-listen the geometry's vertex changes:
-            geometry.onGeometryChangedListeners -= vertexMemoryRewriteRequested::set
+            geometry.onGeometryChanged.unset()
 
             // Since geometry has been removed, vertex memory must be rewritten
             // to exclude the old vertex data:
