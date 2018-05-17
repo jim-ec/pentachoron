@@ -36,17 +36,9 @@ class GeometryTest {
 
     @Test
     fun extruding() {
-        Lines("Test", Color.BLACK).apply {
+        Geometry("Test", Color.BLACK).apply {
             addLine(Vector4dh(1f, 1f, 0f, 0f), Vector4dh(2f, 2f, 0f, 0f))
             extrude(Vector4dh(0f, 0f, 1f, 0f))
-        }
-    }
-
-    @Test
-    fun clearLines() {
-        Lines("Test", Color.BLACK).apply {
-            addLine(Vector4dh(1f, 1f, 0f, 0f), Vector4dh(2f, 2f, 0f, 0f))
-            clearLines()
         }
     }
 

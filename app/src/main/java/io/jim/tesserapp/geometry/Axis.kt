@@ -11,7 +11,7 @@ class Axis(
         xAxisColor: Color,
         yAxisColor: Color,
         zAxisColor: Color
-) : Lines(name) {
+) : Geometry(name) {
 
     init {
         addLine(Vector4dh(0f, 0f, 0f, 0f), Vector4dh(1f, 0f, 0f, 0f), xAxisColor)

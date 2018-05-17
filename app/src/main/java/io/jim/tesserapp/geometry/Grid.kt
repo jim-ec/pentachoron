@@ -10,7 +10,7 @@ import io.jim.tesserapp.math.vector.Vector4dh
 class Grid(
         name: String = "Grid",
         color: Color
-) : Lines(name, color) {
+) : Geometry(name, color) {
 
     init {
         for (i in -5..5) {

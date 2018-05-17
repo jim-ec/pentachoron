@@ -113,11 +113,27 @@ open class Geometry(
     }
 
     /**
-     * Add a lines from point [a] to point [b].
+     * Add a line spanning between two positions.
+     * @param a Index to the start position.
+     * @param b Index to the end position.
+     * @param color Line color, defaults to geometry's [baseColor].
      */
     protected fun addLine(a: Int, b: Int, color: Color = baseColor) {
         lines += LineIndices(a, b, color)
         onGeometryChanged()
+    }
+
+    /**
+     * Add a line from position [a] to position [b].
+     * This actually creates to new positions.
+     * @param a Starting position.
+     * @param b End position.
+     * @param color Line color, defaults to geometry's [baseColor].
+     */
+    fun addLine(a: Vector4dh, b: Vector4dh, color: Color = baseColor) {
+        addPosition(a)
+        addPosition(b)
+        addLine(positions.lastIndex - 1, positions.lastIndex, color)
     }
 
     /**
