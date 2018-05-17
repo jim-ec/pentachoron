@@ -1,14 +1,14 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.math.vector.Vector3d
+import io.jim.tesserapp.math.vector.Vector4dh
 
 /**
  * A quadrilateral geometry, with four sides.
  */
 class Quadrilateral(
         name: String,
-        a: Vector3d, b: Vector3d, c: Vector3d, d: Vector3d,
+        a: Vector4dh, b: Vector4dh, c: Vector4dh, d: Vector4dh,
         baseColor: Color = Color.BLACK
 ) : Geometry(name, baseColor) {
 

@@ -1,7 +1,7 @@
 package io.jim.tesserapp.rendering.engine
 
 import android.opengl.GLES30
-import io.jim.tesserapp.math.vector.Vector4d
+import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.util.BYTE_LENGTH
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -90,7 +90,7 @@ open class GlBuffer(
      *
      * @throws RuntimeException If the mapped buffer's size is not a multiple of four floats.
      */
-    inline fun read(vectorsPerInvocation: Int, f: (vectors: List<Vector4d>, index: Int) -> Unit) {
+    inline fun read(vectorsPerInvocation: Int, f: (vectors: List<Vector4dh>, index: Int) -> Unit) {
         mapped(GLES30.GL_MAP_READ_BIT) { byteBuffer ->
 
             val buffer = byteBuffer.asFloatBuffer()
@@ -98,7 +98,7 @@ open class GlBuffer(
             if (buffer.capacity() % (vectorsPerInvocation * 4) != 0)
                 throw RuntimeException("Read memory size=${buffer.capacity()} is not a multiple of ${vectorsPerInvocation * 4}")
 
-            val list = MutableList(vectorsPerInvocation) { Vector4d() }
+            val list = MutableList(vectorsPerInvocation) { Vector4dh() }
 
             for (i in 0 until buffer.capacity() step (vectorsPerInvocation * 4)) {
                 for (c in 0 until vectorsPerInvocation) {

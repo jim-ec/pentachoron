@@ -3,8 +3,7 @@ package io.jim.tesserapp.geometry
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.common.SmoothTimedValueDelegate
 import io.jim.tesserapp.math.transform.Matrix
-import io.jim.tesserapp.math.vector.Vector3d
-import io.jim.tesserapp.math.vector.Vector4d
+import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.ui.controllers.Rotatable
 import io.jim.tesserapp.ui.controllers.Translatable
 import io.jim.tesserapp.util.Callback
@@ -29,7 +28,7 @@ open class Geometry(
     /**
      * List containing all positions.
      */
-    val positions = ArrayList<Vector3d>()
+    val positions = ArrayList<Vector4dh>()
 
     /**
      * List containing all lines constructed from [positions] using indices.
@@ -40,14 +39,14 @@ open class Geometry(
      * This geometries model matrix.
      * [computeModelMatrix] must be called in order to keep the model matrix up-to-date.
      */
-    val modelMatrix = Matrix(4)
+    val modelMatrix = Matrix(5)
 
-    private val rotationMatrixY = Matrix(4)
-    private val rotationMatrixX = Matrix(4)
-    private val rotationMatrixZ = Matrix(4)
-    private val rotationMatrixZY = Matrix(4)
-    private val rotationMatrix = Matrix(4)
-    private val translationMatrix = Matrix(4)
+    private val rotationMatrixY = Matrix(5)
+    private val rotationMatrixX = Matrix(5)
+    private val rotationMatrixZ = Matrix(5)
+    private val rotationMatrixZY = Matrix(5)
+    private val rotationMatrix = Matrix(5)
+    private val translationMatrix = Matrix(5)
 
     /**
      * Smooth rotation around the x, y and z axis.
@@ -75,20 +74,20 @@ open class Geometry(
      * Rotation. Unlike [smoothRotation] this rotation is not smoothed.
      * Final rotation is component-wise summed up from [rotation] and [smoothRotation].
      */
-    val rotation = Vector4d()
+    val rotation = Vector4dh()
 
     /**
      * Translation. Unlike [smoothTranslation] this translation vector is not smoothed.
      * Final translation is component-wise summed up from [translation] and [smoothTranslation].
      */
-    val translation = Vector4d()
+    val translation = Vector4dh()
 
-    private val translationVector = Vector3d()
+    private val translationVector = Vector4dh()
 
     /**
      * Invoke [f] for each position and the color it's associated with.
      */
-    inline fun forEachVertex(f: (position: Vector3d, color: Color) -> Unit) {
+    inline fun forEachVertex(f: (position: Vector4dh, color: Color) -> Unit) {
         lines.forEach {
             f(positions[it.from], it.color)
             f(positions[it.to], it.color)
@@ -104,7 +103,7 @@ open class Geometry(
      * Add a series of vertices.
      * The actual lines are drawn from indices to these vertices.
      */
-    protected fun addPosition(position: Vector3d) {
+    protected fun addPosition(position: Vector4dh) {
         positions += position
         onGeometryChanged()
     }
@@ -153,14 +152,14 @@ open class Geometry(
      * @param connectorColor Color of the lines connecting the original and generated lines.
      */
     fun extrude(
-            direction: Vector3d,
+            direction: Vector4dh,
             keepColors: Boolean = false,
             connectorColor: Color = baseColor
     ) {
         val size = positions.size
 
         for (i in 0 until size) {
-            positions += Vector3d().apply {
+            positions += Vector4dh().apply {
                 copyFrom(positions[i])
                 this += direction
             }
@@ -206,7 +205,8 @@ open class Geometry(
         translationVector.load(
                 translation.x + smoothTranslation.x,
                 translation.y + smoothTranslation.y,
-                translation.z + smoothTranslation.z
+                translation.z + smoothTranslation.z,
+                translation.q + smoothTranslation.q
         )
         translationMatrix.translation(translationVector)
 

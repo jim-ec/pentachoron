@@ -1,6 +1,5 @@
 package io.jim.tesserapp.math.vector
 
-import io.jim.tesserapp.math.transform.Matrix
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import kotlin.math.sqrt
@@ -9,7 +8,7 @@ class VectorNTest {
 
     @Test
     fun construction() {
-        Vector4d(1f, 2f, 5f, 4f).apply {
+        Vector4dh(1f, 2f, 5f, 4f).apply {
             assertEquals(1f, x, 0.1f)
             assertEquals(2f, y, 0.1f)
             assertEquals(5f, z, 0.1f)
@@ -24,7 +23,7 @@ class VectorNTest {
 
     @Test
     fun load() {
-        Vector4d().apply {
+        Vector4dh().apply {
             load(1f, 2f, 5f, 4f)
 
             assertEquals(1f, x, 0.1f)
@@ -41,8 +40,8 @@ class VectorNTest {
 
     @Test
     fun addition() {
-        val v = Vector4d(1f, 2f, 5f, 0f)
-        val u = Vector4d(3f, 1f, 4f, 1f)
+        val v = Vector4dh(1f, 2f, 5f, 0f)
+        val u = Vector4dh(3f, 1f, 4f, 1f)
 
         v += u
 
@@ -56,8 +55,8 @@ class VectorNTest {
 
     @Test
     fun subtraction() {
-        val v = Vector4d(3f, 1f, 4f, 1f)
-        val u = Vector4d(1f, 2f, 5f, 2f)
+        val v = Vector4dh(3f, 1f, 4f, 1f)
+        val u = Vector4dh(1f, 2f, 5f, 2f)
 
         v -= u
 
@@ -85,7 +84,7 @@ class VectorNTest {
 
     @Test
     fun division() {
-        Vector4d(3f, 1f, 4f, 0f).apply {
+        Vector4dh(3f, 1f, 4f, 0f).apply {
             this /= 2f
 
             assertEquals(1.5f, x, 0.1f)
@@ -97,7 +96,7 @@ class VectorNTest {
 
     @Test
     fun scale() {
-        Vector4d(3f, 1f, 4f, 4f).apply {
+        Vector4dh(3f, 1f, 4f, 4f).apply {
             this *= 2f
 
             assertEquals(6f, x, 0.1f)
@@ -129,26 +128,6 @@ class VectorNTest {
             normalize()
 
             assertEquals(1f, length, 0.1f)
-        }
-    }
-
-    @Test
-    fun multiply() {
-        val vector = Vector4d(2f, 3f, 4f, 5f)
-
-        val matrix = Matrix(4)
-        matrix.forEachComponent { row, col ->
-            matrix[row, col] = (col + 3f) + (row * matrix.cols)
-        }
-
-        val result = Vector4d()
-
-        result.apply {
-            multiplication(vector, matrix)
-            assertEquals(146f, x, 0.1f)
-            assertEquals(160f, y, 0.1f)
-            assertEquals(174f, z, 0.1f)
-            assertEquals(188f, q, 0.1f)
         }
     }
 

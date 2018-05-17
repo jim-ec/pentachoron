@@ -6,7 +6,7 @@ import android.widget.FrameLayout
 import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Quadrilateral
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.math.vector.Vector3d
+import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.ui.controllers.Controllable
 import io.jim.tesserapp.ui.controllers.Rotatable
 import io.jim.tesserapp.ui.controllers.Translatable
@@ -143,15 +143,15 @@ class CubeView : FrameLayout {
      * The featuring cube.
      */
     private val cube = Quadrilateral("Cube",
-            Vector3d(1f, 1f, 1f),
-            Vector3d(-1f, 1f, 1f),
-            Vector3d(-1f, -1f, 1f),
-            Vector3d(1f, -1f, 1f),
+            Vector4dh(1f, 1f, 1f, 0f),
+            Vector4dh(-1f, 1f, 1f, 0f),
+            Vector4dh(-1f, -1f, 1f, 0f),
+            Vector4dh(1f, -1f, 1f, 0f),
             Color(context, R.color.colorAccent)
     ).apply {
         coordinateSystemView.sharedRenderData.synchronized { renderData ->
             renderData.drawDataProvider += this
-            extrude(Vector3d(0f, 0f, -2f))
+            extrude(Vector4dh(0f, 0f, -2f, 0f))
         }
     }
 

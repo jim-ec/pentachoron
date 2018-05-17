@@ -4,7 +4,6 @@ import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.Pi
 import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.math.vector.Vector3dh
-import io.jim.tesserapp.math.vector.Vector4d
 import io.jim.tesserapp.math.vector.VectorN
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -13,8 +12,6 @@ import org.junit.Test
 class MatrixTest {
 
     private val matrix = Matrix(4)
-    private val vector = Vector4d()
-    private val result = Vector4d()
 
     @Test
     fun initialization() {
@@ -58,23 +55,6 @@ class MatrixTest {
         }
     }
 
-    @Test
-    fun multiply() {
-        vector.load(2f, 3f, 4f, 5f)
-
-        matrix.forEachComponent { row, col ->
-            matrix[row, col] = (col + 3f) + (row * matrix.cols)
-        }
-
-        result.apply {
-            multiplication(vector, matrix)
-            assertEquals(146f, x, 0.1f)
-            assertEquals(160f, y, 0.1f)
-            assertEquals(174f, z, 0.1f)
-            assertEquals(188f, q, 0.1f)
-        }
-    }
-
     @Test(expected = MathException::class)
     fun invalidMultiplicationLhs() {
         val invalidLhs = Matrix(1, 5)
@@ -102,55 +82,56 @@ class MatrixTest {
     @Test
     fun translation() {
         matrix.translation(VectorN(2f, 3f, 4f))
-        vector.load(5f, 6f, 7f, 1f)
-        result.multiplication(vector, matrix)
+        val vector = Vector3dh(5f, 6f, 7f)
 
-        result.apply {
+        Vector3dh().apply {
+            multiplication(vector, matrix)
+
             assertEquals(7f, x, 0.1f)
             assertEquals(9f, y, 0.1f)
             assertEquals(11f, z, 0.1f)
-            assertEquals(1f, q, 0.1f)
         }
     }
 
     @Test
     fun rotation() {
         matrix.rotation(1, 2, Pi / 2)
-        vector.load(0f, 3f, 0f, 5f)
-        result.multiplication(vector, matrix)
-        result.apply {
+        val vector = Vector3dh(0f, 3f, 0f)
+
+        Vector3dh().apply {
+            multiplication(vector, matrix)
+
             assertEquals(0f, x, 0.1f)
             assertEquals(0f, y, 0.1f)
             assertEquals(3f, z, 0.1f)
-            assertEquals(5f, q, 0.1f)
         }
     }
 
     @Test
     fun scaleUniformly() {
         matrix.scale(2f)
-        vector.load(5f, 6f, 7f, 1f)
-        result.multiplication(vector, matrix)
+        val vector = Vector3dh(5f, 6f, 7f)
 
-        result.apply {
+        Vector3dh().apply {
+            multiplication(vector, matrix)
+
             assertEquals(10f, x, 0.1f)
             assertEquals(12f, y, 0.1f)
             assertEquals(14f, z, 0.1f)
-            assertEquals(1f, q, 0.1f)
         }
     }
 
     @Test
     fun scaleByIndividualFactors() {
         matrix.scale(VectorN(2f, 3f, 4f))
-        vector.load(5f, 6f, 7f, 1f)
-        result.multiplication(vector, matrix)
+        val vector = Vector3dh(5f, 6f, 7f)
 
-        result.apply {
+        Vector3dh().apply {
+            multiplication(vector, matrix)
+
             assertEquals(10f, x, 0.1f)
             assertEquals(18f, y, 0.1f)
             assertEquals(28f, z, 0.1f)
-            assertEquals(1f, q, 0.1f)
         }
     }
 
@@ -161,28 +142,28 @@ class MatrixTest {
         val homogeneous = Vector3dh()
 
         homogeneous.apply {
-            multiplication(Vector4d(2f, 3f, -10f, 1f), matrix)
+            multiplication(Vector3dh(2f, 3f, -10f), matrix)
             assertEquals(1f, z, 0.1f)
             assertEquals(2f / 10f, x, 0.1f)
             assertEquals(3f / 10f, y, 0.1f)
         }
 
         homogeneous.apply {
-            multiplication(Vector4d(2f, 3f, -5f, 1f), matrix)
+            multiplication(Vector3dh(2f, 3f, -5f), matrix)
             assertEquals(0f, z, 0.1f)
             assertEquals(2f / 5f, x, 0.1f)
             assertEquals(3f / 5f, y, 0.1f)
         }
 
         homogeneous.apply {
-            multiplication(Vector4d(2f, 3f, -7f, 1f), matrix)
+            multiplication(Vector3dh(2f, 3f, -7f), matrix)
             assertTrue(0f < z && z < 1f)
             assertEquals(2f / 7f, x, 0.1f)
             assertEquals(3f / 7f, y, 0.1f)
         }
 
         homogeneous.apply {
-            multiplication(Vector4d(2f, 3f, -2f, 1f), matrix)
+            multiplication(Vector3dh(2f, 3f, -2f), matrix)
             assertTrue(z < 0f)
             assertEquals(2f / 2f, x, 0.1f)
             assertEquals(3f / 2f, y, 0.1f)
@@ -209,8 +190,8 @@ class MatrixTest {
         assertEquals(0f, matrix.toVector(1) * matrix.toVector(2), 0.1f)
         assertEquals(0f, matrix.toVector(0) * matrix.toVector(2), 0.1f)
 
-        result.apply {
-            multiplication(lhs = Vector4d(0f, 0f, 0f, 1f), rhs = matrix)
+        Vector3dh().apply {
+            multiplication(lhs = Vector3dh(0f, 0f, 0f), rhs = matrix)
             assertEquals(0f, x, 0.1f)
             assertEquals(0f, y, 0.1f)
             assertTrue(z < 0f)
@@ -227,12 +208,12 @@ class MatrixTest {
 
         matrix.transpose()
 
-        result.apply {
-            multiplication(lhs = Vector4d(1f, 2f, 3f, 4f), rhs = matrix)
-            assertEquals(90f, x, 0.1f)
-            assertEquals(100f, y, 0.1f)
-            assertEquals(110f, z, 0.1f)
-            assertEquals(120f, q, 0.1f)
+        Vector3dh().apply {
+            multiplication(lhs = Vector3dh(1f, 2f, 3f), rhs = matrix)
+            val w = 72f
+            assertEquals(52f / w, x, 0.1f)
+            assertEquals(58f / w, y, 0.1f)
+            assertEquals(65f / w, z, 0.1f)
         }
     }
 }

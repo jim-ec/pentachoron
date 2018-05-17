@@ -1,7 +1,7 @@
 package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.math.vector.Vector3dh
+import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.rendering.VertexBuffer
 import io.jim.tesserapp.util.InputStreamMemory
 import java.util.*
@@ -13,6 +13,17 @@ import java.util.*
  * This geometry memory is only responsible for raw data, without incorporating with GL at all.
  */
 class DrawDataProvider {
+
+    companion object {
+
+        /**
+         * The volume onto which 4 dimensional vectors are projected.
+         * This value should be well chosen, as no vector should ever have such a q-value,
+         * since that will lead to projection into infinity.
+         */
+        const val Q_PROJECTION_VOLUME = 1f
+
+    }
 
     /**
      * Vertex memory.
@@ -52,14 +63,16 @@ class DrawDataProvider {
 
         vertexMemory.finalize()
 
-        val v = Vector3dh()
-        val result = Vector3dh()
+        val result = Vector4dh()
 
         geometries.forEach { geometry ->
             geometry.forEachVertex { position, (red, green, blue) ->
 
-                v.load(position.x, position.y, position.z)
-                result.multiplication(v, geometry.modelMatrix)
+                // Apply 4-dimensional model matrix to 4d point:
+                result.multiplication(position, geometry.modelMatrix)
+
+                // Project vector down to a 3d volume:
+                result /= result.q + Q_PROJECTION_VOLUME
 
                 vertexMemory.record { memory ->
                     memory.write(result.x, result.y, result.z, 1f)
