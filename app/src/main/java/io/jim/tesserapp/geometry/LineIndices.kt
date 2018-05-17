@@ -13,4 +13,14 @@ data class LineIndices(
         val from: Int,
         val to: Int,
         var color: Color
-)
+) {
+
+    /**
+     * Calls [f] for both the start-position index as well as the end-position index.
+     */
+    inline fun forEachPosition(f: (positionIndex: Int) -> Unit) {
+        f(from)
+        f(to)
+    }
+
+}

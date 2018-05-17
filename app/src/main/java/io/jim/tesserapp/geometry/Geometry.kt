@@ -3,6 +3,7 @@ package io.jim.tesserapp.geometry
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.common.SmoothTimedValueDelegate
 import io.jim.tesserapp.math.transform.Matrix
+import io.jim.tesserapp.math.vector.Vector3dh
 import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.ui.controllers.Rotatable
 import io.jim.tesserapp.ui.controllers.Translatable
@@ -24,6 +25,17 @@ open class Geometry(
         val baseColor: Color = Color.BLACK
 
 ) {
+
+    companion object {
+
+        /**
+         * The volume onto which 4 dimensional vectors are projected.
+         * This value should be well chosen, as no vector should ever have such a q-value,
+         * since that will lead to projection into infinity.
+         */
+        const val Q_PROJECTION_VOLUME = 1f
+
+    }
 
     /**
      * List containing all positions.
@@ -85,19 +97,11 @@ open class Geometry(
     private val translationVector = Vector4dh()
 
     /**
-     * Invoke [f] for each position and the color it's associated with.
-     */
-    inline fun forEachVertex(f: (position: Vector4dh, color: Color) -> Unit) {
-        lines.forEach {
-            f(positions[it.from], it.color)
-            f(positions[it.to], it.color)
-        }
-    }
-
-    /**
      * Listeners are fired every time a single point or line is added.
      */
     val onGeometryChanged = Callback()
+
+    override fun toString() = name
 
     /**
      * Add a series of vertices.
@@ -178,11 +182,7 @@ open class Geometry(
     }
 
     /**
-     * Recomputes all model matrices recursively.
-     *
-     * Since this recursive function computes model matrices for its children after it's done
-     * with its one global matrix, it can safely access its parent's global model matrix,
-     * since that is guaranteed to already be computed.
+     * Recomputes this geometry's transform matrix.
      */
     fun computeModelMatrix() {
 
@@ -218,6 +218,40 @@ open class Geometry(
 
     }
 
-    override fun toString() = name
+    /**
+     * Invoke [f] for each position and the color it's associated with.
+     */
+    inline fun forEachVertex(f: (position: Vector4dh, color: Color) -> Unit) {
+        lines.forEach {
+            f(positions[it.from], it.color)
+            f(positions[it.to], it.color)
+        }
+    }
+
+    /**
+     * Project geometry down to a 3d wireframe.
+     * @param f Called for each wireframe vertex, i.e. its position and color.
+     */
+    inline fun generateProjectedWireframe(f: (position: Vector3dh, color: Color) -> Unit) {
+        computeModelMatrix()
+
+        val position = Vector4dh()
+        val homogeneous = Vector3dh()
+
+        lines.forEach { line ->
+            line.forEachPosition { positionIndex ->
+
+                // Apply 4-dimensional model matrix to 4d point:
+                position.multiplication(positions[positionIndex], modelMatrix)
+
+                // Project vector down to a 3d volume:
+                position /= position.q + Q_PROJECTION_VOLUME
+
+                homogeneous.load(position.x, position.y, position.z)
+
+                f(homogeneous, line.color)
+            }
+        }
+    }
 
 }
