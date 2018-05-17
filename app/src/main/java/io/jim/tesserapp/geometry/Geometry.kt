@@ -45,7 +45,7 @@ open class Geometry(
     /**
      * List containing all lines constructed from [positions] using indices.
      */
-    val lines = ArrayList<LineIndices>()
+    val lines = ArrayList<Line>()
 
     /**
      * This geometries model matrix.
@@ -119,7 +119,7 @@ open class Geometry(
      * @param color Line color, defaults to geometry's [baseColor].
      */
     protected fun addLine(a: Int, b: Int, color: Color = baseColor) {
-        lines += LineIndices(a, b, color)
+        lines += Line(a, b, color)
         onGeometryChanged()
     }
 
@@ -186,7 +186,7 @@ open class Geometry(
         }
 
         lines += lines.map {
-            LineIndices(
+            Line(
                     it.from + size,
                     it.to + size,
                     if (keepColors) it.color else baseColor

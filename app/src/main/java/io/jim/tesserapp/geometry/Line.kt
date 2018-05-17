@@ -9,7 +9,7 @@ import io.jim.tesserapp.graphics.Color
  * @property to Index to position at which the line ends.
  * @property color Line color.
  */
-data class LineIndices(
+data class Line(
         val from: Int,
         val to: Int,
         var color: Color
