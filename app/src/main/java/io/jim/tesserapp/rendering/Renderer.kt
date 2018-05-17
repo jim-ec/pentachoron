@@ -85,7 +85,7 @@ class Renderer(private val context: Context, private val dpi: Float) : GLSurface
         sharedRenderData.synchronized { (geometryManager) ->
 
             // Ensure vertex data is up-to-date:
-            geometryManager.rewriteVertexMemory()
+            geometryManager.updateVertices()
 
             // Vertex memory was rewritten and needs to be uploaded to GL:
             vertexBuffer.upload()
@@ -98,14 +98,6 @@ class Renderer(private val context: Context, private val dpi: Float) : GLSurface
                 // Recompute and upload view and perspective matrices:
                 shader.uploadViewMatrix(viewMatrix.apply { compute() })
                 shader.uploadProjectionMatrix(projectionMatrix)
-
-                // Recompute model matrices ...
-                geometryManager.computeModelMatrices()
-
-                // ... and upload the to GL:
-                shader.uploadModelMatrices(
-                        geometryManager.modelMatrixFloatMemory,
-                        geometryManager.geometryCounts)
 
                 // Draw the vertex buffer:
                 vertexBuffer.draw()

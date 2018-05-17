@@ -26,14 +26,8 @@ class VertexBuffer(
          * Counts of different attributes.
          * - Position
          * - Color
-         * - Model index
          */
-        const val ATTRIBUTE_COUNTS = 3
-
-        /**
-         * Padding floats in front of the model index, to keep 4-float alignment.
-         */
-        const val MODEL_INDEX_PADDING = 3
+        const val ATTRIBUTE_COUNTS = 2
 
         /**
          * Floats taken by one complete vertex.
@@ -63,12 +57,6 @@ class VertexBuffer(
          */
         private val OFFSET_COLOR =
                 OFFSET_POSITION + ATTRIBUTE_FLOATS * Float.BYTE_LENGTH
-
-        /**
-         * Model index attribute offset, in bytes.
-         */
-        private val OFFSET_MODEL_INDEX =
-                OFFSET_COLOR + (ATTRIBUTE_FLOATS + MODEL_INDEX_PADDING) * Float.BYTE_LENGTH
     }
 
     init {
@@ -97,16 +85,6 @@ class VertexBuffer(
                         false,
                         STRIDE,
                         OFFSET_COLOR
-                )
-
-                // Model index attribute:
-                GLES30.glEnableVertexAttribArray(shader.modelIndexAttributeLocation)
-                GLES30.glVertexAttribIPointer(
-                        shader.modelIndexAttributeLocation,
-                        ATTRIBUTE_FLOATS,
-                        GLES30.GL_INT,
-                        STRIDE,
-                        OFFSET_MODEL_INDEX
                 )
             }
         }

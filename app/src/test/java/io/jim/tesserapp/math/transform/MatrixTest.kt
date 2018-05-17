@@ -6,7 +6,6 @@ import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.math.vector.Vector3dh
 import io.jim.tesserapp.math.vector.Vector4d
 import io.jim.tesserapp.math.vector.VectorN
-import io.jim.tesserapp.util.InputStreamMemory
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -42,20 +41,6 @@ class MatrixTest {
     fun setGet() {
         matrix[2, 0] = 4f
         assertEquals(4f, matrix[2, 0], 0.1f)
-    }
-
-    @Test
-    fun writeToMemory() {
-        val memory = InputStreamMemory(10, matrix.rows)
-
-        // Write matrix successively into memory until the 2nd index is written:
-        matrix.writeToMemory(memory)
-        matrix.writeToMemory(memory)
-        matrix.writeToMemory(memory)
-
-        matrix.forEachComponent { row, col ->
-            assertEquals(if (row == col) 1f else 0f, memory[2, row, col], 0.1f)
-        }
     }
 
     @Test
