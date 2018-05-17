@@ -1,6 +1,7 @@
 package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.math.vector.Vector3dh
 import io.jim.tesserapp.rendering.VertexBuffer
 import io.jim.tesserapp.util.InputStreamMemory
 import java.util.*
@@ -51,12 +52,20 @@ class DrawDataProvider {
 
         vertexMemory.finalize()
 
+        val v = Vector3dh()
+        val result = Vector3dh()
+
         geometries.forEach { geometry ->
             geometry.forEachVertex { position, (red, green, blue) ->
+
+                v.load(position.x, position.y, position.z)
+                result.multiplication(v, geometry.modelMatrix)
+
                 vertexMemory.record { memory ->
-                    memory.write(position.x, position.y, position.z, 1f)
+                    memory.write(result.x, result.y, result.z, 1f)
                     memory.write(red, green, blue, 1f)
                 }
+
             }
         }
     }
