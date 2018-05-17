@@ -85,14 +85,13 @@ class Renderer(private val context: Context, private val dpi: Float) : GLSurface
         sharedRenderData.synchronized { (geometryManager) ->
 
             // Ensure vertex data is up-to-date:
-            if (geometryManager.rewriteVertexMemoryFromIfOutdated()) {
+            geometryManager.rewriteVertexMemory()
 
-                // Vertex memory was rewritten and therefore needs to be re-uploaded to GL:
-                vertexBuffer.upload()
+            // Vertex memory was rewritten and needs to be uploaded to GL:
+            vertexBuffer.upload()
 
-                // Since that can change the vertex buffer's size, reallocate TBO as well:
-                shader.transformFeedback?.allocate(vertexBuffer.memory.writtenElementCounts)
-            }
+            // Since that can change the vertex buffer's size, reallocate TBO as well:
+            shader.transformFeedback?.allocate(vertexBuffer.memory.writtenElementCounts)
 
             shader.bound {
 

@@ -2,7 +2,6 @@ package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.rendering.VertexBuffer
-import io.jim.tesserapp.util.Flag
 import io.jim.tesserapp.util.InputStreamMemory
 import io.jim.tesserapp.util.IntFloatReinterpreter
 import java.nio.FloatBuffer
@@ -45,12 +44,6 @@ class DrawDataProvider {
     private val geometries = ArrayList<Geometry>()
 
     /**
-     * Set when vertex memory must be rewritten due to geometry registrations, unregistrations
-     * or geometrical change.
-     */
-    private val vertexMemoryRewriteRequested = Flag(false)
-
-    /**
      * Used to morph integers to floats, so that integer values can be used although an
      * [InputStreamMemory] uses floats.
      */
@@ -61,16 +54,7 @@ class DrawDataProvider {
      * Does nothing if [geometry] has already been added.
      */
     operator fun plusAssign(geometry: Geometry) {
-        if (geometries.add(geometry)) {
-            // Geometry has been successfully added.
-
-            // Listen to geometrical changes:
-            geometry.onGeometryChanged.set(vertexMemoryRewriteRequested::set)
-
-            // Since new geometry has been added, vertex memory must be rewritten
-            // to include the new vertex data:
-            vertexMemoryRewriteRequested.set()
-        }
+        geometries.add(geometry)
     }
 
     /**
@@ -78,29 +62,13 @@ class DrawDataProvider {
      * Does nothing if [geometry] has not been added to this provider.
      */
     operator fun minusAssign(geometry: Geometry) {
-        if (geometries.remove(geometry)) {
-            // Geometry has been successfully removed.
-
-            // Un-listen the geometry's vertex changes:
-            geometry.onGeometryChanged.unset()
-
-            // Since geometry has been removed, vertex memory must be rewritten
-            // to exclude the old vertex data:
-            vertexMemoryRewriteRequested.set()
-        }
+        geometries.remove(geometry)
     }
 
     /**
-     * Rewrite the vertex memory if any vertex data changed.
-     *
-     * @return True if vertex memory was really rewritten.
+     * Rewrite the vertex memory.
      */
-    fun rewriteVertexMemoryFromIfOutdated(): Boolean {
-
-        if (!vertexMemoryRewriteRequested) {
-            // No update was requested, so memory rewrite is not necessary:
-            return false
-        }
+    fun rewriteVertexMemory() {
 
         // Rewrite vertex memory:
         vertexMemory.finalize()
@@ -113,10 +81,6 @@ class DrawDataProvider {
                 }
             }
         }
-
-        vertexMemoryRewriteRequested.unset()
-
-        return true
     }
 
     /**
