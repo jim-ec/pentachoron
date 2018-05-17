@@ -10,7 +10,7 @@ package io.jim.tesserapp.util
  * [allocationGranularity] elements.
  *
  * To rewrite data, i.e. starting from the very beginning and *discarding* previous memory contents,
- * you have to *finalize* the memory, using [finalize].
+ * you have to *rewind* the memory, using [rewind].
  *
  * Contents are kept in elements, equally sized memory sections.
  * Each element consists of 4-float vectors, whose exact counts is defined at construction time
@@ -54,12 +54,16 @@ class InputStreamMemory(
         get() = floatMemory.capacity() / floatsPerElement
 
     /**
-     * The count of elements written into memory since the last call to [finalize] or
+     * The count of elements written into memory since the last call to [rewind] or
      * construction time.
      */
     val writtenElementCounts: Int
         get() = writtenVectorCounts / vectorsPerElement
 
+    /**
+     * Count of written vectors.
+     * This number is reset by a call to [rewind].
+     */
     var writtenVectorCounts = 0
         private set
 
@@ -123,7 +127,7 @@ class InputStreamMemory(
      * this operation does not delete or invalid any memory, i.e. you can use stored data as is,
      * unless you write new data into the memory.
      */
-    fun finalize() {
+    fun rewind() {
         writtenVectorCounts = 0
     }
 

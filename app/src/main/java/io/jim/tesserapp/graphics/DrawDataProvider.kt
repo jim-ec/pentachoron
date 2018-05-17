@@ -61,7 +61,7 @@ class DrawDataProvider {
             geometry.computeModelMatrix()
         }
 
-        vertexMemory.finalize()
+        vertexMemory.rewind()
 
         val result = Vector4dh()
 
