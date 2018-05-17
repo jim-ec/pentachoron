@@ -48,7 +48,11 @@ class GeometryTest {
         val b = Vector4dh(1f, 0f, 0f, 0f)
         val c = Vector4dh(1f, 1f, 0f, 0f)
         val d = Vector4dh(0f, 1f, 0f, 0f)
-        Quadrilateral("Test", a, b, c, d, Color.BLACK).apply {
+
+        Geometry("Test").apply {
+
+            addQuadrilateral(a, b, c, d)
+
             var invocationCount = 0
 
             forEachVertex { position, (red, green, blue) ->

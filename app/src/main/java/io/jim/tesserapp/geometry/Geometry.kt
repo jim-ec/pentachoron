@@ -137,10 +137,35 @@ open class Geometry(
     }
 
     /**
+     * Add a quadrilateral with four corner and an optional color.
+     * @param a First corner.
+     * @param b Second corner.
+     * @param c Third corner.
+     * @param d Fourth corner.
+     * @param color Color of added lines. Defaults to [baseColor].
+     */
+    fun addQuadrilateral(
+            a: Vector4dh,
+            b: Vector4dh,
+            c: Vector4dh,
+            d: Vector4dh,
+            color: Color = baseColor
+    ) {
+        addPosition(a)
+        addPosition(b)
+        addPosition(c)
+        addPosition(d)
+        addLine(0, 1, color)
+        addLine(1, 2, color)
+        addLine(2, 3, color)
+        addLine(3, 0, color)
+    }
+
+    /**
      * Colorize the [lineIndex]th line to [color].
      * @throws IndexOutOfBoundsException If index is out of bounds.
      */
-    @Suppress("unused", "MemberVisibilityCanBePrivate")
+    @Suppress("MemberVisibilityCanBePrivate")
     fun colorizeLine(lineIndex: Int, color: Color) {
         lines[lineIndex].color = color
         onGeometryChanged()
@@ -153,15 +178,6 @@ open class Geometry(
     @Suppress("unused")
     fun decolorizeLine(lineIndex: Int) {
         colorizeLine(lineIndex, baseColor)
-    }
-
-    /**
-     * Remove all geometry data.
-     */
-    protected fun clearGeometry() {
-        positions.clear()
-        lines.clear()
-        onGeometryChanged()
     }
 
     /**

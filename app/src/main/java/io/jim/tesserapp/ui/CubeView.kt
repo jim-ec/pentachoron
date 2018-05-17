@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import io.jim.tesserapp.R
-import io.jim.tesserapp.geometry.Quadrilateral
+import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.ui.controllers.Controllable
@@ -142,17 +142,17 @@ class CubeView : FrameLayout {
     /**
      * The featuring cube.
      */
-    private val cube = Quadrilateral("Cube",
-            Vector4dh(1f, 1f, 1f, 0f),
-            Vector4dh(-1f, 1f, 1f, 0f),
-            Vector4dh(-1f, -1f, 1f, 0f),
-            Vector4dh(1f, -1f, 1f, 0f),
-            Color(context, R.color.colorAccent)
-    ).apply {
-        coordinateSystemView.sharedRenderData.synchronized { renderData ->
-            renderData.drawDataProvider += this
-            extrude(Vector4dh(0f, 0f, -2f, 0f))
-        }
+    private val cube = Geometry("Cube", Color(context, R.color.colorAccent)).apply {
+        addQuadrilateral(
+                Vector4dh(1f, 1f, 1f, 0f),
+                Vector4dh(-1f, 1f, 1f, 0f),
+                Vector4dh(-1f, -1f, 1f, 0f),
+                Vector4dh(1f, -1f, 1f, 0f)
+        )
+
+        extrude(Vector4dh(0f, 0f, -2f, 0f))
+
+        coordinateSystemView.sharedRenderData.drawDataProvider += this
     }
 
     init {
