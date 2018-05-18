@@ -1,6 +1,6 @@
 package io.jim.tesserapp.graphics
 
-import io.jim.tesserapp.math.common.SmoothTimedValueDelegate
+import io.jim.tesserapp.math.common.Smoothed
 
 /**
  * Encapsulate camera parameters.
@@ -15,27 +15,27 @@ class Camera {
     /**
      * Distance of camera position from center.
      */
-    var distance by SmoothTimedValueDelegate<Camera>(
+    var distance by Smoothed<Camera>(
             startValue = 0f,
-            transitionTimeInterval = 300L
+            transitionInterval = 300L
     )
 
     /**
      * Rotation on the horizontal orbit.
      * This is the base rotation.
      */
-    var horizontalRotation by SmoothTimedValueDelegate<Camera>(
+    var horizontalRotation by Smoothed<Camera>(
             startValue = 0f,
-            transitionTimeInterval = 80L
+            transitionInterval = 80L
     )
 
     /**
      * Rotation on the vertical orbit.
      * This is the secondary rotation.
      */
-    var verticalRotation by SmoothTimedValueDelegate<Camera>(
+    var verticalRotation by Smoothed<Camera>(
             startValue = 0f,
-            transitionTimeInterval = 80L
+            transitionInterval = 80L
     )
 
 }

@@ -4,28 +4,26 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 /**
- * Provides a value that, if changed, transitions smoothly over a generic axis.
- * [SmoothTimedValueDelegate] implements time as that axis.
+ * Provides a value that, if changed, transitions smoothly over x-axis defined as time.
  *
  * @param startValue The start the property should has.
- * @param transitionIntervalX The x-range it should take to fulfil one transition interval.
+ * @param transitionInterval The time it should take to fulfil one transition interval.
  */
-abstract class SmoothValueDelegate<R>(
+open class Smoothed<R>(
         startValue: Float,
-        private val transitionIntervalX: Long
+        private val transitionInterval: Long
 ) : ReadWriteProperty<R, Float> {
 
     /**
-     * Override this property to provide a axis start position.
-     * This can be e.g. the time point at which a smooth timed property was constructed.
+     * The axis start is defined as the construction time.
      */
-    protected abstract val x0: Long
+    open val x0 = System.currentTimeMillis()
 
     /**
-     * The current axis progression. This would e.g. depend on the time passed for a smooth timed
-     * property.
+     * Axis progression is defined by the time passed since construction time.
      */
-    protected abstract val x: Long
+    open val x: Long
+        get() = System.currentTimeMillis() - x0
 
     /**
      * The underlying curve used to model transitions.
@@ -48,7 +46,7 @@ abstract class SmoothValueDelegate<R>(
      * last transition interval has ended like it is done after the very first transition finished.
      */
     private val transitioning: Boolean
-        get() = x - lastTransitionStartX < transitionIntervalX
+        get() = x - lastTransitionStartX < transitionInterval
 
     /**
      * The current value.
@@ -63,14 +61,19 @@ abstract class SmoothValueDelegate<R>(
             curve(x.toFloat())
         }
         else {
-            curve((lastTransitionStartX + transitionIntervalX).toFloat())
+            curve((lastTransitionStartX + transitionInterval).toFloat())
         }
 
+    /**
+     * Trigger a new transition interval.
+     * If this value is currently transitioning, the new transition will keep the current
+     * value change-rate, i.e. it will not restart from zero.
+     */
     override fun setValue(thisRef: R, property: KProperty<*>, value: Float) {
         if (transitioning) {
             curve.reSpan(
                     sourceX = x.toFloat(),
-                    targetX = (x + transitionIntervalX).toFloat(),
+                    targetX = (x + transitionInterval).toFloat(),
                     targetY = value,
                     keepSourceGradient = true
             )
@@ -79,7 +82,7 @@ abstract class SmoothValueDelegate<R>(
             curve.span(
                     sourceX = x.toFloat(),
                     sourceY = currentValue,
-                    targetX = (x + transitionIntervalX).toFloat(),
+                    targetX = (x + transitionInterval).toFloat(),
                     targetY = value,
                     sourceGradient = 0f
             )
@@ -89,6 +92,10 @@ abstract class SmoothValueDelegate<R>(
         lastTransitionStartX = x
     }
 
-    override fun getValue(thisRef: R, property: KProperty<*>) = currentValue
+    /**
+     * Get the current value.
+     */
+    override fun getValue(thisRef: R, property: KProperty<*>) =
+            currentValue
 
 }

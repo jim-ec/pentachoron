@@ -6,7 +6,7 @@ import org.junit.Test
 class SmoothTimedValueDelegateTest {
 
     /**
-     * Usually, a smooth value would use the [io.jim.tesserapp.math.common.SmoothTimedValueDelegate]
+     * Usually, a smooth value would use the [io.jim.tesserapp.math.common.Smoothed]
      * class, in order to bind the transition to time.
      * But this test must be more exact and in addition, using that class would require
      * us to use [Thread.sleep] in order to *wait* for the proper value.
@@ -15,9 +15,9 @@ class SmoothTimedValueDelegateTest {
      * progression based on a counter, which is not related to time at all but to a simple
      * integer counter. Therefore, curve steps are exact and do not depend on time to pass.
      */
-    private inner class SmoothValueProvider<R>(
+    private inner class NonTimedSmoothed<R>(
             startValue: Float
-    ) : SmoothValueDelegate<R>(startValue, INTERVAL) {
+    ) : Smoothed<R>(startValue, INTERVAL) {
 
         override val x0 = 0L
 
@@ -35,7 +35,7 @@ class SmoothTimedValueDelegateTest {
         private const val STEP_INTERVAL = 250L
     }
 
-    private var value by SmoothValueProvider<SmoothTimedValueDelegateTest>(2f)
+    private var value by NonTimedSmoothed<SmoothTimedValueDelegateTest>(2f)
 
     @Test
     fun initialValueIsStartValue() {

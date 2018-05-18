@@ -1,7 +1,7 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.math.common.SmoothTimedValueDelegate
+import io.jim.tesserapp.math.common.Smoothed
 import io.jim.tesserapp.math.transform.Matrix
 import io.jim.tesserapp.math.vector.Vector3dh
 import io.jim.tesserapp.math.vector.Vector4dh
@@ -65,10 +65,10 @@ open class Geometry(
      * Final rotation is component-wise summed up from [rotation] and [smoothRotation].
      */
     val smoothRotation = object : Rotatable {
-        override var x by SmoothTimedValueDelegate<Rotatable>(0f, 200L)
-        override var y by SmoothTimedValueDelegate<Rotatable>(0f, 200L)
-        override var z by SmoothTimedValueDelegate<Rotatable>(0f, 200L)
-        override var q by SmoothTimedValueDelegate<Rotatable>(0f, 200L)
+        override var x by Smoothed<Rotatable>(0f, 200L)
+        override var y by Smoothed<Rotatable>(0f, 200L)
+        override var z by Smoothed<Rotatable>(0f, 200L)
+        override var q by Smoothed<Rotatable>(0f, 200L)
     }
 
     /**
@@ -76,10 +76,10 @@ open class Geometry(
      * Final translation is component-wise summed up from [translation] and [smoothTranslation].
      */
     val smoothTranslation = object : Translatable {
-        override var x by SmoothTimedValueDelegate<Translatable>(0f, 200L)
-        override var y by SmoothTimedValueDelegate<Translatable>(0f, 200L)
-        override var z by SmoothTimedValueDelegate<Translatable>(0f, 200L)
-        override var q by SmoothTimedValueDelegate<Translatable>(0f, 200L)
+        override var x by Smoothed<Translatable>(0f, 200L)
+        override var y by Smoothed<Translatable>(0f, 200L)
+        override var z by Smoothed<Translatable>(0f, 200L)
+        override var q by Smoothed<Translatable>(0f, 200L)
     }
 
     /**
