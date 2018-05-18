@@ -82,10 +82,10 @@ class Renderer(private val context: Context, private val dpi: Float) : GLSurface
 
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT or GLES30.GL_DEPTH_BUFFER_BIT)
 
-        sharedRenderData.synchronized { (geometryManager) ->
+        sharedRenderData.synchronized { (drawDataProvider) ->
 
             // Ensure vertex data is up-to-date:
-            geometryManager.updateVertices()
+            drawDataProvider.updateVertices()
 
             // Vertex memory was rewritten and needs to be uploaded to GL:
             vertexBuffer.upload()
