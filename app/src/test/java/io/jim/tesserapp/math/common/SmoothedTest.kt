@@ -3,7 +3,7 @@ package io.jim.tesserapp.math.common
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class SmoothTimedValueDelegateTest {
+class SmoothedTest {
 
     /**
      * Usually, a smooth value would use the [io.jim.tesserapp.math.common.Smoothed]
@@ -19,9 +19,9 @@ class SmoothTimedValueDelegateTest {
             startValue: Double
     ) : Smoothed<R>(startValue, INTERVAL) {
 
-        override val x0 = 0L
+        override val x0 = 0.0
 
-        override val x: Long
+        override val x: Double
             get() {
                 return smoothValueStep * STEP_INTERVAL
             }
@@ -31,11 +31,11 @@ class SmoothTimedValueDelegateTest {
     private var smoothValueStep = 0L
 
     private companion object {
-        private const val INTERVAL = 1000L
-        private const val STEP_INTERVAL = 250L
+        private const val INTERVAL = 1000.0
+        private const val STEP_INTERVAL = 250.0
     }
 
-    private var value by NonTimedSmoothed<SmoothTimedValueDelegateTest>(2.0)
+    private var value by NonTimedSmoothed<SmoothedTest>(2.0)
 
     @Test
     fun initialValueIsStartValue() {
