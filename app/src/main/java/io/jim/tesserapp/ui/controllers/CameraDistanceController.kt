@@ -11,19 +11,19 @@ class CameraDistanceController(
         private val renderData: SharedRenderData,
         context: Context,
         seeker: SeekBar,
-        valueLabel: TextView,
-        min: Double = 3.0,
-        max: Double = 15.0
+        valueLabel: TextView
 ) : Controller(
-        seeker,
-        valueLabel,
-        min, max, GraphicsView.DEFAULT_CAMERA_DISTANCE,
-        context.getString(R.string.transform_translation_value)
+        seeker = seeker,
+        valueLabel = valueLabel,
+        min = 3.0,
+        max = 15.0,
+        startValue = GraphicsView.DEFAULT_CAMERA_DISTANCE,
+        formatString = context.getString(R.string.transform_translation_value)
 ) {
 
-    override fun set(value: Double) {
+    override fun update(value: Double) {
         renderData.synchronized {
-            renderData.camera.distance = currentSeekerValue
+            renderData.camera.distance = value
         }
     }
 

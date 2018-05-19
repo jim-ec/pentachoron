@@ -11,15 +11,15 @@ class RotationController(
         valueLabel: TextView,
         private val setRotation: (rotation: Double) -> Unit
 ) : Controller(
-        seeker,
-        valueLabel,
-        0.0,
-        2.0,
-        0.0,
-        context.getString(R.string.transform_rotation_value_radians)
+        seeker = seeker,
+        valueLabel = valueLabel,
+        min = 0.0,
+        max = 2.0,
+        startValue = 0.0,
+        formatString = context.getString(R.string.transform_rotation_value_radians)
 ) {
 
-    override fun set(value: Double) {
+    override fun update(value: Double) {
         setRotation(value * Math.PI)
     }
 

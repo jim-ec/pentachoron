@@ -41,6 +41,22 @@ class GraphicsView : GLSurfaceView {
         const val DEFAULT_CAMERA_VERTICAL_ROTATION = Math.PI / 3.0
     }
 
+    /**
+     * Enable or disable grid rendering.
+     */
+    var renderGrid = true
+        set(value) {
+            sharedRenderData.synchronized { (drawDataProvider) ->
+                if (value) {
+                    drawDataProvider += grid
+                }
+                else {
+                    drawDataProvider -= grid
+                }
+            }
+            field = value
+        }
+
     init {
 
         // Setup renderer:
@@ -55,9 +71,6 @@ class GraphicsView : GLSurfaceView {
                 yAxisColor = Color(context, R.color.colorAxisY),
                 zAxisColor = Color(context, R.color.colorAxisZ)
         )
-
-        // Create grid:
-        enableGrid(true)
 
         // Default camera rotation:
         moveToDefaultCameraPosition()
@@ -111,20 +124,6 @@ class GraphicsView : GLSurfaceView {
         super.performClick()
         moveToDefaultCameraPosition()
         return true
-    }
-
-    /**
-     * Enable or disable grid rendering.
-     */
-    fun enableGrid(enable: Boolean) {
-        renderer.sharedRenderData.synchronized { renderData ->
-            if (enable) {
-                renderData.drawDataProvider += grid
-            }
-            else {
-                renderData.drawDataProvider -= grid
-            }
-        }
     }
 
 }

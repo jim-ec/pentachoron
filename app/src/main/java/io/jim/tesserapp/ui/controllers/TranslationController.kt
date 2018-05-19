@@ -14,15 +14,15 @@ class TranslationController(
         startValue: Double = 0.0,
         private val setTranslation: (translation: Double) -> Unit
 ) : Controller(
-        seeker,
-        valueLabel,
-        min,
-        max,
-        startValue,
-        context.getString(R.string.transform_translation_value)
+        seeker = seeker,
+        valueLabel = valueLabel,
+        min = min,
+        max = max,
+        startValue = startValue,
+        formatString = context.getString(R.string.transform_translation_value)
 ) {
 
-    override fun set(value: Double) {
+    override fun update(value: Double) {
         setTranslation(value)
     }
 

@@ -12,23 +12,15 @@ abstract class Controller(
         private val valueLabel: TextView,
         private val min: Double,
         private val max: Double,
-        startValue: Double = min,
+        startValue: Double,
         private val formatString: String
 ) {
-
-    protected abstract fun set(value: Double)
 
     /**
      * Maps the seeker progress onto the [min]-[max] range.
      */
-    protected var currentSeekerValue = 0.0
+    private var value = 0.0
         get() = seeker.progress.toFloat() / seeker.max * (max - min) + min
-
-    /**
-     * The current value formatted into a string.
-     */
-    private fun valueLabelText(value: Double) =
-            String.format(formatString, formatNumber(value))
 
     init {
         if (max < min)
@@ -40,19 +32,31 @@ abstract class Controller(
 
         seeker.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                reevaluate()
+                // When a new value is received from the seek-bar, update both the text-view
+                // as well as the internal value-receiver, which is implemented in the subclass:
+                updateValueTextLabel()
+                update(value)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
+
+        // Initially format the value label, using the start value:
+        updateValueTextLabel()
     }
 
-    fun reevaluate() {
-        currentSeekerValue.also {
-            valueLabel.text = valueLabelText(it)
-            set(it)
-        }
+    /**
+     * Pipe the current value of the seek-bar to the actual value this controller targets.
+     * @param value Current seek-bar value, mapped to range between [min] and [max].
+     */
+    protected abstract fun update(value: Double)
+
+    /**
+     * Update text of value-label according to the current seek-bar value.
+     */
+    private fun updateValueTextLabel() {
+        valueLabel.text = String.format(formatString, formatNumber(value))
     }
 
 }
