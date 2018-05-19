@@ -4,16 +4,18 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 
-class CoordinateSystemView : FrameLayout {
+/**
+ * A view providing a graphics view instance.
+ */
+abstract class GraphicsProviderView : FrameLayout {
 
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-    val graphicsView = GraphicsView(context)
-
-    init {
-
-    }
+    /**
+     * The [GraphicsView] hold by this provider.
+     */
+    abstract val graphicsView: GraphicsView
 
 }

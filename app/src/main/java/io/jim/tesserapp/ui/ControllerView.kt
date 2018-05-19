@@ -13,10 +13,18 @@ import io.jim.tesserapp.ui.controllers.TranslationController
 
 
 /**
- * This view contains controls related to the coordinate system and its geometry.
- * But it does not host the coordinate system view instance itself.
+ * This view contains controls related to a graphics view or a controlled geometry.
+ * But it does not host the graphics view instance itself.
+ *
+ * Before the seek bar can actually send data, you must call [control] **once**.
+ * By wrapping the [ControllerView] and [GraphicsView] into a [ControlledGraphicsContainerView],
+ * this is done automatically.
  */
-class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
+class ControllerView : FrameLayout {
+
+    constructor(context: Context) : super(context)
+
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     init {
         View.inflate(context, R.layout.view_controller, this)
@@ -37,86 +45,87 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
             graphicsView.renderGrid = isChecked
         }
 
-        val controlledGeometry = graphicsView.sharedRenderData.controlledGeometry
+        with(graphicsView.sharedRenderData.controlledGeometry) {
 
-        // X-Rotation:
-        RotationController(
-                context,
-                findViewById(R.id.seekerRotationX),
-                findViewById(R.id.valueRotationX)
-        ) { rotation ->
-            controlledGeometry.smoothRotation.x = rotation
+            // X-Rotation:
+            RotationController(
+                    context,
+                    findViewById(R.id.seekerRotationX),
+                    findViewById(R.id.valueRotationX)
+            ) { rotation ->
+                smoothRotation.x = rotation
+            }
+
+            // Y-Rotation:
+            RotationController(
+                    context,
+                    findViewById(R.id.seekerRotationY),
+                    findViewById(R.id.valueRotationY)
+            ) { rotation ->
+                smoothRotation.y = rotation
+            }
+
+            // Z-Rotation:
+            RotationController(
+                    context,
+                    findViewById(R.id.seekerRotationZ),
+                    findViewById(R.id.valueRotationZ)
+            ) { rotation ->
+                smoothRotation.z = rotation
+            }
+
+            // Q-Rotation:
+            RotationController(
+                    context,
+                    findViewById(R.id.seekerRotationQ),
+                    findViewById(R.id.valueRotationQ)
+            ) { rotation ->
+                smoothRotation.q = rotation
+            }
+
+            // X-Translation:
+            TranslationController(
+                    context,
+                    findViewById(R.id.seekerTranslationX),
+                    findViewById(R.id.valueTranslationX)
+            ) { translation ->
+                smoothTranslation.x = translation
+            }
+
+            // Y-Translation:
+            TranslationController(
+                    context,
+                    findViewById(R.id.seekerTranslationY),
+                    findViewById(R.id.valueTranslationY)
+            ) { translation ->
+                smoothTranslation.y = translation
+            }
+
+            // Z-Translation:
+            TranslationController(
+                    context,
+                    findViewById(R.id.seekerTranslationZ),
+                    findViewById(R.id.valueTranslationZ)
+            ) { translation ->
+                smoothTranslation.z = translation
+            }
+
+            // W-Translation:
+            TranslationController(
+                    context,
+                    findViewById(R.id.seekerTranslationQ),
+                    findViewById(R.id.valueTranslationQ)
+            ) { translation ->
+                smoothTranslation.q = translation
+            }
+
+            CameraDistanceController(
+                    graphicsView.sharedRenderData,
+                    context,
+                    findViewById(R.id.seekerCameraDistance),
+                    findViewById(R.id.valueCameraDistance)
+            )
         }
-
-        // Y-Rotation:
-        RotationController(
-                context,
-                findViewById(R.id.seekerRotationY),
-                findViewById(R.id.valueRotationY)
-        ) { rotation ->
-            controlledGeometry.smoothRotation.y = rotation
-        }
-
-        // Z-Rotation:
-        RotationController(
-                context,
-                findViewById(R.id.seekerRotationZ),
-                findViewById(R.id.valueRotationZ)
-        ) { rotation ->
-            controlledGeometry.smoothRotation.z = rotation
-        }
-
-        // Q-Rotation:
-        RotationController(
-                context,
-                findViewById(R.id.seekerRotationQ),
-                findViewById(R.id.valueRotationQ)
-        ) { rotation ->
-            controlledGeometry.smoothRotation.q = rotation
-        }
-
-        // X-Translation:
-        TranslationController(
-                context,
-                findViewById(R.id.seekerTranslationX),
-                findViewById(R.id.valueTranslationX)
-        ) { translation ->
-            controlledGeometry.smoothTranslation.x = translation
-        }
-
-        // Y-Translation:
-        TranslationController(
-                context,
-                findViewById(R.id.seekerTranslationY),
-                findViewById(R.id.valueTranslationY)
-        ) { translation ->
-            controlledGeometry.smoothTranslation.y = translation
-        }
-
-        // Z-Translation:
-        TranslationController(
-                context,
-                findViewById(R.id.seekerTranslationZ),
-                findViewById(R.id.valueTranslationZ)
-        ) { translation ->
-            controlledGeometry.smoothTranslation.z = translation
-        }
-
-        // W-Translation:
-        TranslationController(
-                context,
-                findViewById(R.id.seekerTranslationQ),
-                findViewById(R.id.valueTranslationQ)
-        ) { translation ->
-            controlledGeometry.smoothTranslation.q = translation
-        }
-
-        CameraDistanceController(
-                graphicsView.sharedRenderData,
-                context,
-                findViewById(R.id.seekerCameraDistance),
-                findViewById(R.id.valueCameraDistance)
-        )
 
     }
 

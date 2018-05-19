@@ -6,4 +6,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <declare-styleable name="ControlledGraphicsContainerView">
+        <attr name="graphicsViewProvider" format="reference" />
+        <attr name="controller" format="reference" />
+    </declare-styleable>
+
 </resources>
