@@ -23,11 +23,6 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
     init {
         View.inflate(context, R.layout.view_controller, this)
 
-        // Pass render options:
-        findViewById<Switch>(R.id.renderOptionGrid).setOnCheckedChangeListener { _, isChecked ->
-            controlTarget.renderGrid = isChecked
-        }
-
         // Disable 4th dimensional seeker as that is a feature not implemented yet:
         findViewById<SeekBar>(R.id.seekerRotationQ).isEnabled = false
         findViewById<SeekBar>(R.id.seekerTranslationQ).isEnabled = false
@@ -38,6 +33,11 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
      */
     fun control(renderData: SharedRenderData, controllable: Controllable) {
         controlTarget = controllable
+
+        // Pass render options:
+        findViewById<Switch>(R.id.renderOptionGrid).setOnCheckedChangeListener { _, isChecked ->
+            controlTarget.renderGrid = isChecked
+        }
 
         controllers = listOf(
 
@@ -56,7 +56,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerRotationY),
                         findViewById(R.id.valueRotationY)
                 ) { rotation ->
-                    controlTarget.rotation.y = rotation
+                    renderData.controlledGeometry.smoothRotation.y = rotation
                 },
 
                 // Z-Rotation:
@@ -65,7 +65,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerRotationZ),
                         findViewById(R.id.valueRotationZ)
                 ) { rotation ->
-                    controlTarget.rotation.z = rotation
+                    renderData.controlledGeometry.smoothRotation.z = rotation
                 },
 
                 // Q-Rotation:
@@ -74,7 +74,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerRotationQ),
                         findViewById(R.id.valueRotationQ)
                 ) { rotation ->
-                    controlTarget.rotation.q = rotation
+                    renderData.controlledGeometry.smoothRotation.q = rotation
                 },
 
                 // X-Translation:
@@ -83,7 +83,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerTranslationX),
                         findViewById(R.id.valueTranslationX)
                 ) { translation ->
-                    controlTarget.translation.x = translation
+                    renderData.controlledGeometry.smoothTranslation.x = translation
                 },
 
                 // Y-Translation:
@@ -92,7 +92,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerTranslationY),
                         findViewById(R.id.valueTranslationY)
                 ) { translation ->
-                    controlTarget.translation.y = translation
+                    renderData.controlledGeometry.smoothTranslation.y = translation
                 },
 
                 // Z-Translation:
@@ -101,7 +101,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerTranslationZ),
                         findViewById(R.id.valueTranslationZ)
                 ) { translation ->
-                    controlTarget.translation.z = translation
+                    renderData.controlledGeometry.smoothTranslation.z = translation
                 },
 
                 // W-Translation:
@@ -110,7 +110,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerTranslationQ),
                         findViewById(R.id.valueTranslationQ)
                 ) { translation ->
-                    controlTarget.translation.q = translation
+                    renderData.controlledGeometry.smoothTranslation.q = translation
                 },
 
                 CameraDistanceController(
