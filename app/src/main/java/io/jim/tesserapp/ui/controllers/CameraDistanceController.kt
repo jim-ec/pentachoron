@@ -1,26 +1,22 @@
 package io.jim.tesserapp.ui.controllers
 
-import android.content.Context
-import android.widget.SeekBar
-import android.widget.TextView
 import io.jim.tesserapp.R
 import io.jim.tesserapp.graphics.SharedRenderData
+import io.jim.tesserapp.ui.ControllerView
 
 /**
  * Controller targeting the camera distance.
  */
 fun cameraDistanceController(
         renderData: SharedRenderData,
-        context: Context,
-        seeker: SeekBar,
-        valueLabel: TextView
+        view: ControllerView
 ) = Controller(
-        seeker = seeker,
-        valueLabel = valueLabel,
+        seeker = view.findViewById(R.id.seekerCameraDistance),
+        valueLabel = view.findViewById(R.id.valueCameraDistance),
         min = 3.0,
         max = 15.0,
         startValue = 8.0,
-        formatString = context.getString(R.string.transform_translation_value),
+        formatString = view.context.getString(R.string.transform_translation_value),
         update = { value ->
             renderData.synchronized {
                 renderData.camera.distance = value

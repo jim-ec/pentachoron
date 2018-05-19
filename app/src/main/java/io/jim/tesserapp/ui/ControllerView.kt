@@ -50,7 +50,10 @@ class ControllerView : FrameLayout {
             graphicsView.renderGrid = isChecked
         }
 
-        with(graphicsView.sharedRenderData.controlledGeometry) {
+        graphicsView.sharedRenderData.controlledGeometry.also {
+
+            // Camera distance:
+            cameraDistanceController(graphicsView.sharedRenderData, this)
 
             // X-Rotation:
             rotationController(
@@ -58,7 +61,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerRotationX),
                     findViewById(R.id.valueRotationX)
             ) { rotation ->
-                smoothRotation.x = rotation
+                it.smoothRotation.x = rotation
             }
 
             // Y-Rotation:
@@ -67,7 +70,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerRotationY),
                     findViewById(R.id.valueRotationY)
             ) { rotation ->
-                smoothRotation.y = rotation
+                it.smoothRotation.y = rotation
             }
 
             // Z-Rotation:
@@ -76,7 +79,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerRotationZ),
                     findViewById(R.id.valueRotationZ)
             ) { rotation ->
-                smoothRotation.z = rotation
+                it.smoothRotation.z = rotation
             }
 
             // Q-Rotation:
@@ -85,7 +88,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerRotationQ),
                     findViewById(R.id.valueRotationQ)
             ) { rotation ->
-                smoothRotation.q = rotation
+                it.smoothRotation.q = rotation
             }
 
             // X-Translation:
@@ -94,7 +97,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerTranslationX),
                     findViewById(R.id.valueTranslationX)
             ) { translation ->
-                smoothTranslation.x = translation
+                it.smoothTranslation.x = translation
             }
 
             // Y-Translation:
@@ -103,7 +106,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerTranslationY),
                     findViewById(R.id.valueTranslationY)
             ) { translation ->
-                smoothTranslation.y = translation
+                it.smoothTranslation.y = translation
             }
 
             // Z-Translation:
@@ -112,24 +115,18 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerTranslationZ),
                     findViewById(R.id.valueTranslationZ)
             ) { translation ->
-                smoothTranslation.z = translation
+                it.smoothTranslation.z = translation
             }
 
-            // W-Translation:
+            // Q-Translation:
             translationController(
                     context,
                     findViewById(R.id.seekerTranslationQ),
                     findViewById(R.id.valueTranslationQ)
             ) { translation ->
-                smoothTranslation.q = translation
+                it.smoothTranslation.q = translation
             }
 
-            cameraDistanceController(
-                    graphicsView.sharedRenderData,
-                    context,
-                    findViewById(R.id.seekerCameraDistance),
-                    findViewById(R.id.valueCameraDistance)
-            )
         }
 
     }
