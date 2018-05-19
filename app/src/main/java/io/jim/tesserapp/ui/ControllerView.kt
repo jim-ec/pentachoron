@@ -47,7 +47,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerRotationX),
                         findViewById(R.id.valueRotationX)
                 ) { rotation ->
-                    controlTarget.rotation.x = rotation
+                    renderData.controlledGeometry.smoothRotation.x = rotation
                 },
 
                 // Y-Rotation:

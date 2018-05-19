@@ -149,6 +149,7 @@ class CubeView : FrameLayout {
         extrude(Vector4dh(0.0, 0.0, -2.0, 0.0))
 
         coordinateSystemView.sharedRenderData.drawDataProvider += this
+        coordinateSystemView.sharedRenderData.controlledGeometry = this
     }
 
     init {
