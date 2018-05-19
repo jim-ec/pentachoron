@@ -7,9 +7,10 @@ import android.widget.FrameLayout
 import android.widget.SeekBar
 import android.widget.Switch
 import io.jim.tesserapp.R
-import io.jim.tesserapp.ui.controllers.CameraDistanceController
-import io.jim.tesserapp.ui.controllers.RotationController
-import io.jim.tesserapp.ui.controllers.TranslationController
+import io.jim.tesserapp.graphics.SharedRenderData
+import io.jim.tesserapp.ui.controllers.cameraDistanceController
+import io.jim.tesserapp.ui.controllers.rotationController
+import io.jim.tesserapp.ui.controllers.translationController
 
 
 /**
@@ -34,6 +35,10 @@ class ControllerView : FrameLayout {
         findViewById<SeekBar>(R.id.seekerTranslationQ).isEnabled = false
     }
 
+    /**
+     * Instantiate controllers piping values from seek bars to [graphicsView] and
+     * the [SharedRenderData.controlledGeometry].
+     */
     fun control(graphicsView: GraphicsView) {
 
         // Control render grid options:
@@ -48,7 +53,7 @@ class ControllerView : FrameLayout {
         with(graphicsView.sharedRenderData.controlledGeometry) {
 
             // X-Rotation:
-            RotationController(
+            rotationController(
                     context,
                     findViewById(R.id.seekerRotationX),
                     findViewById(R.id.valueRotationX)
@@ -57,7 +62,7 @@ class ControllerView : FrameLayout {
             }
 
             // Y-Rotation:
-            RotationController(
+            rotationController(
                     context,
                     findViewById(R.id.seekerRotationY),
                     findViewById(R.id.valueRotationY)
@@ -66,7 +71,7 @@ class ControllerView : FrameLayout {
             }
 
             // Z-Rotation:
-            RotationController(
+            rotationController(
                     context,
                     findViewById(R.id.seekerRotationZ),
                     findViewById(R.id.valueRotationZ)
@@ -75,7 +80,7 @@ class ControllerView : FrameLayout {
             }
 
             // Q-Rotation:
-            RotationController(
+            rotationController(
                     context,
                     findViewById(R.id.seekerRotationQ),
                     findViewById(R.id.valueRotationQ)
@@ -84,7 +89,7 @@ class ControllerView : FrameLayout {
             }
 
             // X-Translation:
-            TranslationController(
+            translationController(
                     context,
                     findViewById(R.id.seekerTranslationX),
                     findViewById(R.id.valueTranslationX)
@@ -93,7 +98,7 @@ class ControllerView : FrameLayout {
             }
 
             // Y-Translation:
-            TranslationController(
+            translationController(
                     context,
                     findViewById(R.id.seekerTranslationY),
                     findViewById(R.id.valueTranslationY)
@@ -102,7 +107,7 @@ class ControllerView : FrameLayout {
             }
 
             // Z-Translation:
-            TranslationController(
+            translationController(
                     context,
                     findViewById(R.id.seekerTranslationZ),
                     findViewById(R.id.valueTranslationZ)
@@ -111,7 +116,7 @@ class ControllerView : FrameLayout {
             }
 
             // W-Translation:
-            TranslationController(
+            translationController(
                     context,
                     findViewById(R.id.seekerTranslationQ),
                     findViewById(R.id.valueTranslationQ)
@@ -119,7 +124,7 @@ class ControllerView : FrameLayout {
                 smoothTranslation.q = translation
             }
 
-            CameraDistanceController(
+            cameraDistanceController(
                     graphicsView.sharedRenderData,
                     context,
                     findViewById(R.id.seekerCameraDistance),

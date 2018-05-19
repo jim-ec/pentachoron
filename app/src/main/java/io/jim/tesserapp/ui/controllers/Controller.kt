@@ -6,14 +6,20 @@ import io.jim.tesserapp.math.common.formatNumber
 
 /**
  * Control a specific value using a seek bar.
+ *
+ * @param update
+ * Pipe the current value of the seek-bar to the actual value this controller targets.
+ * It takes the current seek-bar value, mapped to range between [min] and [max].
+ *
  */
-abstract class Controller(
+class Controller(
         private val seeker: SeekBar,
         private val valueLabel: TextView,
         private val min: Double,
         private val max: Double,
         startValue: Double,
-        private val formatString: String
+        private val formatString: String,
+        update: (value: Double) -> Unit
 ) {
 
     /**
@@ -44,13 +50,8 @@ abstract class Controller(
 
         // Initially format the value label, using the start value:
         updateValueTextLabel()
+        update(startValue)
     }
-
-    /**
-     * Pipe the current value of the seek-bar to the actual value this controller targets.
-     * @param value Current seek-bar value, mapped to range between [min] and [max].
-     */
-    protected abstract fun update(value: Double)
 
     /**
      * Update text of value-label according to the current seek-bar value.

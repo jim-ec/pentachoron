@@ -38,6 +38,10 @@ class ControlledGraphicsContainerView(context: Context, attrs: AttributeSet?)
         attributes.recycle()
     }
 
+    /**
+     * After inflating has finished, the actual view objects are retrieved and
+     * the controller view is connected to the graphics view.
+     */
     override fun onFinishInflate() {
         super.onFinishInflate()
 

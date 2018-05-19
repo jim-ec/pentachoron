@@ -5,25 +5,21 @@ import android.widget.SeekBar
 import android.widget.TextView
 import io.jim.tesserapp.R
 
-class TranslationController(
+/**
+ * A translation controller.
+ * The current translation value is passed to [setTranslation].
+ */
+fun translationController(
         context: Context,
         seeker: SeekBar,
         valueLabel: TextView,
-        min: Double = -5.0,
-        max: Double = 5.0,
-        startValue: Double = 0.0,
-        private val setTranslation: (translation: Double) -> Unit
-) : Controller(
+        setTranslation: (translation: Double) -> Unit
+) = Controller(
         seeker = seeker,
         valueLabel = valueLabel,
-        min = min,
-        max = max,
-        startValue = startValue,
-        formatString = context.getString(R.string.transform_translation_value)
-) {
-
-    override fun update(value: Double) {
-        setTranslation(value)
-    }
-
-}
+        min = -5.0,
+        max = 5.0,
+        startValue = 0.0,
+        formatString = context.getString(R.string.transform_translation_value),
+        update = setTranslation
+)
