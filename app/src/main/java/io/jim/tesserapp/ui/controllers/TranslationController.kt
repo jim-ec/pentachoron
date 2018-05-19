@@ -6,16 +6,14 @@ import android.widget.TextView
 import io.jim.tesserapp.R
 
 class TranslationController(
-        controllables: List<Controllable>,
         context: Context,
         seeker: SeekBar,
         valueLabel: TextView,
         min: Double = -5.0,
         max: Double = 5.0,
         startValue: Double = 0.0,
-        private val setTranslation: (controllable: Controllable, translation: Double) -> Unit
+        private val setTranslation: (translation: Double) -> Unit
 ) : Controller(
-        controllables,
         seeker,
         valueLabel,
         min,
@@ -24,8 +22,8 @@ class TranslationController(
         context.getString(R.string.transform_translation_value)
 ) {
 
-    override fun set(controllable: Controllable, value: Double) {
-        setTranslation(controllable, value)
+    override fun set(value: Double) {
+        setTranslation(value)
     }
 
 }

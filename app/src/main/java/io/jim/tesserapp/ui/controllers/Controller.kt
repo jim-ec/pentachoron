@@ -5,10 +5,9 @@ import android.widget.TextView
 import io.jim.tesserapp.math.common.formatNumber
 
 /**
- * Control a single value, targeting single value of [Controllable].
+ * Control a specific value using a seek bar.
  */
 abstract class Controller(
-        private var controllables: List<Controllable>,
         private val seeker: SeekBar,
         private val valueLabel: TextView,
         private val min: Double,
@@ -16,11 +15,8 @@ abstract class Controller(
         startValue: Double = min,
         private val formatString: String
 ) {
-    /**
-     * Whenever the controlled value changed, this function is called for
-     * each [controllable] registered at this time-point with the new [value].
-     */
-    protected abstract fun set(controllable: Controllable, value: Double)
+
+    protected abstract fun set(value: Double)
 
     /**
      * Maps the seeker progress onto the [min]-[max] range.
@@ -53,17 +49,10 @@ abstract class Controller(
     }
 
     fun reevaluate() {
-        val value = currentSeekerValue
-        valueLabel.text = valueLabelText(value)
-
-        setControlledValue(value)
-
-        controllables.forEach {
-            set(it, value)
+        currentSeekerValue.also {
+            valueLabel.text = valueLabelText(it)
+            set(it)
         }
     }
-
-    // TODO: Make abstract
-    open fun setControlledValue(value: Double) {}
 
 }

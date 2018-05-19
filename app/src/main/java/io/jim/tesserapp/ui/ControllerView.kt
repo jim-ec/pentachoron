@@ -9,7 +9,6 @@ import android.widget.Switch
 import io.jim.tesserapp.R
 import io.jim.tesserapp.graphics.SharedRenderData
 import io.jim.tesserapp.ui.controllers.*
-import java.util.*
 
 
 /**
@@ -18,7 +17,7 @@ import java.util.*
  */
 class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
-    private val controllables = ArrayList<Controllable>()
+    private var controlTarget: Controllable? = null
     private val controllers: MutableList<Controller>
 
     init {
@@ -26,9 +25,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
 
         // Pass render options:
         findViewById<Switch>(R.id.renderOptionGrid).setOnCheckedChangeListener { _, isChecked ->
-            controllables.forEach {
-                it.renderGrid = isChecked
-            }
+            controlTarget?.renderGrid = isChecked
         }
 
         // Disable 4th dimensional seeker as that is a feature not implemented yet:
@@ -38,91 +35,83 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
         controllers = mutableListOf(
                 // X-Rotation:
                 RotationController(
-                        controllables,
                         context,
                         findViewById(R.id.seekerRotationX),
                         findViewById(R.id.valueRotationX)
-                ) { controllable, rotation ->
-                    controllable.rotation.x = rotation
+                ) { rotation ->
+                    controlTarget?.rotation?.x = rotation
                 },
 
                 // Y-Rotation:
                 RotationController(
-                        controllables,
                         context,
                         findViewById(R.id.seekerRotationY),
                         findViewById(R.id.valueRotationY)
-                ) { controllable, rotation ->
-                    controllable.rotation.y = rotation
+                ) { rotation ->
+                    controlTarget?.rotation?.y = rotation
                 },
 
                 // Z-Rotation:
                 RotationController(
-                        controllables,
                         context,
                         findViewById(R.id.seekerRotationZ),
                         findViewById(R.id.valueRotationZ)
-                ) { controllable, rotation ->
-                    controllable.rotation.z = rotation
+                ) { rotation ->
+                    controlTarget?.rotation?.z = rotation
                 },
 
                 // Q-Rotation:
                 RotationController(
-                        controllables,
                         context,
                         findViewById(R.id.seekerRotationQ),
                         findViewById(R.id.valueRotationQ)
-                ) { controllable, rotation ->
-                    controllable.rotation.q = rotation
+                ) { rotation ->
+                    controlTarget?.rotation?.q = rotation
                 },
 
                 // X-Translation:
                 TranslationController(
-                        controllables,
                         context,
                         findViewById(R.id.seekerTranslationX),
                         findViewById(R.id.valueTranslationX)
-                ) { controllable, translation ->
-                    controllable.translation.x = translation
+                ) { translation ->
+                    controlTarget?.translation?.x = translation
                 },
 
                 // Y-Translation:
                 TranslationController(
-                        controllables,
                         context,
                         findViewById(R.id.seekerTranslationY),
                         findViewById(R.id.valueTranslationY)
-                ) { controllable, translation ->
-                    controllable.translation.y = translation
+                ) { translation ->
+                    controlTarget?.translation?.y = translation
                 },
 
                 // Z-Translation:
                 TranslationController(
-                        controllables,
                         context,
                         findViewById(R.id.seekerTranslationZ),
                         findViewById(R.id.valueTranslationZ)
-                ) { controllable, translation ->
-                    controllable.translation.z = translation
+                ) { translation ->
+                    controlTarget?.translation?.z = translation
                 },
 
                 // W-Translation:
                 TranslationController(
-                        controllables,
                         context,
                         findViewById(R.id.seekerTranslationQ),
                         findViewById(R.id.valueTranslationQ)
-                ) { controllable, translation ->
-                    controllable.translation.q = translation
+                ) { translation ->
+                    controlTarget?.translation?.q = translation
                 }
         )
     }
 
     /**
-     * Add a [controllable] to the list of targets this controller controls.
+     * Declare [controllable] to be controlled by this controller.
      */
-    operator fun plusAssign(controllable: Controllable) {
-        controllables += controllable
+    fun control(controllable: Controllable) {
+        controlTarget = controllable
 
         controllable.setup(this)
 

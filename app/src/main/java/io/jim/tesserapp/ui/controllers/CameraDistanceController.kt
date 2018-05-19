@@ -15,18 +15,13 @@ class CameraDistanceController(
         min: Double = 3.0,
         max: Double = 15.0
 ) : Controller(
-        ArrayList(), // TODO: temporary empty list
         seeker,
         valueLabel,
         min, max, GraphicsView.DEFAULT_CAMERA_DISTANCE,
         context.getString(R.string.transform_translation_value)
 ) {
 
-    override fun set(controllable: Controllable, value: Double) {
-        TODO("Camera controller set called")
-    }
-
-    override fun setControlledValue(value: Double) {
+    override fun set(value: Double) {
         renderData.synchronized {
             renderData.camera.distance = currentSeekerValue
         }

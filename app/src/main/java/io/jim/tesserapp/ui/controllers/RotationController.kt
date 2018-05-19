@@ -6,13 +6,11 @@ import android.widget.TextView
 import io.jim.tesserapp.R
 
 class RotationController(
-        controllables: List<Controllable>,
         context: Context,
         seeker: SeekBar,
         valueLabel: TextView,
-        private val setRotation: (controllable: Controllable, rotation: Double) -> Unit
+        private val setRotation: (rotation: Double) -> Unit
 ) : Controller(
-        controllables,
         seeker,
         valueLabel,
         0.0,
@@ -21,8 +19,8 @@ class RotationController(
         context.getString(R.string.transform_rotation_value_radians)
 ) {
 
-    override fun set(controllable: Controllable, value: Double) {
-        setRotation(controllable, value * Math.PI)
+    override fun set(value: Double) {
+        setRotation(value * Math.PI)
     }
 
 }
