@@ -14,7 +14,7 @@ import javax.microedition.khronos.opengles.GL10
 /**
  * Actually renders to OpenGL.
  */
-class Renderer(private val context: Context, private val dpi: Float) : GLSurfaceView.Renderer {
+class Renderer(private val context: Context, private val dpi: Double) : GLSurfaceView.Renderer {
 
     /**
      * Render data shared across this render thread an others.
@@ -25,7 +25,7 @@ class Renderer(private val context: Context, private val dpi: Float) : GLSurface
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
 
-    private val projectionMatrix = Projection3dMatrix(near = 0.1f, far = 100f)
+    private val projectionMatrix = Projection3dMatrix(near = 0.1, far = 100.0)
     private val viewMatrix = ViewMatrix(sharedRenderData.camera)
 
     companion object {
@@ -33,12 +33,12 @@ class Renderer(private val context: Context, private val dpi: Float) : GLSurface
         /**
          * Converts inches to millimeters.
          */
-        const val MM_PER_INCH = 25.4f
+        const val MM_PER_INCH = 25.4
 
         /**
          * Specifies width of lines, in millimeters.
          */
-        const val LINE_WIDTH_MM = 0.15f
+        const val LINE_WIDTH_MM = 0.15
 
     }
 
@@ -46,11 +46,11 @@ class Renderer(private val context: Context, private val dpi: Float) : GLSurface
      * Initialize data.
      */
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-        GLES30.glClearColor(clearColor.red, clearColor.green, clearColor.blue, 1.0f)
+        GLES30.glClearColor(clearColor.red.toFloat(), clearColor.green.toFloat(), clearColor.blue.toFloat(), 1f)
         GLES30.glDisable(GLES30.GL_CULL_FACE)
         GLES30.glEnable(GLES30.GL_DEPTH_TEST)
 
-        GLES30.glLineWidth(dpi / MM_PER_INCH * LINE_WIDTH_MM)
+        GLES30.glLineWidth((dpi / MM_PER_INCH * LINE_WIDTH_MM).toFloat())
 
         println("Open GLES version: ${GLES30.glGetString(GLES30.GL_VERSION)}")
         println("GLSL version: ${GLES30.glGetString(GLES30.GL_SHADING_LANGUAGE_VERSION)}")
@@ -72,7 +72,7 @@ class Renderer(private val context: Context, private val dpi: Float) : GLSurface
      */
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         GLES30.glViewport(0, 0, width, height)
-        sharedRenderData.camera.aspectRatio = width.toFloat() / height.toFloat()
+        sharedRenderData.camera.aspectRatio = width.toDouble() / height
     }
 
     /**

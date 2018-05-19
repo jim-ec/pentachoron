@@ -17,7 +17,7 @@ class Projection3dMatrix : Matrix {
      * @param near Near plane.
      * @param far Far plane.
      */
-    constructor(near: Float, far: Float) : super(4) {
+    constructor(near: Double, far: Double) : super(4) {
         perspective2D(near, far)
     }
 

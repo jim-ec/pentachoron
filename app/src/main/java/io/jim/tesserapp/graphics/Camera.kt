@@ -10,13 +10,13 @@ class Camera {
     /**
      * Aspect ratio.
      */
-    var aspectRatio: Float = 1f
+    var aspectRatio: Double = 1.0
 
     /**
      * Distance of camera position from center.
      */
     var distance by Smoothed<Camera>(
-            startValue = 0f,
+            startValue = 0.0,
             transitionInterval = 300L
     )
 
@@ -25,7 +25,7 @@ class Camera {
      * This is the base rotation.
      */
     var horizontalRotation by Smoothed<Camera>(
-            startValue = 0f,
+            startValue = 0.0,
             transitionInterval = 80L
     )
 
@@ -34,7 +34,7 @@ class Camera {
      * This is the secondary rotation.
      */
     var verticalRotation by Smoothed<Camera>(
-            startValue = 0f,
+            startValue = 0.0,
             transitionInterval = 80L
     )
 

@@ -5,11 +5,11 @@ package io.jim.tesserapp.math.common
  * @constructor Create the function mapping `x ↦ a(x - x0)³ + b(x - x0)² + c(x - x0) + y0`.
  */
 data class CubicPolynomial(
-        private var a: Float = 0f,
-        private var b: Float = 0f,
-        private var c: Float = 0f,
-        private var x0: Float = 0f,
-        private var y0: Float = 0f
+        private var a: Double = 0.0,
+        private var b: Double = 0.0,
+        private var c: Double = 0.0,
+        private var x0: Double = 0.0,
+        private var y0: Double = 0.0
 ) {
 
     /**
@@ -25,11 +25,11 @@ data class CubicPolynomial(
      * @throws MathException If x-difference between source and target would is zero.
      */
     fun span(
-            sourceX: Float,
-            sourceY: Float,
-            targetX: Float,
-            targetY: Float,
-            sourceGradient: Float
+            sourceX: Double,
+            sourceY: Double,
+            targetX: Double,
+            targetY: Double,
+            sourceGradient: Double
     ) {
         if (sourceX == targetX)
             throw MathException("X-range of curve cannot be zero")
@@ -56,9 +56,9 @@ data class CubicPolynomial(
      * @throws MathException If x-difference between source and target would is zero.
      */
     fun reSpan(
-            sourceX: Float,
-            targetX: Float,
-            targetY: Float,
+            sourceX: Double,
+            targetX: Double,
+            targetY: Double,
             keepSourceGradient: Boolean
     ) {
         span(
@@ -66,14 +66,14 @@ data class CubicPolynomial(
                 sourceY = this(sourceX),
                 targetX = targetX,
                 targetY = targetY,
-                sourceGradient = if (keepSourceGradient) derivation(sourceX) else 0.0f
+                sourceGradient = if (keepSourceGradient) derivation(sourceX) else 0.0
         )
     }
 
     /**
      * Compute `f([x])`.
      */
-    operator fun invoke(x: Float): Float {
+    operator fun invoke(x: Double): Double {
         val dx = x - x0
         return a * dx * dx * dx + b * dx * dx + c * dx + y0
     }
@@ -81,7 +81,7 @@ data class CubicPolynomial(
     /**
      * Compute the derivation `f'([x])`.
      */
-    fun derivation(x: Float): Float {
+    fun derivation(x: Double): Double {
         val dx = x - x0
         return 3 * a * dx * dx + 2 * b * dx + c
     }

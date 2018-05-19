@@ -15,24 +15,24 @@ import kotlin.reflect.KProperty
  * That enables you to provide pre-allocated vectors, while avoiding allocating mass of vectors
  * when doing the same calculations over and over again.
  *
- * @property dimension Dimension of this vector. Determines count of numbers [floats] holds.
+ * @property dimension Dimension of this vector. Determines count of numbers [doubles] holds.
  */
 open class VectorN(
         val dimension: Int
-) : Iterable<Float>, MatrixMultipliable() {
+) : Iterable<Double>, MatrixMultipliable() {
 
     /**
      * Create a vector whose [dimension] is determined through the count of components passed
      * to [components]. Initialize the vector components with [components].
      */
-    constructor(vararg components: Float) : this(components.size) {
+    constructor(vararg components: Double) : this(components.size) {
         load(*components)
     }
 
     /**
      * The underlying float array.
      */
-    private val floats = FloatArray(dimension) { 0f }
+    private val doubles = DoubleArray(dimension) { 0.0 }
 
     /**
      * Copy contents from [rhs] into this vector.
@@ -49,9 +49,9 @@ open class VectorN(
     }
 
     /**
-     * Iterates over the floats.
+     * Iterates over the doubles.
      */
-    override fun iterator() = floats.iterator()
+    override fun iterator() = doubles.iterator()
 
     /**
      * Return a string representing this vector's dimension.
@@ -64,9 +64,9 @@ open class VectorN(
     override fun toString() = run {
         val sb = StringBuilder()
         sb.append("( [").append(dimensionString).append("] ")
-        floats.forEachIndexed { index, float ->
+        doubles.forEachIndexed { index, float ->
             sb.append(formatNumber(float)).append(
-                    if (index != floats.lastIndex) " | "
+                    if (index != doubles.lastIndex) " | "
                     else " )"
             )
         }
@@ -76,11 +76,11 @@ open class VectorN(
     /**
      * Set [index]th float to [value].
      */
-    operator fun set(index: Int, value: Float) {
+    operator fun set(index: Int, value: Double) {
         if (index < 0 || index >= dimension)
             throw MathException("Cannot set ${index}th component to a $dimensionString vector")
 
-        floats[index] = value
+        doubles[index] = value
     }
 
     /**
@@ -89,13 +89,13 @@ open class VectorN(
     operator fun get(index: Int) =
             if (index < 0 || index >= dimension)
                 throw MathException("Cannot set ${index}th component to a $dimensionString vector")
-            else floats[index]
+            else doubles[index]
 
     /**
      * Sets each vector component with the corresponding float in [components].
-     * @throws MathException If count of floats passed to [components] does not match with [dimension].
+     * @throws MathException If count of doubles passed to [components] does not match with [dimension].
      */
-    fun load(vararg components: Float) {
+    fun load(vararg components: Double) {
         if (components.size != dimension)
             throw MathException("Cannot load ${components.size} components into a $dimensionString vector")
 
@@ -107,8 +107,8 @@ open class VectorN(
     /**
      * Scalar this and [rhs].
      */
-    operator fun times(rhs: io.jim.tesserapp.math.vector.VectorN): Float {
-        var sum = 0f
+    operator fun times(rhs: io.jim.tesserapp.math.vector.VectorN): Double {
+        var sum = 0.0
         forEachIndexed { index, float ->
             sum += float * rhs[index]
         }
@@ -151,7 +151,7 @@ open class VectorN(
      * Normalize this vector.
      */
     fun normalize() {
-        val oneOverLength = 1f / length
+        val oneOverLength = 1.0 / length
         forEachIndexed { index, float ->
             set(index, float * oneOverLength)
         }
@@ -160,7 +160,7 @@ open class VectorN(
     /**
      * Scales this by [scale].
      */
-    operator fun timesAssign(scale: Float) {
+    operator fun timesAssign(scale: Double) {
         forEachIndexed { index, _ ->
             set(index, get(index) * scale)
         }
@@ -169,7 +169,7 @@ open class VectorN(
     /**
      * Divides this vector through [divisor].
      */
-    operator fun divAssign(divisor: Float) {
+    operator fun divAssign(divisor: Double) {
         forEachIndexed { index, _ ->
             set(index, get(index) / divisor)
         }
@@ -184,7 +184,7 @@ open class VectorN(
         }
     }
 
-    override fun set(row: Int, col: Int, value: Float) {
+    override fun set(row: Int, col: Int, value: Double) {
         set(col, value)
     }
 
@@ -208,7 +208,7 @@ open class VectorN(
      */
     inner class IndexAlias(
             private val index: Int
-    ) : ReadWriteProperty<VectorN, Float> {
+    ) : ReadWriteProperty<VectorN, Double> {
 
         init {
             if (index >= dimension)
@@ -218,7 +218,7 @@ open class VectorN(
         override fun getValue(thisRef: VectorN, property: KProperty<*>) =
                 this@VectorN[index]
 
-        override fun setValue(thisRef: VectorN, property: KProperty<*>, value: Float) {
+        override fun setValue(thisRef: VectorN, property: KProperty<*>, value: Double) {
             this@VectorN[index] = value
         }
     }

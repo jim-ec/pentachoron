@@ -21,12 +21,12 @@ abstract class MatrixMultipliable {
     /**
      * Set value at a specific matrix cell to [value].
      */
-    protected abstract operator fun set(row: Int, col: Int, value: Float)
+    protected abstract operator fun set(row: Int, col: Int, value: Double)
 
     /**
      * Get value at a specific matrix cell.
      */
-    protected abstract operator fun get(row: Int, col: Int): Float
+    protected abstract operator fun get(row: Int, col: Int): Double
 
     /**
      * Calls [f] for each coefficient.
@@ -51,7 +51,7 @@ abstract class MatrixMultipliable {
             throw MathException("Target matrix $this is incompatible for $lhs * $rhs")
 
         forEachComponent { row, col ->
-            var sum = 0f
+            var sum = 0.0
 
             for (i in 0 until lhs.cols) {
                 sum += lhs[row, i] * rhs[i, col]

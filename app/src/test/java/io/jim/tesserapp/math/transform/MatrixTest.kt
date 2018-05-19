@@ -18,7 +18,7 @@ class MatrixTest {
         assertEquals(4, matrix.rows)
         assertEquals(4, matrix.cols)
         matrix.forEachComponent { row, col ->
-            assertEquals(if (row == col) 1f else 0f, matrix[row, col], 0.1f)
+            assertEquals(if (row == col) 1.0 else 0.0, matrix[row, col], 0.1)
         }
     }
 
@@ -36,8 +36,8 @@ class MatrixTest {
 
     @Test
     fun setGet() {
-        matrix[2, 0] = 4f
-        assertEquals(4f, matrix[2, 0], 0.1f)
+        matrix[2, 0] = 4.0
+        assertEquals(4.0, matrix[2, 0], 0.1)
     }
 
     @Test
@@ -45,13 +45,13 @@ class MatrixTest {
 
         // Write random stuff into the matrix:
         matrix.forEachComponent { row, col ->
-            matrix[row, col] = row + 3f * col
+            matrix[row, col] = row + 3.0 * col
         }
 
         // Reload identity and check for it:
         matrix.identity()
         matrix.forEachComponent { row, col ->
-            assertEquals(if (row == col) 1f else 0f, matrix[row, col], 0.1f)
+            assertEquals(if (row == col) 1.0 else 0.0, matrix[row, col], 0.1)
         }
     }
 
@@ -71,102 +71,102 @@ class MatrixTest {
 
     @Test(expected = Matrix.IsNotQuadraticException::class)
     fun translationNotQuadratic() {
-        Matrix(3, 4).translation(Vector3d(2f, 5f, 6f))
+        Matrix(3, 4).translation(Vector3d(2.0, 5.0, 6.0))
     }
 
     @Test(expected = Matrix.IncompatibleTransformDimension::class)
     fun translationIncompatibleDimension() {
-        matrix.translation(VectorN(2f, 5f))
+        matrix.translation(VectorN(2.0, 5.0))
     }
 
     @Test
     fun translation() {
-        matrix.translation(VectorN(2f, 3f, 4f))
-        val vector = Vector3dh(5f, 6f, 7f)
+        matrix.translation(VectorN(2.0, 3.0, 4.0))
+        val vector = Vector3dh(5.0, 6.0, 7.0)
 
         Vector3dh().apply {
             multiplication(vector, matrix)
 
-            assertEquals(7f, x, 0.1f)
-            assertEquals(9f, y, 0.1f)
-            assertEquals(11f, z, 0.1f)
+            assertEquals(7.0, x, 0.1)
+            assertEquals(9.0, y, 0.1)
+            assertEquals(11.0, z, 0.1)
         }
     }
 
     @Test
     fun rotation() {
         matrix.rotation(1, 2, Pi / 2)
-        val vector = Vector3dh(0f, 3f, 0f)
+        val vector = Vector3dh(0.0, 3.0, 0.0)
 
         Vector3dh().apply {
             multiplication(vector, matrix)
 
-            assertEquals(0f, x, 0.1f)
-            assertEquals(0f, y, 0.1f)
-            assertEquals(3f, z, 0.1f)
+            assertEquals(0.0, x, 0.1)
+            assertEquals(0.0, y, 0.1)
+            assertEquals(3.0, z, 0.1)
         }
     }
 
     @Test
     fun scaleUniformly() {
-        matrix.scale(2f)
-        val vector = Vector3dh(5f, 6f, 7f)
+        matrix.scale(2.0)
+        val vector = Vector3dh(5.0, 6.0, 7.0)
 
         Vector3dh().apply {
             multiplication(vector, matrix)
 
-            assertEquals(10f, x, 0.1f)
-            assertEquals(12f, y, 0.1f)
-            assertEquals(14f, z, 0.1f)
+            assertEquals(10.0, x, 0.1)
+            assertEquals(12.0, y, 0.1)
+            assertEquals(14.0, z, 0.1)
         }
     }
 
     @Test
     fun scaleByIndividualFactors() {
-        matrix.scale(VectorN(2f, 3f, 4f))
-        val vector = Vector3dh(5f, 6f, 7f)
+        matrix.scale(VectorN(2.0, 3.0, 4.0))
+        val vector = Vector3dh(5.0, 6.0, 7.0)
 
         Vector3dh().apply {
             multiplication(vector, matrix)
 
-            assertEquals(10f, x, 0.1f)
-            assertEquals(18f, y, 0.1f)
-            assertEquals(28f, z, 0.1f)
+            assertEquals(10.0, x, 0.1)
+            assertEquals(18.0, y, 0.1)
+            assertEquals(28.0, z, 0.1)
         }
     }
 
     @Test
     fun perspective2D() {
-        matrix.perspective2D(5f, 10f)
+        matrix.perspective2D(5.0, 10.0)
 
         val homogeneous = Vector3dh()
 
         homogeneous.apply {
-            multiplication(Vector3dh(2f, 3f, -10f), matrix)
-            assertEquals(1f, z, 0.1f)
-            assertEquals(2f / 10f, x, 0.1f)
-            assertEquals(3f / 10f, y, 0.1f)
+            multiplication(Vector3dh(2.0, 3.0, -10.0), matrix)
+            assertEquals(1.0, z, 0.1)
+            assertEquals(2.0 / 10.0, x, 0.1)
+            assertEquals(3.0 / 10.0, y, 0.1)
         }
 
         homogeneous.apply {
-            multiplication(Vector3dh(2f, 3f, -5f), matrix)
-            assertEquals(0f, z, 0.1f)
-            assertEquals(2f / 5f, x, 0.1f)
-            assertEquals(3f / 5f, y, 0.1f)
+            multiplication(Vector3dh(2.0, 3.0, -5.0), matrix)
+            assertEquals(0.0, z, 0.1)
+            assertEquals(2.0 / 5.0, x, 0.1)
+            assertEquals(3.0 / 5.0, y, 0.1)
         }
 
         homogeneous.apply {
-            multiplication(Vector3dh(2f, 3f, -7f), matrix)
-            assertTrue(0f < z && z < 1f)
-            assertEquals(2f / 7f, x, 0.1f)
-            assertEquals(3f / 7f, y, 0.1f)
+            multiplication(Vector3dh(2.0, 3.0, -7.0), matrix)
+            assertTrue(0.0 < z && z < 1.0)
+            assertEquals(2.0 / 7.0, x, 0.1)
+            assertEquals(3.0 / 7.0, y, 0.1)
         }
 
         homogeneous.apply {
-            multiplication(Vector3dh(2f, 3f, -2f), matrix)
-            assertTrue(z < 0f)
-            assertEquals(2f / 2f, x, 0.1f)
-            assertEquals(3f / 2f, y, 0.1f)
+            multiplication(Vector3dh(2.0, 3.0, -2.0), matrix)
+            assertTrue(z < 0.0)
+            assertEquals(2.0 / 2.0, x, 0.1)
+            assertEquals(3.0 / 2.0, y, 0.1)
         }
     }
 
@@ -175,45 +175,45 @@ class MatrixTest {
         val matrix = LookAtMatrix()
 
         matrix.lookAt(
-                eye = Vector3d(2f, 2f, 2f),
-                target = Vector3d(0f, 0f, 0f),
-                refUp = Vector3d(0f, 1f, 0f)
+                eye = Vector3d(2.0, 2.0, 2.0),
+                target = Vector3d(0.0, 0.0, 0.0),
+                refUp = Vector3d(0.0, 1.0, 0.0)
         )
 
         // Check the all matrix axis are unit vectors:
-        assertEquals(1f, matrix.toVector(0).length, 0.1f)
-        assertEquals(1f, matrix.toVector(1).length, 0.1f)
-        assertEquals(1f, matrix.toVector(2).length, 0.1f)
+        assertEquals(1.0, matrix.toVector(0).length, 0.1)
+        assertEquals(1.0, matrix.toVector(1).length, 0.1)
+        assertEquals(1.0, matrix.toVector(2).length, 0.1)
 
         // Check that all matrix axis are perpendicular to each other:
-        assertEquals(0f, matrix.toVector(0) * matrix.toVector(1), 0.1f)
-        assertEquals(0f, matrix.toVector(1) * matrix.toVector(2), 0.1f)
-        assertEquals(0f, matrix.toVector(0) * matrix.toVector(2), 0.1f)
+        assertEquals(0.0, matrix.toVector(0) * matrix.toVector(1), 0.1)
+        assertEquals(0.0, matrix.toVector(1) * matrix.toVector(2), 0.1)
+        assertEquals(0.0, matrix.toVector(0) * matrix.toVector(2), 0.1)
 
         Vector3dh().apply {
-            multiplication(lhs = Vector3dh(0f, 0f, 0f), rhs = matrix)
-            assertEquals(0f, x, 0.1f)
-            assertEquals(0f, y, 0.1f)
-            assertTrue(z < 0f)
+            multiplication(lhs = Vector3dh(0.0, 0.0, 0.0), rhs = matrix)
+            assertEquals(0.0, x, 0.1)
+            assertEquals(0.0, y, 0.1)
+            assertTrue(z < 0.0)
         }
     }
 
     @Test
     fun transpose() {
         matrix.load(
-                VectorN(1f, 5f, 9f, 13f),
-                VectorN(2f, 6f, 10f, 14f),
-                VectorN(3f, 7f, 11f, 15f),
-                VectorN(4f, 8f, 12f, 16f))
+                VectorN(1.0, 5.0, 9.0, 13.0),
+                VectorN(2.0, 6.0, 10.0, 14.0),
+                VectorN(3.0, 7.0, 11.0, 15.0),
+                VectorN(4.0, 8.0, 12.0, 16.0))
 
         matrix.transpose()
 
         Vector3dh().apply {
-            multiplication(lhs = Vector3dh(1f, 2f, 3f), rhs = matrix)
-            val w = 72f
-            assertEquals(52f / w, x, 0.1f)
-            assertEquals(58f / w, y, 0.1f)
-            assertEquals(65f / w, z, 0.1f)
+            multiplication(lhs = Vector3dh(1.0, 2.0, 3.0), rhs = matrix)
+            val w = 72.0
+            assertEquals(52.0 / w, x, 0.1)
+            assertEquals(58.0 / w, y, 0.1)
+            assertEquals(65.0 / w, z, 0.1)
         }
     }
 }

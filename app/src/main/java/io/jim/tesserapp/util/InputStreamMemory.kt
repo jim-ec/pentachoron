@@ -80,7 +80,7 @@ class InputStreamMemory(
      *
      * @see record
      */
-    fun write(x: Float, y: Float, z: Float, q: Float) {
+    fun write(x: Double, y: Double, z: Double, q: Double) {
 
         // Check if memory must be extended:
         if (writtenElementCounts * floatsPerElement >= floatMemory.capacity()) {
@@ -88,10 +88,10 @@ class InputStreamMemory(
         }
 
         // Put the whole given vector into the float memory:
-        floatMemory.put(writtenVectorCounts * 4 + 0, x)
-        floatMemory.put(writtenVectorCounts * 4 + 1, y)
-        floatMemory.put(writtenVectorCounts * 4 + 2, z)
-        floatMemory.put(writtenVectorCounts * 4 + 3, q)
+        floatMemory.put(writtenVectorCounts * 4 + 0, x.toFloat())
+        floatMemory.put(writtenVectorCounts * 4 + 1, y.toFloat())
+        floatMemory.put(writtenVectorCounts * 4 + 2, z.toFloat())
+        floatMemory.put(writtenVectorCounts * 4 + 3, q.toFloat())
 
         // Increment counts of written vectors:
         writtenVectorCounts++
@@ -168,7 +168,7 @@ class InputStreamMemory(
      * If [floatIndex] is outside the range `[0,3]`.
      *
      */
-    operator fun get(elementIndex: Int, vectorIndex: Int, floatIndex: Int): Float {
+    operator fun get(elementIndex: Int, vectorIndex: Int, floatIndex: Int): Double {
         if (elementIndex < 0 || elementIndex >= elementCapacity)
             throw RuntimeException("Invalid element index $elementIndex")
 
@@ -180,7 +180,7 @@ class InputStreamMemory(
 
         return floatMemory[elementIndex * floatsPerElement +
                 vectorIndex * 4 +
-                floatIndex]
+                floatIndex].toDouble()
     }
 
     /**

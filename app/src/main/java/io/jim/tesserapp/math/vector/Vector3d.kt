@@ -3,12 +3,12 @@ package io.jim.tesserapp.math.vector
 /**
  * A 3d vector.
  */
-open class Vector3d(x: Float, y: Float, z: Float) : VectorN(x, y, z) {
+open class Vector3d(x: Double, y: Double, z: Double) : VectorN(x, y, z) {
 
     /**
      * Construct a vector with all components set to zero.
      */
-    constructor() : this(0f, 0f, 0f)
+    constructor() : this(0.0, 0.0, 0.0)
 
     /**
      * X-component.

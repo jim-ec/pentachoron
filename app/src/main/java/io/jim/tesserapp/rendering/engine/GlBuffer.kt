@@ -102,10 +102,10 @@ open class GlBuffer(
 
             for (i in 0 until buffer.capacity() step (vectorsPerInvocation * 4)) {
                 for (c in 0 until vectorsPerInvocation) {
-                    list[c].x = buffer[i + c * 4 + 0]
-                    list[c].y = buffer[i + c * 4 + 1]
-                    list[c].z = buffer[i + c * 4 + 2]
-                    list[c].q = buffer[i + c * 4 + 3]
+                    list[c].x = buffer[i + c * 4 + 0].toDouble()
+                    list[c].y = buffer[i + c * 4 + 1].toDouble()
+                    list[c].z = buffer[i + c * 4 + 2].toDouble()
+                    list[c].q = buffer[i + c * 4 + 3].toDouble()
                 }
                 f(list, i / (vectorsPerInvocation * 4))
             }

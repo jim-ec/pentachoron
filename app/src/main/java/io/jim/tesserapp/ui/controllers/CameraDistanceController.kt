@@ -12,8 +12,8 @@ class CameraDistanceController(
         context: Context,
         seeker: SeekBar,
         valueLabel: TextView,
-        min: Float = 3f,
-        max: Float = 15f
+        min: Double = 3.0,
+        max: Double = 15.0
 ) : Controller(
         ArrayList(), // TODO: temporary empty list
         seeker,
@@ -22,11 +22,11 @@ class CameraDistanceController(
         context.getString(R.string.transform_translation_value)
 ) {
 
-    override fun set(controllable: Controllable, value: Float) {
+    override fun set(controllable: Controllable, value: Double) {
         TODO("Camera controller set called")
     }
 
-    override fun setControlledValue(value: Float) {
+    override fun setControlledValue(value: Double) {
         renderData.synchronized {
             renderData.camera.distance = currentSeekerValue
         }

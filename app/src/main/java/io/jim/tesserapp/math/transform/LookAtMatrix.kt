@@ -61,10 +61,10 @@ class LookAtMatrix : Matrix(4) {
         this[2, 1] = forward.y
         this[2, 2] = forward.z
 
-        this[3, 0] = 0f
-        this[3, 1] = 0f
-        this[3, 2] = 0f
-        this[3, 3] = 1f
+        this[3, 0] = 0.0
+        this[3, 1] = 0.0
+        this[3, 2] = 0.0
+        this[3, 3] = 1.0
 
         transpose()
 

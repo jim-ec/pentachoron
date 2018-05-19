@@ -11,27 +11,27 @@ abstract class Controller(
         private var controllables: List<Controllable>,
         private val seeker: SeekBar,
         private val valueLabel: TextView,
-        private val min: Float,
-        private val max: Float,
-        startValue: Float = min,
+        private val min: Double,
+        private val max: Double,
+        startValue: Double = min,
         private val formatString: String
 ) {
     /**
      * Whenever the controlled value changed, this function is called for
      * each [controllable] registered at this time-point with the new [value].
      */
-    protected abstract fun set(controllable: Controllable, value: Float)
+    protected abstract fun set(controllable: Controllable, value: Double)
 
     /**
      * Maps the seeker progress onto the [min]-[max] range.
      */
-    protected var currentSeekerValue = 0f
+    protected var currentSeekerValue = 0.0
         get() = seeker.progress.toFloat() / seeker.max * (max - min) + min
 
     /**
      * The current value formatted into a string.
      */
-    private fun valueLabelText(value: Float) =
+    private fun valueLabelText(value: Double) =
             String.format(formatString, formatNumber(value))
 
     init {
@@ -64,6 +64,6 @@ abstract class Controller(
     }
 
     // TODO: Make abstract
-    open fun setControlledValue(value: Float) {}
+    open fun setControlledValue(value: Double) {}
 
 }

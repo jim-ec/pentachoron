@@ -18,7 +18,7 @@
 
     <string name="transform_camera">Camera</string>
     <string name="transform_camera_distance">Distance</string>
-    <string name="transform_camera_value" translatable="false">%1$.2f</string>
+    <string name="transform_camera_value" translatable="false">%1$.2.0</string>
 
     <string name="render_option_grid">Grid</string>
 

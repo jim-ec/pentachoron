@@ -4,12 +4,12 @@ package io.jim.tesserapp.math.vector
  * A 4d vector with an additional 5th homogeneous component called `w`.
  * The first 4 components are called: `x`, `y`, `z` and `q`.
  */
-class Vector4dh(x: Float, y: Float, z: Float, q: Float) : VectorN(x, y, z, q) {
+class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q) {
 
     /**
      * Construct a vector with all components set to zero.
      */
-    constructor() : this(0f, 0f, 0f, 0f)
+    constructor() : this(0.0, 0.0, 0.0, 0.0)
 
     /**
      * Though this vector is 4d, it technically has 5 columns, including the virtual w-component.
@@ -44,7 +44,7 @@ class Vector4dh(x: Float, y: Float, z: Float, q: Float) : VectorN(x, y, z, q) {
     /**
      * Intercept getting the w-component, which is always 1.
      */
-    override fun get(row: Int, col: Int): Float {
+    override fun get(row: Int, col: Int): Double {
         return if (col < 3)
             super.get(row, col)
         else
@@ -54,7 +54,7 @@ class Vector4dh(x: Float, y: Float, z: Float, q: Float) : VectorN(x, y, z, q) {
     /**
      * Intercept setting values to the fourth column, which will effectively lead to w-division.
      */
-    override fun set(row: Int, col: Int, value: Float) {
+    override fun set(row: Int, col: Int, value: Double) {
         if (col < 3)
             super.set(row, col, value)
         else {
@@ -66,7 +66,7 @@ class Vector4dh(x: Float, y: Float, z: Float, q: Float) : VectorN(x, y, z, q) {
      * W-component. This is always 1.
      * Setting this value will lead to w-division.
      */
-    private var w = 1f
+    private var w = 1.0
         set(value) {
             this /= value
         }

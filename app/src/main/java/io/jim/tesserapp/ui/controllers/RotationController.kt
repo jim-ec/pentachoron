@@ -11,18 +11,18 @@ class RotationController(
         context: Context,
         seeker: SeekBar,
         valueLabel: TextView,
-        private val setRotation: (controllable: Controllable, rotation: Float) -> Unit
+        private val setRotation: (controllable: Controllable, rotation: Double) -> Unit
 ) : Controller(
         controllables,
         seeker,
         valueLabel,
-        0f,
-        2f,
-        0f,
+        0.0,
+        2.0,
+        0.0,
         context.getString(R.string.transform_rotation_value_radians)
 ) {
 
-    override fun set(controllable: Controllable, value: Float) {
+    override fun set(controllable: Controllable, value: Double) {
         setRotation(controllable, value * Pi)
     }
 

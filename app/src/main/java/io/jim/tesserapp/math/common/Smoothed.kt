@@ -10,9 +10,9 @@ import kotlin.reflect.KProperty
  * @param transitionInterval The time it should take to fulfil one transition interval.
  */
 open class Smoothed<R>(
-        startValue: Float,
+        startValue: Double,
         private val transitionInterval: Long
-) : ReadWriteProperty<R, Float> {
+) : ReadWriteProperty<R, Double> {
 
     /**
      * The axis start is defined as the construction time.
@@ -56,12 +56,12 @@ open class Smoothed<R>(
      * or the last interval has already ended. In that case, the x at which the last interval ended
      * is mapped by [curve] and therefore does not change anymore.
      */
-    protected val currentValue: Float
+    protected val currentValue: Double
         get() = if (transitioning) {
-            curve(x.toFloat())
+            curve(x.toDouble())
         }
         else {
-            curve((lastTransitionStartX + transitionInterval).toFloat())
+            curve((lastTransitionStartX + transitionInterval).toDouble())
         }
 
     /**
@@ -69,22 +69,22 @@ open class Smoothed<R>(
      * If this value is currently transitioning, the new transition will keep the current
      * value change-rate, i.e. it will not restart from zero.
      */
-    override fun setValue(thisRef: R, property: KProperty<*>, value: Float) {
+    override fun setValue(thisRef: R, property: KProperty<*>, value: Double) {
         if (transitioning) {
             curve.reSpan(
-                    sourceX = x.toFloat(),
-                    targetX = (x + transitionInterval).toFloat(),
+                    sourceX = x.toDouble(),
+                    targetX = (x + transitionInterval).toDouble(),
                     targetY = value,
                     keepSourceGradient = true
             )
         }
         else {
             curve.span(
-                    sourceX = x.toFloat(),
+                    sourceX = x.toDouble(),
                     sourceY = currentValue,
-                    targetX = (x + transitionInterval).toFloat(),
+                    targetX = (x + transitionInterval).toDouble(),
                     targetY = value,
-                    sourceGradient = 0f
+                    sourceGradient = 0.0
             )
         }
 

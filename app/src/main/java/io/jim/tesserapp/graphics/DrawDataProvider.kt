@@ -50,8 +50,8 @@ class DrawDataProvider {
         geometries.forEach { geometry ->
             geometry.generateProjectedWireframe { position, (red, green, blue) ->
                 vertexMemory.record { memory ->
-                    memory.write(position.x, position.y, position.z, 1f)
-                    memory.write(red, green, blue, 1f)
+                    memory.write(position.x, position.y, position.z, 1.0)
+                    memory.write(red, green, blue, 1.0)
                 }
             }
         }

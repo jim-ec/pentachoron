@@ -22,24 +22,24 @@ class GraphicsView : GLSurfaceView {
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-    private val renderer = Renderer(context, resources.displayMetrics.xdpi)
+    private val renderer = Renderer(context, resources.displayMetrics.xdpi.toDouble())
 
     /**
      * Render data shared across render and other threads.
      */
     val sharedRenderData = renderer.sharedRenderData
 
-    private val touchStartPosition = Vector3d(0f, 0f, 0f)
+    private val touchStartPosition = Vector3d(0.0, 0.0, 0.0)
     private var touchStartTime = 0L
 
     private val grid = Grid(color = Color(context, R.color.colorGrid))
 
     companion object {
         private const val CLICK_TIME_MS = 100L
-        private const val TOUCH_ROTATION_SENSITIVITY = 0.02f
-        const val DEFAULT_CAMERA_DISTANCE = 8f
-        const val DEFAULT_CAMERA_HORIZONTAL_ROTATION = -Pi / 8f
-        const val DEFAULT_CAMERA_VERTICAL_ROTATION = Pi / 3f
+        private const val TOUCH_ROTATION_SENSITIVITY = 0.02
+        const val DEFAULT_CAMERA_DISTANCE = 8.0
+        const val DEFAULT_CAMERA_HORIZONTAL_ROTATION = -Pi / 8.0
+        const val DEFAULT_CAMERA_VERTICAL_ROTATION = Pi / 3.0
     }
 
     init {
@@ -79,8 +79,8 @@ class GraphicsView : GLSurfaceView {
             if (null == event) false
             else when {
                 event.action == ACTION_DOWN -> {
-                    touchStartPosition.x = event.x
-                    touchStartPosition.y = event.y
+                    touchStartPosition.x = event.x.toDouble()
+                    touchStartPosition.y = event.y.toDouble()
                     touchStartTime = System.currentTimeMillis()
                     true
                 }
@@ -93,8 +93,8 @@ class GraphicsView : GLSurfaceView {
                         renderData.camera.verticalRotation -= dy * TOUCH_ROTATION_SENSITIVITY
                     }
 
-                    touchStartPosition.x = event.x
-                    touchStartPosition.y = event.y
+                    touchStartPosition.x = event.x.toDouble()
+                    touchStartPosition.y = event.y.toDouble()
                     true
                 }
                 event.action == ACTION_UP

@@ -7,7 +7,7 @@ import org.junit.Test
 
 class Vector3dhTest {
 
-    private val vector = Vector3dh(1f, 2f, 3f)
+    private val vector = Vector3dh(1.0, 2.0, 3.0)
 
     @Test
     fun threeDimensionalButFourColumns() {
@@ -19,16 +19,16 @@ class Vector3dhTest {
     fun negate() {
         vector.apply {
             negate()
-            assertEquals(-1f, x, 0.1f)
-            assertEquals(-2f, y, 0.1f)
-            assertEquals(-3f, z, 0.1f)
+            assertEquals(-1.0, x, 0.1)
+            assertEquals(-2.0, y, 0.1)
+            assertEquals(-3.0, z, 0.1)
         }
     }
 
     @Test
     fun multiply() {
         val projection = Projection3dMatrix()
-        val translation = Matrix(4).apply { translation(Vector3d(0f, 0f, 1f)) }
+        val translation = Matrix(4).apply { translation(Vector3d(0.0, 0.0, 1.0)) }
         val matrix = Matrix(4).apply { multiplication(translation, projection) }
 
         val result = Vector3dh()
@@ -36,9 +36,9 @@ class Vector3dhTest {
         result.apply {
             multiplication(vector, matrix)
 
-            assertEquals(1f / -4f, x, 0.1f)
-            assertEquals(2f / -4f, y, 0.1f)
-            assertEquals(-1f, z, 0.1f)
+            assertEquals(1.0 / -4.0, x, 0.1)
+            assertEquals(2.0 / -4.0, y, 0.1)
+            assertEquals(-1.0, z, 0.1)
         }
     }
 

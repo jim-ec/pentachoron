@@ -12,20 +12,20 @@ data class Color(
         /**
          * The red component.
          */
-        val red: Float,
+        val red: Double,
 
         /**
          * The green component.
          */
-        val green: Float,
+        val green: Double,
 
         /**
          * The blue component.
          */
-        val blue: Float) {
+        val blue: Double) {
 
     constructor(red: Int, green: Int, blue: Int) :
-            this(red.toFloat() / 255f, green.toFloat() / 255f, blue.toFloat() / 255f)
+            this(red.toFloat() / 255.0, green.toFloat() / 255.0, blue.toFloat() / 255.0)
 
     private constructor(argb: Int) :
             this((argb shr 16) and 0xff, (argb shr 8) and 0xff, argb and 0xff)
@@ -38,7 +38,7 @@ data class Color(
         /**
          * A black color constant.
          */
-        val BLACK = Color(0f, 0f, 0f)
+        val BLACK = Color(0.0, 0.0, 0.0)
 
     }
 

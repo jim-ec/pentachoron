@@ -14,9 +14,9 @@ class Axis(
 ) : Geometry(name) {
 
     init {
-        addLine(Vector4dh(0f, 0f, 0f, 0f), Vector4dh(1f, 0f, 0f, 0f), xAxisColor)
-        addLine(Vector4dh(0f, 0f, 0f, 0f), Vector4dh(0f, 1f, 0f, 0f), yAxisColor)
-        addLine(Vector4dh(0f, 0f, 0f, 0f), Vector4dh(0f, 0f, 1f, 0f), zAxisColor)
+        addLine(Vector4dh(0.0, 0.0, 0.0, 0.0), Vector4dh(1.0, 0.0, 0.0, 0.0), xAxisColor)
+        addLine(Vector4dh(0.0, 0.0, 0.0, 0.0), Vector4dh(0.0, 1.0, 0.0, 0.0), yAxisColor)
+        addLine(Vector4dh(0.0, 0.0, 0.0, 0.0), Vector4dh(0.0, 0.0, 1.0, 0.0), zAxisColor)
     }
 
 }

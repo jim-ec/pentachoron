@@ -8,126 +8,126 @@ class VectorNTest {
 
     @Test
     fun construction() {
-        Vector4dh(1f, 2f, 5f, 4f).apply {
-            assertEquals(1f, x, 0.1f)
-            assertEquals(2f, y, 0.1f)
-            assertEquals(5f, z, 0.1f)
-            assertEquals(4f, q, 0.1f)
+        Vector4dh(1.0, 2.0, 5.0, 4.0).apply {
+            assertEquals(1.0, x, 0.1)
+            assertEquals(2.0, y, 0.1)
+            assertEquals(5.0, z, 0.1)
+            assertEquals(4.0, q, 0.1)
 
-            assertEquals(1f, x, 0.1f)
-            assertEquals(2f, y, 0.1f)
-            assertEquals(5f, z, 0.1f)
-            assertEquals(4f, q, 0.1f)
+            assertEquals(1.0, x, 0.1)
+            assertEquals(2.0, y, 0.1)
+            assertEquals(5.0, z, 0.1)
+            assertEquals(4.0, q, 0.1)
         }
     }
 
     @Test
     fun load() {
         Vector4dh().apply {
-            load(1f, 2f, 5f, 4f)
+            load(1.0, 2.0, 5.0, 4.0)
 
-            assertEquals(1f, x, 0.1f)
-            assertEquals(2f, y, 0.1f)
-            assertEquals(5f, z, 0.1f)
-            assertEquals(4f, q, 0.1f)
+            assertEquals(1.0, x, 0.1)
+            assertEquals(2.0, y, 0.1)
+            assertEquals(5.0, z, 0.1)
+            assertEquals(4.0, q, 0.1)
 
-            assertEquals(1f, x, 0.1f)
-            assertEquals(2f, y, 0.1f)
-            assertEquals(5f, z, 0.1f)
-            assertEquals(4f, q, 0.1f)
+            assertEquals(1.0, x, 0.1)
+            assertEquals(2.0, y, 0.1)
+            assertEquals(5.0, z, 0.1)
+            assertEquals(4.0, q, 0.1)
         }
     }
 
     @Test
     fun addition() {
-        val v = Vector4dh(1f, 2f, 5f, 0f)
-        val u = Vector4dh(3f, 1f, 4f, 1f)
+        val v = Vector4dh(1.0, 2.0, 5.0, 0.0)
+        val u = Vector4dh(3.0, 1.0, 4.0, 1.0)
 
         v += u
 
         v.apply {
-            assertEquals(4f, x, 0.1f)
-            assertEquals(3f, y, 0.1f)
-            assertEquals(9f, z, 0.1f)
-            assertEquals(1f, q, 0.1f)
+            assertEquals(4.0, x, 0.1)
+            assertEquals(3.0, y, 0.1)
+            assertEquals(9.0, z, 0.1)
+            assertEquals(1.0, q, 0.1)
         }
     }
 
     @Test
     fun subtraction() {
-        val v = Vector4dh(3f, 1f, 4f, 1f)
-        val u = Vector4dh(1f, 2f, 5f, 2f)
+        val v = Vector4dh(3.0, 1.0, 4.0, 1.0)
+        val u = Vector4dh(1.0, 2.0, 5.0, 2.0)
 
         v -= u
 
         v.apply {
-            assertEquals(2f, x, 0.1f)
-            assertEquals(-1f, y, 0.1f)
-            assertEquals(-1f, z, 0.1f)
-            assertEquals(-1f, q, 0.1f)
+            assertEquals(2.0, x, 0.1)
+            assertEquals(-1.0, y, 0.1)
+            assertEquals(-1.0, z, 0.1)
+            assertEquals(-1.0, q, 0.1)
         }
     }
 
     @Test
     fun scalarMultiplication() {
-        val v = VectorN(3f, 1f, 4f, 0f)
-        val u = VectorN(1f, 2f, 5f, 3f)
-        assertEquals(25f, v * u, 0.1f)
+        val v = VectorN(3.0, 1.0, 4.0, 0.0)
+        val u = VectorN(1.0, 2.0, 5.0, 3.0)
+        assertEquals(25.0, v * u, 0.1)
     }
 
     @Test
     fun scalarMultiplicationEqualsSquaredLength() {
-        VectorN(3f, 1f, 4f).apply {
-            assertEquals(26f, this * this, 0.1f)
+        VectorN(3.0, 1.0, 4.0).apply {
+            assertEquals(26.0, this * this, 0.1)
         }
     }
 
     @Test
     fun division() {
-        Vector4dh(3f, 1f, 4f, 0f).apply {
-            this /= 2f
+        Vector4dh(3.0, 1.0, 4.0, 0.0).apply {
+            this /= 2.0
 
-            assertEquals(1.5f, x, 0.1f)
-            assertEquals(0.5f, y, 0.1f)
-            assertEquals(2f, z, 0.1f)
-            assertEquals(0f, q, 0.1f)
+            assertEquals(1.5, x, 0.1)
+            assertEquals(0.5, y, 0.1)
+            assertEquals(2.0, z, 0.1)
+            assertEquals(0.0, q, 0.1)
         }
     }
 
     @Test
     fun scale() {
-        Vector4dh(3f, 1f, 4f, 4f).apply {
-            this *= 2f
+        Vector4dh(3.0, 1.0, 4.0, 4.0).apply {
+            this *= 2.0
 
-            assertEquals(6f, x, 0.1f)
-            assertEquals(2f, y, 0.1f)
-            assertEquals(8f, z, 0.1f)
-            assertEquals(8f, q, 0.1f)
+            assertEquals(6.0, x, 0.1)
+            assertEquals(2.0, y, 0.1)
+            assertEquals(8.0, z, 0.1)
+            assertEquals(8.0, q, 0.1)
         }
     }
 
     @Test
     fun cross() {
         (Vector3d()).apply {
-            crossed(Vector3d(3f, 1f, 4f), Vector3d(1f, 2f, 5f))
+            crossed(Vector3d(3.0, 1.0, 4.0), Vector3d(1.0, 2.0, 5.0))
 
-            assertEquals(-3f, x, 0.1f)
-            assertEquals(-11f, y, 0.1f)
-            assertEquals(5f, z, 0.1f)
+            assertEquals(-3.0, x, 0.1)
+            assertEquals(-11.0, y, 0.1)
+            assertEquals(5.0, z, 0.1)
         }
     }
 
     @Test
     fun length() {
-        assertEquals(sqrt(26f), VectorN(3f, 1f, 4f).length, 0.1f)
+        assertEquals(sqrt(26.0), VectorN(3.0, 1.0, 4.0).length, 0.1)
     }
 
     @Test
     fun normalized() {
-        VectorN(3f, 1f, 4f, 5f).apply {
+        VectorN(3.0, 1.0, 4.0, 5.0).apply {
             normalize()
 
-            assertEquals(1f, length, 0.1f)
+            assertEquals(1.0, length, 0.1)
         }
     }
 

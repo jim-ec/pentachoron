@@ -22,12 +22,12 @@ class ViewMatrix(
     private val matrixLookAt = LookAtMatrix()
     private val matrixScale = Matrix(4)
 
-    private val eye = Vector3d(1f, 0f, 0f)
-    private val scale = Vector3d(1f, 1f, 1f)
+    private val eye = Vector3d(1.0, 0.0, 0.0)
+    private val scale = Vector3d(1.0, 1.0, 1.0)
 
     companion object {
-        private val upVector = Vector3d(0f, 1f, 0f)
-        private val target = Vector3d(0f, 0f, 0f)
+        private val upVector = Vector3d(0.0, 1.0, 0.0)
+        private val target = Vector3d(0.0, 0.0, 0.0)
     }
 
     /**

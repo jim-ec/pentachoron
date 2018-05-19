@@ -4,12 +4,12 @@ package io.jim.tesserapp.math.vector
  * A homogeneous 3d vector. Since it is effectively a 4D vector, it can only be multiplied
  * with 4xN matrices.
  */
-class Vector3dh(x: Float, y: Float, z: Float) : Vector3d(x, y, z) {
+class Vector3dh(x: Double, y: Double, z: Double) : Vector3d(x, y, z) {
 
     /**
      * Construct a vector with all components set to zero, except [w].
      */
-    constructor() : this(0f, 0f, 0f)
+    constructor() : this(0.0, 0.0, 0.0)
 
     /**
      * Though this vector is 3d, it technically has 4 columns, including the virtual w-component.
@@ -24,7 +24,7 @@ class Vector3dh(x: Float, y: Float, z: Float) : Vector3d(x, y, z) {
     /**
      * Intercept getting the w-component, which is always 1.
      */
-    override fun get(row: Int, col: Int): Float {
+    override fun get(row: Int, col: Int): Double {
         return if (col < 3)
             super.get(row, col)
         else
@@ -34,7 +34,7 @@ class Vector3dh(x: Float, y: Float, z: Float) : Vector3d(x, y, z) {
     /**
      * Intercept setting values to the fourth column, which will effectively lead to w-division.
      */
-    override fun set(row: Int, col: Int, value: Float) {
+    override fun set(row: Int, col: Int, value: Double) {
         if (col < 3)
             super.set(row, col, value)
         else {
@@ -46,7 +46,7 @@ class Vector3dh(x: Float, y: Float, z: Float) : Vector3d(x, y, z) {
      * W-component. This is always 1.
      * Setting this value will lead to w-division.
      */
-    private var w = 1f
+    private var w = 1.0
         set(value) {
             this /= value
         }

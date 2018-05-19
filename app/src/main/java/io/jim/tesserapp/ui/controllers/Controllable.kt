@@ -20,7 +20,7 @@ interface Controllable {
     /**
      * Camera distance.
      */
-    var cameraDistance: Float
+    var cameraDistance: Double
 
     /**
      * Option whether to render the base-grid.

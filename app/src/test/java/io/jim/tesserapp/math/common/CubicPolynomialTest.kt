@@ -7,81 +7,81 @@ class CubicPolynomialTest {
 
     private val curve = CubicPolynomial().apply {
         span(
-                sourceX = -2f,
-                sourceY = -1f,
-                targetX = 5f,
-                targetY = 1f,
-                sourceGradient = 1.5f
+                sourceX = -2.0,
+                sourceY = -1.0,
+                targetX = 5.0,
+                targetY = 1.0,
+                sourceGradient = 1.5
         )
     }
 
     @Test
     fun function() {
-        assertEquals(-1.0f, curve(-2.0f), 0.1f)
-        assertEquals(-0.3f, curve(-1.5f), 0.1f)
-        assertEquals(0.2f, curve(-1.0f), 0.1f)
-        assertEquals(0.6f, curve(-0.5f), 0.1f)
-        assertEquals(0.9f, curve(0.0f), 0.1f)
-        assertEquals(1.1f, curve(0.5f), 0.1f)
-        assertEquals(1.2f, curve(1.0f), 0.1f)
-        assertEquals(1.3f, curve(1.5f), 0.1f)
-        assertEquals(1.3f, curve(2.0f), 0.1f)
-        assertEquals(1.2f, curve(2.5f), 0.1f)
-        assertEquals(1.2f, curve(3.0f), 0.1f)
-        assertEquals(1.1f, curve(3.5f), 0.1f)
-        assertEquals(1.0f, curve(4.0f), 0.1f)
-        assertEquals(1.0f, curve(4.5f), 0.1f)
-        assertEquals(1.0f, curve(5.0f), 0.1f)
+        assertEquals(-1.0, curve(-2.0), 0.1)
+        assertEquals(-0.3, curve(-1.5), 0.1)
+        assertEquals(0.2, curve(-1.0), 0.1)
+        assertEquals(0.6, curve(-0.5), 0.1)
+        assertEquals(0.9, curve(0.0), 0.1)
+        assertEquals(1.1, curve(0.5), 0.1)
+        assertEquals(1.2, curve(1.0), 0.1)
+        assertEquals(1.3, curve(1.5), 0.1)
+        assertEquals(1.3, curve(2.0), 0.1)
+        assertEquals(1.2, curve(2.5), 0.1)
+        assertEquals(1.2, curve(3.0), 0.1)
+        assertEquals(1.1, curve(3.5), 0.1)
+        assertEquals(1.0, curve(4.0), 0.1)
+        assertEquals(1.0, curve(4.5), 0.1)
+        assertEquals(1.0, curve(5.0), 0.1)
     }
 
     @Test
     fun derivation() {
-        assertEquals(1.5f, curve.derivation(-2.0f), 0.1f)
-        assertEquals(1.2f, curve.derivation(-1.5f), 0.1f)
-        assertEquals(0.9f, curve.derivation(-1.0f), 0.1f)
-        assertEquals(0.7f, curve.derivation(-0.5f), 0.1f)
-        assertEquals(0.5f, curve.derivation(0.0f), 0.1f)
-        assertEquals(0.3f, curve.derivation(0.5f), 0.1f)
-        assertEquals(0.1f, curve.derivation(1.0f), 0.1f)
-        assertEquals(0.0f, curve.derivation(1.5f), 0.1f)
-        assertEquals(0.0f, curve.derivation(2.0f), 0.1f)
-        assertEquals(-0.1f, curve.derivation(2.5f), 0.1f)
-        assertEquals(-0.1f, curve.derivation(3.0f), 0.1f)
-        assertEquals(-0.1f, curve.derivation(3.5f), 0.1f)
-        assertEquals(-0.1f, curve.derivation(4.0f), 0.1f)
-        assertEquals(0.0f, curve.derivation(4.5f), 0.1f)
-        assertEquals(0.0f, curve.derivation(5.0f), 0.1f)
+        assertEquals(1.5, curve.derivation(-2.0), 0.1)
+        assertEquals(1.2, curve.derivation(-1.5), 0.1)
+        assertEquals(0.9, curve.derivation(-1.0), 0.1)
+        assertEquals(0.7, curve.derivation(-0.5), 0.1)
+        assertEquals(0.5, curve.derivation(0.0), 0.1)
+        assertEquals(0.3, curve.derivation(0.5), 0.1)
+        assertEquals(0.1, curve.derivation(1.0), 0.1)
+        assertEquals(0.0, curve.derivation(1.5), 0.1)
+        assertEquals(0.0, curve.derivation(2.0), 0.1)
+        assertEquals(-0.1, curve.derivation(2.5), 0.1)
+        assertEquals(-0.1, curve.derivation(3.0), 0.1)
+        assertEquals(-0.1, curve.derivation(3.5), 0.1)
+        assertEquals(-0.1, curve.derivation(4.0), 0.1)
+        assertEquals(0.0, curve.derivation(4.5), 0.1)
+        assertEquals(0.0, curve.derivation(5.0), 0.1)
     }
 
     @Test
     fun extentWithSameResult() {
-        curve.reSpan(sourceX = 0f, targetX = 5f, targetY = 1f, keepSourceGradient = true)
-        assertEquals(-1.0f, curve(-2.0f), 0.1f)
-        assertEquals(-0.3f, curve(-1.5f), 0.1f)
-        assertEquals(0.2f, curve(-1.0f), 0.1f)
-        assertEquals(0.6f, curve(-0.5f), 0.1f)
-        assertEquals(0.9f, curve(0.0f), 0.1f)
-        assertEquals(1.1f, curve(0.5f), 0.1f)
-        assertEquals(1.2f, curve(1.0f), 0.1f)
-        assertEquals(1.3f, curve(1.5f), 0.1f)
-        assertEquals(1.3f, curve(2.0f), 0.1f)
-        assertEquals(1.2f, curve(2.5f), 0.1f)
-        assertEquals(1.2f, curve(3.0f), 0.1f)
-        assertEquals(1.1f, curve(3.5f), 0.1f)
-        assertEquals(1.0f, curve(4.0f), 0.1f)
-        assertEquals(1.0f, curve(4.5f), 0.1f)
-        assertEquals(1.0f, curve(5.0f), 0.1f)
+        curve.reSpan(sourceX = 0.0, targetX = 5.0, targetY = 1.0, keepSourceGradient = true)
+        assertEquals(-1.0, curve(-2.0), 0.1)
+        assertEquals(-0.3, curve(-1.5), 0.1)
+        assertEquals(0.2, curve(-1.0), 0.1)
+        assertEquals(0.6, curve(-0.5), 0.1)
+        assertEquals(0.9, curve(0.0), 0.1)
+        assertEquals(1.1, curve(0.5), 0.1)
+        assertEquals(1.2, curve(1.0), 0.1)
+        assertEquals(1.3, curve(1.5), 0.1)
+        assertEquals(1.3, curve(2.0), 0.1)
+        assertEquals(1.2, curve(2.5), 0.1)
+        assertEquals(1.2, curve(3.0), 0.1)
+        assertEquals(1.1, curve(3.5), 0.1)
+        assertEquals(1.0, curve(4.0), 0.1)
+        assertEquals(1.0, curve(4.5), 0.1)
+        assertEquals(1.0, curve(5.0), 0.1)
     }
 
     @Test
     fun extentResultingInDifferentCurve() {
-        curve.reSpan(sourceX = 0f, targetX = 3f, targetY = 0f, keepSourceGradient = true)
-        assertEquals(0.9f, curve(0.0f), 0.1f)
-        assertEquals(1.0f, curve(0.5f), 0.1f)
-        assertEquals(0.9f, curve(1.0f), 0.1f)
-        assertEquals(0.6f, curve(1.5f), 0.1f)
-        assertEquals(0.3f, curve(2.0f), 0.1f)
-        assertEquals(0.1f, curve(2.5f), 0.1f)
-        assertEquals(0.0f, curve(3.0f), 0.1f)
+        curve.reSpan(sourceX = 0.0, targetX = 3.0, targetY = 0.0, keepSourceGradient = true)
+        assertEquals(0.9, curve(0.0), 0.1)
+        assertEquals(1.0, curve(0.5), 0.1)
+        assertEquals(0.9, curve(1.0), 0.1)
+        assertEquals(0.6, curve(1.5), 0.1)
+        assertEquals(0.3, curve(2.0), 0.1)
+        assertEquals(0.1, curve(2.5), 0.1)
+        assertEquals(0.0, curve(3.0), 0.1)
     }
 }

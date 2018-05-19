@@ -3,7 +3,7 @@ package io.jim.tesserapp.math.transform
 import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.formatNumber
 import io.jim.tesserapp.math.vector.VectorN
-import java.nio.FloatBuffer
+import java.nio.DoubleBuffer
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -21,7 +21,7 @@ open class Matrix(
     /**
      * Underlying float buffer.
      */
-    internal val floats = FloatBuffer.allocate(rows * cols)
+    internal val doubles = DoubleBuffer.allocate(rows * cols)
 
     /**
      * Construct a quadratic matrix with [size] rows and columns.
@@ -39,7 +39,7 @@ open class Matrix(
      */
     fun identity() {
         forEachComponent { row, col ->
-            floats.put(row * cols + col, if (row == col) 1f else 0f)
+            doubles.put(row * cols + col, if (row == col) 1.0 else 0.0)
         }
     }
 
@@ -54,9 +54,9 @@ open class Matrix(
     }
 
     /**
-     * Loads a complete set of floats into the matrix.
+     * Loads a complete set of doubles into the matrix.
      *
-     * @param rowVectors Lists containing floats. Each list is considered as one matrix row.
+     * @param rowVectors Lists containing doubles. Each list is considered as one matrix row.
      * @throws MathException If [rowVectors] has not [rows] rows.
      * @throws MathException If any list in [rowVectors] has not [cols] columns.
      */
@@ -109,7 +109,7 @@ open class Matrix(
      * @param factor Scale amount for each matrix axis.
      * @throws IsNotQuadraticException
      */
-    fun scale(factor: Float) {
+    fun scale(factor: Double) {
         if (rows != cols)
             throw IsNotQuadraticException()
 
@@ -121,7 +121,7 @@ open class Matrix(
     /**
      * Load a translation.
      * This does not reset any parts of the matrix,
-     * just the floats representing translation are modified.
+     * just the doubles representing translation are modified.
      * @throws IncompatibleTransformDimension
      * @throws IsNotQuadraticException
      */
@@ -141,7 +141,7 @@ open class Matrix(
      * The rotation takes place on the given [a]-[b]-plane, the angle is defined in [radians].
      * @throws IncompatibleTransformDimension
      */
-    fun rotation(a: Int, b: Int, radians: Float) {
+    fun rotation(a: Int, b: Int, radians: Double) {
         if (a + 1 >= rows || a + 1 >= cols)
             throw IncompatibleTransformDimension(a + 1)
         if (b + 1 >= rows || b + 1 >= cols)
@@ -159,7 +159,7 @@ open class Matrix(
      * @param near Near plane. If Vector lies on that plane (negated), it will be projected to 0.
      * @param far Far plane. If Vector lies on that plane (negated), it will be projected to 1.
      */
-    fun perspective2D(near: Float, far: Float) {
+    fun perspective2D(near: Double, far: Double) {
 
         if (near <= 0.0 || far <= 0.0 || near > far)
             throw MathException("Invalid near=$near or far=$far parameter")
@@ -174,15 +174,15 @@ open class Matrix(
      * Load a 3D to 2D perspective matrix without remapping z.
      */
     fun perspective2D() {
-        this[2, 3] = -1.0f
-        this[3, 3] = 0.0f
+        this[2, 3] = -1.0
+        this[3, 3] = 0.0
     }
 
     /**
      * Transpose the matrix.
      */
     fun transpose() {
-        var tmp: Float
+        var tmp: Double
         forEachComponent { row, col ->
             // Do neither swap the same coefficients twice nor the pivots at all:
             if (row < col) {
@@ -196,14 +196,14 @@ open class Matrix(
     /**
      * Set the float at [row]/[col] to [value].
      */
-    public override operator fun set(row: Int, col: Int, value: Float) {
-        floats.put(row * cols + col, value)
+    public override operator fun set(row: Int, col: Int, value: Double) {
+        doubles.put(row * cols + col, value)
     }
 
     /**
      * Return the float at [row]/[col].
      */
-    public override operator fun get(row: Int, col: Int) = floats[row * cols + col]
+    public override operator fun get(row: Int, col: Int) = doubles[row * cols + col]
 
     /**
      * Shortly represents this matrix as a string.

@@ -6,6 +6,7 @@ import io.jim.tesserapp.math.transform.Matrix
 import io.jim.tesserapp.rendering.engine.GlException
 import io.jim.tesserapp.rendering.engine.GlProgram
 import io.jim.tesserapp.rendering.engine.GlTransformFeedback
+import io.jim.tesserapp.util.allocateNativeFloatMemory
 
 /**
  * A shader pipeline with a vertex shader, fragment shader and locations of all attributes and
@@ -30,11 +31,20 @@ class Shader(assets: AssetManager) : GlProgram(
     private val viewMatrixLocation = GLES30.glGetUniformLocation(programHandle, "V")
     private val projectionMatrixLocation = GLES30.glGetUniformLocation(programHandle, "P")
 
+    private val floatBuffer = allocateNativeFloatMemory(16).asFloatBuffer()
+
+    private fun writeMatrixIntoFloatBuffer(matrix: Matrix) {
+        matrix.forEachComponent { row, col ->
+            floatBuffer.put(row * matrix.cols + col, matrix[row, col].toFloat())
+        }
+    }
+
     /**
      * Upload [matrix] to the view matrix uniform.
      */
     fun uploadViewMatrix(matrix: Matrix) {
-        GLES30.glUniformMatrix4fv(viewMatrixLocation, 1, false, matrix.floats)
+        writeMatrixIntoFloatBuffer(matrix)
+        GLES30.glUniformMatrix4fv(viewMatrixLocation, 1, false, floatBuffer)
         GlException.check("Uploading view matrix")
     }
 
@@ -42,7 +52,8 @@ class Shader(assets: AssetManager) : GlProgram(
      * Upload [matrix] to the projection matrix uniform.
      */
     fun uploadProjectionMatrix(matrix: Matrix) {
-        GLES30.glUniformMatrix4fv(projectionMatrixLocation, 1, false, matrix.floats)
+        writeMatrixIntoFloatBuffer(matrix)
+        GLES30.glUniformMatrix4fv(projectionMatrixLocation, 1, false, floatBuffer)
         GlException.check("Uploading projection matrix")
     }
 

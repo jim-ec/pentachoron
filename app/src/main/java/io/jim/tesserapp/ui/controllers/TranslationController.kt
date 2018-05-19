@@ -10,10 +10,10 @@ class TranslationController(
         context: Context,
         seeker: SeekBar,
         valueLabel: TextView,
-        min: Float = -5f,
-        max: Float = 5f,
-        startValue: Float = 0f,
-        private val setTranslation: (controllable: Controllable, translation: Float) -> Unit
+        min: Double = -5.0,
+        max: Double = 5.0,
+        startValue: Double = 0.0,
+        private val setTranslation: (controllable: Controllable, translation: Double) -> Unit
 ) : Controller(
         controllables,
         seeker,
@@ -24,7 +24,7 @@ class TranslationController(
         context.getString(R.string.transform_translation_value)
 ) {
 
-    override fun set(controllable: Controllable, value: Float) {
+    override fun set(controllable: Controllable, value: Double) {
         setTranslation(controllable, value)
     }
 
