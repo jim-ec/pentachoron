@@ -6,21 +6,6 @@ package io.jim.tesserapp.ui.controllers
 interface Controllable {
 
     /**
-     * Rotation transform.
-     */
-    val rotation: Rotatable
-
-    /**
-     * Translation transform.
-     */
-    val translation: Translatable
-
-    /**
-     * Camera distance.
-     */
-    var cameraDistance: Double
-
-    /**
      * Option whether to render the base-grid.
      */
     var renderGrid: Boolean
