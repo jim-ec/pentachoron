@@ -20,6 +20,9 @@ data class SharedRenderData(
      */
     val camera = Camera()
 
+    /**
+     * The controlled geometry.
+     */
     lateinit var controlledGeometry: Geometry
 
     /**
