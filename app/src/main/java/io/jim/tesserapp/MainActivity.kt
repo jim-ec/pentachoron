@@ -24,6 +24,6 @@ class MainActivity : AppCompatActivity() {
         cubeView = findViewById(R.id.cubeView)
         controllerView = findViewById(R.id.controllerView)
 
-        controllerView.control(cubeView.cubeController)
+        controllerView.control(cubeView.coordinateSystemView.sharedRenderData, cubeView.cubeController)
     }
 }

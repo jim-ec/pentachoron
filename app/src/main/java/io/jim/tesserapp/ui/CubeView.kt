@@ -26,10 +26,6 @@ class CubeView : FrameLayout {
      */
     val cubeController = object : Controllable {
 
-        override fun setup(view: ControllerView) {
-            view.controlCamera(coordinateSystemView.sharedRenderData)
-        }
-
         override val rotation = object : Rotatable {
 
             /**
@@ -137,7 +133,7 @@ class CubeView : FrameLayout {
         }
     }
 
-    private val coordinateSystemView = GraphicsView(context, null)
+    val coordinateSystemView = GraphicsView(context, null)
 
     /**
      * The featuring cube.

@@ -17,29 +17,37 @@ import io.jim.tesserapp.ui.controllers.*
  */
 class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
-    private var controlTarget: Controllable? = null
-    private val controllers: MutableList<Controller>
+    private lateinit var controlTarget: Controllable
+    private lateinit var controllers: List<Controller>
 
     init {
         View.inflate(context, R.layout.view_controller, this)
 
         // Pass render options:
         findViewById<Switch>(R.id.renderOptionGrid).setOnCheckedChangeListener { _, isChecked ->
-            controlTarget?.renderGrid = isChecked
+            controlTarget.renderGrid = isChecked
         }
 
         // Disable 4th dimensional seeker as that is a feature not implemented yet:
         findViewById<SeekBar>(R.id.seekerRotationQ).isEnabled = false
         findViewById<SeekBar>(R.id.seekerTranslationQ).isEnabled = false
+    }
 
-        controllers = mutableListOf(
+    /**
+     * Declare [controllable] to be controlled by this controller.
+     */
+    fun control(renderData: SharedRenderData, controllable: Controllable) {
+        controlTarget = controllable
+
+        controllers = listOf(
+
                 // X-Rotation:
                 RotationController(
                         context,
                         findViewById(R.id.seekerRotationX),
                         findViewById(R.id.valueRotationX)
                 ) { rotation ->
-                    controlTarget?.rotation?.x = rotation
+                    controlTarget.rotation.x = rotation
                 },
 
                 // Y-Rotation:
@@ -48,7 +56,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerRotationY),
                         findViewById(R.id.valueRotationY)
                 ) { rotation ->
-                    controlTarget?.rotation?.y = rotation
+                    controlTarget.rotation.y = rotation
                 },
 
                 // Z-Rotation:
@@ -57,7 +65,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerRotationZ),
                         findViewById(R.id.valueRotationZ)
                 ) { rotation ->
-                    controlTarget?.rotation?.z = rotation
+                    controlTarget.rotation.z = rotation
                 },
 
                 // Q-Rotation:
@@ -66,7 +74,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerRotationQ),
                         findViewById(R.id.valueRotationQ)
                 ) { rotation ->
-                    controlTarget?.rotation?.q = rotation
+                    controlTarget.rotation.q = rotation
                 },
 
                 // X-Translation:
@@ -75,7 +83,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerTranslationX),
                         findViewById(R.id.valueTranslationX)
                 ) { translation ->
-                    controlTarget?.translation?.x = translation
+                    controlTarget.translation.x = translation
                 },
 
                 // Y-Translation:
@@ -84,7 +92,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerTranslationY),
                         findViewById(R.id.valueTranslationY)
                 ) { translation ->
-                    controlTarget?.translation?.y = translation
+                    controlTarget.translation.y = translation
                 },
 
                 // Z-Translation:
@@ -93,7 +101,7 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerTranslationZ),
                         findViewById(R.id.valueTranslationZ)
                 ) { translation ->
-                    controlTarget?.translation?.z = translation
+                    controlTarget.translation.z = translation
                 },
 
                 // W-Translation:
@@ -102,35 +110,17 @@ class ControllerView(context: Context, attrs: AttributeSet?) : FrameLayout(conte
                         findViewById(R.id.seekerTranslationQ),
                         findViewById(R.id.valueTranslationQ)
                 ) { translation ->
-                    controlTarget?.translation?.q = translation
-                }
-        )
-    }
+                    controlTarget.translation.q = translation
+                },
 
-    /**
-     * Declare [controllable] to be controlled by this controller.
-     */
-    fun control(controllable: Controllable) {
-        controlTarget = controllable
-
-        controllable.setup(this)
-
-        controllers.forEach {
-            it.reevaluate()
-        }
-    }
-
-    fun controlCamera(renderData: SharedRenderData) {
-        val controller = CameraDistanceController(
-                renderData,
-                context,
-                findViewById(R.id.seekerCameraDistance),
-                findViewById(R.id.valueCameraDistance)
+                CameraDistanceController(
+                        renderData,
+                        context,
+                        findViewById(R.id.seekerCameraDistance),
+                        findViewById(R.id.valueCameraDistance)
+                )
         )
 
-        controller.reevaluate()
-
-        controllers += controller
     }
 
 }
