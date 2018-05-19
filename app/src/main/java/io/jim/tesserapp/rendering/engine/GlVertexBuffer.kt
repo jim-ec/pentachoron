@@ -25,7 +25,7 @@ open class GlVertexBuffer(
      *
      * @throws RuntimeException If another VAO is currently bound to GL.
      */
-    fun vertexArrayBound(f: () -> Unit) {
+    inline fun vertexArrayBound(f: () -> Unit) {
 
         if (0 != resultCode { GLES30.glGetIntegerv(GLES30.GL_VERTEX_ARRAY_BINDING, resultCode) })
             throw RuntimeException("Cannot bind VAO, another one is currently bound")
