@@ -9,7 +9,6 @@ import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Axis
 import io.jim.tesserapp.geometry.Grid
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.math.common.Pi
 import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.rendering.Renderer
 
@@ -38,8 +37,8 @@ class GraphicsView : GLSurfaceView {
         private const val CLICK_TIME_MS = 100L
         private const val TOUCH_ROTATION_SENSITIVITY = 0.02
         const val DEFAULT_CAMERA_DISTANCE = 8.0
-        const val DEFAULT_CAMERA_HORIZONTAL_ROTATION = -Pi / 8.0
-        const val DEFAULT_CAMERA_VERTICAL_ROTATION = Pi / 3.0
+        const val DEFAULT_CAMERA_HORIZONTAL_ROTATION = -Math.PI / 8.0
+        const val DEFAULT_CAMERA_VERTICAL_ROTATION = Math.PI / 3.0
     }
 
     init {

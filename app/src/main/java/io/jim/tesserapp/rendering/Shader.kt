@@ -2,7 +2,7 @@ package io.jim.tesserapp.rendering
 
 import android.content.res.AssetManager
 import android.opengl.GLES30
-import io.jim.tesserapp.math.transform.Matrix
+import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.rendering.engine.GlException
 import io.jim.tesserapp.rendering.engine.GlProgram
 import io.jim.tesserapp.rendering.engine.GlTransformFeedback

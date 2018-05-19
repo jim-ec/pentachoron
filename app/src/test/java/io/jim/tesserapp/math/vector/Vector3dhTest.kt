@@ -1,7 +1,7 @@
 package io.jim.tesserapp.math.vector
 
-import io.jim.tesserapp.math.transform.Matrix
-import io.jim.tesserapp.math.transform.Projection3dMatrix
+import io.jim.tesserapp.math.matrix.Matrix
+import io.jim.tesserapp.math.matrix.Projection3dMatrix
 import junit.framework.Assert.assertEquals
 import org.junit.Test
 

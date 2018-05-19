@@ -1,7 +1,6 @@
-package io.jim.tesserapp.math.transform
+package io.jim.tesserapp.math.matrix
 
 import io.jim.tesserapp.math.common.MathException
-import io.jim.tesserapp.math.common.Pi
 import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.math.vector.Vector3dh
 import io.jim.tesserapp.math.vector.VectorN
@@ -95,7 +94,7 @@ class MatrixTest {
 
     @Test
     fun rotation() {
-        matrix.rotation(1, 2, Pi / 2)
+        matrix.rotation(1, 2, Math.PI / 2)
         val vector = Vector3dh(0.0, 3.0, 0.0)
 
         Vector3dh().apply {

@@ -1,4 +1,4 @@
-package io.jim.tesserapp.math.transform
+package io.jim.tesserapp.math.matrix
 
 import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.math.vector.Vector3dh

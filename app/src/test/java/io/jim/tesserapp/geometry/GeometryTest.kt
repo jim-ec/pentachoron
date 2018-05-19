@@ -1,7 +1,6 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.math.common.Pi
 import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.util.assertEquals
 import org.junit.Assert.assertEquals
@@ -16,7 +15,7 @@ class GeometryTest {
     fun computeModelMatrices() {
 
         val geometry = Geometry("Geometry").apply {
-            rotation.z = Pi / 2
+            rotation.z = Math.PI / 2
             translation.x = 1.0
             computeModelMatrix()
         }

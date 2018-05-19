@@ -2,7 +2,7 @@ package io.jim.tesserapp.math.vector
 
 import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.formatNumber
-import io.jim.tesserapp.math.transform.MatrixMultipliable
+import io.jim.tesserapp.math.matrix.MatrixMultipliable
 import kotlin.math.sqrt
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty

@@ -1,4 +1,4 @@
-package io.jim.tesserapp.math.transform
+package io.jim.tesserapp.math.matrix
 
 /**
  * Projection matrix, projecting 3D into 2D.

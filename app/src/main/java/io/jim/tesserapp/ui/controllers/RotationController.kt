@@ -4,7 +4,6 @@ import android.content.Context
 import android.widget.SeekBar
 import android.widget.TextView
 import io.jim.tesserapp.R
-import io.jim.tesserapp.math.common.Pi
 
 class RotationController(
         controllables: List<Controllable>,
@@ -23,7 +22,7 @@ class RotationController(
 ) {
 
     override fun set(controllable: Controllable, value: Double) {
-        setRotation(controllable, value * Pi)
+        setRotation(controllable, value * Math.PI)
     }
 
 }

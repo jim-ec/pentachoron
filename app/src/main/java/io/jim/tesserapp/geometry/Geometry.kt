@@ -2,7 +2,7 @@ package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.common.Smoothed
-import io.jim.tesserapp.math.transform.Matrix
+import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.math.vector.Vector3dh
 import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.ui.controllers.Rotatable
