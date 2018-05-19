@@ -17,7 +17,7 @@ class Camera {
      */
     var distance by Smoothed<Camera>(
             startValue = 0.0,
-            transitionInterval = 300L
+            transitionInterval = 300.0
     )
 
     /**
@@ -26,7 +26,7 @@ class Camera {
      */
     var horizontalRotation by Smoothed<Camera>(
             startValue = 0.0,
-            transitionInterval = 80L
+            transitionInterval = 80.0
     )
 
     /**
@@ -35,7 +35,7 @@ class Camera {
      */
     var verticalRotation by Smoothed<Camera>(
             startValue = 0.0,
-            transitionInterval = 80L
+            transitionInterval = 80.0
     )
 
 }

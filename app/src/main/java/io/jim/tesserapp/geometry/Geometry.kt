@@ -65,10 +65,10 @@ open class Geometry(
      * Final rotation is component-wise summed up from [rotation] and [smoothRotation].
      */
     val smoothRotation = object : Rotatable {
-        override var x by Smoothed<Rotatable>(0.0, 200L)
-        override var y by Smoothed<Rotatable>(0.0, 200L)
-        override var z by Smoothed<Rotatable>(0.0, 200L)
-        override var q by Smoothed<Rotatable>(0.0, 200L)
+        override var x by Smoothed<Rotatable>(0.0, 200.0)
+        override var y by Smoothed<Rotatable>(0.0, 200.0)
+        override var z by Smoothed<Rotatable>(0.0, 200.0)
+        override var q by Smoothed<Rotatable>(0.0, 200.0)
     }
 
     /**
@@ -76,10 +76,10 @@ open class Geometry(
      * Final translation is component-wise summed up from [translation] and [smoothTranslation].
      */
     val smoothTranslation = object : Translatable {
-        override var x by Smoothed<Translatable>(0.0, 200L)
-        override var y by Smoothed<Translatable>(0.0, 200L)
-        override var z by Smoothed<Translatable>(0.0, 200L)
-        override var q by Smoothed<Translatable>(0.0, 200L)
+        override var x by Smoothed<Translatable>(0.0, 200.0)
+        override var y by Smoothed<Translatable>(0.0, 200.0)
+        override var z by Smoothed<Translatable>(0.0, 200.0)
+        override var q by Smoothed<Translatable>(0.0, 200.0)
     }
 
     /**
