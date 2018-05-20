@@ -35,7 +35,7 @@ class SmoothedTest {
         private const val STEP_INTERVAL = 250.0
     }
 
-    private var value by NonTimedSmoothed<SmoothedTest>(2.0)
+    private var value by NonTimedSmoothed(2.0)
 
     @Test
     fun initialValueIsStartValue() {

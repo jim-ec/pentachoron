@@ -15,7 +15,7 @@ class Camera {
     /**
      * Distance of camera position from center.
      */
-    var distance by Smoothed<Camera>(
+    var distance by Smoothed(
             startValue = 0.0,
             transitionInterval = 300.0
     )
@@ -24,7 +24,7 @@ class Camera {
      * Rotation on the horizontal orbit.
      * This is the base rotation.
      */
-    var horizontalRotation by Smoothed<Camera>(
+    var horizontalRotation by Smoothed(
             startValue = 0.0,
             transitionInterval = 80.0
     )
@@ -33,7 +33,7 @@ class Camera {
      * Rotation on the vertical orbit.
      * This is the secondary rotation.
      */
-    var verticalRotation by Smoothed<Camera>(
+    var verticalRotation by Smoothed(
             startValue = 0.0,
             transitionInterval = 80.0
     )
