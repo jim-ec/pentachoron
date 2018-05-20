@@ -5,25 +5,37 @@ import io.jim.tesserapp.math.vector.VectorN
 
 /**
  * Represents a line by connecting two positions.
- * These positions are referred by the two indices [from] and [to].
- * @property positions List of positions into which the indices point.
- * @property from Index to position at which the line starts.
- * @property to Index to position at which the line ends.
+ * These positions are referred by the two indices [startIndex] and [endIndex].
+ *
+ * @param positions List of positions into which the indices point.
+ *
+ * @property startIndex Index to position at which the line starts.
+ * @property endIndex Index to position at which the line ends.
  * @property color Line color.
  */
-data class Line<out T : VectorN>(
-        val positions: List<T>,
-        val from: Int,
-        val to: Int,
+class Line<out T : VectorN>(
+        positions: List<T>,
+        val startIndex: Int,
+        val endIndex: Int,
         var color: Color
 ) {
+
+    /**
+     * Start point.
+     */
+    val start = positions[startIndex]
+
+    /**
+     * End point.
+     */
+    val end = positions[endIndex]
 
     /**
      * Calls [f] for both the start position and the end position.
      */
     inline fun forEachPosition(f: (position: T) -> Unit) {
-        f(positions[from])
-        f(positions[to])
+        f(start)
+        f(end)
     }
 
 }

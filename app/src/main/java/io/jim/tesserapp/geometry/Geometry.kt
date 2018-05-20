@@ -204,8 +204,8 @@ open class Geometry(
         lines += lines.map {
             Line(
                     positions,
-                    it.from + size,
-                    it.to + size,
+                    it.startIndex + size,
+                    it.endIndex + size,
                     if (keepColors) it.color else baseColor
             )
         }
@@ -256,8 +256,8 @@ open class Geometry(
      */
     inline fun forEachVertex(f: (position: Vector4dh, color: Color) -> Unit) {
         lines.forEach {
-            f(positions[it.from], it.color)
-            f(positions[it.to], it.color)
+            f(it.start, it.color)
+            f(it.end, it.color)
         }
     }
 
