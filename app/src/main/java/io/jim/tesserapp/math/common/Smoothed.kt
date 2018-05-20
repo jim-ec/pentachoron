@@ -6,12 +6,23 @@ import kotlin.reflect.KProperty
 /**
  * Provides a value that, if changed, transitions smoothly over x-axis defined as time.
  *
- * @param startValue The start the property should has.
- * @param transitionInterval The time it should take to fulfil one transition interval.
+ * @param startValue
+ * The start the property should has.
+ *
+ * @property transitionInterval
+ * The time it should take to fulfil one transition interval.
+ *
+ * @property delegateDifference
+ * If `true`, property read will return the value difference since the last read operation,
+ * instead of the current absolute value.
+ * To keep track of the absolute value, you have to accumulate all read retrievals, which
+ * implies that you have to define explicitly who can read the property at all.
+ * Otherwise, the accumulated absolute value will get corrupt.
  */
 open class Smoothed<R>(
         startValue: Double,
-        private val transitionInterval: Double
+        private val transitionInterval: Double,
+        private val delegateDifference: Boolean = false
 ) : ReadWriteProperty<R, Double> {
 
     /**
@@ -47,6 +58,8 @@ open class Smoothed<R>(
      */
     private val transitioning: Boolean
         get() = x - lastTransitionStartX < transitionInterval
+
+    private var oldValue = startValue
 
     /**
      * The current value.
@@ -92,6 +105,13 @@ open class Smoothed<R>(
      * Get the current value.
      */
     override fun getValue(thisRef: R, property: KProperty<*>) =
-            currentValue
+            currentValue.also {
+                return if (delegateDifference) {
+                    val old = oldValue
+                    oldValue = it
+                    it - old
+                }
+                else it
+            }
 
 }
