@@ -45,7 +45,7 @@ open class Geometry(
     /**
      * List containing all lines constructed from [positions] using indices.
      */
-    val lines = ArrayList<Line>()
+    val lines = ArrayList<Line<Vector4dh>>()
 
     /**
      * This geometries model matrix.
@@ -119,7 +119,7 @@ open class Geometry(
      * @param color Line color, defaults to geometry's [baseColor].
      */
     protected fun addLine(a: Int, b: Int, color: Color = baseColor) {
-        lines += Line(a, b, color)
+        lines += Line(positions, a, b, color)
         onGeometryChanged()
     }
 
@@ -203,6 +203,7 @@ open class Geometry(
 
         lines += lines.map {
             Line(
+                    positions,
                     it.from + size,
                     it.to + size,
                     if (keepColors) it.color else baseColor
@@ -267,19 +268,19 @@ open class Geometry(
     inline fun generateProjectedWireframe(f: (position: Vector3dh, color: Color) -> Unit) {
         computeModelMatrix()
 
-        val position = Vector4dh()
+        val transformedPosition = Vector4dh()
         val homogeneous = Vector3dh()
 
         lines.forEach { line ->
-            line.forEachPosition { positionIndex ->
+            line.forEachPosition { position ->
 
                 // Apply 4-dimensional model matrix to 4d point:
-                position.multiplication(positions[positionIndex], modelMatrix)
+                transformedPosition.multiplication(position, modelMatrix)
 
                 // Project vector down to a 3d volume:
-                position /= position.q + Q_PROJECTION_VOLUME
+                transformedPosition /= transformedPosition.q + Q_PROJECTION_VOLUME
 
-                homogeneous.load(position.x, position.y, position.z)
+                homogeneous.load(transformedPosition.x, transformedPosition.y, transformedPosition.z)
 
                 f(homogeneous, line.color)
             }
