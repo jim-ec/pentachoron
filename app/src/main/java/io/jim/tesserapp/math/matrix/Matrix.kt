@@ -39,7 +39,7 @@ open class Matrix(
      */
     fun identity() {
         forEachComponent { row, col ->
-            doubles.put(row * cols + col, if (row == col) 1.0 else 0.0)
+            doubles.put(rowMajorIndex(row, col), if (row == col) 1.0 else 0.0)
         }
     }
 
@@ -182,28 +182,33 @@ open class Matrix(
      * Transpose the matrix.
      */
     fun transpose() {
-        var tmp: Double
+        var swap: Double
         forEachComponent { row, col ->
             // Do neither swap the same coefficients twice nor the pivots at all:
             if (row < col) {
-                tmp = this[row, col]
+                swap = this[row, col]
                 this[row, col] = this[col, row]
-                this[col, row] = tmp
+                this[col, row] = swap
             }
         }
     }
 
     /**
+     * Return a linear row-major index referring to the cell at [row]/[col].
+     */
+    fun rowMajorIndex(row: Int, col: Int) = row * cols + col
+
+    /**
      * Set the float at [row]/[col] to [value].
      */
     public override operator fun set(row: Int, col: Int, value: Double) {
-        doubles.put(row * cols + col, value)
+        doubles.put(rowMajorIndex(row, col), value)
     }
 
     /**
      * Return the float at [row]/[col].
      */
-    public override operator fun get(row: Int, col: Int) = doubles[row * cols + col]
+    public override operator fun get(row: Int, col: Int) = doubles[rowMajorIndex(row, col)]
 
     /**
      * Shortly represents this matrix as a string.

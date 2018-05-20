@@ -35,7 +35,7 @@ class Shader(assets: AssetManager) : GlProgram(
 
     private fun writeMatrixIntoFloatBuffer(matrix: Matrix) {
         matrix.forEachComponent { row, col ->
-            floatBuffer.put(row * matrix.cols + col, matrix[row, col].toFloat())
+            floatBuffer.put(matrix.rowMajorIndex(row, col), matrix[row, col].toFloat())
         }
     }
 
