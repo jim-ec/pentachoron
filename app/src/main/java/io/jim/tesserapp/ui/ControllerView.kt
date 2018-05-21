@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import android.widget.SeekBar
 import android.widget.Switch
 import io.jim.tesserapp.R
+import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.graphics.SharedRenderData
 import io.jim.tesserapp.ui.controllers.cameraDistanceController
 import io.jim.tesserapp.ui.controllers.rotationController
@@ -63,7 +64,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerRotationX),
                     findViewById(R.id.valueRotationX)
             ) { rotation ->
-                it.rotateX(rotation - oldXRotation)
+                it.rotateX(rotation - oldXRotation, Geometry.TransformApplyMode.PREPEND)
                 oldXRotation = rotation
             }
 
@@ -75,7 +76,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerRotationY),
                     findViewById(R.id.valueRotationY)
             ) { rotation ->
-                it.rotateY(rotation - oldYRotation)
+                it.rotateY(rotation - oldYRotation, Geometry.TransformApplyMode.PREPEND)
                 oldYRotation = rotation
             }
 
@@ -87,7 +88,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerRotationZ),
                     findViewById(R.id.valueRotationZ)
             ) { rotation ->
-                it.rotateZ(rotation - oldZRotation)
+                it.rotateZ(rotation - oldZRotation, Geometry.TransformApplyMode.PREPEND)
                 oldZRotation = rotation
             }
 
@@ -99,11 +100,16 @@ class ControllerView : FrameLayout {
             ) {}
 
             // X-Translation:
+            var oldXTranslation = 0.0
+
             translationController(
                     context,
                     findViewById(R.id.seekerTranslationX),
                     findViewById(R.id.valueTranslationX)
-            ) { }
+            ) { translation ->
+                it.translateX(translation - oldXTranslation, Geometry.TransformApplyMode.PREPEND)
+                oldXTranslation = translation
+            }
 
             // Y-Translation:
             translationController(

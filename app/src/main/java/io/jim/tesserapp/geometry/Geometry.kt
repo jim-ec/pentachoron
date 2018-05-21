@@ -34,6 +34,25 @@ open class Geometry(
     }
 
     /**
+     * Describes the way new transform, i.e. [currentTransformMatrix], is applied,
+     * say *merged* into previous, already existent transform, i.e. [modelMatrix].
+     */
+    enum class TransformApplyMode {
+
+        /**
+         * New transform is prepended to previous transform,
+         * i.e. previous transform is parented to new transform.
+         */
+        PREPEND,
+
+        /**
+         * New transform is appended to previous transform,
+         * i.e. new transform is parented to previous transform.
+         */
+        APPEND
+    }
+
+    /**
      * List containing all positions.
      */
     val positions = ArrayList<Vector4dh>()
@@ -68,62 +87,91 @@ open class Geometry(
      * Rotate the geometry around the x-axis, i.e. the yz-plane.
      * The set rotation is in no ways absolute, but rather accumulated to the current transform.
      *
-     * Since this rotation is *prepended* to the [currentTransformMatrix], the rotation
-     * is always *aligned* with the x-axis.
-     *
      * @param deltaAngle Amount of rotation, in radians.
+     *
+     * @param mode How this new transform will be applied to already existent transform.
+     * - [TransformApplyMode.PREPEND]: Rotation stays *aligned* with the global x-axis.
+     * - [TransformApplyMode.APPEND]: Rotates locally around the current geometry's x-axis.
      */
-    fun rotateX(deltaAngle: Double) {
+    fun rotateX(deltaAngle: Double, mode: TransformApplyMode) {
         currentTransformMatrix.identity()
         currentTransformMatrix.rotation(a = 1, b = 2, radians = deltaAngle)
 
-        prependCurrentTransform()
+        applyCurrentTransform(mode)
     }
 
     /**
      * Rotate the geometry around the y-axis, i.e. the zx-plane.
      * The set rotation is in no ways absolute, but rather accumulated to the current transform.
      *
-     * Since this rotation is *prepended* to the [currentTransformMatrix], the rotation
-     * is always *aligned* with the y-axis.
-     *
      * @param deltaAngle Amount of rotation, in radians.
+     *
+     * @param mode How this new transform will be applied to already existent transform.
+     * - [TransformApplyMode.PREPEND]: Rotation stays *aligned* with the global y-axis.
+     * - [TransformApplyMode.APPEND]: Rotates locally around the current geometry's y-axis.
      */
-    fun rotateY(deltaAngle: Double) {
+    fun rotateY(deltaAngle: Double, mode: TransformApplyMode) {
         currentTransformMatrix.identity()
         currentTransformMatrix.rotation(a = 2, b = 0, radians = deltaAngle)
 
-        prependCurrentTransform()
+        applyCurrentTransform(mode)
     }
 
     /**
      * Rotate the geometry around the z-axis, i.e. the xy-plane.
      * The set rotation is in no ways absolute, but rather accumulated to the current transform.
      *
-     * Since this rotation is *prepended* to the [currentTransformMatrix], the rotation
-     * is always *aligned* with the z-axis.
-     *
      * @param deltaAngle Amount of rotation, in radians.
+     *
+     * @param mode How this new transform will be applied to already existent transform.
+     * - [TransformApplyMode.PREPEND]: Rotation stays *aligned* with the global z-axis.
+     * - [TransformApplyMode.APPEND]: Rotates locally around the current geometry's z-axis.
      */
-    fun rotateZ(deltaAngle: Double) {
+    fun rotateZ(deltaAngle: Double, mode: TransformApplyMode) {
         currentTransformMatrix.identity()
         currentTransformMatrix.rotation(a = 0, b = 1, radians = deltaAngle)
 
-        prependCurrentTransform()
+        applyCurrentTransform(mode)
     }
 
     /**
-     * Prepend transform described in [currentTransformMatrix] to transform
-     * described in [modelMatrix].
-     * I.e. [modelMatrix] is parented to [currentTransformMatrix].
+     * Translate the geometry along the x-axis.
+     * The set translation is in no ways absolute, but rather accumulated to the current transform.
+     *
+     * @param deltaAmount Amount of translation.
+     *
+     * @param mode How this new transform will be applied to already existent transform.
+     * - [TransformApplyMode.PREPEND]: Translation stays *aligned* with the global x-axis.
+     * - [TransformApplyMode.APPEND]: Translates locally along the current geometry's x-axis.
      */
-    private fun prependCurrentTransform() {
+    fun translateX(deltaAmount: Double, mode: TransformApplyMode) {
+        currentTransformMatrix.identity()
+        currentTransformMatrix.translation(0, deltaAmount)
+
+        applyCurrentTransform(mode)
+    }
+
+    /**
+     * Apply transform described in [currentTransformMatrix] to [modelMatrix].
+     *
+     * @param mode
+     * Determines whether the transform is either prepended (use [TransformApplyMode.PREPEND])
+     * or appended (use [TransformApplyMode.APPEND]).
+     */
+    private fun applyCurrentTransform(mode: TransformApplyMode) {
 
         // Move contents of model matrix into the temporary buffer-like old-model-matrix:
         oldModelMatrix.swap(modelMatrix)
 
-        // Pre-multiply previous transform to new transform:
-        modelMatrix.multiplication(oldModelMatrix, currentTransformMatrix)
+        when (mode) {
+            TransformApplyMode.PREPEND ->
+                // Pre-multiply previous transform to new transform:
+                modelMatrix.multiplication(oldModelMatrix, currentTransformMatrix)
+
+            TransformApplyMode.APPEND ->
+                // Post-multiply previous transform to new transform:
+                modelMatrix.multiplication(currentTransformMatrix, oldModelMatrix)
+        }
     }
 
     override fun toString() = name
