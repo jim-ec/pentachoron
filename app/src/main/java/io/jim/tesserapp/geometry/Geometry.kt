@@ -18,7 +18,7 @@ open class Geometry(
         /**
          * Color of this geometry.
          */
-        val baseColor: Color = Color.BLACK
+        private val baseColor: Color = Color.BLACK
 
 ) {
 
@@ -55,7 +55,7 @@ open class Geometry(
     /**
      * List containing all positions.
      */
-    val positions = ArrayList<Vector4dh>()
+    private val positions = ArrayList<Vector4dh>()
 
     /**
      * List containing all lines constructed from [positions] using indices.
@@ -113,7 +113,7 @@ open class Geometry(
         newRotationMatrix.identity()
         newRotationMatrix.rotation(a = 1, b = 2, radians = deltaAngle)
 
-        applyCurrentTransform(mode)
+        applyNewRotation(mode)
     }
 
     /**
@@ -130,7 +130,7 @@ open class Geometry(
         newRotationMatrix.identity()
         newRotationMatrix.rotation(a = 2, b = 0, radians = deltaAngle)
 
-        applyCurrentTransform(mode)
+        applyNewRotation(mode)
     }
 
     /**
@@ -147,17 +147,7 @@ open class Geometry(
         newRotationMatrix.identity()
         newRotationMatrix.rotation(a = 0, b = 1, radians = deltaAngle)
 
-        applyCurrentTransform(mode)
-    }
-
-    /**
-     * Translate the geometry along the x-axis.
-     * The set translation is in no ways absolute, but rather accumulated to the current transform.
-     *
-     * @param deltaAmount Amount of translation.
-     */
-    fun translateX(deltaAmount: Double) {
-        translation.x += deltaAmount
+        applyNewRotation(mode)
     }
 
     /**
@@ -167,7 +157,7 @@ open class Geometry(
      * Determines whether the rotation is either prepended (use [RotationApplyMode.PREPEND])
      * or appended (use [RotationApplyMode.APPEND]).
      */
-    private fun applyCurrentTransform(mode: RotationApplyMode) {
+    private fun applyNewRotation(mode: RotationApplyMode) {
 
         // Move contents of model matrix into the temporary buffer-like old-model-matrix:
         oldRotationMatrix.swap(rotationMatrix)
@@ -183,13 +173,43 @@ open class Geometry(
         }
     }
 
+    /**
+     * Translate the geometry along the x-axis.
+     * The set translation is in no ways absolute, but rather accumulated to the current transform.
+     *
+     * @param deltaAmount Amount of translation.
+     */
+    fun translateX(deltaAmount: Double) {
+        translation.x += deltaAmount
+    }
+
+    /**
+     * Translate the geometry along the y-axis.
+     * The set translation is in no ways absolute, but rather accumulated to the current transform.
+     *
+     * @param deltaAmount Amount of translation.
+     */
+    fun translateY(deltaAmount: Double) {
+        translation.y += deltaAmount
+    }
+
+    /**
+     * Translate the geometry along the z-axis.
+     * The set translation is in no ways absolute, but rather accumulated to the current transform.
+     *
+     * @param deltaAmount Amount of translation.
+     */
+    fun translateZ(deltaAmount: Double) {
+        translation.z += deltaAmount
+    }
+
     override fun toString() = name
 
     /**
      * Add a series of vertices.
      * The actual lines are drawn from indices to these vertices.
      */
-    protected fun addPosition(position: Vector4dh) {
+    private fun addPosition(position: Vector4dh) {
         positions += position
     }
 
@@ -199,7 +219,7 @@ open class Geometry(
      * @param b Index to the end position.
      * @param color Line color, defaults to geometry's [baseColor].
      */
-    protected fun addLine(a: Int, b: Int, color: Color = baseColor) {
+    private fun addLine(a: Int, b: Int, color: Color = baseColor) {
         lines += Line(positions, a, b, color)
     }
 

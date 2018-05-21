@@ -112,18 +112,28 @@ class ControllerView : FrameLayout {
             }
 
             // Y-Translation:
+            var oldYTranslation = 0.0
+
             translationController(
                     context,
                     findViewById(R.id.seekerTranslationY),
                     findViewById(R.id.valueTranslationY)
-            ) { }
+            ) { translation ->
+                it.translateY(translation - oldYTranslation)
+                oldYTranslation = translation
+            }
 
             // Z-Translation:
+            var oldZTranslation = 0.0
+
             translationController(
                     context,
                     findViewById(R.id.seekerTranslationZ),
                     findViewById(R.id.valueTranslationZ)
-            ) { }
+            ) { translation ->
+                it.translateZ(translation - oldZTranslation)
+                oldZTranslation = translation
+            }
 
             // Q-Translation:
             translationController(
