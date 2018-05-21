@@ -13,15 +13,23 @@
         android:supportsRtl="true"
         android:allowBackup="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".MainActivity"
-            android:theme="@style/AppTheme">
+
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="www.tesserapp.io"
+                    android:scheme="http" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
