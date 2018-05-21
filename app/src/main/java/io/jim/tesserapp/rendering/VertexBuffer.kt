@@ -32,12 +32,12 @@ class VertexBuffer(
         /**
          * Floats taken by one complete vertex.
          */
-        const val VERTEX_FLOATS = ATTRIBUTE_COUNTS * ATTRIBUTE_FLOATS
+        private const val VERTEX_FLOATS = ATTRIBUTE_COUNTS * ATTRIBUTE_FLOATS
 
         /**
          * Bytes taken by one complete vertex.
          */
-        val BYTES_PER_VERTEX =
+        private val BYTES_PER_VERTEX =
                 VERTEX_FLOATS * Float.BYTE_LENGTH
 
         /**

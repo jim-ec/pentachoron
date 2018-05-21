@@ -16,9 +16,9 @@
     <string name="transform_translation_q" translatable="false">Q</string>
     <string name="transform_translation_value" translatable="false">%1$s</string>
 
-    <string name="transform_camera">Camera</string>
-    <string name="transform_camera_distance">Distance</string>
-    <string name="transform_camera_value" translatable="false">%1$.2.0</string>
+    <string name="camera">Camera</string>
+    <string name="camera_distance">Distance</string>
+    <string name="camera_distance_value" translatable="false">%1$s</string>
 
     <string name="render_option_grid">Grid</string>
 

@@ -155,22 +155,6 @@ open class Matrix(
     }
 
     /**
-     * Load a translation by [amount] along the [n]th axis.
-     * This does not reset any parts of the matrix,
-     * just the doubles representing translation are modified.
-     * @throws IncompatibleTransformDimension
-     * @throws IsNotQuadraticException
-     */
-    fun translation(n: Int, amount: Double) {
-        if (rows != cols)
-            throw IsNotQuadraticException()
-        if (n >= cols - 1)
-            throw IncompatibleTransformDimension(n)
-
-        this[rows - 1, n] = amount
-    }
-
-    /**
      * Load a rotation matrix.
      * The rotation takes place on the given [a]-[b]-plane, the angle is defined in [radians].
      * @throws IncompatibleTransformDimension

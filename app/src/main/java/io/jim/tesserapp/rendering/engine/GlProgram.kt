@@ -28,12 +28,12 @@ open class GlProgram protected constructor(
     /**
      * This program's vertex shader.
      */
-    val vertexShader = GlShader(assets, vertexShaderFile)
+    private val vertexShader = GlShader(assets, vertexShaderFile)
 
     /**
      * This program's fragment shader.
      */
-    val fragmentShader = GlShader(assets, fragmentShaderFile)
+    private val fragmentShader = GlShader(assets, fragmentShaderFile)
 
     /**
      * Actual program handle retrieved from GL.

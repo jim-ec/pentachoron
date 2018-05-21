@@ -69,7 +69,7 @@ open class Smoothed<R>(
      * or the last interval has already ended. In that case, the x at which the last interval ended
      * is mapped by [curve] and therefore does not change anymore.
      */
-    protected val currentValue: Double
+    private val currentValue: Double
         get() = (if (transitioning) curve(x)
         else curve(lastTransitionStartX + transitionInterval))
 

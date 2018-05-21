@@ -17,7 +17,7 @@ import java.nio.ByteOrder
  */
 open class GlBuffer(
         val target: Int,
-        val usage: Int
+        private val usage: Int
 ) {
 
     /**

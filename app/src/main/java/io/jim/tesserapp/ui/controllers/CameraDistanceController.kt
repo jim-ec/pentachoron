@@ -16,7 +16,7 @@ fun cameraDistanceController(
         min = 3.0,
         max = 15.0,
         startValue = 8.0,
-        formatString = view.context.getString(R.string.transform_translation_value),
+        formatString = view.context.getString(R.string.camera_distance_value),
         update = { value ->
             renderData.synchronized {
                 renderData.camera.distance = value

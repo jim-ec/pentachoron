@@ -11,7 +11,7 @@ import io.jim.tesserapp.util.InputStreamMemory
  */
 open class GlVertexBuffer(
         val memory: InputStreamMemory,
-        val drawMode: Int
+        private val drawMode: Int
 ) : GlBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_STATIC_DRAW) {
 
     /**
