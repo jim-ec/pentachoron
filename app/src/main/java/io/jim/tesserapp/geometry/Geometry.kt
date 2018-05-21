@@ -34,25 +34,6 @@ open class Geometry(
     }
 
     /**
-     * Describes the way incoming rotation, i.e. [newRotationMatrix], is applied,
-     * say *merged* into previous, already existent rotation, i.e. [rotationMatrix].
-     */
-    enum class RotationApplyMode {
-
-        /**
-         * New transform is prepended to previous transform,
-         * i.e. previous transform is parented to new transform.
-         */
-        PREPEND,
-
-        /**
-         * New transform is appended to previous transform,
-         * i.e. new transform is parented to previous transform.
-         */
-        APPEND
-    }
-
-    /**
      * List containing all positions.
      */
     private val positions = ArrayList<Vector4dh>()
@@ -203,7 +184,16 @@ open class Geometry(
         translation.z += deltaAmount
     }
 
-    override fun toString() = name
+    /**
+     * Recomputes this geometry's transform matrix.
+     */
+    fun computeModelMatrix() {
+        translationMatrix.translation(translation)
+        modelMatrix.multiplication(
+                rotationMatrix,
+                translationMatrix
+        )
+    }
 
     /**
      * Add a series of vertices.
@@ -314,17 +304,6 @@ open class Geometry(
     }
 
     /**
-     * Recomputes this geometry's transform matrix.
-     */
-    fun computeModelMatrix() {
-        translationMatrix.translation(translation)
-        modelMatrix.multiplication(
-                rotationMatrix,
-                translationMatrix
-        )
-    }
-
-    /**
      * Invoke [f] for each position and the color it's associated with.
      */
     inline fun forEachVertex(f: (position: Vector4dh, color: Color) -> Unit) {
@@ -333,6 +312,11 @@ open class Geometry(
             f(it.end, it.color)
         }
     }
+
+    /**
+     * Represents this geometry in a string.
+     */
+    override fun toString() = name
 
     /**
      * Project geometry down to a 3d wireframe.
@@ -358,6 +342,25 @@ open class Geometry(
                 f(homogeneous, line.color)
             }
         }
+    }
+
+    /**
+     * Describes the way incoming rotation, i.e. [newRotationMatrix], is applied,
+     * say *merged* into previous, already existent rotation, i.e. [rotationMatrix].
+     */
+    enum class RotationApplyMode {
+
+        /**
+         * New transform is prepended to previous transform,
+         * i.e. previous transform is parented to new transform.
+         */
+        PREPEND,
+
+        /**
+         * New transform is appended to previous transform,
+         * i.e. new transform is parented to previous transform.
+         */
+        APPEND
     }
 
 }
