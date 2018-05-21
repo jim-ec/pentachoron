@@ -64,7 +64,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerRotationX),
                     findViewById(R.id.valueRotationX)
             ) { rotation ->
-                it.rotateX(rotation - oldXRotation, Geometry.TransformApplyMode.PREPEND)
+                it.rotateX(rotation - oldXRotation, Geometry.RotationApplyMode.PREPEND)
                 oldXRotation = rotation
             }
 
@@ -76,7 +76,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerRotationY),
                     findViewById(R.id.valueRotationY)
             ) { rotation ->
-                it.rotateY(rotation - oldYRotation, Geometry.TransformApplyMode.PREPEND)
+                it.rotateY(rotation - oldYRotation, Geometry.RotationApplyMode.PREPEND)
                 oldYRotation = rotation
             }
 
@@ -88,7 +88,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerRotationZ),
                     findViewById(R.id.valueRotationZ)
             ) { rotation ->
-                it.rotateZ(rotation - oldZRotation, Geometry.TransformApplyMode.PREPEND)
+                it.rotateZ(rotation - oldZRotation, Geometry.RotationApplyMode.PREPEND)
                 oldZRotation = rotation
             }
 
@@ -107,7 +107,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerTranslationX),
                     findViewById(R.id.valueTranslationX)
             ) { translation ->
-                it.translateX(translation - oldXTranslation, Geometry.TransformApplyMode.PREPEND)
+                it.translateX(translation - oldXTranslation)
                 oldXTranslation = translation
             }
 

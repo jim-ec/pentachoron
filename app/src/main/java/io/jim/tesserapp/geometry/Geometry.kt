@@ -34,10 +34,10 @@ open class Geometry(
     }
 
     /**
-     * Describes the way new transform, i.e. [currentTransformMatrix], is applied,
-     * say *merged* into previous, already existent transform, i.e. [modelMatrix].
+     * Describes the way incoming rotation, i.e. [newRotationMatrix], is applied,
+     * say *merged* into previous, already existent rotation, i.e. [rotationMatrix].
      */
-    enum class TransformApplyMode {
+    enum class RotationApplyMode {
 
         /**
          * New transform is prepended to previous transform,
@@ -69,19 +69,35 @@ open class Geometry(
     val modelMatrix = Matrix(5)
 
     /**
-     * When transforming the geometry, the transform is firstly expressed into this matrix.
-     * Afterwards, a transform applier function will merge this [currentTransformMatrix] into
-     * the already existent [modelMatrix], whose content is not discarded, resulting
-     * into a combined transform.
+     * Rotation matrix.
      */
-    private val currentTransformMatrix = Matrix(5)
+    private val rotationMatrix = Matrix(5)
+
+    /**
+     * When transforming the geometry, the transform is firstly expressed into this matrix.
+     * Afterwards, a transform applier function will merge this [newRotationMatrix] into
+     * the already existent [rotationMatrix], whose content is not discarded, resulting
+     * into a combined rotation.
+     */
+    private val newRotationMatrix = Matrix(5)
 
     /**
      * Since no matrix cannot be simultaneously target and source of the same multiplication
-     * operation, the [modelMatrix] must be copied into this [oldModelMatrix],
-     * which is then multiplied with [currentTransformMatrix] and stored again in [modelMatrix].
+     * operation, the [rotationMatrix] must be copied into this [oldRotationMatrix],
+     * which is then multiplied with [newRotationMatrix] and stored again in [rotationMatrix].
      */
-    private val oldModelMatrix = Matrix(5)
+    private val oldRotationMatrix = Matrix(5)
+
+    /**
+     * Absolute translation of this geometry.
+     */
+    private val translation = Vector4dh()
+
+    /**
+     * Used in [computeModelMatrix] to express [translation] in a matrix,
+     * so it can be multiplied with [rotationMatrix] to final [modelMatrix].
+     */
+    private val translationMatrix = Matrix(5)
 
     /**
      * Rotate the geometry around the x-axis, i.e. the yz-plane.
@@ -90,12 +106,12 @@ open class Geometry(
      * @param deltaAngle Amount of rotation, in radians.
      *
      * @param mode How this new transform will be applied to already existent transform.
-     * - [TransformApplyMode.PREPEND]: Rotation stays *aligned* with the global x-axis.
-     * - [TransformApplyMode.APPEND]: Rotates locally around the current geometry's x-axis.
+     * - [RotationApplyMode.PREPEND]: Rotation stays *aligned* with the global x-axis.
+     * - [RotationApplyMode.APPEND]: Rotates locally around the current geometry's x-axis.
      */
-    fun rotateX(deltaAngle: Double, mode: TransformApplyMode) {
-        currentTransformMatrix.identity()
-        currentTransformMatrix.rotation(a = 1, b = 2, radians = deltaAngle)
+    fun rotateX(deltaAngle: Double, mode: RotationApplyMode) {
+        newRotationMatrix.identity()
+        newRotationMatrix.rotation(a = 1, b = 2, radians = deltaAngle)
 
         applyCurrentTransform(mode)
     }
@@ -107,12 +123,12 @@ open class Geometry(
      * @param deltaAngle Amount of rotation, in radians.
      *
      * @param mode How this new transform will be applied to already existent transform.
-     * - [TransformApplyMode.PREPEND]: Rotation stays *aligned* with the global y-axis.
-     * - [TransformApplyMode.APPEND]: Rotates locally around the current geometry's y-axis.
+     * - [RotationApplyMode.PREPEND]: Rotation stays *aligned* with the global y-axis.
+     * - [RotationApplyMode.APPEND]: Rotates locally around the current geometry's y-axis.
      */
-    fun rotateY(deltaAngle: Double, mode: TransformApplyMode) {
-        currentTransformMatrix.identity()
-        currentTransformMatrix.rotation(a = 2, b = 0, radians = deltaAngle)
+    fun rotateY(deltaAngle: Double, mode: RotationApplyMode) {
+        newRotationMatrix.identity()
+        newRotationMatrix.rotation(a = 2, b = 0, radians = deltaAngle)
 
         applyCurrentTransform(mode)
     }
@@ -124,12 +140,12 @@ open class Geometry(
      * @param deltaAngle Amount of rotation, in radians.
      *
      * @param mode How this new transform will be applied to already existent transform.
-     * - [TransformApplyMode.PREPEND]: Rotation stays *aligned* with the global z-axis.
-     * - [TransformApplyMode.APPEND]: Rotates locally around the current geometry's z-axis.
+     * - [RotationApplyMode.PREPEND]: Rotation stays *aligned* with the global z-axis.
+     * - [RotationApplyMode.APPEND]: Rotates locally around the current geometry's z-axis.
      */
-    fun rotateZ(deltaAngle: Double, mode: TransformApplyMode) {
-        currentTransformMatrix.identity()
-        currentTransformMatrix.rotation(a = 0, b = 1, radians = deltaAngle)
+    fun rotateZ(deltaAngle: Double, mode: RotationApplyMode) {
+        newRotationMatrix.identity()
+        newRotationMatrix.rotation(a = 0, b = 1, radians = deltaAngle)
 
         applyCurrentTransform(mode)
     }
@@ -139,38 +155,31 @@ open class Geometry(
      * The set translation is in no ways absolute, but rather accumulated to the current transform.
      *
      * @param deltaAmount Amount of translation.
-     *
-     * @param mode How this new transform will be applied to already existent transform.
-     * - [TransformApplyMode.PREPEND]: Translation stays *aligned* with the global x-axis.
-     * - [TransformApplyMode.APPEND]: Translates locally along the current geometry's x-axis.
      */
-    fun translateX(deltaAmount: Double, mode: TransformApplyMode) {
-        currentTransformMatrix.identity()
-        currentTransformMatrix.translation(0, deltaAmount)
-
-        applyCurrentTransform(mode)
+    fun translateX(deltaAmount: Double) {
+        translation.x += deltaAmount
     }
 
     /**
-     * Apply transform described in [currentTransformMatrix] to [modelMatrix].
+     * Apply rotation described in [newRotationMatrix] to [rotationMatrix].
      *
      * @param mode
-     * Determines whether the transform is either prepended (use [TransformApplyMode.PREPEND])
-     * or appended (use [TransformApplyMode.APPEND]).
+     * Determines whether the rotation is either prepended (use [RotationApplyMode.PREPEND])
+     * or appended (use [RotationApplyMode.APPEND]).
      */
-    private fun applyCurrentTransform(mode: TransformApplyMode) {
+    private fun applyCurrentTransform(mode: RotationApplyMode) {
 
         // Move contents of model matrix into the temporary buffer-like old-model-matrix:
-        oldModelMatrix.swap(modelMatrix)
+        oldRotationMatrix.swap(rotationMatrix)
 
         when (mode) {
-            TransformApplyMode.PREPEND ->
+            RotationApplyMode.PREPEND ->
                 // Pre-multiply previous transform to new transform:
-                modelMatrix.multiplication(oldModelMatrix, currentTransformMatrix)
+                rotationMatrix.multiplication(oldRotationMatrix, newRotationMatrix)
 
-            TransformApplyMode.APPEND ->
+            RotationApplyMode.APPEND ->
                 // Post-multiply previous transform to new transform:
-                modelMatrix.multiplication(currentTransformMatrix, oldModelMatrix)
+                rotationMatrix.multiplication(newRotationMatrix, oldRotationMatrix)
         }
     }
 
@@ -288,6 +297,11 @@ open class Geometry(
      * Recomputes this geometry's transform matrix.
      */
     fun computeModelMatrix() {
+        translationMatrix.translation(translation)
+        modelMatrix.multiplication(
+                rotationMatrix,
+                translationMatrix
+        )
     }
 
     /**
