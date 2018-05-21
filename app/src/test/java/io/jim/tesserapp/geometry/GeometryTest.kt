@@ -15,8 +15,8 @@ class GeometryTest {
     fun computeModelMatrices() {
 
         val geometry = Geometry("Geometry").apply {
-            rotation.z = Math.PI / 2
-            translation.x = 1.0
+            rotateZ(Math.PI / 2.0, Geometry.RotationApplyMode.PREPEND)
+            translateX(1.0)
             computeModelMatrix()
         }
 
