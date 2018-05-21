@@ -1,12 +1,9 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.math.common.Smoothed
 import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.math.vector.Vector3dh
 import io.jim.tesserapp.math.vector.Vector4dh
-import io.jim.tesserapp.ui.controllers.Rotatable
-import io.jim.tesserapp.ui.controllers.Translatable
 
 /**
  * A geometrical structure consisting of vertices.
@@ -60,40 +57,14 @@ open class Geometry(
     private val translationMatrix = Matrix(5)
 
     /**
-     * Smooth rotation around the x, y and z axis.
-     * Final rotation is component-wise summed up from [rotation] and [smoothRotation].
-     */
-    val smoothRotation = object : Rotatable {
-        override var x by Smoothed(0.0, 200.0)
-        override var y by Smoothed(0.0, 200.0)
-        override var z by Smoothed(0.0, 200.0)
-        override var q by Smoothed(0.0, 200.0)
-    }
-
-    /**
-     * Smooth translation.
-     * Final translation is component-wise summed up from [translation] and [smoothTranslation].
-     */
-    val smoothTranslation = object : Translatable {
-        override var x by Smoothed(0.0, 200.0)
-        override var y by Smoothed(0.0, 200.0)
-        override var z by Smoothed(0.0, 200.0)
-        override var q by Smoothed(0.0, 200.0)
-    }
-
-    /**
-     * Rotation. Unlike [smoothRotation] this rotation is not smoothed.
-     * Final rotation is component-wise summed up from [rotation] and [smoothRotation].
+     * Rotation.
      */
     val rotation = Vector4dh()
 
     /**
-     * Translation. Unlike [smoothTranslation] this translation vector is not smoothed.
-     * Final translation is component-wise summed up from [translation] and [smoothTranslation].
+     * Translation.
      */
     val translation = Vector4dh()
-
-    private val translationVector = Vector4dh()
 
     override fun toString() = name
 
@@ -211,9 +182,9 @@ open class Geometry(
     fun computeModelMatrix() {
 
         // Rotation:
-        rotationMatrixX.rotation(a = 1, b = 2, radians = rotation.x + smoothRotation.x)
-        rotationMatrixY.rotation(a = 2, b = 0, radians = rotation.y + smoothRotation.y)
-        rotationMatrixZ.rotation(a = 0, b = 1, radians = rotation.z + smoothRotation.z)
+        rotationMatrixX.rotation(a = 1, b = 2, radians = rotation.x)
+        rotationMatrixY.rotation(a = 2, b = 0, radians = rotation.y)
+        rotationMatrixZ.rotation(a = 0, b = 1, radians = rotation.z)
 
         rotationMatrixZY.multiplication(
                 rhs = rotationMatrixZ,
@@ -226,13 +197,7 @@ open class Geometry(
         )
 
         // Translation:
-        translationVector.load(
-                translation.x + smoothTranslation.x,
-                translation.y + smoothTranslation.y,
-                translation.z + smoothTranslation.z,
-                translation.q + smoothTranslation.q
-        )
-        translationMatrix.translation(translationVector)
+        translationMatrix.translation(translation)
 
         // Model transform:
         modelMatrix.multiplication(

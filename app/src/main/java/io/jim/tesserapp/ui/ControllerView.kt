@@ -61,7 +61,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerRotationX),
                     findViewById(R.id.valueRotationX)
             ) { rotation ->
-                it.smoothRotation.x = rotation
+                it.rotation.x = rotation
             }
 
             // Y-Rotation:
@@ -70,7 +70,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerRotationY),
                     findViewById(R.id.valueRotationY)
             ) { rotation ->
-                it.smoothRotation.y = rotation
+                it.rotation.y = rotation
             }
 
             // Z-Rotation:
@@ -79,7 +79,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerRotationZ),
                     findViewById(R.id.valueRotationZ)
             ) { rotation ->
-                it.smoothRotation.z = rotation
+                it.rotation.z = rotation
             }
 
             // Q-Rotation:
@@ -88,7 +88,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerRotationQ),
                     findViewById(R.id.valueRotationQ)
             ) { rotation ->
-                it.smoothRotation.q = rotation
+                it.rotation.q = rotation
             }
 
             // X-Translation:
@@ -97,7 +97,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerTranslationX),
                     findViewById(R.id.valueTranslationX)
             ) { translation ->
-                it.smoothTranslation.x = translation
+                it.rotation.x = translation
             }
 
             // Y-Translation:
@@ -106,7 +106,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerTranslationY),
                     findViewById(R.id.valueTranslationY)
             ) { translation ->
-                it.smoothTranslation.y = translation
+                it.rotation.y = translation
             }
 
             // Z-Translation:
@@ -115,7 +115,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerTranslationZ),
                     findViewById(R.id.valueTranslationZ)
             ) { translation ->
-                it.smoothTranslation.z = translation
+                it.rotation.z = translation
             }
 
             // Q-Translation:
@@ -124,7 +124,7 @@ class ControllerView : FrameLayout {
                     findViewById(R.id.seekerTranslationQ),
                     findViewById(R.id.valueTranslationQ)
             ) { translation ->
-                it.smoothTranslation.q = translation
+                it.rotation.q = translation
             }
 
         }
