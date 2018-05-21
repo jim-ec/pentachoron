@@ -49,6 +49,83 @@ open class Geometry(
      */
     val modelMatrix = Matrix(5)
 
+    /**
+     * When transforming the geometry, the transform is firstly expressed into this matrix.
+     * Afterwards, a transform applier function will merge this [currentTransformMatrix] into
+     * the already existent [modelMatrix], whose content is not discarded, resulting
+     * into a combined transform.
+     */
+    private val currentTransformMatrix = Matrix(5)
+
+    /**
+     * Since no matrix cannot be simultaneously target and source of the same multiplication
+     * operation, the [modelMatrix] must be copied into this [oldModelMatrix],
+     * which is then multiplied with [currentTransformMatrix] and stored again in [modelMatrix].
+     */
+    private val oldModelMatrix = Matrix(5)
+
+    /**
+     * Rotate the geometry around the x-axis, i.e. the yz-plane.
+     * The set rotation is in no ways absolute, but rather accumulated to the current transform.
+     *
+     * Since this rotation is *prepended* to the [currentTransformMatrix], the rotation
+     * is always *aligned* with the x-axis.
+     *
+     * @param deltaAngle Amount of rotation, in radians.
+     */
+    fun rotateX(deltaAngle: Double) {
+        currentTransformMatrix.identity()
+        currentTransformMatrix.rotation(a = 1, b = 2, radians = deltaAngle)
+
+        prependCurrentTransform()
+    }
+
+    /**
+     * Rotate the geometry around the y-axis, i.e. the zx-plane.
+     * The set rotation is in no ways absolute, but rather accumulated to the current transform.
+     *
+     * Since this rotation is *prepended* to the [currentTransformMatrix], the rotation
+     * is always *aligned* with the y-axis.
+     *
+     * @param deltaAngle Amount of rotation, in radians.
+     */
+    fun rotateY(deltaAngle: Double) {
+        currentTransformMatrix.identity()
+        currentTransformMatrix.rotation(a = 2, b = 0, radians = deltaAngle)
+
+        prependCurrentTransform()
+    }
+
+    /**
+     * Rotate the geometry around the z-axis, i.e. the xy-plane.
+     * The set rotation is in no ways absolute, but rather accumulated to the current transform.
+     *
+     * Since this rotation is *prepended* to the [currentTransformMatrix], the rotation
+     * is always *aligned* with the z-axis.
+     *
+     * @param deltaAngle Amount of rotation, in radians.
+     */
+    fun rotateZ(deltaAngle: Double) {
+        currentTransformMatrix.identity()
+        currentTransformMatrix.rotation(a = 0, b = 1, radians = deltaAngle)
+
+        prependCurrentTransform()
+    }
+
+    /**
+     * Prepend transform described in [currentTransformMatrix] to transform
+     * described in [modelMatrix].
+     * I.e. [modelMatrix] is parented to [currentTransformMatrix].
+     */
+    private fun prependCurrentTransform() {
+
+        // Move contents of model matrix into the temporary buffer-like old-model-matrix:
+        oldModelMatrix.swap(modelMatrix)
+
+        // Pre-multiply previous transform to new transform:
+        modelMatrix.multiplication(oldModelMatrix, currentTransformMatrix)
+    }
+
     override fun toString() = name
 
     /**

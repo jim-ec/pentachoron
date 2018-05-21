@@ -56,25 +56,40 @@ class ControllerView : FrameLayout {
             cameraDistanceController(graphicsView.sharedRenderData, this)
 
             // X-Rotation:
+            var oldXRotation = 0.0
+
             rotationController(
                     context,
                     findViewById(R.id.seekerRotationX),
                     findViewById(R.id.valueRotationX)
-            ) {}
+            ) { rotation ->
+                it.rotateX(rotation - oldXRotation)
+                oldXRotation = rotation
+            }
 
             // Y-Rotation:
+            var oldYRotation = 0.0
+
             rotationController(
                     context,
                     findViewById(R.id.seekerRotationY),
                     findViewById(R.id.valueRotationY)
-            ) {}
+            ) { rotation ->
+                it.rotateY(rotation - oldYRotation)
+                oldYRotation = rotation
+            }
 
             // Z-Rotation:
+            var oldZRotation = 0.0
+
             rotationController(
                     context,
                     findViewById(R.id.seekerRotationZ),
                     findViewById(R.id.valueRotationZ)
-            ) {}
+            ) { rotation ->
+                it.rotateZ(rotation - oldZRotation)
+                oldZRotation = rotation
+            }
 
             // Q-Rotation:
             rotationController(

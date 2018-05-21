@@ -19,9 +19,10 @@ open class Matrix(
 ) : MatrixMultipliable() {
 
     /**
-     * Underlying float buffer.
+     * Underlying number list.
+     * The reference is kept re-assignable to enable optimized operations like swapping contents.
      */
-    internal val doubles = DoubleBuffer.allocate(rows * cols)
+    private var doubles = DoubleBuffer.allocate(rows * cols)
 
     /**
      * Construct a quadratic matrix with [size] rows and columns.
@@ -41,6 +42,23 @@ open class Matrix(
         forEachComponent { row, col ->
             doubles.put(rowMajorIndex(row, col), if (row == col) 1.0 else 0.0)
         }
+    }
+
+    /**
+     * Swap contents of this and [other] matrix.
+     * This is a more performance oriented way of copying contents of matrices.
+     * No values are actually copied or rewritten, but the internal number-list references
+     * are swapped.
+     *
+     * @throws MathException If dimension of [other] is different to this matrix.
+     */
+    fun swap(other: Matrix) {
+        if (cols != other.cols || rows != other.cols)
+            throw MathException("Cannot swap $this with $other, dimensions differ")
+
+        val tmp = doubles
+        doubles = other.doubles
+        other.doubles = tmp
     }
 
     /**
