@@ -7,7 +7,6 @@ import io.jim.tesserapp.math.vector.Vector3dh
 import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.ui.controllers.Rotatable
 import io.jim.tesserapp.ui.controllers.Translatable
-import io.jim.tesserapp.util.Callback
 
 /**
  * A geometrical structure consisting of vertices.
@@ -96,11 +95,6 @@ open class Geometry(
 
     private val translationVector = Vector4dh()
 
-    /**
-     * Listeners are fired every time a single point or line is added.
-     */
-    val onGeometryChanged = Callback()
-
     override fun toString() = name
 
     /**
@@ -109,7 +103,6 @@ open class Geometry(
      */
     protected fun addPosition(position: Vector4dh) {
         positions += position
-        onGeometryChanged()
     }
 
     /**
@@ -120,7 +113,6 @@ open class Geometry(
      */
     protected fun addLine(a: Int, b: Int, color: Color = baseColor) {
         lines += Line(positions, a, b, color)
-        onGeometryChanged()
     }
 
     /**
@@ -168,7 +160,6 @@ open class Geometry(
     @Suppress("MemberVisibilityCanBePrivate")
     fun colorizeLine(lineIndex: Int, color: Color) {
         lines[lineIndex].color = color
-        onGeometryChanged()
     }
 
     /**
