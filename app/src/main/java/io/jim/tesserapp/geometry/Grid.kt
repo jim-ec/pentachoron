@@ -13,7 +13,7 @@ class Grid(
 ) : Geometry(name, color) {
 
     init {
-        for (i in -5..5) {
+        for (i in -5..-1) {
             addLine(Vector4dh(i.toDouble(), 0.0, -5.0, 0.0), Vector4dh(i.toDouble(), 0.0, 5.0, 0.0))
             addLine(Vector4dh(-5.0, 0.0, i.toDouble(), 0.0), Vector4dh(5.0, 0.0, i.toDouble(), 0.0))
         }

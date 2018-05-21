@@ -3,6 +3,7 @@ package io.jim.tesserapp.rendering
 import android.content.Context
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
+import io.jim.tesserapp.R
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.graphics.DrawDataProvider
 import io.jim.tesserapp.graphics.SharedRenderData
@@ -10,6 +11,7 @@ import io.jim.tesserapp.math.matrix.Projection3dMatrix
 import io.jim.tesserapp.math.matrix.ViewMatrix
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+
 
 /**
  * Actually renders to OpenGL.
@@ -20,13 +22,16 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
      * Render data shared across this render thread an others.
      */
     val sharedRenderData = SharedRenderData(DrawDataProvider())
-
-    private val clearColor = Color(context, android.R.color.background_light)
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
 
     private val projectionMatrix = Projection3dMatrix(near = 0.1, far = 100.0)
     private val viewMatrix = ViewMatrix(sharedRenderData.camera)
+
+    private val clearColor =
+            Color(context, R.style.AppTheme, android.R.attr.windowBackground).apply {
+                luminance(0.8)
+            }
 
     companion object {
 
@@ -46,7 +51,12 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
      * Initialize data.
      */
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-        GLES30.glClearColor(clearColor.red.toFloat(), clearColor.green.toFloat(), clearColor.blue.toFloat(), 1f)
+        GLES30.glClearColor(
+                clearColor.red.toFloat(),
+                clearColor.green.toFloat(),
+                clearColor.blue.toFloat(),
+                1f
+        )
         GLES30.glDisable(GLES30.GL_CULL_FACE)
         GLES30.glEnable(GLES30.GL_DEPTH_TEST)
 

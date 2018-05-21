@@ -31,7 +31,10 @@ class GraphicsView : GLSurfaceView {
     private val touchStartPosition = Vector3d(0.0, 0.0, 0.0)
     private var touchStartTime = 0L
 
-    private val grid = Grid(color = Color(context, R.color.colorGrid))
+    private val grid =
+            Grid(color = Color(context, R.style.AppTheme, android.R.attr.textColorPrimary).apply {
+                luminance(0.6)
+            })
 
     companion object {
         private const val CLICK_TIME_MS = 100L
