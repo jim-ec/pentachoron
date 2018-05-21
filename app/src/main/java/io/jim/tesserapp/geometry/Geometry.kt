@@ -53,18 +53,11 @@ open class Geometry(
     private val rotationMatrixX = Matrix(5)
     private val rotationMatrixZ = Matrix(5)
     private val rotationMatrixZY = Matrix(5)
-    private val rotationMatrix = Matrix(5)
-    private val translationMatrix = Matrix(5)
 
     /**
      * Rotation.
      */
     val rotation = Vector4dh()
-
-    /**
-     * Translation.
-     */
-    val translation = Vector4dh()
 
     override fun toString() = name
 
@@ -191,18 +184,10 @@ open class Geometry(
                 lhs = rotationMatrixY
         )
 
-        rotationMatrix.multiplication(
-                lhs = rotationMatrixZY,
-                rhs = rotationMatrixX
-        )
-
-        // Translation:
-        translationMatrix.translation(translation)
-
         // Model transform:
         modelMatrix.multiplication(
-                lhs = rotationMatrix,
-                rhs = translationMatrix
+                lhs = rotationMatrixZY,
+                rhs = rotationMatrixX
         )
 
     }
