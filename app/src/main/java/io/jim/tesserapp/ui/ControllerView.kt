@@ -60,36 +60,28 @@ class ControllerView : FrameLayout {
                     context,
                     findViewById(R.id.seekerRotationX),
                     findViewById(R.id.valueRotationX)
-            ) { rotation ->
-                it.rotation.x = rotation
-            }
+            ) {}
 
             // Y-Rotation:
             rotationController(
                     context,
                     findViewById(R.id.seekerRotationY),
                     findViewById(R.id.valueRotationY)
-            ) { rotation ->
-                it.rotation.y = rotation
-            }
+            ) {}
 
             // Z-Rotation:
             rotationController(
                     context,
                     findViewById(R.id.seekerRotationZ),
                     findViewById(R.id.valueRotationZ)
-            ) { rotation ->
-                it.rotation.z = rotation
-            }
+            ) {}
 
             // Q-Rotation:
             rotationController(
                     context,
                     findViewById(R.id.seekerRotationQ),
                     findViewById(R.id.valueRotationQ)
-            ) { rotation ->
-                it.rotation.q = rotation
-            }
+            ) {}
 
             // X-Translation:
             translationController(

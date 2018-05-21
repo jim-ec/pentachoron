@@ -49,16 +49,6 @@ open class Geometry(
      */
     val modelMatrix = Matrix(5)
 
-    private val rotationMatrixY = Matrix(5)
-    private val rotationMatrixX = Matrix(5)
-    private val rotationMatrixZ = Matrix(5)
-    private val rotationMatrixZY = Matrix(5)
-
-    /**
-     * Rotation.
-     */
-    val rotation = Vector4dh()
-
     override fun toString() = name
 
     /**
@@ -173,23 +163,6 @@ open class Geometry(
      * Recomputes this geometry's transform matrix.
      */
     fun computeModelMatrix() {
-
-        // Rotation:
-        rotationMatrixX.rotation(a = 1, b = 2, radians = rotation.x)
-        rotationMatrixY.rotation(a = 2, b = 0, radians = rotation.y)
-        rotationMatrixZ.rotation(a = 0, b = 1, radians = rotation.z)
-
-        rotationMatrixZY.multiplication(
-                rhs = rotationMatrixZ,
-                lhs = rotationMatrixY
-        )
-
-        // Model transform:
-        modelMatrix.multiplication(
-                lhs = rotationMatrixZY,
-                rhs = rotationMatrixX
-        )
-
     }
 
     /**
