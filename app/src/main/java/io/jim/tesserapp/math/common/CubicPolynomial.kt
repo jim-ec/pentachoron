@@ -1,7 +1,7 @@
 package io.jim.tesserapp.math.common
 
 /**
- * Represents a shift-able cubic polynomial function.
+ * Represents a shiftable cubic polynomial function.
  * @constructor Create the function mapping `x ↦ a(x - x0)³ + b(x - x0)² + c(x - x0) + y0`.
  */
 data class CubicPolynomial(
@@ -73,17 +73,13 @@ data class CubicPolynomial(
     /**
      * Compute `f([x])`.
      */
-    operator fun invoke(x: Double): Double {
-        val dx = x - x0
-        return a * dx * dx * dx + b * dx * dx + c * dx + y0
-    }
+    operator fun invoke(x: Double) =
+            (x - x0).let { dx -> a * dx * dx * dx + b * dx * dx + c * dx + y0 }
 
     /**
      * Compute the derivation `f'([x])`.
      */
-    fun derivation(x: Double): Double {
-        val dx = x - x0
-        return 3 * a * dx * dx + 2 * b * dx + c
-    }
+    fun derivation(x: Double) =
+            (x - x0).let { dx -> 3 * a * dx * dx + 2 * b * dx + c }
 
 }

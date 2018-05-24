@@ -59,6 +59,9 @@ open class Smoothed<R>(
     private val transitioning: Boolean
         get() = x - lastTransitionStartX < transitionInterval
 
+    /**
+     * Only used when delegating the difference value.
+     */
     private var oldValue = startValue
 
     /**
@@ -79,6 +82,8 @@ open class Smoothed<R>(
      * value change-rate, i.e. it will not restart from zero.
      */
     override fun setValue(thisRef: R, property: KProperty<*>, value: Double) {
+
+        // If currently transitioning, re-span the curve from the current point of progression:
         if (transitioning) {
             curve.reSpan(
                     sourceX = x,
@@ -87,6 +92,8 @@ open class Smoothed<R>(
                     keepSourceGradient = true
             )
         }
+
+        // Otherwise, span a completely new curve, using final value from the last transition:
         else {
             curve.span(
                     sourceX = x,
@@ -105,13 +112,13 @@ open class Smoothed<R>(
      * Get the current value.
      */
     override fun getValue(thisRef: R, property: KProperty<*>) =
-            currentValue.also {
-                return if (delegateDifference) {
-                    val old = oldValue
-                    oldValue = it
-                    it - old
-                }
-                else it
+            currentValue.let { value ->
+
+                // Return difference, but remember the current value as the new old value:
+                if (delegateDifference)
+                    (value - oldValue).also { oldValue = value }
+
+                value
             }
 
 }
