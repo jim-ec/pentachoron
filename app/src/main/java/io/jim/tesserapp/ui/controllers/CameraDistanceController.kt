@@ -11,13 +11,13 @@ fun cameraDistanceController(
         renderData: SharedRenderData,
         view: ControllerView
 ) = Controller(
-        seeker = view.findViewById(R.id.seekerCameraDistance),
-        valueLabel = view.findViewById(R.id.valueCameraDistance),
+        seekBar = view.findViewById(R.id.seekerCameraDistance),
+        watch = view.findViewById(R.id.valueCameraDistance),
         min = 3.0,
         max = 15.0,
         startValue = 8.0,
         formatString = view.context.getString(R.string.camera_distance_value),
-        update = { value ->
+        onValueUpdate = { value ->
             renderData.synchronized {
                 renderData.camera.distance = value
             }

@@ -16,13 +16,13 @@ fun rotationController(
         valueLabel: TextView,
         setRotation: (rotation: Double) -> Unit
 ) = Controller(
-        seeker = seeker,
-        valueLabel = valueLabel,
+        seekBar = seeker,
+        watch = valueLabel,
         min = 0.0,
         max = 2.0,
         startValue = 0.0,
         formatString = context.getString(R.string.transform_rotation_value_radians),
-        update = { value ->
+        onValueUpdate = { value ->
             setRotation(value * Math.PI)
         }
 )

@@ -15,11 +15,11 @@ fun translationController(
         valueLabel: TextView,
         setTranslation: (translation: Double) -> Unit
 ) = Controller(
-        seeker = seeker,
-        valueLabel = valueLabel,
+        seekBar = seeker,
+        watch = valueLabel,
         min = -5.0,
         max = 5.0,
         startValue = 0.0,
         formatString = context.getString(R.string.transform_translation_value),
-        update = setTranslation
+        onValueUpdate = setTranslation
 )
