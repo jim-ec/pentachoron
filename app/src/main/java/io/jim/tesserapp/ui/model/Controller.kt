@@ -1,4 +1,4 @@
-package io.jim.tesserapp.ui.controllers
+package io.jim.tesserapp.ui.model
 
 import android.widget.SeekBar
 import android.widget.TextView
@@ -22,14 +22,11 @@ import io.jim.tesserapp.math.common.mapped
 class Controller(
         private val seekBar: SeekBar,
         private val watch: TextView,
-        min: Double,
-        max: Double,
+        private val valueRange: ClosedRange<Double>,
         startValue: Double,
         private val formatString: String,
         private val onValueUpdate: (value: Double) -> Unit
 ) {
-
-    private val valueRange = min..max
 
     private val seekBarRange = 0.0..seekBar.max.toDouble()
 
@@ -44,10 +41,10 @@ class Controller(
     }
 
     init {
-        if (max < min)
-            throw RuntimeException("Maximum must be greater than minimum")
-        if (startValue < min || startValue > max)
-            throw RuntimeException("Start value must be located in min-max range")
+        if(valueRange.isEmpty())
+            throw RuntimeException("Controller value-range cannot be empty")
+        if (!valueRange.contains(startValue))
+            throw RuntimeException("Start value must be located in $valueRange")
 
         seekBar.progress = mapped(startValue, valueRange, seekBarRange).toInt()
 

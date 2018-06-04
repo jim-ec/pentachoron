@@ -1,4 +1,4 @@
-package io.jim.tesserapp.ui.controllers
+package io.jim.tesserapp.ui.model
 
 import android.content.Context
 import android.widget.SeekBar
@@ -8,21 +8,20 @@ import io.jim.tesserapp.R
 /**
  * Create a rotation controller.
  * While the internal value is kept between 0.0 and 2.0, the updater function passes that value
- * multiplied by two pi to [setRotation].
+ * multiplied by two pi to [onRotated].
  */
 fun rotationController(
         context: Context,
-        seeker: SeekBar,
-        valueLabel: TextView,
-        setRotation: (rotation: Double) -> Unit
+        seekBar: SeekBar,
+        watch: TextView,
+        onRotated: (rotation: Double) -> Unit
 ) = Controller(
-        seekBar = seeker,
-        watch = valueLabel,
-        min = 0.0,
-        max = 2.0,
+        seekBar = seekBar,
+        watch = watch,
+        valueRange = 0.0..2.0,
         startValue = 0.0,
         formatString = context.getString(R.string.transform_rotation_value_radians),
         onValueUpdate = { value ->
-            setRotation(value * Math.PI)
+            onRotated(value * Math.PI)
         }
 )

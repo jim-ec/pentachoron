@@ -1,17 +1,16 @@
-package io.jim.tesserapp.ui
+package io.jim.tesserapp.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.SeekBar
-import android.widget.Switch
 import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.graphics.SharedRenderData
-import io.jim.tesserapp.ui.controllers.cameraDistanceController
-import io.jim.tesserapp.ui.controllers.rotationController
-import io.jim.tesserapp.ui.controllers.translationController
+import io.jim.tesserapp.ui.model.cameraDistanceController
+import io.jim.tesserapp.ui.model.rotationController
+import io.jim.tesserapp.ui.model.translationController
+import kotlinx.android.synthetic.main.view_controller.view.*
 
 
 /**
@@ -32,8 +31,8 @@ class ControllerView : FrameLayout {
         View.inflate(context, R.layout.view_controller, this)
 
         // Disable 4th dimensional seeker as that is a feature not implemented yet:
-        findViewById<SeekBar>(R.id.seekerRotationQ).isEnabled = false
-        findViewById<SeekBar>(R.id.seekerTranslationQ).isEnabled = false
+        qRotationSeekBar.isEnabled = false
+        qTranslationSeekBar.isEnabled = false
     }
 
     /**
@@ -43,7 +42,7 @@ class ControllerView : FrameLayout {
     fun control(graphicsView: GraphicsView) {
 
         // Control render grid options:
-        findViewById<Switch>(R.id.renderOptionGrid).also {
+        renderOptionGridSwitch.also {
             // Set render grid option to current checked state:
             graphicsView.renderGrid = it.isChecked
         }.setOnCheckedChangeListener { _, isChecked ->
@@ -59,11 +58,7 @@ class ControllerView : FrameLayout {
             // X-Rotation:
             var oldXRotation = 0.0
 
-            rotationController(
-                    context,
-                    findViewById(R.id.seekerRotationX),
-                    findViewById(R.id.valueRotationX)
-            ) { rotation ->
+            rotationController(context, xRotationSeekBar, xRotationWatch) { rotation ->
                 it.rotateX(rotation - oldXRotation, Geometry.RotationApplyMode.PREPEND)
                 oldXRotation = rotation
             }
@@ -71,11 +66,7 @@ class ControllerView : FrameLayout {
             // Y-Rotation:
             var oldYRotation = 0.0
 
-            rotationController(
-                    context,
-                    findViewById(R.id.seekerRotationY),
-                    findViewById(R.id.valueRotationY)
-            ) { rotation ->
+            rotationController(context, yRotationSeekBar, yRotationWatch) { rotation ->
                 it.rotateY(rotation - oldYRotation, Geometry.RotationApplyMode.PREPEND)
                 oldYRotation = rotation
             }
@@ -83,29 +74,18 @@ class ControllerView : FrameLayout {
             // Z-Rotation:
             var oldZRotation = 0.0
 
-            rotationController(
-                    context,
-                    findViewById(R.id.seekerRotationZ),
-                    findViewById(R.id.valueRotationZ)
-            ) { rotation ->
+            rotationController(context, zRotationSeekBar, zRotationWatch) { rotation ->
                 it.rotateZ(rotation - oldZRotation, Geometry.RotationApplyMode.PREPEND)
                 oldZRotation = rotation
             }
 
             // Q-Rotation:
-            rotationController(
-                    context,
-                    findViewById(R.id.seekerRotationQ),
-                    findViewById(R.id.valueRotationQ)
-            ) {}
+            rotationController(context, qRotationSeekBar, qRotationWatch) {}
 
             // X-Translation:
             var oldXTranslation = 0.0
 
-            translationController(
-                    context,
-                    findViewById(R.id.seekerTranslationX),
-                    findViewById(R.id.valueTranslationX)
+            translationController(context, xTranslationSeekBar, xTranslationWatch
             ) { translation ->
                 it.translateX(translation - oldXTranslation)
                 oldXTranslation = translation
@@ -114,11 +94,7 @@ class ControllerView : FrameLayout {
             // Y-Translation:
             var oldYTranslation = 0.0
 
-            translationController(
-                    context,
-                    findViewById(R.id.seekerTranslationY),
-                    findViewById(R.id.valueTranslationY)
-            ) { translation ->
+            translationController(context, yTranslationSeekBar, yTranslationWatch) { translation ->
                 it.translateY(translation - oldYTranslation)
                 oldYTranslation = translation
             }
@@ -126,21 +102,13 @@ class ControllerView : FrameLayout {
             // Z-Translation:
             var oldZTranslation = 0.0
 
-            translationController(
-                    context,
-                    findViewById(R.id.seekerTranslationZ),
-                    findViewById(R.id.valueTranslationZ)
-            ) { translation ->
+            translationController(context, zTranslationSeekBar, zTranslationWatch) { translation ->
                 it.translateZ(translation - oldZTranslation)
                 oldZTranslation = translation
             }
 
             // Q-Translation:
-            translationController(
-                    context,
-                    findViewById(R.id.seekerTranslationQ),
-                    findViewById(R.id.valueTranslationQ)
-            ) { }
+            translationController(context, qTranslationSeekBar, qTranslationWatch) { }
 
         }
 

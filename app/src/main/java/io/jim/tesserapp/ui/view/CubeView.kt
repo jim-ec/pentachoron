@@ -1,4 +1,4 @@
-package io.jim.tesserapp.ui
+package io.jim.tesserapp.ui.view
 
 import android.content.Context
 import android.util.AttributeSet

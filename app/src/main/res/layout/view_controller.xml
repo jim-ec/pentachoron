@@ -12,26 +12,26 @@
         android:layout_margin="8dp">
 
         <android.support.constraint.Barrier
-            android:id="@+id/labelBarrier"
+            android:id="@+id/labelsBarrier"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="vertical"
             app:barrierDirection="end"
             app:constraint_referenced_ids="
-                labelRotationX, labelRotationY, labelRotationZ,
-                labelTranslationX, labelTranslationY, labelTranslationZ, labelTranslationQ,
-                labelCameraDistance" />
+                xRotationLabel, yRotationLabel, zRotationLabel, qRotationLabel,
+                xTranslationLabel, yTranslationLabel, zTranslationLabel, qTranslationLabel,
+                cameraDistanceLabel" />
 
         <android.support.constraint.Barrier
-            android:id="@+id/valueBarrier"
+            android:id="@+id/watchesBarrier"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="vertical"
             app:barrierDirection="start"
             app:constraint_referenced_ids="
-                valueRotationX, valueRotationY, valueRotationZ,
-                valueTranslationX, valueTranslationY, valueTranslationZ, valueTranslationQ,
-                valueCameraDistance" />
+                xRotationWatch, yRotationWatch, zRotationWatch, qRotationWatch,
+                xTranslationWatch, yTranslationWatch, zTranslationWatch, qTranslationWatch,
+                cameraDistanceWatch" />
 
         <TextView
             android:id="@+id/rotationHeading"
@@ -53,7 +53,7 @@
             android:text="@string/transform_translation"
             android:textAppearance="@android:style/TextAppearance"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/labelRotationQ" />
+            app:layout_constraintTop_toBottomOf="@+id/qRotationLabel" />
 
         <TextView
             android:id="@+id/cameraHeading"
@@ -64,20 +64,20 @@
             android:text="@string/camera"
             android:textAppearance="@android:style/TextAppearance"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/labelTranslationQ" />
+            app:layout_constraintTop_toBottomOf="@+id/qTranslationLabel" />
 
         <TextView
-            android:id="@+id/labelRotationY"
+            android:id="@+id/yRotationLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/transform_rotation_y"
             app:layout_constraintStart_toStartOf="@+id/rotationHeading"
-            app:layout_constraintTop_toBottomOf="@+id/labelRotationX" />
+            app:layout_constraintTop_toBottomOf="@+id/xRotationLabel" />
 
         <TextView
-            android:id="@+id/labelTranslationX"
+            android:id="@+id/xTranslationLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -87,37 +87,37 @@
             app:layout_constraintTop_toBottomOf="@+id/translationHeading" />
 
         <TextView
-            android:id="@+id/labelTranslationY"
+            android:id="@+id/yTranslationLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/transform_translation_y"
             app:layout_constraintStart_toStartOf="@+id/translationHeading"
-            app:layout_constraintTop_toBottomOf="@+id/labelTranslationX" />
+            app:layout_constraintTop_toBottomOf="@+id/xTranslationLabel" />
 
         <TextView
-            android:id="@+id/labelTranslationZ"
+            android:id="@+id/zTranslationLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/transform_translation_z"
             app:layout_constraintStart_toStartOf="@+id/translationHeading"
-            app:layout_constraintTop_toBottomOf="@+id/labelTranslationY" />
+            app:layout_constraintTop_toBottomOf="@+id/yTranslationLabel" />
 
         <TextView
-            android:id="@+id/labelTranslationQ"
+            android:id="@+id/qTranslationLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/transform_translation_q"
             app:layout_constraintStart_toStartOf="@+id/translationHeading"
-            app:layout_constraintTop_toBottomOf="@+id/labelTranslationZ" />
+            app:layout_constraintTop_toBottomOf="@+id/zTranslationLabel" />
 
         <TextView
-            android:id="@+id/labelCameraDistance"
+            android:id="@+id/cameraDistanceLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -127,7 +127,7 @@
             app:layout_constraintTop_toBottomOf="@+id/cameraHeading" />
 
         <SeekBar
-            android:id="@+id/seekerRotationY"
+            android:id="@+id/yRotationSeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -137,13 +137,13 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:max="500"
-            app:layout_constraintBottom_toBottomOf="@+id/labelRotationY"
-            app:layout_constraintEnd_toEndOf="@+id/valueBarrier"
-            app:layout_constraintStart_toEndOf="@+id/labelBarrier"
-            app:layout_constraintTop_toTopOf="@+id/labelRotationY" />
+            app:layout_constraintBottom_toBottomOf="@+id/yRotationLabel"
+            app:layout_constraintEnd_toEndOf="@+id/watchesBarrier"
+            app:layout_constraintStart_toEndOf="@+id/labelsBarrier"
+            app:layout_constraintTop_toTopOf="@+id/yRotationLabel" />
 
         <SeekBar
-            android:id="@+id/seekerRotationX"
+            android:id="@+id/xRotationSeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -153,56 +153,56 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:max="500"
-            app:layout_constraintBottom_toBottomOf="@+id/labelRotationX"
-            app:layout_constraintEnd_toEndOf="@+id/valueBarrier"
-            app:layout_constraintStart_toEndOf="@+id/labelBarrier"
-            app:layout_constraintTop_toTopOf="@+id/labelRotationX" />
+            app:layout_constraintBottom_toBottomOf="@+id/xRotationLabel"
+            app:layout_constraintEnd_toEndOf="@+id/watchesBarrier"
+            app:layout_constraintStart_toEndOf="@+id/labelsBarrier"
+            app:layout_constraintTop_toTopOf="@+id/xRotationLabel" />
 
         <TextView
-            android:id="@+id/valueRotationY"
+            android:id="@+id/yRotationWatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:fontFamily="monospace"
             android:text="@string/transform_rotation_value_radians"
-            app:layout_constraintBottom_toBottomOf="@+id/seekerRotationY"
+            app:layout_constraintBottom_toBottomOf="@+id/yRotationSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/seekerRotationY" />
+            app:layout_constraintTop_toTopOf="@+id/yRotationSeekBar" />
 
         <TextView
-            android:id="@+id/valueRotationX"
+            android:id="@+id/xRotationWatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:fontFamily="monospace"
             android:text="@string/transform_rotation_value_radians"
-            app:layout_constraintBottom_toBottomOf="@+id/seekerRotationX"
+            app:layout_constraintBottom_toBottomOf="@+id/xRotationSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/seekerRotationX" />
+            app:layout_constraintTop_toTopOf="@+id/xRotationSeekBar" />
 
         <TextView
-            android:id="@+id/labelRotationZ"
+            android:id="@+id/zRotationLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/transform_rotation_z"
             app:layout_constraintStart_toStartOf="@+id/rotationHeading"
-            app:layout_constraintTop_toBottomOf="@+id/labelRotationY" />
+            app:layout_constraintTop_toBottomOf="@+id/yRotationLabel" />
 
         <TextView
-            android:id="@+id/labelRotationQ"
+            android:id="@+id/qRotationLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/transform_rotation_q"
             app:layout_constraintStart_toStartOf="@+id/rotationHeading"
-            app:layout_constraintTop_toBottomOf="@+id/labelRotationZ" />
+            app:layout_constraintTop_toBottomOf="@+id/zRotationLabel" />
 
         <TextView
-            android:id="@+id/labelRotationX"
+            android:id="@+id/xRotationLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -212,7 +212,7 @@
             app:layout_constraintTop_toBottomOf="@+id/rotationHeading" />
 
         <SeekBar
-            android:id="@+id/seekerRotationZ"
+            android:id="@+id/zRotationSeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -222,13 +222,13 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:max="500"
-            app:layout_constraintBottom_toBottomOf="@+id/labelRotationZ"
-            app:layout_constraintEnd_toEndOf="@+id/valueBarrier"
-            app:layout_constraintStart_toEndOf="@+id/labelBarrier"
-            app:layout_constraintTop_toTopOf="@+id/labelRotationZ" />
+            app:layout_constraintBottom_toBottomOf="@+id/zRotationLabel"
+            app:layout_constraintEnd_toEndOf="@+id/watchesBarrier"
+            app:layout_constraintStart_toEndOf="@+id/labelsBarrier"
+            app:layout_constraintTop_toTopOf="@+id/zRotationLabel" />
 
         <SeekBar
-            android:id="@+id/seekerRotationQ"
+            android:id="@+id/qRotationSeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -238,13 +238,13 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:max="500"
-            app:layout_constraintBottom_toBottomOf="@+id/labelRotationQ"
-            app:layout_constraintEnd_toEndOf="@+id/valueBarrier"
-            app:layout_constraintStart_toEndOf="@+id/labelBarrier"
-            app:layout_constraintTop_toTopOf="@+id/labelRotationQ" />
+            app:layout_constraintBottom_toBottomOf="@+id/qRotationLabel"
+            app:layout_constraintEnd_toEndOf="@+id/watchesBarrier"
+            app:layout_constraintStart_toEndOf="@+id/labelsBarrier"
+            app:layout_constraintTop_toTopOf="@+id/qRotationLabel" />
 
         <SeekBar
-            android:id="@+id/seekerTranslationX"
+            android:id="@+id/xTranslationSeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -254,13 +254,13 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:max="500"
-            app:layout_constraintBottom_toBottomOf="@+id/labelTranslationX"
-            app:layout_constraintEnd_toEndOf="@+id/valueBarrier"
-            app:layout_constraintStart_toEndOf="@+id/labelBarrier"
-            app:layout_constraintTop_toTopOf="@+id/labelTranslationX" />
+            app:layout_constraintBottom_toBottomOf="@+id/xTranslationLabel"
+            app:layout_constraintEnd_toEndOf="@+id/watchesBarrier"
+            app:layout_constraintStart_toEndOf="@+id/labelsBarrier"
+            app:layout_constraintTop_toTopOf="@+id/xTranslationLabel" />
 
         <SeekBar
-            android:id="@+id/seekerTranslationY"
+            android:id="@+id/yTranslationSeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -270,13 +270,13 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:max="500"
-            app:layout_constraintBottom_toBottomOf="@+id/labelTranslationY"
-            app:layout_constraintEnd_toEndOf="@+id/valueBarrier"
-            app:layout_constraintStart_toEndOf="@+id/labelBarrier"
-            app:layout_constraintTop_toTopOf="@+id/labelTranslationY" />
+            app:layout_constraintBottom_toBottomOf="@+id/yTranslationLabel"
+            app:layout_constraintEnd_toEndOf="@+id/watchesBarrier"
+            app:layout_constraintStart_toEndOf="@+id/labelsBarrier"
+            app:layout_constraintTop_toTopOf="@+id/yTranslationLabel" />
 
         <SeekBar
-            android:id="@+id/seekerTranslationZ"
+            android:id="@+id/zTranslationSeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -286,14 +286,14 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:max="500"
-            app:layout_constraintBottom_toBottomOf="@+id/labelTranslationZ"
-            app:layout_constraintEnd_toEndOf="@+id/valueBarrier"
+            app:layout_constraintBottom_toBottomOf="@+id/zTranslationLabel"
+            app:layout_constraintEnd_toEndOf="@+id/watchesBarrier"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/labelBarrier"
-            app:layout_constraintTop_toTopOf="@+id/labelTranslationZ" />
+            app:layout_constraintStart_toEndOf="@+id/labelsBarrier"
+            app:layout_constraintTop_toTopOf="@+id/zTranslationLabel" />
 
         <SeekBar
-            android:id="@+id/seekerTranslationQ"
+            android:id="@+id/qTranslationSeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -301,14 +301,14 @@
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:max="500"
-            app:layout_constraintBottom_toBottomOf="@+id/labelTranslationQ"
-            app:layout_constraintEnd_toEndOf="@+id/valueBarrier"
+            app:layout_constraintBottom_toBottomOf="@+id/qTranslationLabel"
+            app:layout_constraintEnd_toEndOf="@+id/watchesBarrier"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/labelBarrier"
-            app:layout_constraintTop_toTopOf="@+id/labelTranslationQ" />
+            app:layout_constraintStart_toEndOf="@+id/labelsBarrier"
+            app:layout_constraintTop_toTopOf="@+id/qTranslationLabel" />
 
         <SeekBar
-            android:id="@+id/seekerCameraDistance"
+            android:id="@+id/cameraDistanceSeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -318,59 +318,46 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:max="500"
-            app:layout_constraintBottom_toBottomOf="@+id/labelCameraDistance"
-            app:layout_constraintEnd_toEndOf="@+id/valueBarrier"
-            app:layout_constraintStart_toEndOf="@+id/labelBarrier"
-            app:layout_constraintTop_toTopOf="@+id/labelCameraDistance" />
+            app:layout_constraintBottom_toBottomOf="@+id/cameraDistanceLabel"
+            app:layout_constraintEnd_toEndOf="@+id/watchesBarrier"
+            app:layout_constraintStart_toEndOf="@+id/labelsBarrier"
+            app:layout_constraintTop_toTopOf="@+id/cameraDistanceLabel" />
 
         <TextView
-            android:id="@+id/valueRotationZ"
+            android:id="@+id/zRotationWatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:fontFamily="monospace"
             android:text="@string/transform_rotation_value_radians"
-            app:layout_constraintBottom_toBottomOf="@+id/seekerRotationZ"
+            app:layout_constraintBottom_toBottomOf="@+id/zRotationSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/seekerRotationZ" />
+            app:layout_constraintTop_toTopOf="@+id/zRotationSeekBar" />
 
         <TextView
-            android:id="@+id/valueRotationQ"
+            android:id="@+id/qRotationWatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:fontFamily="monospace"
             android:text="@string/transform_rotation_value_radians"
-            app:layout_constraintBottom_toBottomOf="@+id/seekerRotationQ"
+            app:layout_constraintBottom_toBottomOf="@+id/qRotationSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/seekerRotationQ" />
+            app:layout_constraintTop_toTopOf="@+id/qRotationSeekBar" />
 
         <TextView
-            android:id="@+id/valueTranslationX"
+            android:id="@+id/xTranslationWatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:fontFamily="monospace"
             android:text="@string/transform_rotation_value_radians"
-            app:layout_constraintBottom_toBottomOf="@+id/seekerTranslationX"
+            app:layout_constraintBottom_toBottomOf="@+id/xTranslationSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/seekerTranslationX" />
+            app:layout_constraintTop_toTopOf="@+id/xTranslationSeekBar" />
 
         <TextView
-            android:id="@+id/valueTranslationY"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
-            android:fontFamily="monospace"
-            android:text="@string/transform_rotation_value_radians"
-            app:layout_constraintBottom_toBottomOf="@+id/seekerTranslationY"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/seekerTranslationY" />
-
-        <TextView
-            android:id="@+id/valueTranslationZ"
+            android:id="@+id/yTranslationWatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -378,35 +365,48 @@
             android:layout_marginTop="8dp"
             android:fontFamily="monospace"
             android:text="@string/transform_rotation_value_radians"
-            app:layout_constraintBottom_toBottomOf="@+id/seekerTranslationZ"
+            app:layout_constraintBottom_toBottomOf="@+id/yTranslationSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/seekerTranslationZ" />
+            app:layout_constraintTop_toTopOf="@+id/yTranslationSeekBar" />
 
         <TextView
-            android:id="@+id/valueTranslationQ"
+            android:id="@+id/zTranslationWatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="monospace"
+            android:text="@string/transform_rotation_value_radians"
+            app:layout_constraintBottom_toBottomOf="@+id/zTranslationSeekBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/zTranslationSeekBar" />
+
+        <TextView
+            android:id="@+id/qTranslationWatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:fontFamily="monospace"
             android:text="@string/transform_rotation_value_radians"
-            app:layout_constraintBottom_toBottomOf="@+id/seekerTranslationQ"
+            app:layout_constraintBottom_toBottomOf="@+id/qTranslationSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/seekerTranslationQ" />
+            app:layout_constraintTop_toTopOf="@+id/qTranslationSeekBar" />
 
         <TextView
-            android:id="@+id/valueCameraDistance"
+            android:id="@+id/cameraDistanceWatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:fontFamily="monospace"
             android:text="@string/transform_rotation_value_radians"
-            app:layout_constraintBottom_toBottomOf="@+id/seekerCameraDistance"
+            app:layout_constraintBottom_toBottomOf="@+id/cameraDistanceSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/seekerCameraDistance" />
+            app:layout_constraintTop_toTopOf="@+id/cameraDistanceSeekBar" />
 
         <Switch
-            android:id="@+id/renderOptionGrid"
+            android:id="@+id/renderOptionGridSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -414,7 +414,7 @@
             android:checked="true"
             android:text="@string/render_option_grid"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/labelCameraDistance" />
+            app:layout_constraintTop_toBottomOf="@+id/cameraDistanceLabel" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

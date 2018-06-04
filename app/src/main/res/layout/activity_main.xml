@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<io.jim.tesserapp.ui.ControlledGraphicsContainerView xmlns:android="http://schemas.android.com/apk/res/android"
+<io.jim.tesserapp.ui.view.ControlledGraphicsContainerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:layout_height="0dp"
             android:layout_weight="2">
 
-            <io.jim.tesserapp.ui.CubeView
+            <io.jim.tesserapp.ui.view.CubeView
                 android:id="@+id/cubeView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -31,12 +31,12 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <io.jim.tesserapp.ui.ControllerView
+            <io.jim.tesserapp.ui.view.ControllerView
                 android:id="@+id/controllerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            </io.jim.tesserapp.ui.ControllerView>
+            </io.jim.tesserapp.ui.view.ControllerView>
 
         </ScrollView>
 
@@ -44,4 +44,4 @@
     </LinearLayout>
 
 
-</io.jim.tesserapp.ui.ControlledGraphicsContainerView>
+</io.jim.tesserapp.ui.view.ControlledGraphicsContainerView>
