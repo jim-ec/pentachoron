@@ -8,7 +8,7 @@ import io.jim.tesserapp.math.vector.Vector4dh
 /**
  * A geometrical structure consisting of vertices.
  */
-open class Geometry(
+class Geometry(
 
         /**
          * This geometry's name.

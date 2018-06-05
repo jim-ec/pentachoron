@@ -6,8 +6,8 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.*
 import io.jim.tesserapp.R
-import io.jim.tesserapp.geometry.Axis
-import io.jim.tesserapp.geometry.Grid
+import io.jim.tesserapp.geometry.axis
+import io.jim.tesserapp.geometry.grid
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.rendering.Renderer
@@ -32,9 +32,11 @@ class GraphicsView : GLSurfaceView {
     private var touchStartTime = 0L
 
     private val grid =
-            Grid(color = Color(context, R.style.AppTheme, android.R.attr.textColorPrimary).apply {
-                luminance(0.6)
-            })
+            grid(
+                    name = "Grid",
+                    color = Color(context, R.style.AppTheme, android.R.attr.textColorPrimary)
+                            .apply { luminance(0.6) }
+            )
 
     companion object {
         private const val CLICK_TIME_MS = 100L
@@ -68,7 +70,8 @@ class GraphicsView : GLSurfaceView {
         renderMode = RENDERMODE_CONTINUOUSLY
 
         // Create axis:
-        sharedRenderData.drawDataProvider += Axis(
+        sharedRenderData.drawDataProvider += axis(
+                name = "Axis",
                 xAxisColor = Color(context, R.color.colorAxisX),
                 yAxisColor = Color(context, R.color.colorAxisY),
                 zAxisColor = Color(context, R.color.colorAxisZ)
