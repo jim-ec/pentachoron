@@ -2,9 +2,6 @@ package io.jim.tesserapp.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
-import io.jim.tesserapp.R
-import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.vector.Vector4dh
 
 /**
@@ -19,18 +16,16 @@ class CubeView : GraphicsProviderView {
     override val graphicsView = GraphicsView(context, null)
 
     init {
-        Geometry("Cube", Color(context, R.color.colorAccent)).also { cube ->
-            cube.addQuadrilateral(
+
+        graphicsView.sharedRenderData.featuredGeometry.also {
+            it.addQuadrilateral(
                     Vector4dh(1.0, 1.0, 1.0, 0.0),
                     Vector4dh(-1.0, 1.0, 1.0, 0.0),
                     Vector4dh(-1.0, -1.0, 1.0, 0.0),
                     Vector4dh(1.0, -1.0, 1.0, 0.0)
             )
 
-            cube.extrude(Vector4dh(0.0, 0.0, -2.0, 0.0))
-
-            graphicsView.sharedRenderData.drawDataProvider += cube
-            graphicsView.sharedRenderData.controlledGeometry = cube
+            it.extrude(Vector4dh(0.0, 0.0, -2.0, 0.0))
         }
 
         addView(graphicsView)

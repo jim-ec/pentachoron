@@ -1,16 +1,12 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.vector.Vector4dh
 
 /**
  * Geometry representing a flat, orthogonal grid.
  * The center is cut out so that an [axis] geometry fits into the grid without overlapping lines.
  */
-fun grid(
-        name: String,
-        color: Color
-) = Geometry(name, color).apply {
+fun Geometry.grid() {
 
     for (i in -5..-1) {
         addLine(Vector4dh(i.toDouble(), 0.0, -5.0, 0.0), Vector4dh(i.toDouble(), 0.0, 5.0, 0.0))

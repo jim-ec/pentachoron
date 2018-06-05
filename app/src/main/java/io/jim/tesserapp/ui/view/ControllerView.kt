@@ -36,7 +36,7 @@ class ControllerView : FrameLayout {
 
     /**
      * Instantiate controllers piping values from seek bars to [graphicsView] and
-     * the [SharedRenderData.controlledGeometry].
+     * the [SharedRenderData.featuredGeometry].
      */
     fun control(graphicsView: GraphicsView) {
 
@@ -49,7 +49,7 @@ class ControllerView : FrameLayout {
             graphicsView.renderGrid = isChecked
         }
 
-        graphicsView.sharedRenderData.controlledGeometry.transform.also {
+        graphicsView.sharedRenderData.featuredGeometry.transform.also {
 
             // Camera distance:
             cameraDistanceController(graphicsView.sharedRenderData, this)

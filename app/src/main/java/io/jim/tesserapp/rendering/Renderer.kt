@@ -4,6 +4,7 @@ import android.content.Context
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.R
+import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.graphics.DrawDataProvider
 import io.jim.tesserapp.graphics.SharedRenderData
@@ -21,7 +22,10 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
     /**
      * Render data shared across this render thread an others.
      */
-    val sharedRenderData = SharedRenderData(DrawDataProvider())
+    val sharedRenderData = SharedRenderData(
+            drawDataProvider = DrawDataProvider(),
+            featuredGeometry = Geometry("Featured Geometry", Color(context, R.color.colorAccent))
+    )
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
 
