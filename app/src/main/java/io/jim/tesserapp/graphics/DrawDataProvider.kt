@@ -1,6 +1,7 @@
 package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.geometry.wireframeProjection
 import io.jim.tesserapp.rendering.VertexBuffer
 import io.jim.tesserapp.util.InputStreamMemory
 import java.util.*
@@ -48,7 +49,7 @@ class DrawDataProvider {
         vertexMemory.rewind()
 
         geometries.forEach { geometry ->
-            geometry.generateProjectedWireframe { position, (red, green, blue) ->
+            wireframeProjection(geometry) { position, (red, green, blue) ->
                 vertexMemory.record { memory ->
                     memory.write(position.x, position.y, position.z, 1.0)
                     memory.write(red, green, blue, 1.0)

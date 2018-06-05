@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import io.jim.tesserapp.R
-import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.graphics.SharedRenderData
 import io.jim.tesserapp.ui.model.cameraDistanceController
 import io.jim.tesserapp.ui.model.rotationController
@@ -50,7 +49,7 @@ class ControllerView : FrameLayout {
             graphicsView.renderGrid = isChecked
         }
 
-        graphicsView.sharedRenderData.controlledGeometry.also {
+        graphicsView.sharedRenderData.controlledGeometry.transform.also {
 
             // Camera distance:
             cameraDistanceController(graphicsView.sharedRenderData, this)
@@ -59,7 +58,7 @@ class ControllerView : FrameLayout {
             var oldXRotation = 0.0
 
             rotationController(context, xRotationSeekBar, xRotationWatch) { rotation ->
-                it.rotateX(rotation - oldXRotation, Geometry.RotationApplyMode.PREPEND)
+                it.rotateX(rotation - oldXRotation)
                 oldXRotation = rotation
             }
 
@@ -67,7 +66,7 @@ class ControllerView : FrameLayout {
             var oldYRotation = 0.0
 
             rotationController(context, yRotationSeekBar, yRotationWatch) { rotation ->
-                it.rotateY(rotation - oldYRotation, Geometry.RotationApplyMode.PREPEND)
+                it.rotateY(rotation - oldYRotation)
                 oldYRotation = rotation
             }
 
@@ -75,7 +74,7 @@ class ControllerView : FrameLayout {
             var oldZRotation = 0.0
 
             rotationController(context, zRotationSeekBar, zRotationWatch) { rotation ->
-                it.rotateZ(rotation - oldZRotation, Geometry.RotationApplyMode.PREPEND)
+                it.rotateZ(rotation - oldZRotation)
                 oldZRotation = rotation
             }
 

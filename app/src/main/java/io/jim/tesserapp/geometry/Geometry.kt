@@ -1,8 +1,6 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.math.matrix.Matrix
-import io.jim.tesserapp.math.vector.Vector3dh
 import io.jim.tesserapp.math.vector.Vector4dh
 
 /**
@@ -44,156 +42,9 @@ class Geometry(
     val lines = ArrayList<Line<Vector4dh>>()
 
     /**
-     * This geometries model matrix.
-     * [computeModelMatrix] must be called in order to keep the model matrix up-to-date.
+     * Model-transform.
      */
-    val modelMatrix = Matrix(5)
-
-    /**
-     * Rotation matrix.
-     */
-    private val rotationMatrix = Matrix(5)
-
-    /**
-     * When transforming the geometry, the transform is firstly expressed into this matrix.
-     * Afterwards, a transform applier function will merge this [newRotationMatrix] into
-     * the already existent [rotationMatrix], whose content is not discarded, resulting
-     * into a combined rotation.
-     */
-    private val newRotationMatrix = Matrix(5)
-
-    /**
-     * Since no matrix cannot be simultaneously target and source of the same multiplication
-     * operation, the [rotationMatrix] must be copied into this [oldRotationMatrix],
-     * which is then multiplied with [newRotationMatrix] and stored again in [rotationMatrix].
-     */
-    private val oldRotationMatrix = Matrix(5)
-
-    /**
-     * Absolute translation of this geometry.
-     */
-    private val translation = Vector4dh()
-
-    /**
-     * Used in [computeModelMatrix] to express [translation] in a matrix,
-     * so it can be multiplied with [rotationMatrix] to final [modelMatrix].
-     */
-    private val translationMatrix = Matrix(5)
-
-    /**
-     * Rotate the geometry around the x-axis, i.e. the yz-plane.
-     * The set rotation is in no ways absolute, but rather accumulated to the current transform.
-     *
-     * @param deltaAngle Amount of rotation, in radians.
-     *
-     * @param mode How this new transform will be applied to already existent transform.
-     * - [RotationApplyMode.PREPEND]: Rotation stays *aligned* with the global x-axis.
-     * - [RotationApplyMode.APPEND]: Rotates locally around the current geometry's x-axis.
-     */
-    fun rotateX(deltaAngle: Double, mode: RotationApplyMode) {
-        newRotationMatrix.identity()
-        newRotationMatrix.rotation(a = 1, b = 2, radians = deltaAngle)
-
-        applyNewRotation(mode)
-    }
-
-    /**
-     * Rotate the geometry around the y-axis, i.e. the zx-plane.
-     * The set rotation is in no ways absolute, but rather accumulated to the current transform.
-     *
-     * @param deltaAngle Amount of rotation, in radians.
-     *
-     * @param mode How this new transform will be applied to already existent transform.
-     * - [RotationApplyMode.PREPEND]: Rotation stays *aligned* with the global y-axis.
-     * - [RotationApplyMode.APPEND]: Rotates locally around the current geometry's y-axis.
-     */
-    fun rotateY(deltaAngle: Double, mode: RotationApplyMode) {
-        newRotationMatrix.identity()
-        newRotationMatrix.rotation(a = 2, b = 0, radians = deltaAngle)
-
-        applyNewRotation(mode)
-    }
-
-    /**
-     * Rotate the geometry around the z-axis, i.e. the xy-plane.
-     * The set rotation is in no ways absolute, but rather accumulated to the current transform.
-     *
-     * @param deltaAngle Amount of rotation, in radians.
-     *
-     * @param mode How this new transform will be applied to already existent transform.
-     * - [RotationApplyMode.PREPEND]: Rotation stays *aligned* with the global z-axis.
-     * - [RotationApplyMode.APPEND]: Rotates locally around the current geometry's z-axis.
-     */
-    fun rotateZ(deltaAngle: Double, mode: RotationApplyMode) {
-        newRotationMatrix.identity()
-        newRotationMatrix.rotation(a = 0, b = 1, radians = deltaAngle)
-
-        applyNewRotation(mode)
-    }
-
-    /**
-     * Apply rotation described in [newRotationMatrix] to [rotationMatrix].
-     *
-     * @param mode
-     * Determines whether the rotation is either prepended (use [RotationApplyMode.PREPEND])
-     * or appended (use [RotationApplyMode.APPEND]).
-     */
-    private fun applyNewRotation(mode: RotationApplyMode) {
-
-        // Move contents of model matrix into the temporary buffer-like old-model-matrix:
-        oldRotationMatrix.swap(rotationMatrix)
-
-        when (mode) {
-            RotationApplyMode.PREPEND ->
-                // Pre-multiply previous transform to new transform:
-                rotationMatrix.multiplication(oldRotationMatrix, newRotationMatrix)
-
-            RotationApplyMode.APPEND ->
-                // Post-multiply previous transform to new transform:
-                rotationMatrix.multiplication(newRotationMatrix, oldRotationMatrix)
-        }
-    }
-
-    /**
-     * Translate the geometry along the x-axis.
-     * The set translation is in no ways absolute, but rather accumulated to the current transform.
-     *
-     * @param deltaAmount Amount of translation.
-     */
-    fun translateX(deltaAmount: Double) {
-        translation.x += deltaAmount
-    }
-
-    /**
-     * Translate the geometry along the y-axis.
-     * The set translation is in no ways absolute, but rather accumulated to the current transform.
-     *
-     * @param deltaAmount Amount of translation.
-     */
-    fun translateY(deltaAmount: Double) {
-        translation.y += deltaAmount
-    }
-
-    /**
-     * Translate the geometry along the z-axis.
-     * The set translation is in no ways absolute, but rather accumulated to the current transform.
-     *
-     * @param deltaAmount Amount of translation.
-     */
-    fun translateZ(deltaAmount: Double) {
-        translation.z += deltaAmount
-    }
-
-    /**
-     * Recomputes this geometry's transform matrix.
-     */
-    fun computeModelMatrix() {
-        translationMatrix.translation(translation)
-        modelMatrix.multiplication(
-                rotationMatrix,
-                translationMatrix
-        )
-    }
+    val transform = Transform()
 
     /**
      * Add a series of vertices.
@@ -317,50 +168,5 @@ class Geometry(
      * Represents this geometry in a string.
      */
     override fun toString() = name
-
-    /**
-     * Project geometry down to a 3d wireframe.
-     * @param f Called for each wireframe vertex, i.e. its position and color.
-     */
-    inline fun generateProjectedWireframe(f: (position: Vector3dh, color: Color) -> Unit) {
-        computeModelMatrix()
-
-        val transformedPosition = Vector4dh()
-        val homogeneous = Vector3dh()
-
-        lines.forEach { line ->
-            line.forEachPosition { position ->
-
-                // Apply 4-dimensional model matrix to 4d point:
-                transformedPosition.multiplication(position, modelMatrix)
-
-                // Project vector down to a 3d volume:
-                transformedPosition /= transformedPosition.q + Q_PROJECTION_VOLUME
-
-                homogeneous.load(transformedPosition.x, transformedPosition.y, transformedPosition.z)
-
-                f(homogeneous, line.color)
-            }
-        }
-    }
-
-    /**
-     * Describes the way incoming rotation, i.e. [newRotationMatrix], is applied,
-     * say *merged* into previous, already existent rotation, i.e. [rotationMatrix].
-     */
-    enum class RotationApplyMode {
-
-        /**
-         * New transform is prepended to previous transform,
-         * i.e. previous transform is parented to new transform.
-         */
-        PREPEND,
-
-        /**
-         * New transform is appended to previous transform,
-         * i.e. new transform is parented to previous transform.
-         */
-        APPEND
-    }
 
 }
