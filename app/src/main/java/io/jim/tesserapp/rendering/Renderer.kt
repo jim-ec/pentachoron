@@ -24,7 +24,7 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
      */
     val sharedRenderData = SharedRenderData(
             drawDataProvider = DrawDataProvider(),
-            featuredGeometry = Geometry("Featured Geometry", Color(context, R.color.accent))
+            featuredGeometry = Geometry("Featured Geometry", Color(context, R.color.lightAccent))
     )
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
@@ -33,7 +33,7 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
     private val viewMatrix = ViewMatrix(sharedRenderData.camera)
 
     private val clearColor =
-            Color(context, R.style.AppTheme, android.R.attr.windowBackground).apply {
+            Color(context, R.style.LightTheme, android.R.attr.windowBackground).apply {
                 luminance(0.8)
             }
 

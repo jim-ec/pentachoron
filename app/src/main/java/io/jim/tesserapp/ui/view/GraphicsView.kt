@@ -35,7 +35,7 @@ class GraphicsView : GLSurfaceView {
     private val grid =
             Geometry(
                     "Grid",
-                    Color(context, R.style.AppTheme, android.R.attr.textColorPrimary)
+                    Color(context, R.style.LightTheme, android.R.attr.textColorPrimary)
                             .apply { luminance(0.6) }
             ).apply {
                 grid()

@@ -13,11 +13,11 @@
         android:supportsRtl="true"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
-        android:theme="@style/AppTheme">
+        android:theme="@style/LightTheme">
 
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme">
+            android:theme="@style/LightTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -1,9 +1,15 @@
 <resources>
 
-    <style name="AppTheme" parent="@style/Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primaryDark</item>
-        <item name="colorAccent">@color/accent</item>
+    <style name="LightTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/lightPrimary</item>
+        <item name="colorPrimaryDark">@color/lightPrimaryDark</item>
+        <item name="colorAccent">@color/lightAccent</item>
+    </style>
+
+    <style name="DarkTheme" parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/darkPrimary</item>
+        <item name="colorPrimaryDark">@color/darkPrimaryDark</item>
+        <item name="colorAccent">@color/darkAccent</item>
     </style>
 
     <declare-styleable name="ControlledGraphicsContainerView">
