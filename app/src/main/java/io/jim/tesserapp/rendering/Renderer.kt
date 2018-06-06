@@ -54,9 +54,9 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
      */
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         GLES30.glClearColor(
-                redFloat(clearColor),
-                greenFloat(clearColor),
-                blueFloat(clearColor),
+                clearColor.red,
+                clearColor.green,
+                clearColor.blue,
                 1f
         )
         GLES30.glDisable(GLES30.GL_CULL_FACE)

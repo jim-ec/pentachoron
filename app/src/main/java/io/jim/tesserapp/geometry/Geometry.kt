@@ -1,7 +1,6 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.graphics.BLACK
-import io.jim.tesserapp.graphics.ColorInt
+import android.graphics.Color.BLACK
 import io.jim.tesserapp.math.vector.Vector4dh
 
 /**
@@ -17,7 +16,7 @@ class Geometry(
         /**
          * Color of this geometry.
          */
-        private val baseColor: ColorInt = BLACK
+        private val baseColor: Int = BLACK
 
 ) {
 
@@ -61,7 +60,7 @@ class Geometry(
      * @param b Index to the end position.
      * @param color Line color, defaults to geometry's [baseColor].
      */
-    private fun addLine(a: Int, b: Int, color: ColorInt = baseColor) {
+    private fun addLine(a: Int, b: Int, color: Int = baseColor) {
         lines += Line(positions, a, b, color)
     }
 
@@ -72,7 +71,7 @@ class Geometry(
      * @param b End position.
      * @param color Line color, defaults to geometry's [baseColor].
      */
-    fun addLine(a: Vector4dh, b: Vector4dh, color: ColorInt = baseColor) {
+    fun addLine(a: Vector4dh, b: Vector4dh, color: Int = baseColor) {
         addPosition(a)
         addPosition(b)
         addLine(positions.lastIndex - 1, positions.lastIndex, color)
@@ -91,7 +90,7 @@ class Geometry(
             b: Vector4dh,
             c: Vector4dh,
             d: Vector4dh,
-            color: ColorInt = baseColor
+            color: Int = baseColor
     ) {
         addPosition(a)
         addPosition(b)
@@ -108,7 +107,7 @@ class Geometry(
      * @throws IndexOutOfBoundsException If index is out of bounds.
      */
     @Suppress("MemberVisibilityCanBePrivate")
-    fun colorizeLine(lineIndex: Int, color: ColorInt) {
+    fun colorizeLine(lineIndex: Int, color: Int) {
         lines[lineIndex].color = color
     }
 
@@ -131,7 +130,7 @@ class Geometry(
     fun extrude(
             direction: Vector4dh,
             keepColors: Boolean = false,
-            connectorColor: ColorInt = baseColor
+            connectorColor: Int = baseColor
     ) {
         val size = positions.size
 
@@ -158,7 +157,7 @@ class Geometry(
     /**
      * Invoke [f] for each position and the color it's associated with.
      */
-    inline fun forEachVertex(f: (position: Vector4dh, color: ColorInt) -> Unit) {
+    inline fun forEachVertex(f: (position: Vector4dh, color: Int) -> Unit) {
         lines.forEach {
             f(it.start, it.color)
             f(it.end, it.color)

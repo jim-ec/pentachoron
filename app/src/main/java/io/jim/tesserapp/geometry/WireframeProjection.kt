@@ -1,6 +1,5 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.graphics.ColorInt
 import io.jim.tesserapp.math.vector.Vector3dh
 import io.jim.tesserapp.math.vector.Vector4dh
 
@@ -11,7 +10,7 @@ import io.jim.tesserapp.math.vector.Vector4dh
  */
 inline fun wireframeProjection(
         geometry: Geometry,
-        f: (position: Vector3dh, color: ColorInt) -> Unit
+        f: (position: Vector3dh, color: Int) -> Unit
 ) {
     geometry.transform.computeModelMatrix()
 
