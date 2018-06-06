@@ -1,5 +1,6 @@
 package io.jim.tesserapp.ui.view
 
+import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -47,6 +48,25 @@ class ControllerView : FrameLayout {
         }.setOnCheckedChangeListener { _, isChecked ->
             // Update the render grid option every times the checked state changes:
             graphicsView.renderGrid = isChecked
+        }
+
+        darkThemeSwitch.isChecked = with(context as Activity) {
+            getPreferences(Context.MODE_PRIVATE).getBoolean(getString(R.string.pref_dark_theme_enabled), false)
+        }
+
+        darkThemeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            (context as Activity).apply {
+
+                setTheme(R.style.DarkTheme)
+
+                with(getPreferences(Context.MODE_PRIVATE).edit()) {
+                    putBoolean(getString(R.string.pref_dark_theme_enabled), isChecked)
+                    apply()
+                }
+
+                finish()
+                startActivity(intent)
+            }
         }
 
         graphicsView.sharedRenderData.featuredGeometry.transform.also {

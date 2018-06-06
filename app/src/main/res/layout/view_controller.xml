@@ -409,12 +409,22 @@
             android:id="@+id/renderOptionGridSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="28dp"
             android:checked="true"
             android:text="@string/render_option_grid"
+            app:layout_constraintEnd_toStartOf="@+id/darkThemeSwitch"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cameraDistanceLabel" />
+
+        <Switch
+            android:id="@+id/darkThemeSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dark_theme"
+            app:layout_constraintBottom_toBottomOf="@+id/renderOptionGridSwitch"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/renderOptionGridSwitch"
+            app:layout_constraintTop_toTopOf="@+id/renderOptionGridSwitch" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
