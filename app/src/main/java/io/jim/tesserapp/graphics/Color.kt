@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import android.support.annotation.AttrRes
 import android.support.annotation.ColorRes
-import android.support.annotation.StyleRes
 import android.support.v4.content.ContextCompat
 import io.jim.tesserapp.R
 
@@ -17,13 +16,17 @@ fun colorInt(context: Context, @ColorRes resource: Int) =
 
 /**
  * Construct a color from a styleable color attribute.
- * @param styleRes Style applied to color attribute, like [R.style.LightTheme].
  * @param attr Color attribute to be styled, like [android.R.attr.windowBackground].
  */
-fun colorInt(context: Context, @StyleRes styleRes: Int, @AttrRes attr: Int) =
-        colorInt(context, context.theme
-                .obtainStyledAttributes(styleRes, intArrayOf(attr))
-                .getResourceId(0, 0))
+fun themedColorInt(context: Context, @AttrRes attr: Int) =
+        colorInt(context,
+                with(context.theme.obtainStyledAttributes(intArrayOf(attr))) {
+                    getResourceId(0, 0).also {
+                        // Recycle obtained styled attributes of theme:
+                        recycle()
+                    }
+                }
+        )
 
 /**
  * Extracts the red color component.

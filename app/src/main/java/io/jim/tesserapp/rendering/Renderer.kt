@@ -31,7 +31,7 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
     private val viewMatrix = ViewMatrix(sharedRenderData.camera)
 
     private val clearColor =
-            colorInt(context, R.style.LightTheme, android.R.attr.windowBackground).apply {
+            themedColorInt(context, android.R.attr.windowBackground).apply {
                 //luminance(0.8)
             }
 

@@ -10,6 +10,7 @@ import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.axis
 import io.jim.tesserapp.geometry.grid
 import io.jim.tesserapp.graphics.colorInt
+import io.jim.tesserapp.graphics.themedColorInt
 import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.rendering.Renderer
 
@@ -35,7 +36,7 @@ class GraphicsView : GLSurfaceView {
     private val grid =
             Geometry(
                     "Grid",
-                    colorInt(context, R.style.LightTheme, android.R.attr.textColorPrimary)
+                    themedColorInt(context, android.R.attr.textColorPrimary)
             ).apply {
                 grid()
             }
