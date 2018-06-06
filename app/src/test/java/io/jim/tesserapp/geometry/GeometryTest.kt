@@ -1,6 +1,5 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.util.assertEquals
 import org.junit.Assert.assertEquals
@@ -15,15 +14,15 @@ class GeometryTest {
     fun computeModelMatrices() {
 
         val geometry = Geometry("Geometry").apply {
-            rotateZ(Math.PI / 2.0, Geometry.RotationApplyMode.PREPEND)
-            translateX(1.0)
-            computeModelMatrix()
+            transform.rotateZ(Math.PI / 2.0)
+            transform.translateX(1.0)
+            transform.computeModelMatrix()
         }
 
         Vector4dh().apply {
             multiplication(
                     lhs = Vector4dh(1.0, 0.0, 0.0, 0.0),
-                    rhs = geometry.modelMatrix
+                    rhs = geometry.transform.modelMatrix
             )
 
             assertEquals(1.0, x, 0.1)
@@ -35,7 +34,7 @@ class GeometryTest {
 
     @Test
     fun extruding() {
-        Geometry("Test", Color.BLACK).apply {
+        Geometry("Test").apply {
             addLine(Vector4dh(1.0, 1.0, 0.0, 0.0), Vector4dh(2.0, 2.0, 0.0, 0.0))
             extrude(Vector4dh(0.0, 0.0, 1.0, 0.0))
         }
@@ -54,7 +53,7 @@ class GeometryTest {
 
             var invocationCount = 0
 
-            forEachVertex { position, (red, green, blue) ->
+            forEachVertex { position, _ ->
 
                 assertEquals(when (invocationCount) {
                     0 -> a
@@ -68,10 +67,6 @@ class GeometryTest {
                     else -> throw RuntimeException()
                 }, position, 0.1)
 
-                assertEquals(0.0, red, 0.1)
-                assertEquals(0.0, green, 0.1)
-                assertEquals(0.0, blue, 0.1)
-
                 invocationCount++
             }
 
@@ -80,4 +75,3 @@ class GeometryTest {
     }
 
 }
-
