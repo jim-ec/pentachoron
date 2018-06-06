@@ -30,7 +30,7 @@ data class Color(var red: Double, var green: Double, var blue: Double) {
 
     /**
      * Construct a color from a color-resource.
-     * @param resource Color resource, like [R.color.colorAccent].
+     * @param resource Color resource, like [R.color.accent].
      */
     constructor(context: Context, @ColorRes resource: Int) :
             this(ContextCompat.getColor(context, resource))

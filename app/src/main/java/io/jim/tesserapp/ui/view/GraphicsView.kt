@@ -75,9 +75,9 @@ class GraphicsView : GLSurfaceView {
         // Create axis:
         sharedRenderData.drawDataProvider += Geometry("Axis").apply {
             axis(
-                    xAxisColor = Color(context, R.color.colorAxisX),
-                    yAxisColor = Color(context, R.color.colorAxisY),
-                    zAxisColor = Color(context, R.color.colorAxisZ)
+                    xAxisColor = Color(context, R.color.axisX),
+                    yAxisColor = Color(context, R.color.axisY),
+                    zAxisColor = Color(context, R.color.axisZ)
             )
         }
 

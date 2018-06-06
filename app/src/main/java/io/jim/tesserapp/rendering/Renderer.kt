@@ -24,7 +24,7 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
      */
     val sharedRenderData = SharedRenderData(
             drawDataProvider = DrawDataProvider(),
-            featuredGeometry = Geometry("Featured Geometry", Color(context, R.color.colorAccent))
+            featuredGeometry = Geometry("Featured Geometry", Color(context, R.color.accent))
     )
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#616161</color>
-    <color name="colorPrimaryDark">#424242</color>
-    <color name="colorAccent">#1de9b6</color>
+    <color name="primary">#616161</color>
+    <color name="primaryDark">#424242</color>
+    <color name="accent">#1de9b6</color>
 
-    <color name="colorAxisX">#e57373</color>
-    <color name="colorAxisY">#DCE775</color>
-    <color name="colorAxisZ">#7986CB</color>
+    <color name="axisX">#e57373</color>
+    <color name="axisY">#DCE775</color>
+    <color name="axisZ">#7986CB</color>
 </resources>
