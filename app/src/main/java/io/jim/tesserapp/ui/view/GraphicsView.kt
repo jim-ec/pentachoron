@@ -9,7 +9,6 @@ import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.axis
 import io.jim.tesserapp.geometry.grid
-import io.jim.tesserapp.graphics.colorInt
 import io.jim.tesserapp.graphics.themedColorInt
 import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.rendering.Renderer
@@ -34,10 +33,7 @@ class GraphicsView : GLSurfaceView {
     private var touchStartTime = 0L
 
     private val grid =
-            Geometry(
-                    "Grid",
-                    themedColorInt(context, android.R.attr.textColorPrimary)
-            ).apply {
+            Geometry("Grid", themedColorInt(context, R.attr.colorGrid)).apply {
                 grid()
             }
 
@@ -75,9 +71,9 @@ class GraphicsView : GLSurfaceView {
         // Create axis:
         sharedRenderData.drawDataProvider += Geometry("Axis").apply {
             axis(
-                    xAxisColor = colorInt(context, R.color.axisX),
-                    yAxisColor = colorInt(context, R.color.axisY),
-                    zAxisColor = colorInt(context, R.color.axisZ)
+                    xAxisColor = themedColorInt(context, R.attr.colorAxisY),
+                    yAxisColor = themedColorInt(context, R.attr.colorAxisX),
+                    zAxisColor = themedColorInt(context, R.attr.colorAxisZ)
             )
         }
 

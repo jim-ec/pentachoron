@@ -3,30 +3,27 @@ package io.jim.tesserapp.graphics
 import android.content.Context
 import android.graphics.Color
 import android.support.annotation.AttrRes
-import android.support.annotation.ColorRes
-import android.support.v4.content.ContextCompat
+import android.support.annotation.ColorInt
 import io.jim.tesserapp.R
 
 /**
- * Construct a color from a color-resource.
- * @param resource Color resource, like [R.color.lightAccent].
+ * Construct a color from a color attribute, styled by [context]'s theme.
+ * @param attr Styled color attribute, e.g. [R.attr.colorAccent].
+ * @param fallback Fallback color if [attr] is not defined or not a color resource.
  */
-fun colorInt(context: Context, @ColorRes resource: Int) =
-        ContextCompat.getColor(context, resource)
-
-/**
- * Construct a color from a styleable color attribute.
- * @param attr Color attribute to be styled, like [android.R.attr.windowBackground].
- */
-fun themedColorInt(context: Context, @AttrRes attr: Int) =
-        colorInt(context,
-                with(context.theme.obtainStyledAttributes(intArrayOf(attr))) {
-                    getResourceId(0, 0).also {
-                        // Recycle obtained styled attributes of theme:
-                        recycle()
-                    }
-                }
-        )
+@ColorInt
+fun themedColorInt(
+        context: Context,
+        @AttrRes attr: Int,
+        @ColorInt fallback: Int = Color.BLACK
+) =
+        with(context.theme.obtainStyledAttributes(intArrayOf(attr))) {
+            // Typed array obtained, try to get color-resource:
+            getColor(0, fallback).also {
+                // Recycle obtained styled attributes of theme:
+                recycle()
+            }
+        }
 
 /**
  * Extracts the red color component.

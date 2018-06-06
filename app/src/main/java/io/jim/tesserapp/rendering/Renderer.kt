@@ -11,7 +11,6 @@ import io.jim.tesserapp.math.matrix.ViewMatrix
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-
 /**
  * Actually renders to OpenGL.
  */
@@ -22,7 +21,7 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
      */
     val sharedRenderData = SharedRenderData(
             drawDataProvider = DrawDataProvider(),
-            featuredGeometry = Geometry("Featured Geometry", colorInt(context, R.color.lightAccent))
+            featuredGeometry = Geometry("Featured Geometry", themedColorInt(context, R.attr.colorAccent))
     )
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
