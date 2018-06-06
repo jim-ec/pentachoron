@@ -9,10 +9,16 @@ import io.jim.tesserapp.R
 
 typealias ColorInt = Int
 
+operator fun Int.component1() = redFloat(this)
+
+operator fun Int.component2() = greenFloat(this)
+
+operator fun Int.component3() = blueFloat(this)
+
 /**
  * Opaque black.
  */
-const val BLACK = 0xff000000
+const val BLACK = android.graphics.Color.BLACK
 
 /**
  * Construct a color from three RGB components, each in range [0,255].
@@ -38,73 +44,20 @@ fun colorInt(context: Context, @StyleRes styleRes: Int, @AttrRes attr: Int) =
                 .obtainStyledAttributes(styleRes, intArrayOf(attr))
                 .getResourceId(0, 0))
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * Extracts the red color component.
+ * @return Red in `[0,1]`
+ */
+fun redFloat(color: ColorInt) = android.graphics.Color.red(color).toFloat() / 255f
 
 /**
- * A color with red, green and blue values.
- * @property red Red component, in range [0.0,1.0].
- * @property green Green component, in range [0.0,1.0].
- * @property blue Blue component, in range [0.0,1.0].
+ * Extracts the green color component.
+ * @return Green in `[0,1]`
  */
-@Deprecated("Use color ints instead")
-data class Color constructor(var red: Double, var green: Double, var blue: Double) {
+fun greenFloat(color: ColorInt) = android.graphics.Color.green(color).toFloat() / 255f
 
-    /**
-     * Construct a color from three RGB components, each in range [0,255].
-     * 0 maps to 0.0, while 255 maps to 1.0, component-wise.
-     */
-    @Deprecated("Use color ints instead")
-    constructor(red: Int, green: Int, blue: Int) :
-            this(red.toFloat() / 255.0, green.toFloat() / 255.0, blue.toFloat() / 255.0)
-
-    /**
-     * Extract ARGB color components from bytes in [argb].
-     */
-    @Deprecated("Use color ints instead")
-    private constructor(argb: Int) :
-            this((argb shr 16) and 0xff, (argb shr 8) and 0xff, argb and 0xff)
-
-    /**
-     * Construct a color from a color-resource.
-     * @param resource Color resource, like [R.color.accent].
-     */
-    @Deprecated("Use color ints instead")
-    constructor(context: Context, @ColorRes resource: Int) :
-            this(ContextCompat.getColor(context, resource))
-
-    /**
-     * Construct a color from a styleable color attribute.
-     * @param styleRes Style applied to color attribute, like [R.style.AppTheme].
-     * @param attr Color attribute to be styled, like [android.R.attr.windowBackground].
-     */
-    @Deprecated("Use color ints instead")
-    constructor(context: Context, @StyleRes styleRes: Int, @AttrRes attr: Int) :
-            this(context, context.theme
-                    .obtainStyledAttributes(styleRes, intArrayOf(attr))
-                    .getResourceId(0, 0))
-
-    /**
-     * Modify a color by luminance by multiplying all color components by [amount].
-     *
-     * @param amount
-     * Values greater than 1 brighten the color,
-     * while values smaller than 1 darken the color.
-     */
-    @Deprecated("Use color ints instead")
-    fun luminance(amount: Double) {
-        red *= amount
-        green *= amount
-        blue *= amount
-    }
-
-    companion object {
-
-        /**
-         * A black color constant.
-         */
-        @Deprecated("Use color ints instead")
-        val BLACK = Color(0.0, 0.0, 0.0)
-
-    }
-
-}
+/**
+ * Extracts the blue color component.
+ * @return Blue in `[0,1]`
+ */
+fun blueFloat(color: ColorInt) = android.graphics.Color.blue(color).toFloat() / 255f

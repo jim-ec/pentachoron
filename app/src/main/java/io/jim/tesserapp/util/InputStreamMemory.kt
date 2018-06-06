@@ -98,6 +98,36 @@ class InputStreamMemory(
     }
 
     /**
+     * Write a single vector into the memory.
+     * If necessary, memory is increased by [allocationGranularity] elements.
+     *
+     * No check is done to ensure that this writes a proper number of vectors into the memory.
+     * If used directly, this can lead to excess vectors if their count does not match up with
+     * vectors taken by a single element.
+     *
+     * To write vectors into memory in a safer manner, meaning that excess vectors lead to
+     * an exception, use [record] as a block function.
+     *
+     * @see record
+     */
+    fun write(x: Float, y: Float, z: Float, q: Float) {
+
+        // Check if memory must be extended:
+        if (writtenElementCounts * floatsPerElement >= floatMemory.capacity()) {
+            increaseMemory()
+        }
+
+        // Put the whole given vector into the float memory:
+        floatMemory.put(writtenVectorCounts * 4 + 0, x)
+        floatMemory.put(writtenVectorCounts * 4 + 1, y)
+        floatMemory.put(writtenVectorCounts * 4 + 2, z)
+        floatMemory.put(writtenVectorCounts * 4 + 3, q)
+
+        // Increment counts of written vectors:
+        writtenVectorCounts++
+    }
+
+    /**
      * Invoke [f]. Count of written vectors after the call is compared to the count of vectors
      * present before the call. If that count does not match up with vectors taken by `n` element,
      * determined through [vectorsPerElement], an exception is thrown.

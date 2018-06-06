@@ -5,9 +5,7 @@ import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.graphics.Color
-import io.jim.tesserapp.graphics.DrawDataProvider
-import io.jim.tesserapp.graphics.SharedRenderData
+import io.jim.tesserapp.graphics.*
 import io.jim.tesserapp.math.matrix.Projection3dMatrix
 import io.jim.tesserapp.math.matrix.ViewMatrix
 import javax.microedition.khronos.egl.EGLConfig
@@ -24,7 +22,7 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
      */
     val sharedRenderData = SharedRenderData(
             drawDataProvider = DrawDataProvider(),
-            featuredGeometry = Geometry("Featured Geometry", Color(context, R.color.lightAccent))
+            featuredGeometry = Geometry("Featured Geometry", colorInt(context, R.color.lightAccent))
     )
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
@@ -33,8 +31,8 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
     private val viewMatrix = ViewMatrix(sharedRenderData.camera)
 
     private val clearColor =
-            Color(context, R.style.LightTheme, android.R.attr.windowBackground).apply {
-                luminance(0.8)
+            colorInt(context, R.style.LightTheme, android.R.attr.windowBackground).apply {
+                //luminance(0.8)
             }
 
     companion object {
@@ -56,9 +54,9 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
      */
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         GLES30.glClearColor(
-                clearColor.red.toFloat(),
-                clearColor.green.toFloat(),
-                clearColor.blue.toFloat(),
+                redFloat(clearColor),
+                greenFloat(clearColor),
+                blueFloat(clearColor),
                 1f
         )
         GLES30.glDisable(GLES30.GL_CULL_FACE)

@@ -1,6 +1,6 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.graphics.Color
+import io.jim.tesserapp.graphics.ColorInt
 import io.jim.tesserapp.math.vector.VectorN
 
 /**
@@ -17,7 +17,7 @@ class Line<out T : VectorN>(
         positions: List<T>,
         val startIndex: Int,
         val endIndex: Int,
-        var color: Color
+        var color: ColorInt
 ) {
 
     /**
