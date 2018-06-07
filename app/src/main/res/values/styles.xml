@@ -3,7 +3,7 @@
     <style name="LightTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">#ffffff</item>
         <item name="colorPrimaryDark">#e0e0e0</item>
-        <item name="colorAccent">#26A69A</item>
+        <item name="colorAccent">#00BFA5</item>
 
         <item name="colorGrid">#bdbdbd</item>
         <item name="colorAxisX">#f44336</item>
@@ -14,7 +14,7 @@
     <style name="DarkTheme" parent="@style/Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">#616161</item>
         <item name="colorPrimaryDark">#424242</item>
-        <item name="colorAccent">#1de9b6</item>
+        <item name="colorAccent">#1DE9B6</item>
 
         <item name="colorGrid">#bdbdbd</item>
         <item name="colorAxisX">#e57373</item>
