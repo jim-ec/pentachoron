@@ -9,6 +9,7 @@ import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.axis
 import io.jim.tesserapp.geometry.grid
+import io.jim.tesserapp.graphics.SharedRenderData
 import io.jim.tesserapp.graphics.themedColorInt
 import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.rendering.Renderer
@@ -23,11 +24,6 @@ class GraphicsView : GLSurfaceView {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     private val renderer = Renderer(context, resources.displayMetrics.xdpi.toDouble())
-
-    /**
-     * Render data shared across render and other threads.
-     */
-    val sharedRenderData = renderer.sharedRenderData
 
     private val touchStartPosition = Vector3d(0.0, 0.0, 0.0)
     private var touchStartTime = 0L
@@ -49,13 +45,11 @@ class GraphicsView : GLSurfaceView {
      */
     var renderGrid = true
         set(value) {
-            sharedRenderData.synchronized { (drawDataProvider) ->
-                if (value) {
-                    drawDataProvider += grid
-                }
-                else {
-                    drawDataProvider -= grid
-                }
+            if (value) {
+                renderer.addGeometry(grid)
+            }
+            else {
+                renderer.removeGeometry(grid)
             }
             field = value
         }
@@ -69,20 +63,20 @@ class GraphicsView : GLSurfaceView {
         renderMode = RENDERMODE_CONTINUOUSLY
 
         // Create axis:
-        sharedRenderData.drawDataProvider += Geometry("Axis").apply {
+        renderer.addGeometry(Geometry("Axis").apply {
             axis(
                     xAxisColor = themedColorInt(context, R.attr.colorAxisY),
                     yAxisColor = themedColorInt(context, R.attr.colorAxisX),
                     zAxisColor = themedColorInt(context, R.attr.colorAxisZ)
             )
-        }
+        })
 
         // Default camera rotation:
         moveToDefaultCameraPosition()
     }
 
     private fun moveToDefaultCameraPosition() {
-        sharedRenderData.synchronized { renderData ->
+        renderer.synchronized { renderData ->
             renderData.camera.verticalRotation = DEFAULT_CAMERA_HORIZONTAL_ROTATION
             renderData.camera.horizontalRotation = DEFAULT_CAMERA_VERTICAL_ROTATION
         }
@@ -104,7 +98,7 @@ class GraphicsView : GLSurfaceView {
                     val dx = event.x - touchStartPosition.x
                     val dy = event.y - touchStartPosition.y
 
-                    renderer.sharedRenderData.synchronized { renderData ->
+                    renderer.synchronized { renderData ->
                         renderData.camera.horizontalRotation += dx * TOUCH_ROTATION_SENSITIVITY
                         renderData.camera.verticalRotation -= dy * TOUCH_ROTATION_SENSITIVITY
                     }
@@ -128,6 +122,18 @@ class GraphicsView : GLSurfaceView {
         super.performClick()
         moveToDefaultCameraPosition()
         return true
+    }
+
+    /**
+     * Synchronizes inter-thread access to this view's renderer.
+     * This is always necessary when accessing geometry.
+     *
+     * @param f
+     * Receives this renderer draw-data object, which must be only referenced
+     * during the execution of [f].
+     */
+    fun synchronized(f: (renderData: SharedRenderData) -> Unit) {
+        renderer.synchronized(f)
     }
 
 }

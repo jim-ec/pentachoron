@@ -69,66 +69,67 @@ class ControllerView : FrameLayout {
             }
         }
 
-        graphicsView.sharedRenderData.featuredGeometry.transform.also {
+        graphicsView.synchronized { (featuredGeometry) ->
+            featuredGeometry.transform.also {
 
-            // Camera distance:
-            cameraDistanceController(graphicsView.sharedRenderData, this)
+                // Camera distance:
+                cameraDistanceController(graphicsView, this)
 
-            // X-Rotation:
-            var oldXRotation = 0.0
+                // X-Rotation:
+                var oldXRotation = 0.0
 
-            rotationController(context, xRotationSeekBar, xRotationWatch) { rotation ->
-                it.rotateX(rotation - oldXRotation)
-                oldXRotation = rotation
+                rotationController(context, xRotationSeekBar, xRotationWatch) { rotation ->
+                    it.rotateX(rotation - oldXRotation)
+                    oldXRotation = rotation
+                }
+
+                // Y-Rotation:
+                var oldYRotation = 0.0
+
+                rotationController(context, yRotationSeekBar, yRotationWatch) { rotation ->
+                    it.rotateY(rotation - oldYRotation)
+                    oldYRotation = rotation
+                }
+
+                // Z-Rotation:
+                var oldZRotation = 0.0
+
+                rotationController(context, zRotationSeekBar, zRotationWatch) { rotation ->
+                    it.rotateZ(rotation - oldZRotation)
+                    oldZRotation = rotation
+                }
+
+                // Q-Rotation:
+                rotationController(context, qRotationSeekBar, qRotationWatch) {}
+
+                // X-Translation:
+                var oldXTranslation = 0.0
+
+                translationController(context, xTranslationSeekBar, xTranslationWatch
+                ) { translation ->
+                    it.translateX(translation - oldXTranslation)
+                    oldXTranslation = translation
+                }
+
+                // Y-Translation:
+                var oldYTranslation = 0.0
+
+                translationController(context, yTranslationSeekBar, yTranslationWatch) { translation ->
+                    it.translateY(translation - oldYTranslation)
+                    oldYTranslation = translation
+                }
+
+                // Z-Translation:
+                var oldZTranslation = 0.0
+
+                translationController(context, zTranslationSeekBar, zTranslationWatch) { translation ->
+                    it.translateZ(translation - oldZTranslation)
+                    oldZTranslation = translation
+                }
+
+                // Q-Translation:
+                translationController(context, qTranslationSeekBar, qTranslationWatch) { }
             }
-
-            // Y-Rotation:
-            var oldYRotation = 0.0
-
-            rotationController(context, yRotationSeekBar, yRotationWatch) { rotation ->
-                it.rotateY(rotation - oldYRotation)
-                oldYRotation = rotation
-            }
-
-            // Z-Rotation:
-            var oldZRotation = 0.0
-
-            rotationController(context, zRotationSeekBar, zRotationWatch) { rotation ->
-                it.rotateZ(rotation - oldZRotation)
-                oldZRotation = rotation
-            }
-
-            // Q-Rotation:
-            rotationController(context, qRotationSeekBar, qRotationWatch) {}
-
-            // X-Translation:
-            var oldXTranslation = 0.0
-
-            translationController(context, xTranslationSeekBar, xTranslationWatch
-            ) { translation ->
-                it.translateX(translation - oldXTranslation)
-                oldXTranslation = translation
-            }
-
-            // Y-Translation:
-            var oldYTranslation = 0.0
-
-            translationController(context, yTranslationSeekBar, yTranslationWatch) { translation ->
-                it.translateY(translation - oldYTranslation)
-                oldYTranslation = translation
-            }
-
-            // Z-Translation:
-            var oldZTranslation = 0.0
-
-            translationController(context, zTranslationSeekBar, zTranslationWatch) { translation ->
-                it.translateZ(translation - oldZTranslation)
-                oldZTranslation = translation
-            }
-
-            // Q-Translation:
-            translationController(context, qTranslationSeekBar, qTranslationWatch) { }
-
         }
 
     }

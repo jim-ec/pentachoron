@@ -17,15 +17,17 @@ class CubeView : GraphicsProviderView {
 
     init {
 
-        graphicsView.sharedRenderData.featuredGeometry.also {
-            it.addQuadrilateral(
-                    Vector4dh(1.0, 1.0, 1.0, 0.0),
-                    Vector4dh(-1.0, 1.0, 1.0, 0.0),
-                    Vector4dh(-1.0, -1.0, 1.0, 0.0),
-                    Vector4dh(1.0, -1.0, 1.0, 0.0)
-            )
+        graphicsView.synchronized { renderData ->
+            renderData.featuredGeometry.apply {
+                addQuadrilateral(
+                        Vector4dh(1.0, 1.0, 1.0, 0.0),
+                        Vector4dh(-1.0, 1.0, 1.0, 0.0),
+                        Vector4dh(-1.0, -1.0, 1.0, 0.0),
+                        Vector4dh(1.0, -1.0, 1.0, 0.0)
+                )
 
-            it.extrude(Vector4dh(0.0, 0.0, -2.0, 0.0))
+                extrude(Vector4dh(0.0, 0.0, -2.0, 0.0))
+            }
         }
 
         addView(graphicsView)
