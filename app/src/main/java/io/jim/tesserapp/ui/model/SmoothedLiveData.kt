@@ -6,18 +6,18 @@ import io.jim.tesserapp.math.common.Smoothed
  * Live data with an additional member smoothly interpolating between data-changes.
  * @param initialValue Initial value of live data.
  * @param transitionInterval The time it should take to fulfil one transition interval.
- * @param delegateDifference Assigned to [smoothed]'s [Smoothed.delegateDifference].
+ * @param delegationMode Assigned to [smoothed]'s [Smoothed.delegationMode].
  */
 class SmoothedLiveData(
         initialValue: Double,
-        transitionInterval: Double = 200.0,
-        delegateDifference: Boolean = true
+        delegationMode: Smoothed.DelegationMode,
+        transitionInterval: Double = 200.0
 ) : MutableLiveDataNonNull<Double>(initialValue) {
 
     /**
      * Reflect the live-data's value, but interpolates smoothly between changes.
      */
-    var smoothed by Smoothed(initialValue, transitionInterval, delegateDifference)
+    var smoothed by Smoothed(initialValue, transitionInterval, delegationMode)
         private set
 
     init {

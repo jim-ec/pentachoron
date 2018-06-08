@@ -1,5 +1,6 @@
 package io.jim.tesserapp.math.common
 
+import io.jim.tesserapp.math.common.Smoothed.DelegationMode
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -12,8 +13,9 @@ import kotlin.reflect.KProperty
  * @property transitionInterval
  * The time it should take to fulfil one transition interval.
  *
- * @property delegateDifference
- * If `true`, property read will return the value difference since the last read operation,
+ * @property delegationMode
+ * If [DelegationMode.ABSOLUTE], simply the absolute value is delegation on read.
+ * If [DelegationMode.RELATIVE], property read will return the value difference since the last read,
  * instead of the current absolute value.
  * To keep track of the absolute value, you have to accumulate all read retrievals, which
  * implies that you have to define explicitly who can read the property at all.
@@ -22,7 +24,7 @@ import kotlin.reflect.KProperty
 open class Smoothed<R>(
         startValue: Double,
         private val transitionInterval: Double,
-        private val delegateDifference: Boolean = false
+        private val delegationMode: DelegationMode = DelegationMode.ABSOLUTE
 ) : ReadWriteProperty<R, Double> {
 
     /**
@@ -115,10 +117,15 @@ open class Smoothed<R>(
             currentValue.let { value ->
 
                 // Return difference, but remember the current value as the new old value:
-                if (delegateDifference)
-                    (value - oldValue).also { oldValue = value }
-                else
-                    value
+                when (delegationMode) {
+                    DelegationMode.ABSOLUTE -> value
+                    DelegationMode.RELATIVE -> (value - oldValue).also { oldValue = value }
+                }
             }
+
+    enum class DelegationMode {
+        ABSOLUTE,
+        RELATIVE
+    }
 
 }
