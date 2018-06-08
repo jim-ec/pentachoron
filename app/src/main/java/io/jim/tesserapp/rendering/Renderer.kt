@@ -114,7 +114,7 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
 
                 // Recompute and upload view and perspective matrices:
                 shader.uploadViewMatrix(viewMatrix.apply {
-                    compute(context.viewModel.cameraDistance.value)
+                    compute(context.viewModel.cameraDistance.smoothed)
                 })
                 shader.uploadProjectionMatrix(projectionMatrix)
 

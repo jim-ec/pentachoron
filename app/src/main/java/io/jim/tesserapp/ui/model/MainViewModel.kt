@@ -60,6 +60,6 @@ class MainViewModel : ViewModel() {
     /**
      * Camera distance.
      */
-    val cameraDistance = MutableLiveDataNonNull(8.0)
+    val cameraDistance = SmoothedLiveData(8.0, delegateDifference = false)
 
 }
