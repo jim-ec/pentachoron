@@ -64,8 +64,8 @@ class ControllerView : FrameLayout {
                     apply()
                 }
 
-                finish()
-                startActivity(intent)
+                // Recreate instead of finish() and startActivity() so view-model persists:
+                recreate()
             }
         }
 
