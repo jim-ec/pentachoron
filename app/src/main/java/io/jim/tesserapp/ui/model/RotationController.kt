@@ -21,6 +21,6 @@ fun rotationController(
         watch = watch,
         valueRange = 0.0..2.0,
         startValue = startValue,
-        formatString = context.getString(R.string.transform_rotation_value_radians),
+        formatString = context.getString(R.string.transform_rotation_watch_format),
         onValueUpdate = onRotated
 )

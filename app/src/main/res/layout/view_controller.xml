@@ -164,7 +164,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:fontFamily="monospace"
-            android:text="@string/transform_rotation_value_radians"
+            android:text="@string/transform_rotation_watch_format"
             app:layout_constraintBottom_toBottomOf="@+id/yRotationSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/yRotationSeekBar" />
@@ -176,7 +176,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:fontFamily="monospace"
-            android:text="@string/transform_rotation_value_radians"
+            android:text="@string/transform_rotation_watch_format"
             app:layout_constraintBottom_toBottomOf="@+id/xRotationSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/xRotationSeekBar" />
@@ -329,7 +329,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:fontFamily="monospace"
-            android:text="@string/transform_rotation_value_radians"
+            android:text="@string/transform_rotation_watch_format"
             app:layout_constraintBottom_toBottomOf="@+id/zRotationSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/zRotationSeekBar" />
@@ -340,7 +340,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:fontFamily="monospace"
-            android:text="@string/transform_rotation_value_radians"
+            android:text="@string/transform_rotation_watch_format"
             app:layout_constraintBottom_toBottomOf="@+id/qRotationSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/qRotationSeekBar" />
@@ -351,7 +351,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:fontFamily="monospace"
-            android:text="@string/transform_rotation_value_radians"
+            android:text="@string/transform_rotation_watch_format"
             app:layout_constraintBottom_toBottomOf="@+id/xTranslationSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/xTranslationSeekBar" />
@@ -364,7 +364,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
             android:fontFamily="monospace"
-            android:text="@string/transform_rotation_value_radians"
+            android:text="@string/transform_rotation_watch_format"
             app:layout_constraintBottom_toBottomOf="@+id/yTranslationSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/yTranslationSeekBar" />
@@ -377,7 +377,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
             android:fontFamily="monospace"
-            android:text="@string/transform_rotation_value_radians"
+            android:text="@string/transform_rotation_watch_format"
             app:layout_constraintBottom_toBottomOf="@+id/zTranslationSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/zTranslationSeekBar" />
@@ -388,7 +388,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:fontFamily="monospace"
-            android:text="@string/transform_rotation_value_radians"
+            android:text="@string/transform_rotation_watch_format"
             app:layout_constraintBottom_toBottomOf="@+id/qTranslationSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/qTranslationSeekBar" />
@@ -400,7 +400,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:fontFamily="monospace"
-            android:text="@string/transform_rotation_value_radians"
+            android:text="@string/transform_rotation_watch_format"
             app:layout_constraintBottom_toBottomOf="@+id/cameraDistanceSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/cameraDistanceSeekBar" />

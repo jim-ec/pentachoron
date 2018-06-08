@@ -20,6 +20,6 @@ fun translationController(
         watch = watch,
         valueRange = -5.0..5.0,
         startValue = startValue,
-        formatString = context.getString(R.string.transform_translation_value),
+        formatString = context.getString(R.string.transform_translation_watch_format),
         onValueUpdate = onTranslated
 )

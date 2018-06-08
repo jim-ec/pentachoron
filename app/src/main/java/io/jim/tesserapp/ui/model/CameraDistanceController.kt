@@ -17,7 +17,7 @@ fun cameraDistanceController(view: ControllerView) =
                     watch = view.cameraDistanceWatch,
                     valueRange = 3.0..15.0,
                     startValue = model.cameraDistance.value,
-                    formatString = view.context.getString(R.string.camera_distance_value),
+                    formatString = view.context.getString(R.string.camera_distance_watch_format),
                     onValueUpdate = { value ->
                         model.cameraDistance.value = value
                     }
