@@ -25,12 +25,7 @@ class MutableLiveDataNonNull<T>(initialValue: T) : MutableLiveData<T>() {
     /**
      * Install an observer bound to [lifecycleOwner]'s life duration.
      *
-     * Whenever the internal value changes, [callback] is called with the new value.
-     *
-     * Value changes to `null` are considered as an error using this specific function,
-     * therefore the value received by [callback] is always **non-null**.
-     *
-     * @throws RuntimeException If value changes to `null`.
+     * @param callback Called upon value changes.
      */
     fun observe(lifecycleOwner: LifecycleOwner, callback: (T) -> Unit) {
         super.observe(lifecycleOwner, Observer {
