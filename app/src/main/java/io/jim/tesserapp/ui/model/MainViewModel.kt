@@ -13,7 +13,8 @@ class MainViewModel : ViewModel() {
      */
     val rotationX = MutableLiveDataNonNull(0.0).apply {
         observeForeverNonNull(mapDifference(value) { difference ->
-            featuredGeometry.transform.rotateX(difference)
+            println("Rotate x by $difference")
+            featuredGeometry.transform.rotateX(difference * Math.PI)
         })
     }
 
@@ -22,7 +23,8 @@ class MainViewModel : ViewModel() {
      */
     val rotationY = MutableLiveDataNonNull(0.0).apply {
         observeForeverNonNull(mapDifference(value) { difference ->
-            featuredGeometry.transform.rotateY(difference)
+            println("Rotate y by $difference")
+            featuredGeometry.transform.rotateY(difference * Math.PI)
         })
     }
 
@@ -31,7 +33,8 @@ class MainViewModel : ViewModel() {
      */
     val rotationZ = MutableLiveDataNonNull(0.0).apply {
         observeForeverNonNull(mapDifference(value) { difference ->
-            featuredGeometry.transform.rotateZ(difference)
+            println("Rotate z by $difference")
+            featuredGeometry.transform.rotateZ(difference * Math.PI)
         })
     }
 

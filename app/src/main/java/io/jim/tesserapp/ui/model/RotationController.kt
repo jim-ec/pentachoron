@@ -14,14 +14,13 @@ fun rotationController(
         context: Context,
         seekBar: SeekBar,
         watch: TextView,
+        startValue: Double,
         onRotated: (rotation: Double) -> Unit
 ) = Controller(
         seekBar = seekBar,
         watch = watch,
         valueRange = 0.0..2.0,
-        startValue = 0.0,
+        startValue = startValue,
         formatString = context.getString(R.string.transform_rotation_value_radians),
-        onValueUpdate = { value ->
-            onRotated(value * Math.PI)
-        }
+        onValueUpdate = onRotated
 )

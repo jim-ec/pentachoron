@@ -13,12 +13,13 @@ fun translationController(
         context: Context,
         seekBar: SeekBar,
         watch: TextView,
+        startValue: Double,
         onTranslated: (translation: Double) -> Unit
 ) = Controller(
         seekBar = seekBar,
         watch = watch,
         valueRange = -5.0..5.0,
-        startValue = 0.0,
+        startValue = startValue,
         formatString = context.getString(R.string.transform_translation_value),
         onValueUpdate = onTranslated
 )

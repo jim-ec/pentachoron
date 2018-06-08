@@ -73,14 +73,14 @@ class ControllerView : FrameLayout {
         cameraDistanceController(this)
 
         (context as MainActivity).viewModel.apply {
-            rotationController(context, xRotationSeekBar, xRotationWatch, rotationX::setValue)
-            rotationController(context, yRotationSeekBar, yRotationWatch, rotationY::setValue)
-            rotationController(context, zRotationSeekBar, zRotationWatch, rotationZ::setValue)
-            rotationController(context, qRotationSeekBar, qRotationWatch, rotationQ::setValue)
-            translationController(context, xTranslationSeekBar, xTranslationWatch, translationX::setValue)
-            translationController(context, yTranslationSeekBar, yTranslationWatch, translationY::setValue)
-            translationController(context, zTranslationSeekBar, zTranslationWatch, translationZ::setValue)
-            translationController(context, qTranslationSeekBar, qTranslationWatch, translationQ::setValue)
+            rotationController(context, xRotationSeekBar, xRotationWatch, rotationX.value, rotationX::setValue)
+            rotationController(context, yRotationSeekBar, yRotationWatch, rotationY.value, rotationY::setValue)
+            rotationController(context, zRotationSeekBar, zRotationWatch, rotationZ.value, rotationZ::setValue)
+            rotationController(context, qRotationSeekBar, qRotationWatch, rotationQ.value, rotationQ::setValue)
+            translationController(context, xTranslationSeekBar, xTranslationWatch, translationX.value, translationX::setValue)
+            translationController(context, yTranslationSeekBar, yTranslationWatch, translationY.value, translationY::setValue)
+            translationController(context, zTranslationSeekBar, zTranslationWatch, translationZ.value, translationZ::setValue)
+            translationController(context, qTranslationSeekBar, qTranslationWatch, translationQ.value, translationQ::setValue)
         }
 
     }
