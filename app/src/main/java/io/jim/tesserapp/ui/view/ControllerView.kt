@@ -68,18 +68,18 @@ class ControllerView : FrameLayout {
             }
         }
 
-        (context as MainActivity).viewModel.featuredGeometry.transform.apply {
 
-            // Camera distance:
-            cameraDistanceController(graphicsView, this@ControllerView)
+        // Camera distance:
+        cameraDistanceController(graphicsView, this)
+
+        (context as MainActivity).viewModel.apply {
 
             // X-Rotation:
-            var oldXRotation = 0.0
+            rotationController(context, xRotationSeekBar, xRotationWatch, rotationX::setValue)
 
-            rotationController(context, xRotationSeekBar, xRotationWatch) { rotation ->
-                rotateX(rotation - oldXRotation)
-                oldXRotation = rotation
-            }
+        }
+
+        (context as MainActivity).viewModel.featuredGeometry.transform.apply {
 
             // Y-Rotation:
             var oldYRotation = 0.0

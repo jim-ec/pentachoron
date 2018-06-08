@@ -2,13 +2,19 @@ package io.jim.tesserapp.ui.model
 
 import android.arch.lifecycle.ViewModel
 import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.util.mapDifference
 
 class MainViewModel : ViewModel() {
 
     val featuredGeometry = Geometry()
 
+    val rotationX = MutableLiveDataNonNull(0.0).apply {
+        observeForeverNonNull(mapDifference(value) { difference ->
+            featuredGeometry.transform.rotateX(difference)
+        })
+    }
+
     /*
-    val rotationX = MutableLiveDataNonNull(0.0)
     val rotationY = MutableLiveDataNonNull(0.0)
     val rotationZ = MutableLiveDataNonNull(0.0)
     val rotationQ = MutableLiveDataNonNull(0.0)

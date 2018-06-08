@@ -27,10 +27,21 @@ class MutableLiveDataNonNull<T>(initialValue: T) : MutableLiveData<T>() {
      *
      * @param callback Called upon value changes.
      */
-    fun observe(lifecycleOwner: LifecycleOwner, callback: (T) -> Unit) {
+    fun observeNonNull(lifecycleOwner: LifecycleOwner, callback: (T) -> Unit) {
         super.observe(lifecycleOwner, Observer {
             callback(it!!)
         })
+    }
+
+    /**
+     * Install an immortal observer.
+     *
+     * @param callback Called upon value changes.
+     */
+    fun observeForeverNonNull(callback: (T) -> Unit) {
+        super.observeForever {
+            callback(it!!)
+        }
     }
 
 }

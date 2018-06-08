@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         // Fetch view model:
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-        viewModel.cameraDistance.observe(this) { cameraDistance ->
+        viewModel.cameraDistance.observeNonNull(this) { cameraDistance ->
             println("Camera distance changed to: $cameraDistance")
         }
 
