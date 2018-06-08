@@ -2,20 +2,27 @@ package io.jim.tesserapp.ui.model
 
 import android.arch.lifecycle.ViewModel
 import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.math.common.Smoothed
 import io.jim.tesserapp.util.mapDifference
 
 class MainViewModel : ViewModel() {
 
-    val featuredGeometry = Geometry()
+    private var smoothedRotationX by Smoothed(0.0, 200.0, true)
 
     /**
      * X rotation.
      */
     val rotationX = MutableLiveDataNonNull(0.0).apply {
-        observeForeverNonNull(mapDifference(value) { difference ->
-            featuredGeometry.transform.rotateX(difference * Math.PI)
-        })
+        observeForeverNonNull {
+            smoothedRotationX = it
+        }
     }
+
+    val featuredGeometry = Geometry(
+            onTransformUpdate = {
+                rotateX(smoothedRotationX * Math.PI)
+            }
+    )
 
     /**
      * Y rotation.

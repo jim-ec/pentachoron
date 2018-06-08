@@ -5,8 +5,15 @@ import io.jim.tesserapp.math.vector.Vector4dh
 
 /**
  * A geometrical structure consisting of vertices.
+ *
+ * @property onTransformUpdate
+ * Called in every render frame to update this geometry's transform.
+ * The actual transform owned by this geometry is passed as the receiver to [onTransformUpdate].
+ * To trigger an [onTransformUpdate] invocation, call [updateTransform].
  */
-class Geometry {
+class Geometry(
+        private val onTransformUpdate: Transform.() -> Unit = {}
+) {
 
     companion object {
 
@@ -43,6 +50,14 @@ class Geometry {
      * Model-transform.
      */
     val transform = Transform()
+
+    /**
+     * Trigger the [onTransformUpdate] callback.
+     * This function is intended to be called in each frame to implement smoothed transform.
+     */
+    fun updateTransform() {
+        onTransformUpdate(transform)
+    }
 
     /**
      * Remove all stored positions and lines.

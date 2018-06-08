@@ -49,6 +49,10 @@ class DrawDataProvider {
         vertexMemory.rewind()
 
         geometries.forEach { geometry ->
+
+            // Update geometry transform in each frame, used to implement smoothed transform:
+            geometry.updateTransform()
+
             wireframeProjection(geometry) { position, (red, green, blue) ->
                 vertexMemory.record { memory ->
                     memory.write(position.x, position.y, position.z, 1.0)

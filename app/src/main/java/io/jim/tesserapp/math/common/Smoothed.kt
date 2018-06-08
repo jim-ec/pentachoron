@@ -117,8 +117,8 @@ open class Smoothed<R>(
                 // Return difference, but remember the current value as the new old value:
                 if (delegateDifference)
                     (value - oldValue).also { oldValue = value }
-
-                value
+                else
+                    value
             }
 
 }
