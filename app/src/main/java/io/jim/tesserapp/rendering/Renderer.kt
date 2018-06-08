@@ -16,21 +16,14 @@ import javax.microedition.khronos.opengles.GL10
  */
 class Renderer(private val context: MainActivity, private val dpi: Double) : GLSurfaceView.Renderer {
 
-    /**
-     * Render data shared across this render thread an others.
-     */
-    val sharedRenderData = SharedRenderData()
-
-    /**
-     * Geometry manager.
-     */
     private val drawDataProvider = DrawDataProvider()
 
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
 
+    val camera = Camera()
     private val projectionMatrix = Projection3dMatrix(near = 0.1, far = 100.0)
-    private val viewMatrix = ViewMatrix(sharedRenderData.camera)
+    private val viewMatrix = ViewMatrix(camera)
 
     private val clearColor = themedColorInt(context, android.R.attr.windowBackground)
 
@@ -95,7 +88,7 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         synchronized {
             GLES30.glViewport(0, 0, width, height)
-            sharedRenderData.camera.aspectRatio = width.toDouble() / height
+            camera.aspectRatio = width.toDouble() / height
         }
     }
 
@@ -156,16 +149,14 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
 
     /**
      * Synchronizes inter-thread access to this renderer.
-     * This is always necessary when accessing geometry, which has been registered into
-     * this renderer by [addGeometry].
      *
      * @param f
-     * Receives this renderer draw-data object, which must be only referenced
+     * Receives this renderer's camera object, which must be only referenced
      * during the execution of [f].
      */
-    inline fun synchronized(f: (renderData: SharedRenderData) -> Unit) {
+    inline fun synchronized(f: (camera: Camera) -> Unit) {
         synchronized(this) {
-            f(sharedRenderData)
+            f(camera)
         }
     }
 
