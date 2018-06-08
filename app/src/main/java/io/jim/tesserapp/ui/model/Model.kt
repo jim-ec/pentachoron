@@ -4,6 +4,6 @@ import android.arch.lifecycle.ViewModel
 
 class Model : ViewModel() {
 
-    val cameraDistance = MutableLiveDataWrapper<Double>().apply { value = 8.0 }
+    val cameraDistance = MutableLiveDataNonNull(8.0)
 
 }

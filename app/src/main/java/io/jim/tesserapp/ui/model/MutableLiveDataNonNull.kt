@@ -5,22 +5,21 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 
 /**
- * A wrapper for [MutableLiveData] slightly more convenient to use in Kotlin,
- * in view of Nullability and Closures.
+ * A wrapper for [MutableLiveData] whose value can never be `null`.
+ *
+ * @constructor Creates a live-data with an initial value.
  */
-class MutableLiveDataWrapper<T> : MutableLiveData<T>() {
+class MutableLiveDataNonNull<T>(initialValue: T) : MutableLiveData<T>() {
+
+    init {
+        value = initialValue
+    }
 
     /**
-     * Return the current non-null value.
-     *
-     * The current value is always null when either explicitly set or the whole live data
-     * has not been initialized yet, i.e. hasn't received a call to [setValue] yet.
-     *
-     * @throws RuntimeException If current value is `null`.
+     * Return the current `non-null` value.
      */
     override fun getValue(): T {
-        return super.getValue()
-                ?: throw RuntimeException("Live data is null")
+        return super.getValue()!!
     }
 
     /**
@@ -35,7 +34,7 @@ class MutableLiveDataWrapper<T> : MutableLiveData<T>() {
      */
     fun observe(lifecycleOwner: LifecycleOwner, callback: (T) -> Unit) {
         super.observe(lifecycleOwner, Observer {
-            callback(it ?: throw RuntimeException("Live data is null during observation"))
+            callback(it!!)
         })
     }
 
