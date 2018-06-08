@@ -1,6 +1,5 @@
 package io.jim.tesserapp
 
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
@@ -23,9 +22,9 @@ class MainActivity : AppCompatActivity() {
 
         // Fetch view model:
         model = ViewModelProviders.of(this).get(Model::class.java)
-        model.cameraDistanceData.observe(this, Observer { cameraDistance ->
+        model.cameraDistance.observe(this) { cameraDistance ->
             println("Camera distance changed to: $cameraDistance")
-        })
+        }
 
         if (getPreferences(Context.MODE_PRIVATE).getBoolean(
                         getString(R.string.pref_dark_theme_enabled), false)

@@ -20,14 +20,14 @@ fun cameraDistanceController(
             seekBar = view.cameraDistanceSeekBar,
             watch = view.cameraDistanceWatch,
             valueRange = 3.0..15.0,
-            startValue = model.cameraDistance,
+            startValue = model.cameraDistance.value,
             formatString = view.context.getString(R.string.camera_distance_value),
             onValueUpdate = { value ->
                 graphicsView.synchronized { renderData ->
                     renderData.camera.distance = value
                 }
 
-                model.cameraDistance = value
+                model.cameraDistance.value = value
             }
     )
 
