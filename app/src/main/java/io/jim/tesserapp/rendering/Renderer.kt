@@ -3,6 +3,7 @@ package io.jim.tesserapp.rendering
 import android.content.Context
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
+import io.jim.tesserapp.MainActivity
 import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.graphics.*
@@ -21,19 +22,10 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
      */
     val sharedRenderData = SharedRenderData()
 
-    init {
-        sharedRenderData.featuredGeometry.apply {
-            name = "Featured Geometry"
-            baseColor = themedColorInt(context, R.attr.colorAccent)
-        }
-    }
-
     /**
      * Geometry manager.
      */
-    private val drawDataProvider = DrawDataProvider().apply {
-        this += sharedRenderData.featuredGeometry
-    }
+    private val drawDataProvider = DrawDataProvider()
 
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
@@ -55,6 +47,15 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
          */
         const val LINE_WIDTH_MM = 0.15
 
+    }
+
+    init {
+        (context as MainActivity).viewModel.featuredGeometry.apply {
+            name = "Featured Geometry"
+            baseColor = themedColorInt(context, R.attr.colorAccent)
+
+            drawDataProvider += this
+        }
     }
 
     /**

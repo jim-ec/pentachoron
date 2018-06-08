@@ -12,7 +12,7 @@ import io.jim.tesserapp.ui.model.MainViewModel
  */
 class MainActivity : AppCompatActivity() {
 
-    lateinit var model: MainViewModel
+    lateinit var viewModel: MainViewModel
 
     /**
      * Initialize activity.
@@ -21,8 +21,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Fetch view model:
-        model = ViewModelProviders.of(this).get(MainViewModel::class.java)
-        model.cameraDistance.observe(this) { cameraDistance ->
+        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        viewModel.cameraDistance.observe(this) { cameraDistance ->
             println("Camera distance changed to: $cameraDistance")
         }
 

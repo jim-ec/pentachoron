@@ -5,8 +5,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import io.jim.tesserapp.MainActivity
 import io.jim.tesserapp.R
-import io.jim.tesserapp.graphics.SharedRenderData
 import io.jim.tesserapp.ui.model.cameraDistanceController
 import io.jim.tesserapp.ui.model.rotationController
 import io.jim.tesserapp.ui.model.translationController
@@ -36,8 +36,7 @@ class ControllerView : FrameLayout {
     }
 
     /**
-     * Instantiate controllers piping values from seek bars to [graphicsView] and
-     * the [SharedRenderData.featuredGeometry].
+     * Instantiate controllers.
      */
     fun control(graphicsView: GraphicsView) {
 
@@ -69,67 +68,65 @@ class ControllerView : FrameLayout {
             }
         }
 
-        graphicsView.synchronized { (featuredGeometry) ->
-            featuredGeometry.transform.also {
+        (context as MainActivity).viewModel.featuredGeometry.transform.apply {
 
-                // Camera distance:
-                cameraDistanceController(graphicsView, this)
+            // Camera distance:
+            cameraDistanceController(graphicsView, this@ControllerView)
 
-                // X-Rotation:
-                var oldXRotation = 0.0
+            // X-Rotation:
+            var oldXRotation = 0.0
 
-                rotationController(context, xRotationSeekBar, xRotationWatch) { rotation ->
-                    it.rotateX(rotation - oldXRotation)
-                    oldXRotation = rotation
-                }
-
-                // Y-Rotation:
-                var oldYRotation = 0.0
-
-                rotationController(context, yRotationSeekBar, yRotationWatch) { rotation ->
-                    it.rotateY(rotation - oldYRotation)
-                    oldYRotation = rotation
-                }
-
-                // Z-Rotation:
-                var oldZRotation = 0.0
-
-                rotationController(context, zRotationSeekBar, zRotationWatch) { rotation ->
-                    it.rotateZ(rotation - oldZRotation)
-                    oldZRotation = rotation
-                }
-
-                // Q-Rotation:
-                rotationController(context, qRotationSeekBar, qRotationWatch) {}
-
-                // X-Translation:
-                var oldXTranslation = 0.0
-
-                translationController(context, xTranslationSeekBar, xTranslationWatch
-                ) { translation ->
-                    it.translateX(translation - oldXTranslation)
-                    oldXTranslation = translation
-                }
-
-                // Y-Translation:
-                var oldYTranslation = 0.0
-
-                translationController(context, yTranslationSeekBar, yTranslationWatch) { translation ->
-                    it.translateY(translation - oldYTranslation)
-                    oldYTranslation = translation
-                }
-
-                // Z-Translation:
-                var oldZTranslation = 0.0
-
-                translationController(context, zTranslationSeekBar, zTranslationWatch) { translation ->
-                    it.translateZ(translation - oldZTranslation)
-                    oldZTranslation = translation
-                }
-
-                // Q-Translation:
-                translationController(context, qTranslationSeekBar, qTranslationWatch) { }
+            rotationController(context, xRotationSeekBar, xRotationWatch) { rotation ->
+                rotateX(rotation - oldXRotation)
+                oldXRotation = rotation
             }
+
+            // Y-Rotation:
+            var oldYRotation = 0.0
+
+            rotationController(context, yRotationSeekBar, yRotationWatch) { rotation ->
+                rotateY(rotation - oldYRotation)
+                oldYRotation = rotation
+            }
+
+            // Z-Rotation:
+            var oldZRotation = 0.0
+
+            rotationController(context, zRotationSeekBar, zRotationWatch) { rotation ->
+                rotateZ(rotation - oldZRotation)
+                oldZRotation = rotation
+            }
+
+            // Q-Rotation:
+            rotationController(context, qRotationSeekBar, qRotationWatch) {}
+
+            // X-Translation:
+            var oldXTranslation = 0.0
+
+            translationController(context, xTranslationSeekBar, xTranslationWatch
+            ) { translation ->
+                translateX(translation - oldXTranslation)
+                oldXTranslation = translation
+            }
+
+            // Y-Translation:
+            var oldYTranslation = 0.0
+
+            translationController(context, yTranslationSeekBar, yTranslationWatch) { translation ->
+                translateY(translation - oldYTranslation)
+                oldYTranslation = translation
+            }
+
+            // Z-Translation:
+            var oldZTranslation = 0.0
+
+            translationController(context, zTranslationSeekBar, zTranslationWatch) { translation ->
+                translateZ(translation - oldZTranslation)
+                oldZTranslation = translation
+            }
+
+            // Q-Translation:
+            translationController(context, qTranslationSeekBar, qTranslationWatch) { }
         }
 
     }

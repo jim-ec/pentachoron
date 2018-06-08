@@ -45,6 +45,14 @@ class Geometry {
     val transform = Transform()
 
     /**
+     * Remove all stored positions and lines.
+     */
+    fun erase() {
+        lines.clear()
+        positions.clear()
+    }
+
+    /**
      * Add a series of vertices.
      * The actual lines are drawn from indices to these vertices.
      */

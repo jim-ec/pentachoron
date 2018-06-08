@@ -1,8 +1,11 @@
 package io.jim.tesserapp.ui.model
 
 import android.arch.lifecycle.ViewModel
+import io.jim.tesserapp.geometry.Geometry
 
 class MainViewModel : ViewModel() {
+
+    val featuredGeometry = Geometry()
 
     /*
     val rotationX = MutableLiveDataNonNull(0.0)

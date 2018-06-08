@@ -14,7 +14,7 @@ fun cameraDistanceController(
         view: ControllerView
 ) = run {
 
-    val model = (view.context as MainActivity).model
+    val model = (view.context as MainActivity).viewModel
 
     Controller(
             seekBar = view.cameraDistanceSeekBar,

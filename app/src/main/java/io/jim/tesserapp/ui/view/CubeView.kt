@@ -2,6 +2,7 @@ package io.jim.tesserapp.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
+import io.jim.tesserapp.MainActivity
 import io.jim.tesserapp.math.vector.Vector4dh
 
 /**
@@ -16,18 +17,17 @@ class CubeView : GraphicsProviderView {
     override val graphicsView = GraphicsView(context, null)
 
     init {
+        (context as MainActivity).viewModel.featuredGeometry.apply {
+            erase()
 
-        graphicsView.synchronized { renderData ->
-            renderData.featuredGeometry.apply {
-                addQuadrilateral(
-                        Vector4dh(1.0, 1.0, 1.0, 0.0),
-                        Vector4dh(-1.0, 1.0, 1.0, 0.0),
-                        Vector4dh(-1.0, -1.0, 1.0, 0.0),
-                        Vector4dh(1.0, -1.0, 1.0, 0.0)
-                )
+            addQuadrilateral(
+                    Vector4dh(1.0, 1.0, 1.0, 0.0),
+                    Vector4dh(-1.0, 1.0, 1.0, 0.0),
+                    Vector4dh(-1.0, -1.0, 1.0, 0.0),
+                    Vector4dh(1.0, -1.0, 1.0, 0.0)
+            )
 
-                extrude(Vector4dh(0.0, 0.0, -2.0, 0.0))
-            }
+            extrude(Vector4dh(0.0, 0.0, -2.0, 0.0))
         }
 
         addView(graphicsView)
