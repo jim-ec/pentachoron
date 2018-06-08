@@ -2,7 +2,7 @@ package io.jim.tesserapp.ui.model
 
 import android.arch.lifecycle.ViewModel
 
-class MainModel : ViewModel() {
+class MainViewModel : ViewModel() {
 
     /*
     val rotationX = MutableLiveDataNonNull(0.0)
