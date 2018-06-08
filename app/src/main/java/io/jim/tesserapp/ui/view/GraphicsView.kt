@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.*
+import io.jim.tesserapp.MainActivity
 import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.axis
@@ -23,7 +24,10 @@ class GraphicsView : GLSurfaceView {
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-    private val renderer = Renderer(context, resources.displayMetrics.xdpi.toDouble())
+    private val renderer = Renderer(
+            context as MainActivity,
+            resources.displayMetrics.xdpi.toDouble()
+    )
 
     private val touchStartPosition = Vector3d(0.0, 0.0, 0.0)
     private var touchStartTime = 0L

@@ -8,23 +8,73 @@ class MainViewModel : ViewModel() {
 
     val featuredGeometry = Geometry()
 
+    /**
+     * X rotation.
+     */
     val rotationX = MutableLiveDataNonNull(0.0).apply {
         observeForeverNonNull(mapDifference(value) { difference ->
             featuredGeometry.transform.rotateX(difference)
         })
     }
 
-    /*
-    val rotationY = MutableLiveDataNonNull(0.0)
-    val rotationZ = MutableLiveDataNonNull(0.0)
+    /**
+     * Y rotation.
+     */
+    val rotationY = MutableLiveDataNonNull(0.0).apply {
+        observeForeverNonNull(mapDifference(value) { difference ->
+            featuredGeometry.transform.rotateY(difference)
+        })
+    }
+
+    /**
+     * Z rotation.
+     */
+    val rotationZ = MutableLiveDataNonNull(0.0).apply {
+        observeForeverNonNull(mapDifference(value) { difference ->
+            featuredGeometry.transform.rotateZ(difference)
+        })
+    }
+
+    /**
+     * Q rotation.
+     */
     val rotationQ = MutableLiveDataNonNull(0.0)
 
-    val translationX = MutableLiveDataNonNull(0.0)
-    val translationY = MutableLiveDataNonNull(0.0)
-    val translationZ = MutableLiveDataNonNull(0.0)
-    val translationQ = MutableLiveDataNonNull(0.0)
-    */
+    /**
+     * X translation.
+     */
+    val translationX = MutableLiveDataNonNull(0.0).apply {
+        observeForeverNonNull(mapDifference(value) { difference ->
+            featuredGeometry.transform.translateX(difference)
+        })
+    }
 
+    /**
+     * Y translation.
+     */
+    val translationY = MutableLiveDataNonNull(0.0).apply {
+        observeForeverNonNull(mapDifference(value) { difference ->
+            featuredGeometry.transform.translateY(difference)
+        })
+    }
+
+    /**
+     * Z translation.
+     */
+    val translationZ = MutableLiveDataNonNull(0.0).apply {
+        observeForeverNonNull(mapDifference(value) { difference ->
+            featuredGeometry.transform.translateZ(difference)
+        })
+    }
+
+    /**
+     * Q translation.
+     */
+    val translationQ = MutableLiveDataNonNull(0.0)
+
+    /**
+     * Camera distance.
+     */
     val cameraDistance = MutableLiveDataNonNull(8.0)
 
 }

@@ -33,12 +33,12 @@ class ViewMatrix(
     /**
      * Recomputes view matrix.
      */
-    fun compute() {
+    fun compute(distance: Double) {
         matrixHorizontalRotation.rotation(2, 0, camera.horizontalRotation)
         matrixVerticalRotation.rotation(0, 1, camera.verticalRotation)
         matrixRotation.multiplication(matrixHorizontalRotation, matrixVerticalRotation)
 
-        eye.x = camera.distance
+        eye.x = distance
 
         matrixLookAt.lookAt(
                 eye = eye,

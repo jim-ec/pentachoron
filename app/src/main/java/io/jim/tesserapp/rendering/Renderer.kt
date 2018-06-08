@@ -1,6 +1,5 @@
 package io.jim.tesserapp.rendering
 
-import android.content.Context
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.MainActivity
@@ -15,7 +14,7 @@ import javax.microedition.khronos.opengles.GL10
 /**
  * Actually renders to OpenGL.
  */
-class Renderer(private val context: Context, private val dpi: Double) : GLSurfaceView.Renderer {
+class Renderer(private val context: MainActivity, private val dpi: Double) : GLSurfaceView.Renderer {
 
     /**
      * Render data shared across this render thread an others.
@@ -50,7 +49,7 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
     }
 
     init {
-        (context as MainActivity).viewModel.featuredGeometry.apply {
+        context.viewModel.featuredGeometry.apply {
             name = "Featured Geometry"
             baseColor = themedColorInt(context, R.attr.colorAccent)
 
@@ -121,7 +120,9 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
             shader.bound {
 
                 // Recompute and upload view and perspective matrices:
-                shader.uploadViewMatrix(viewMatrix.apply { compute() })
+                shader.uploadViewMatrix(viewMatrix.apply {
+                    compute(context.viewModel.cameraDistance.value)
+                })
                 shader.uploadProjectionMatrix(projectionMatrix)
 
                 // Draw the vertex buffer:

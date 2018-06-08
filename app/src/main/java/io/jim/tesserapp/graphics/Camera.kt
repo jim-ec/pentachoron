@@ -13,14 +13,6 @@ class Camera {
     var aspectRatio: Double = 1.0
 
     /**
-     * Distance of camera position from center.
-     */
-    var distance by Smoothed(
-            startValue = 0.0,
-            transitionInterval = 300.0
-    )
-
-    /**
      * Rotation on the horizontal orbit.
      * This is the base rotation.
      */

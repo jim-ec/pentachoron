@@ -22,9 +22,6 @@ class MainActivity : AppCompatActivity() {
 
         // Fetch view model:
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-        viewModel.cameraDistance.observeNonNull(this) { cameraDistance ->
-            println("Camera distance changed to: $cameraDistance")
-        }
 
         if (getPreferences(Context.MODE_PRIVATE).getBoolean(
                         getString(R.string.pref_dark_theme_enabled), false)

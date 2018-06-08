@@ -70,63 +70,17 @@ class ControllerView : FrameLayout {
 
 
         // Camera distance:
-        cameraDistanceController(graphicsView, this)
+        cameraDistanceController(this)
 
         (context as MainActivity).viewModel.apply {
-
-            // X-Rotation:
             rotationController(context, xRotationSeekBar, xRotationWatch, rotationX::setValue)
-
-        }
-
-        (context as MainActivity).viewModel.featuredGeometry.transform.apply {
-
-            // Y-Rotation:
-            var oldYRotation = 0.0
-
-            rotationController(context, yRotationSeekBar, yRotationWatch) { rotation ->
-                rotateY(rotation - oldYRotation)
-                oldYRotation = rotation
-            }
-
-            // Z-Rotation:
-            var oldZRotation = 0.0
-
-            rotationController(context, zRotationSeekBar, zRotationWatch) { rotation ->
-                rotateZ(rotation - oldZRotation)
-                oldZRotation = rotation
-            }
-
-            // Q-Rotation:
-            rotationController(context, qRotationSeekBar, qRotationWatch) {}
-
-            // X-Translation:
-            var oldXTranslation = 0.0
-
-            translationController(context, xTranslationSeekBar, xTranslationWatch
-            ) { translation ->
-                translateX(translation - oldXTranslation)
-                oldXTranslation = translation
-            }
-
-            // Y-Translation:
-            var oldYTranslation = 0.0
-
-            translationController(context, yTranslationSeekBar, yTranslationWatch) { translation ->
-                translateY(translation - oldYTranslation)
-                oldYTranslation = translation
-            }
-
-            // Z-Translation:
-            var oldZTranslation = 0.0
-
-            translationController(context, zTranslationSeekBar, zTranslationWatch) { translation ->
-                translateZ(translation - oldZTranslation)
-                oldZTranslation = translation
-            }
-
-            // Q-Translation:
-            translationController(context, qTranslationSeekBar, qTranslationWatch) { }
+            rotationController(context, yRotationSeekBar, yRotationWatch, rotationY::setValue)
+            rotationController(context, zRotationSeekBar, zRotationWatch, rotationZ::setValue)
+            rotationController(context, qRotationSeekBar, qRotationWatch, rotationQ::setValue)
+            translationController(context, xTranslationSeekBar, xTranslationWatch, translationX::setValue)
+            translationController(context, yTranslationSeekBar, yTranslationWatch, translationY::setValue)
+            translationController(context, zTranslationSeekBar, zTranslationWatch, translationZ::setValue)
+            translationController(context, qTranslationSeekBar, qTranslationWatch, translationQ::setValue)
         }
 
     }
