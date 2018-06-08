@@ -9,7 +9,7 @@ import android.arch.lifecycle.Observer
  *
  * @constructor Creates a live-data with an initial value.
  */
-class MutableLiveDataNonNull<T>(initialValue: T) : MutableLiveData<T>() {
+open class MutableLiveDataNonNull<T>(initialValue: T) : MutableLiveData<T>() {
 
     init {
         value = initialValue

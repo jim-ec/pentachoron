@@ -2,82 +2,60 @@ package io.jim.tesserapp.ui.model
 
 import android.arch.lifecycle.ViewModel
 import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.math.common.Smoothed
-import io.jim.tesserapp.util.mapDifference
 
 class MainViewModel : ViewModel() {
 
-    private var smoothedRotationX by Smoothed(0.0, 200.0, true)
-
-    /**
-     * X rotation.
-     */
-    val rotationX = MutableLiveDataNonNull(0.0).apply {
-        observeForeverNonNull {
-            smoothedRotationX = it
-        }
-    }
-
     val featuredGeometry = Geometry(
             onTransformUpdate = {
-                rotateX(smoothedRotationX * Math.PI)
+                rotateX(rotationX.smoothed * Math.PI)
+                rotateY(rotationY.smoothed * Math.PI)
+                rotateZ(rotationZ.smoothed * Math.PI)
+
+                translateX(translationX.smoothed)
+                translateY(translationY.smoothed)
+                translateZ(translationZ.smoothed)
             }
     )
 
     /**
-     * Y rotation.
+     * X rotation, in units of PI.
      */
-    val rotationY = MutableLiveDataNonNull(0.0).apply {
-        observeForeverNonNull(mapDifference(value) { difference ->
-            featuredGeometry.transform.rotateY(difference * Math.PI)
-        })
-    }
+    val rotationX = SmoothedLiveData(0.0)
 
     /**
-     * Z rotation.
+     * Y rotation, in units of PI.
      */
-    val rotationZ = MutableLiveDataNonNull(0.0).apply {
-        observeForeverNonNull(mapDifference(value) { difference ->
-            featuredGeometry.transform.rotateZ(difference * Math.PI)
-        })
-    }
+    val rotationY = SmoothedLiveData(0.0)
 
     /**
-     * Q rotation.
+     * Z rotation, in units of PI.
      */
-    val rotationQ = MutableLiveDataNonNull(0.0)
+    val rotationZ = SmoothedLiveData(0.0)
+
+    /**
+     * Q rotation, in units of PI.
+     */
+    val rotationQ = SmoothedLiveData(0.0)
 
     /**
      * X translation.
      */
-    val translationX = MutableLiveDataNonNull(0.0).apply {
-        observeForeverNonNull(mapDifference(value) { difference ->
-            featuredGeometry.transform.translateX(difference)
-        })
-    }
+    val translationX = SmoothedLiveData(0.0)
 
     /**
      * Y translation.
      */
-    val translationY = MutableLiveDataNonNull(0.0).apply {
-        observeForeverNonNull(mapDifference(value) { difference ->
-            featuredGeometry.transform.translateY(difference)
-        })
-    }
+    val translationY = SmoothedLiveData(0.0)
 
     /**
      * Z translation.
      */
-    val translationZ = MutableLiveDataNonNull(0.0).apply {
-        observeForeverNonNull(mapDifference(value) { difference ->
-            featuredGeometry.transform.translateZ(difference)
-        })
-    }
+    val translationZ = SmoothedLiveData(0.0)
 
     /**
      * Q translation.
      */
-    val translationQ = MutableLiveDataNonNull(0.0)
+    val translationQ = SmoothedLiveData(0.0)
 
     /**
      * Camera distance.
