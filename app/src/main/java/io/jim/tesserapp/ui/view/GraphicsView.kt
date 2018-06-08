@@ -29,7 +29,9 @@ class GraphicsView : GLSurfaceView {
     private var touchStartTime = 0L
 
     private val grid =
-            Geometry("Grid", themedColorInt(context, R.attr.colorGrid)).apply {
+            Geometry().apply {
+                name = "Grid"
+                baseColor = themedColorInt(context, R.attr.colorGrid)
                 grid()
             }
 
@@ -63,7 +65,8 @@ class GraphicsView : GLSurfaceView {
         renderMode = RENDERMODE_CONTINUOUSLY
 
         // Create axis:
-        renderer.addGeometry(Geometry("Axis").apply {
+        renderer.addGeometry(Geometry().apply {
+            name = "Axis"
             axis(
                     xAxisColor = themedColorInt(context, R.attr.colorAxisY),
                     yAxisColor = themedColorInt(context, R.attr.colorAxisX),

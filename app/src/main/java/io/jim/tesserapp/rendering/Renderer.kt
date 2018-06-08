@@ -19,8 +19,14 @@ class Renderer(private val context: Context, private val dpi: Double) : GLSurfac
     /**
      * Render data shared across this render thread an others.
      */
-    val sharedRenderData = SharedRenderData(
-            Geometry("Featured Geometry", themedColorInt(context, R.attr.colorAccent)))
+    val sharedRenderData = SharedRenderData()
+
+    init {
+        sharedRenderData.featuredGeometry.apply {
+            name = "Featured Geometry"
+            baseColor = themedColorInt(context, R.attr.colorAccent)
+        }
+    }
 
     /**
      * Geometry manager.

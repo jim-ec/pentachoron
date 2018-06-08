@@ -6,19 +6,7 @@ import io.jim.tesserapp.math.vector.Vector4dh
 /**
  * A geometrical structure consisting of vertices.
  */
-class Geometry(
-
-        /**
-         * This geometry's name.
-         */
-        val name: String,
-
-        /**
-         * Color of this geometry.
-         */
-        private val baseColor: Int = BLACK
-
-) {
+class Geometry {
 
     companion object {
 
@@ -40,6 +28,16 @@ class Geometry(
      * List containing all lines constructed from [positions] using indices.
      */
     val lines = ArrayList<Line<Vector4dh>>()
+
+    /**
+     * This geometry's name.
+     */
+    var name = ""
+
+    /**
+     * Color of this geometry.
+     */
+    var baseColor = BLACK
 
     /**
      * Model-transform.

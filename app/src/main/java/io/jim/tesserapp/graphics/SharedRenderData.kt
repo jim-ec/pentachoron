@@ -9,4 +9,7 @@ import io.jim.tesserapp.geometry.Geometry
  * @property featuredGeometry Featured geometry.
  * @property camera Camera related preferences.
  */
-data class SharedRenderData(val featuredGeometry: Geometry, val camera: Camera = Camera())
+data class SharedRenderData(
+        val featuredGeometry: Geometry = Geometry(),
+        val camera: Camera = Camera()
+)

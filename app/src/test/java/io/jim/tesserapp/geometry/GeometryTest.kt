@@ -13,7 +13,7 @@ class GeometryTest {
     @Test
     fun computeModelMatrices() {
 
-        val geometry = Geometry("Geometry").apply {
+        val geometry = Geometry().apply {
             transform.rotateZ(Math.PI / 2.0)
             transform.translateX(1.0)
             transform.computeModelMatrix()
@@ -34,7 +34,7 @@ class GeometryTest {
 
     @Test
     fun extruding() {
-        Geometry("Test").apply {
+        Geometry().apply {
             addLine(Vector4dh(1.0, 1.0, 0.0, 0.0), Vector4dh(2.0, 2.0, 0.0, 0.0))
             extrude(Vector4dh(0.0, 0.0, 1.0, 0.0))
         }
@@ -47,7 +47,7 @@ class GeometryTest {
         val c = Vector4dh(1.0, 1.0, 0.0, 0.0)
         val d = Vector4dh(0.0, 1.0, 0.0, 0.0)
 
-        Geometry("Test").apply {
+        Geometry().apply {
 
             addQuadrilateral(a, b, c, d)
 
