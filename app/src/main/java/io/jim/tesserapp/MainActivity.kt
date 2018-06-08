@@ -4,7 +4,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import io.jim.tesserapp.ui.model.Model
+import io.jim.tesserapp.ui.model.MainModel
 
 
 /**
@@ -12,7 +12,7 @@ import io.jim.tesserapp.ui.model.Model
  */
 class MainActivity : AppCompatActivity() {
 
-    lateinit var model: Model
+    lateinit var model: MainModel
 
     /**
      * Initialize activity.
@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Fetch view model:
-        model = ViewModelProviders.of(this).get(Model::class.java)
+        model = ViewModelProviders.of(this).get(MainModel::class.java)
         model.cameraDistance.observe(this) { cameraDistance ->
             println("Camera distance changed to: $cameraDistance")
         }
