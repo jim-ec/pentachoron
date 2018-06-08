@@ -71,8 +71,8 @@ class GraphicsView : GLSurfaceView {
         renderer.addGeometry(Geometry().apply {
             name = "Axis"
             axis(
-                    xAxisColor = themedColorInt(context, R.attr.colorAxisY),
-                    yAxisColor = themedColorInt(context, R.attr.colorAxisX),
+                    xAxisColor = themedColorInt(context, R.attr.colorAxisX),
+                    yAxisColor = themedColorInt(context, R.attr.colorAxisY),
                     zAxisColor = themedColorInt(context, R.attr.colorAxisZ)
             )
         })
