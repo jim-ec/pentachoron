@@ -3,10 +3,17 @@ package io.jim.tesserapp.ui.model
 import android.arch.lifecycle.ViewModel
 import io.jim.tesserapp.geometry.Geometry
 
+/**
+ * Stores persistent data related to the main activity,
+ * inter alia transform of the featured geometry.
+ */
 class MainViewModel : ViewModel() {
 
     val featuredGeometry = Geometry(
             onTransformUpdate = {
+                // Transform geometry in each frame relatively,
+                // by using the difference value returned from the smooth-delegates:
+
                 rotateX(rotationX.smoothed * Math.PI)
                 rotateY(rotationY.smoothed * Math.PI)
                 rotateZ(rotationZ.smoothed * Math.PI)
