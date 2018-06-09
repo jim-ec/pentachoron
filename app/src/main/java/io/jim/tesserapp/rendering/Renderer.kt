@@ -21,15 +21,10 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
 
-
-    /**
-     * Aspect ratio.
-     */
-    var aspectRatio: Double = 1.0
-
     private val projectionMatrix = Matrix(4).apply { perspective2D(near = 0.1, far = 100.0) }
     private val viewMatrix = ViewMatrix()
 
+    private var aspectRatio: Double = 1.0
     private val clearColor = themedColorInt(context, android.R.attr.windowBackground)
 
     companion object {
@@ -37,12 +32,12 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
         /**
          * Converts inches to millimeters.
          */
-        const val MM_PER_INCH = 25.4
+        private const val MM_PER_INCH = 25.4
 
         /**
          * Specifies width of lines, in millimeters.
          */
-        const val LINE_WIDTH_MM = 0.15
+        private const val LINE_WIDTH_MM = 0.15
 
     }
 
@@ -103,7 +98,6 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
         // Ensure vertex data is up-to-date:
         drawDataProvider.updateVertices()
 
-
         // Vertex memory was rewritten and needs to be uploaded to GL:
         vertexBuffer.upload()
 
@@ -130,7 +124,6 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
 
     /**
      * Register [geometry] to be drawn by this renderer.
-     * This function is internally synchronized.
      */
     fun addGeometry(geometry: Geometry) {
         drawDataProvider += geometry
@@ -138,7 +131,6 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
 
     /**
      * [geometry] is not drawn anymore by this renderer.
-     * This function is internally synchronized.
      */
     fun removeGeometry(geometry: Geometry) {
         drawDataProvider -= geometry
