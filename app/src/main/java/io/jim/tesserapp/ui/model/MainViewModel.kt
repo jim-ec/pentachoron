@@ -76,18 +76,21 @@ class MainViewModel : ViewModel() {
     /**
      * Camera distance.
      */
-    val cameraDistance = SmoothedLiveData(initialValue = 8.0)
+    val cameraDistance =
+            SmoothedLiveData(initialValue = 8.0)
 
     /**
      * Rotation on the horizontal orbit.
      * This is the base rotation.
      */
-    var horizontalCameraRotation = SmoothedLiveData(initialValue = 0.0, transitionInterval = 80.0)
+    var horizontalCameraRotation =
+            SmoothedLiveData(initialValue = Math.PI / 3.0, transitionInterval = 80.0)
 
     /**
      * Rotation on the vertical orbit.
      * This is the secondary rotation.
      */
-    var verticalCameraRotation = SmoothedLiveData(initialValue = 0.0, transitionInterval = 80.0)
+    var verticalCameraRotation =
+            SmoothedLiveData(initialValue = -Math.PI / 8.0, transitionInterval = 80.0)
 
 }

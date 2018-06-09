@@ -43,8 +43,6 @@ class GraphicsView : GLSurfaceView {
     companion object {
         private const val CLICK_TIME_MS = 100L
         private const val TOUCH_ROTATION_SENSITIVITY = 0.02
-        private const val DEFAULT_CAMERA_HORIZONTAL_ROTATION = Math.PI / 3.0
-        private const val DEFAULT_CAMERA_VERTICAL_ROTATION = -Math.PI / 8.0
     }
 
     /**
@@ -78,14 +76,6 @@ class GraphicsView : GLSurfaceView {
                     zAxisColor = themedColorInt(context, R.attr.colorAxisZ)
             )
         })
-
-        // Default camera rotation:
-        moveToDefaultCameraPosition()
-    }
-
-    private fun moveToDefaultCameraPosition() {
-        viewModel.horizontalCameraRotation.value = DEFAULT_CAMERA_HORIZONTAL_ROTATION
-        viewModel.verticalCameraRotation.value = DEFAULT_CAMERA_VERTICAL_ROTATION
     }
 
     /**
@@ -124,7 +114,6 @@ class GraphicsView : GLSurfaceView {
      */
     override fun performClick(): Boolean {
         super.performClick()
-        moveToDefaultCameraPosition()
         return true
     }
 
