@@ -30,11 +30,12 @@ fun viewMatrixGenerator(): (Double, Double, Double, Double) -> Matrix {
         matrixRotation.multiplication(matrixHorizontalRotation, matrixVerticalRotation)
 
         eye.x = distance
-        scale.y = aspectRatio
-        matrixScale.scale(scale)
 
         matrixLookAtRotation.multiplication(matrixRotation, matrixLookAt(eye, target, upVector))
-        viewMatrix.multiplication(matrixScale, matrixLookAtRotation)
+
+        scale.y = aspectRatio
+        matrixScale.scale(scale)
+        viewMatrix.multiplication(matrixLookAtRotation, matrixScale)
 
         viewMatrix
     }
