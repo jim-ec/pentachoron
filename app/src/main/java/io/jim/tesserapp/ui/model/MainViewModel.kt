@@ -28,46 +28,54 @@ class MainViewModel : ViewModel() {
     /**
      * X rotation, in units of PI.
      */
-    val rotationX = SmoothedLiveData(0.0, Smoothed.DelegationMode.RELATIVE)
+    val rotationX = SmoothedLiveData(
+            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
 
     /**
      * Y rotation, in units of PI.
      */
-    val rotationY = SmoothedLiveData(0.0, Smoothed.DelegationMode.RELATIVE)
+    val rotationY = SmoothedLiveData(
+            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
 
     /**
      * Z rotation, in units of PI.
      */
-    val rotationZ = SmoothedLiveData(0.0, Smoothed.DelegationMode.RELATIVE)
+    val rotationZ = SmoothedLiveData(
+            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
 
     /**
      * Q rotation, in units of PI.
      */
-    val rotationQ = SmoothedLiveData(0.0, Smoothed.DelegationMode.RELATIVE)
+    val rotationQ = SmoothedLiveData(
+            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
 
     /**
      * X translation.
      */
-    val translationX = SmoothedLiveData(0.0, Smoothed.DelegationMode.RELATIVE)
+    val translationX = SmoothedLiveData(
+            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
 
     /**
      * Y translation.
      */
-    val translationY = SmoothedLiveData(0.0, Smoothed.DelegationMode.RELATIVE)
+    val translationY = SmoothedLiveData(
+            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
 
     /**
      * Z translation.
      */
-    val translationZ = SmoothedLiveData(0.0, Smoothed.DelegationMode.RELATIVE)
+    val translationZ = SmoothedLiveData(
+            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
 
     /**
      * Q translation.
      */
-    val translationQ = SmoothedLiveData(0.0, Smoothed.DelegationMode.RELATIVE)
+    val translationQ = SmoothedLiveData(
+            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
 
     /**
      * Camera distance.
      */
-    val cameraDistance = SmoothedLiveData(8.0, Smoothed.DelegationMode.ABSOLUTE)
+    val cameraDistance = SmoothedLiveData(initialValue = 8.0)
 
 }

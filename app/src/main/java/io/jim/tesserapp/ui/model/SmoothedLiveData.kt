@@ -9,13 +9,15 @@ import io.jim.tesserapp.math.common.Smoothed
  * @param delegationMode Assigned to [smoothed]'s [Smoothed.delegationMode].
  */
 class SmoothedLiveData(
-        initialValue: Double,
-        delegationMode: Smoothed.DelegationMode,
+        initialValue: Double = 0.0,
+        delegationMode: Smoothed.DelegationMode = Smoothed.DelegationMode.ABSOLUTE,
         transitionInterval: Double = 200.0
 ) : MutableLiveDataNonNull<Double>(initialValue) {
 
     /**
      * Reflect the live-data's value, but interpolates smoothly between changes.
+     * You cannot set this smoothed *variant* directly since it's automatically
+     * set when the actual, non-smoothed live data is changed.
      */
     var smoothed by Smoothed(initialValue, transitionInterval, delegationMode)
         private set

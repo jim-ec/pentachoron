@@ -14,12 +14,7 @@ import kotlin.reflect.KProperty
  * The time it should take to fulfil one transition interval.
  *
  * @property delegationMode
- * If [DelegationMode.ABSOLUTE], simply the absolute value is delegation on read.
- * If [DelegationMode.RELATIVE], property read will return the value difference since the last read,
- * instead of the current absolute value.
- * To keep track of the absolute value, you have to accumulate all read retrievals, which
- * implies that you have to define explicitly who can read the property at all.
- * Otherwise, the accumulated absolute value will get corrupt.
+ * Mode of delegation, see [DelegationMode].
  */
 open class Smoothed<R>(
         startValue: Double,
@@ -62,7 +57,9 @@ open class Smoothed<R>(
         get() = x - lastTransitionStartX < transitionInterval
 
     /**
-     * Only used when delegating the difference value.
+     * Only used when delegating with [DelegationMode.RELATIVE_TO_LAST_READ].
+     * Store the value existed when the last read operation occurred,
+     * so we can return the difference.
      */
     private var oldValue = startValue
 
@@ -119,13 +116,34 @@ open class Smoothed<R>(
                 // Return difference, but remember the current value as the new old value:
                 when (delegationMode) {
                     DelegationMode.ABSOLUTE -> value
-                    DelegationMode.RELATIVE -> (value - oldValue).also { oldValue = value }
+                    DelegationMode.RELATIVE_TO_LAST_READ -> (value - oldValue).also { oldValue = value }
                 }
             }
 
+    /**
+     * How the value is delegated when read.
+     */
     enum class DelegationMode {
+
+        /**
+         * Each read will return current absolute value.
+         * This is the default behaviour you would expect.
+         */
         ABSOLUTE,
-        RELATIVE
+
+        /**
+         * Each read operation will return the *difference* between the current value
+         * and the value hold when the last read operation occurred.
+         *
+         * This is more useful when you want to listen how the value has changed,
+         * rather than what its current absolute value is.
+         *
+         * Since every read operation affects the next read operation,
+         * you have to define explicitly who can read the property at all.
+         *
+         * I.e. to keep track of the absolute value, you'd have to accumulate all read retrievals.
+         */
+        RELATIVE_TO_LAST_READ
     }
 
 }
