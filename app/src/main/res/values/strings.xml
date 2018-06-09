@@ -7,18 +7,18 @@
     <string name="transform_rotation_y" translatable="false">Y</string>
     <string name="transform_rotation_z" translatable="false">Z</string>
     <string name="transform_rotation_q" translatable="false">Q</string>
-    <string name="transform_rotation_watch_format" translatable="false">%1$sπ</string>
+    <string name="transform_rotation_watch_format" translatable="false">%sπ</string>
 
     <string name="transform_translation">Translation</string>
     <string name="transform_translation_x" translatable="false">X</string>
     <string name="transform_translation_y" translatable="false">Y</string>
     <string name="transform_translation_z" translatable="false">Z</string>
     <string name="transform_translation_q" translatable="false">Q</string>
-    <string name="transform_translation_watch_format" translatable="false">%1$s</string>
+    <string name="transform_translation_watch_format" translatable="false">%s</string>
 
     <string name="camera">Camera</string>
     <string name="camera_distance">Distance</string>
-    <string name="camera_distance_watch_format" translatable="false">%1$s</string>
+    <string name="camera_distance_watch_format" translatable="false">%s</string>
 
     <string name="render_option_grid">Grid</string>
     <string name="dark_theme">Dark Theme</string>

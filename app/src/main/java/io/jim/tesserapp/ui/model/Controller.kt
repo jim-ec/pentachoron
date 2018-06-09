@@ -28,17 +28,12 @@ class Controller(
         private val onValueUpdate: (value: Double) -> Unit
 ) {
 
-    private val seekBarRange = 0.0..seekBar.max.toDouble()
-
     /**
-     * Called when seek-bar progress changes.
-     * Updates the watch text and calls [onValueUpdate] with the new value.
+     * Range of possible seek-bar results.
+     * The range is chosen in such a manner that you can chose values with a precision
+     * of one tenth.
      */
-    private fun update() {
-        val value = mapped(seekBar.progress.toDouble(), seekBarRange, valueRange)
-        watch.text = String.format(formatString, formatNumber(value))
-        onValueUpdate(value)
-    }
+    private val seekBarRange = 0.0..(valueRange.endInclusive - valueRange.start) * 10.0
 
     init {
         if (valueRange.isEmpty())
@@ -47,6 +42,7 @@ class Controller(
             throw RuntimeException("Start value must be located in $valueRange")
 
         seekBar.progress = mapped(startValue, valueRange, seekBarRange).toInt()
+        seekBar.max = seekBarRange.endInclusive.toInt()
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -59,6 +55,16 @@ class Controller(
 
         // Initially format the value label, using the start value:
         update()
+    }
+
+    /**
+     * Called when seek-bar progress changes.
+     * Updates the watch text and calls [onValueUpdate] with the new value.
+     */
+    private fun update() {
+        val value = mapped(seekBar.progress.toDouble(), seekBarRange, valueRange)
+        watch.text = String.format(formatString, formatNumber(value))
+        onValueUpdate(value)
     }
 
 }
