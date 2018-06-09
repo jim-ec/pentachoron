@@ -21,6 +21,12 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
 
+
+    /**
+     * Aspect ratio.
+     */
+    var aspectRatio: Double = 1.0
+
     val camera = Camera()
     private val projectionMatrix = Projection3dMatrix(near = 0.1, far = 100.0)
     private val viewMatrix = ViewMatrix(camera)
@@ -88,7 +94,7 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         synchronized {
             GLES30.glViewport(0, 0, width, height)
-            camera.aspectRatio = width.toDouble() / height
+            aspectRatio = width.toDouble() / height
         }
     }
 
@@ -114,7 +120,7 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
 
                 // Recompute and upload view and perspective matrices:
                 shader.uploadViewMatrix(viewMatrix.apply {
-                    compute(context.viewModel.cameraDistance.smoothed)
+                    compute(context.viewModel.cameraDistance.smoothed, aspectRatio)
                 })
                 shader.uploadProjectionMatrix(projectionMatrix)
 

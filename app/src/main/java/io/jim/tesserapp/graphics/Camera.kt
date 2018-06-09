@@ -8,11 +8,6 @@ import io.jim.tesserapp.math.common.Smoothed
 class Camera {
 
     /**
-     * Aspect ratio.
-     */
-    var aspectRatio: Double = 1.0
-
-    /**
      * Rotation on the horizontal orbit.
      * This is the base rotation.
      */

@@ -33,7 +33,7 @@ class ViewMatrix(
     /**
      * Recomputes view matrix.
      */
-    fun compute(distance: Double) {
+    fun compute(distance: Double, aspectRatio: Double) {
         matrixHorizontalRotation.rotation(2, 0, camera.horizontalRotation)
         matrixVerticalRotation.rotation(0, 1, camera.verticalRotation)
         matrixRotation.multiplication(matrixHorizontalRotation, matrixVerticalRotation)
@@ -46,7 +46,7 @@ class ViewMatrix(
                 refUp = upVector
         )
 
-        scale.y = camera.aspectRatio
+        scale.y = aspectRatio
         matrixScale.scale(scale)
 
         matrixLookAtRotation.multiplication(matrixRotation, matrixLookAt)
