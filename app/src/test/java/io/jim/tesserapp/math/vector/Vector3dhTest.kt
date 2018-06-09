@@ -1,7 +1,6 @@
 package io.jim.tesserapp.math.vector
 
 import io.jim.tesserapp.math.matrix.Matrix
-import io.jim.tesserapp.math.matrix.projection3dMatrix
 import junit.framework.Assert.assertEquals
 import org.junit.Test
 
@@ -27,7 +26,7 @@ class Vector3dhTest {
 
     @Test
     fun multiply() {
-        val projection = projection3dMatrix()
+        val projection = Matrix(4).apply { perspective2D() }
         val translation = Matrix(4).apply { translation(Vector3d(0.0, 0.0, 1.0)) }
         val matrix = Matrix(4).apply { multiplication(translation, projection) }
 
