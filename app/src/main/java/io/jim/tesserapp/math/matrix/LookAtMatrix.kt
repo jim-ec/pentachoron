@@ -4,25 +4,25 @@ import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.math.vector.Vector3dh
 
 /**
- * Return a view-matrix generator.
- *
- * The generator expects these parameters: *eye*, *target*, *refUp*.
- *
- * The camera is constructed in such a way that it is positioned at *eye*, points to a *target*
- * and the upper edge is oriented in the *refUp* direction.
+ * Responsible for computing a look-at matrix.
  */
-fun lookAtMatrixGenerator(): (eye: Vector3d,
-                              target: Vector3d,
-                              refUp: Vector3d) -> Matrix {
+class LookAtMatrix {
 
-    val matrix = Matrix(4)
-    val forward = Vector3dh()
-    val right = Vector3dh()
-    val up = Vector3dh()
-    val negatedEye = Vector3dh()
-    val base = Vector3dh()
+    private val matrix = Matrix(4)
+    private val forward = Vector3dh()
+    private val right = Vector3dh()
+    private val up = Vector3dh()
+    private val negatedEye = Vector3dh()
+    private val base = Vector3dh()
 
-    return { eye, target, refUp ->
+    /**
+     * Compute view matrix.
+     * @param eye Eye position.
+     * @param target Target position.
+     * @param refUp Up direction of camera.
+     * @return The view matrix. Each invocation returns the same matrix with updated values.
+     */
+    operator fun invoke(eye: Vector3d, target: Vector3d, refUp: Vector3d): Matrix {
 
         forward.apply {
             copyFrom(eye)
@@ -71,6 +71,7 @@ fun lookAtMatrixGenerator(): (eye: Vector3d,
         for (col in 0 until 3)
             matrix[3, col] = base[col]
 
-        matrix
+        return matrix
     }
+
 }

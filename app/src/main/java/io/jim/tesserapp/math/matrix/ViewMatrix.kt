@@ -5,14 +5,14 @@ import io.jim.tesserapp.math.vector.Vector3d
 /**
  * Responsible for computing a view matrix.
  */
-class ViewMatrixGenerator {
+class ViewMatrix {
 
     private val viewMatrix = Matrix(4)
     private val matrixLookAtRotation = Matrix(4)
     private val matrixRotation = Matrix(4)
     private val matrixHorizontalRotation = Matrix(4)
     private val matrixVerticalRotation = Matrix(4)
-    private val matrixLookAt = lookAtMatrixGenerator()
+    private val matrixLookAt = LookAtMatrix()
     private val matrixScale = Matrix(4)
 
     private val eye = Vector3d(1.0, 0.0, 0.0)

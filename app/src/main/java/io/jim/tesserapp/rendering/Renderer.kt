@@ -7,7 +7,7 @@ import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.graphics.*
 import io.jim.tesserapp.math.matrix.Matrix
-import io.jim.tesserapp.math.matrix.ViewMatrixGenerator
+import io.jim.tesserapp.math.matrix.ViewMatrix
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -28,7 +28,7 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
     var aspectRatio: Double = 1.0
 
     private val projectionMatrix = Matrix(4).apply { perspective2D(near = 0.1, far = 100.0) }
-    private val viewMatrix = ViewMatrixGenerator()
+    private val viewMatrix = ViewMatrix()
 
     private val clearColor = themedColorInt(context, android.R.attr.windowBackground)
 
