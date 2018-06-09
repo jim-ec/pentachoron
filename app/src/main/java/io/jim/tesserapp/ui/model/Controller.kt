@@ -41,7 +41,7 @@ class Controller(
     }
 
     init {
-        if(valueRange.isEmpty())
+        if (valueRange.isEmpty())
             throw RuntimeException("Controller value-range cannot be empty")
         if (!valueRange.contains(startValue))
             throw RuntimeException("Start value must be located in $valueRange")

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import io.jim.tesserapp.ui.model.MainViewModel
 
-
 /**
  * Main activity.
  */

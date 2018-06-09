@@ -63,8 +63,7 @@ class GlTransformFeedback(private val varying: String, val mode: Int)
                     println("TF[$index]: $varying=${vectors[0]}")
                 }
             }*/
-        }
-        else {
+        } else {
             f()
         }
 

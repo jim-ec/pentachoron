@@ -52,8 +52,7 @@ class GraphicsView : GLSurfaceView {
         set(value) {
             if (value) {
                 renderer.addGeometry(grid)
-            }
-            else {
+            } else {
                 renderer.removeGeometry(grid)
             }
             field = value
