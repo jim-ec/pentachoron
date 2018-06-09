@@ -23,7 +23,7 @@ class GraphicsView : GLSurfaceView {
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-    val viewModel = (context as MainActivity).viewModel
+    private val viewModel = (context as MainActivity).viewModel
 
     private val renderer = Renderer(
             context as MainActivity,
@@ -42,7 +42,7 @@ class GraphicsView : GLSurfaceView {
 
     companion object {
         private const val CLICK_TIME_MS = 100L
-        private const val TOUCH_ROTATION_SENSITIVITY = 0.02
+        private const val TOUCH_ROTATION_SENSITIVITY = 0.008
     }
 
     /**
