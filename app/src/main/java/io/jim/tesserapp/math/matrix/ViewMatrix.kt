@@ -43,7 +43,13 @@ class ViewMatrix {
 
         matrixLookAtRotation.multiplication(matrixRotation, matrixLookAt(eye, target, upVector))
 
-        scale.y = aspectRatio
+        if (aspectRatio > 1) {
+            // Viewport is wide => shrink horizontally
+            scale.x = 1 / aspectRatio
+        } else {
+            // Viewport is tall => shrink vertically
+            scale.y = aspectRatio
+        }
         matrixScale.scale(scale)
         viewMatrix.multiplication(matrixLookAtRotation, matrixScale)
 
