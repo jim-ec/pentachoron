@@ -171,12 +171,10 @@ class MatrixTest {
 
     @Test
     fun lookAt() {
-        val matrix = LookAtMatrix()
-
-        matrix.lookAt(
-                eye = Vector3d(2.0, 2.0, 2.0),
-                target = Vector3d(0.0, 0.0, 0.0),
-                refUp = Vector3d(0.0, 1.0, 0.0)
+        val matrix = lookAtMatrixGenerator()(
+                Vector3d(2.0, 2.0, 2.0),
+                Vector3d(0.0, 0.0, 0.0),
+                Vector3d(0.0, 1.0, 0.0)
         )
 
         // Check the all matrix axis are unit vectors:

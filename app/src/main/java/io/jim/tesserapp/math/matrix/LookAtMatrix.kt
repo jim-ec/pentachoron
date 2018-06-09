@@ -4,29 +4,25 @@ import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.math.vector.Vector3dh
 
 /**
- * Represents a look-at transform. Most likely use-case is camera-transform.
+ * Return a view-matrix generator.
+ *
+ * The generator expects these parameters: *eye*, *target*, *refUp*.
+ *
+ * The camera is constructed in such a way that it is positioned at *eye*, points to a *target*
+ * and the upper edge is oriented in the *refUp* direction.
  */
-class LookAtMatrix : Matrix(4) {
+fun lookAtMatrixGenerator(): (eye: Vector3d,
+                              target: Vector3d,
+                              refUp: Vector3d) -> Matrix {
 
-    private val forward = Vector3dh()
-    private val right = Vector3dh()
-    private val up = Vector3dh()
-    private val negatedEye = Vector3dh()
-    private val base = Vector3dh()
+    val matrix = Matrix(4)
+    val forward = Vector3dh()
+    val right = Vector3dh()
+    val up = Vector3dh()
+    val negatedEye = Vector3dh()
+    val base = Vector3dh()
 
-    /**
-     * Load a look at matrix.
-     * The camera is constructed in such a way that it is positioned at [eye], Vectors to [target],
-     * and the upper edge is oriented in the [refUp] Vector.
-     * @param eye Eye position. W component should be 1.
-     * @param target Target position. W component should be 1.
-     * @param refUp Target position. W component should be 0.
-     */
-    fun lookAt(
-            eye: Vector3d,
-            target: Vector3d,
-            refUp: Vector3d
-    ) {
+    return { eye, target, refUp ->
 
         forward.apply {
             copyFrom(eye)
@@ -49,31 +45,32 @@ class LookAtMatrix : Matrix(4) {
             negate()
         }
 
-        this[0, 0] = right.x
-        this[0, 1] = right.y
-        this[0, 2] = right.z
+        matrix[0, 0] = right.x
+        matrix[0, 1] = right.y
+        matrix[0, 2] = right.z
 
-        this[1, 0] = up.x
-        this[1, 1] = up.y
-        this[1, 2] = up.z
+        matrix[1, 0] = up.x
+        matrix[1, 1] = up.y
+        matrix[1, 2] = up.z
 
-        this[2, 0] = forward.x
-        this[2, 1] = forward.y
-        this[2, 2] = forward.z
+        matrix[2, 0] = forward.x
+        matrix[2, 1] = forward.y
+        matrix[2, 2] = forward.z
 
-        this[3, 0] = 0.0
-        this[3, 1] = 0.0
-        this[3, 2] = 0.0
-        this[3, 3] = 1.0
+        matrix[3, 0] = 0.0
+        matrix[3, 1] = 0.0
+        matrix[3, 2] = 0.0
+        matrix[3, 3] = 1.0
 
-        transpose()
+        matrix.transpose()
 
         base.multiplication(
                 lhs = negatedEye,
-                rhs = this
+                rhs = matrix
         )
         for (col in 0 until 3)
-            this[3, col] = base[col]
-    }
+            matrix[3, col] = base[col]
 
+        matrix
+    }
 }

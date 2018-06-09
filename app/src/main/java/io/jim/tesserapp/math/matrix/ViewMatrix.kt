@@ -14,7 +14,7 @@ fun viewMatrixGenerator(): (Double, Double, Double, Double) -> Matrix {
     val matrixRotation = Matrix(4)
     val matrixHorizontalRotation = Matrix(4)
     val matrixVerticalRotation = Matrix(4)
-    val matrixLookAt = LookAtMatrix()
+    val matrixLookAt = lookAtMatrixGenerator()
     val matrixScale = Matrix(4)
 
     val eye = Vector3d(1.0, 0.0, 0.0)
@@ -30,17 +30,10 @@ fun viewMatrixGenerator(): (Double, Double, Double, Double) -> Matrix {
         matrixRotation.multiplication(matrixHorizontalRotation, matrixVerticalRotation)
 
         eye.x = distance
-
-        matrixLookAt.lookAt(
-                eye = eye,
-                target = target,
-                refUp = upVector
-        )
-
         scale.y = aspectRatio
         matrixScale.scale(scale)
 
-        matrixLookAtRotation.multiplication(matrixRotation, matrixLookAt)
+        matrixLookAtRotation.multiplication(matrixRotation, matrixLookAt(eye, target, upVector))
         viewMatrix.multiplication(matrixScale, matrixLookAtRotation)
 
         viewMatrix

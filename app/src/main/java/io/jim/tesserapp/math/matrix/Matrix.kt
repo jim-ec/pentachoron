@@ -13,9 +13,9 @@ import kotlin.math.sin
  * @constructor Construct an identity matrix.
  * @throws MathException If either [rows] or [cols] are less than 1.
  */
-open class Matrix(
-        final override val rows: Int,
-        final override val cols: Int
+class Matrix(
+        override val rows: Int,
+        override val cols: Int
 ) : MatrixMultipliable() {
 
     /**
