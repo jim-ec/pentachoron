@@ -53,7 +53,7 @@ open class Smoothed<R>(
      * all x to 0, this is effectively the same behaviour like taking the value right after the
      * last transition interval has ended like it is done after the very first transition finished.
      */
-    private val transitioning: Boolean
+    private inline val transitioning: Boolean
         get() = x - lastTransitionStartX < transitionInterval
 
     /**
@@ -71,9 +71,12 @@ open class Smoothed<R>(
      * or the last interval has already ended. In that case, the x at which the last interval ended
      * is mapped by [curve] and therefore does not change anymore.
      */
-    private val currentValue: Double
-        get() = (if (transitioning) curve(x)
-        else curve(lastTransitionStartX + transitionInterval))
+    private inline val currentValue: Double
+        get() =
+            if (transitioning)
+                curve(x)
+            else
+                curve(lastTransitionStartX + transitionInterval)
 
     /**
      * Trigger a new transition interval.

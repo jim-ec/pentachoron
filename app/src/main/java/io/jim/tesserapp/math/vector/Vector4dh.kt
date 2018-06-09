@@ -66,7 +66,8 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
      * W-component. This is always 1.
      * Setting this value will lead to w-division.
      */
-    private var w = 1.0
+    private inline var w: Double
+        get() = 1.0
         set(value) {
             this /= value
         }

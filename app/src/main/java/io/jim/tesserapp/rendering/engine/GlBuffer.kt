@@ -28,7 +28,7 @@ open class GlBuffer(
     /**
      * Buffer size in bytes.
      */
-    val byteCount: Int
+    inline val byteCount: Int
         get() = resultCode {
             bound {
                 GLES30.glGetBufferParameteriv(target, GLES30.GL_BUFFER_SIZE, resultCode)
@@ -38,13 +38,13 @@ open class GlBuffer(
     /**
      * Buffer size in floats.
      */
-    val floatCount: Int
+    inline val floatCount: Int
         get() = byteCount / 4
 
     /**
      * Maps GL targets to their binding-query constant counterparts.
      */
-    val binding: Int
+    inline val binding: Int
         get() = when (target) {
             GLES30.GL_ARRAY_BUFFER -> GLES30.GL_ARRAY_BUFFER_BINDING
             GLES30.GL_ELEMENT_ARRAY_BUFFER -> GLES30.GL_ELEMENT_ARRAY_BUFFER_BINDING

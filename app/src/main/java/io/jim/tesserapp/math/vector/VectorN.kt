@@ -118,7 +118,7 @@ open class VectorN(
     /**
      * Compute this vector's length.
      */
-    val length
+    inline val length
         get() = sqrt(this * this)
 
     /**

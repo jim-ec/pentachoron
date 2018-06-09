@@ -29,21 +29,21 @@ fun themedColorInt(
  * Extracts the red color component.
  * @return Red in `[0,1]`
  */
-val Int.red: Float
+inline val Int.red: Float
     get() = Color.red(this).toFloat() / 255f
 
 /**
  * Extracts the green color component.
  * @return Green in `[0,1]`
  */
-val Int.green: Float
+inline val Int.green: Float
     get() = Color.green(this).toFloat() / 255f
 
 /**
  * Extracts the blue color component.
  * @return Blue in `[0,1]`
  */
-val Int.blue: Float
+inline val Int.blue: Float
     get() = Color.blue(this).toFloat() / 255f
 
 /**

@@ -34,7 +34,11 @@ class InputStreamMemory(
         val vectorsPerElement: Int
 ) {
 
-    private val floatsPerElement = vectorsPerElement * 4
+    /**
+     * Count of floats one element hold.
+     * Depends on the count of vectors one element hold.
+     */
+    val floatsPerElement = vectorsPerElement * 4
 
     /**
      * Underlying byte memory.
@@ -50,14 +54,14 @@ class InputStreamMemory(
     /**
      * Capacity of memory, expressed in elements.
      */
-    val elementCapacity: Int
+    inline val elementCapacity: Int
         get() = floatMemory.capacity() / floatsPerElement
 
     /**
      * The count of elements written into memory since the last call to [rewind] or
      * construction time.
      */
-    val writtenElementCounts: Int
+    inline val writtenElementCounts: Int
         get() = writtenVectorCounts / vectorsPerElement
 
     /**
