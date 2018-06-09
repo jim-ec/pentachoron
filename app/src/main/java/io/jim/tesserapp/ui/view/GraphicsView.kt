@@ -23,6 +23,8 @@ class GraphicsView : GLSurfaceView {
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
+    val viewModel = (context as MainActivity).viewModel
+
     private val renderer = Renderer(
             context as MainActivity,
             resources.displayMetrics.xdpi.toDouble()
@@ -82,10 +84,8 @@ class GraphicsView : GLSurfaceView {
     }
 
     private fun moveToDefaultCameraPosition() {
-        renderer.synchronized { camera ->
-            camera.verticalRotation = DEFAULT_CAMERA_HORIZONTAL_ROTATION
-            camera.horizontalRotation = DEFAULT_CAMERA_VERTICAL_ROTATION
-        }
+        viewModel.verticalCameraRotation.value = DEFAULT_CAMERA_HORIZONTAL_ROTATION
+        viewModel.horizontalCameraRotation.value = DEFAULT_CAMERA_VERTICAL_ROTATION
     }
 
     /**
@@ -104,10 +104,8 @@ class GraphicsView : GLSurfaceView {
                     val dx = event.x - touchStartPosition.x
                     val dy = event.y - touchStartPosition.y
 
-                    renderer.synchronized { camera ->
-                        camera.horizontalRotation += dx * TOUCH_ROTATION_SENSITIVITY
-                        camera.verticalRotation -= dy * TOUCH_ROTATION_SENSITIVITY
-                    }
+                    viewModel.verticalCameraRotation.value += dx * TOUCH_ROTATION_SENSITIVITY
+                    viewModel.horizontalCameraRotation.value -= dy * TOUCH_ROTATION_SENSITIVITY
 
                     touchStartPosition.x = event.x.toDouble()
                     touchStartPosition.y = event.y.toDouble()

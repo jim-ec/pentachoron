@@ -28,54 +28,66 @@ class MainViewModel : ViewModel() {
     /**
      * X rotation, in units of PI.
      */
-    val rotationX = SmoothedLiveData(
-            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+    val rotationX =
+            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
 
     /**
      * Y rotation, in units of PI.
      */
-    val rotationY = SmoothedLiveData(
-            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+    val rotationY =
+            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
 
     /**
      * Z rotation, in units of PI.
      */
-    val rotationZ = SmoothedLiveData(
-            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+    val rotationZ =
+            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
 
     /**
      * Q rotation, in units of PI.
      */
-    val rotationQ = SmoothedLiveData(
-            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+    val rotationQ =
+            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
 
     /**
      * X translation.
      */
-    val translationX = SmoothedLiveData(
-            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+    val translationX =
+            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
 
     /**
      * Y translation.
      */
-    val translationY = SmoothedLiveData(
-            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+    val translationY =
+            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
 
     /**
      * Z translation.
      */
-    val translationZ = SmoothedLiveData(
-            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+    val translationZ =
+            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
 
     /**
      * Q translation.
      */
-    val translationQ = SmoothedLiveData(
-            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+    val translationQ =
+            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
 
     /**
      * Camera distance.
      */
     val cameraDistance = SmoothedLiveData(initialValue = 8.0)
+
+    /**
+     * Rotation on the horizontal orbit.
+     * This is the base rotation.
+     */
+    var horizontalCameraRotation = SmoothedLiveData(initialValue = 0.0, transitionInterval = 80.0)
+
+    /**
+     * Rotation on the vertical orbit.
+     * This is the secondary rotation.
+     */
+    var verticalCameraRotation = SmoothedLiveData(initialValue = 0.0, transitionInterval = 80.0)
 
 }
