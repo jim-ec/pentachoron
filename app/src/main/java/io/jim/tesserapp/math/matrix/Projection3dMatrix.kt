@@ -1,24 +1,18 @@
 package io.jim.tesserapp.math.matrix
 
 /**
- * Projection matrix, projecting 3D into 2D.
+ * Projection matrix without z-remapping.
  */
-class Projection3dMatrix : Matrix {
+fun projection3dMatrix() = Matrix(4).apply {
+    perspective2D()
+}
 
-    /**
-     * Projection matrix without z-remapping.
-     */
-    constructor() : super(4) {
-        perspective2D()
-    }
 
-    /**
-     * Projection matrix with z-remapping.
-     * @param near Near plane.
-     * @param far Far plane.
-     */
-    constructor(near: Double, far: Double) : super(4) {
-        perspective2D(near, far)
-    }
-
+/**
+ * Projection matrix with z-remapping.
+ * @param near Near plane.
+ * @param far Far plane.
+ */
+fun projection3dMatrix(near: Double, far: Double) = Matrix(4).apply {
+    perspective2D(near, far)
 }

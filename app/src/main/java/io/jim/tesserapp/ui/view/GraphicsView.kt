@@ -43,8 +43,8 @@ class GraphicsView : GLSurfaceView {
     companion object {
         private const val CLICK_TIME_MS = 100L
         private const val TOUCH_ROTATION_SENSITIVITY = 0.02
-        private const val DEFAULT_CAMERA_HORIZONTAL_ROTATION = -Math.PI / 8.0
-        private const val DEFAULT_CAMERA_VERTICAL_ROTATION = Math.PI / 3.0
+        private const val DEFAULT_CAMERA_HORIZONTAL_ROTATION = Math.PI / 3.0
+        private const val DEFAULT_CAMERA_VERTICAL_ROTATION = -Math.PI / 8.0
     }
 
     /**
@@ -84,8 +84,8 @@ class GraphicsView : GLSurfaceView {
     }
 
     private fun moveToDefaultCameraPosition() {
-        viewModel.verticalCameraRotation.value = DEFAULT_CAMERA_HORIZONTAL_ROTATION
-        viewModel.horizontalCameraRotation.value = DEFAULT_CAMERA_VERTICAL_ROTATION
+        viewModel.horizontalCameraRotation.value = DEFAULT_CAMERA_HORIZONTAL_ROTATION
+        viewModel.verticalCameraRotation.value = DEFAULT_CAMERA_VERTICAL_ROTATION
     }
 
     /**
@@ -104,8 +104,8 @@ class GraphicsView : GLSurfaceView {
                     val dx = event.x - touchStartPosition.x
                     val dy = event.y - touchStartPosition.y
 
-                    viewModel.verticalCameraRotation.value += dx * TOUCH_ROTATION_SENSITIVITY
-                    viewModel.horizontalCameraRotation.value -= dy * TOUCH_ROTATION_SENSITIVITY
+                    viewModel.horizontalCameraRotation.value += dx * TOUCH_ROTATION_SENSITIVITY
+                    viewModel.verticalCameraRotation.value -= dy * TOUCH_ROTATION_SENSITIVITY
 
                     touchStartPosition.x = event.x.toDouble()
                     touchStartPosition.y = event.y.toDouble()

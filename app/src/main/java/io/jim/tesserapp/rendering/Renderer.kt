@@ -6,8 +6,8 @@ import io.jim.tesserapp.MainActivity
 import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.graphics.*
-import io.jim.tesserapp.math.matrix.Projection3dMatrix
-import io.jim.tesserapp.math.matrix.ViewMatrix
+import io.jim.tesserapp.math.matrix.projection3dMatrix
+import io.jim.tesserapp.math.matrix.viewMatrixGenerator
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -27,8 +27,8 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
      */
     var aspectRatio: Double = 1.0
 
-    private val projectionMatrix = Projection3dMatrix(near = 0.1, far = 100.0)
-    private val viewMatrix = ViewMatrix()
+    private val projectionMatrix = projection3dMatrix(near = 0.1, far = 100.0)
+    private val viewMatrix = viewMatrixGenerator()
 
     private val clearColor = themedColorInt(context, android.R.attr.windowBackground)
 
@@ -113,14 +113,12 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
         shader.bound {
 
             // Recompute and upload view and perspective matrices:
-            shader.uploadViewMatrix(viewMatrix.apply {
-                compute(
-                        context.viewModel.cameraDistance.smoothed,
-                        aspectRatio,
-                        context.viewModel.horizontalCameraRotation.smoothed,
-                        context.viewModel.verticalCameraRotation.smoothed
-                )
-            })
+            shader.uploadViewMatrix(viewMatrix(
+                    context.viewModel.cameraDistance.smoothed,
+                    aspectRatio,
+                    context.viewModel.horizontalCameraRotation.smoothed,
+                    context.viewModel.verticalCameraRotation.smoothed
+            ))
             shader.uploadProjectionMatrix(projectionMatrix)
 
             // Draw the vertex buffer:

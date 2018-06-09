@@ -3,34 +3,28 @@ package io.jim.tesserapp.math.matrix
 import io.jim.tesserapp.math.vector.Vector3d
 
 /**
- * Represent a `4x4` view matrix, including a look-at based transform and orbital rotation.
+ * Returns a function which can compute a view matrix.
+ *
+ * The calculated view matrix is returned from that closure.
  */
-class ViewMatrix : Matrix(4) {
+fun viewMatrixGenerator(): (Double, Double, Double, Double) -> Matrix {
 
-    private val matrixLookAtRotation = Matrix(4)
-    private val matrixRotation = Matrix(4)
-    private val matrixHorizontalRotation = Matrix(4)
-    private val matrixVerticalRotation = Matrix(4)
-    private val matrixLookAt = LookAtMatrix()
-    private val matrixScale = Matrix(4)
+    val viewMatrix = Matrix(4)
+    val matrixLookAtRotation = Matrix(4)
+    val matrixRotation = Matrix(4)
+    val matrixHorizontalRotation = Matrix(4)
+    val matrixVerticalRotation = Matrix(4)
+    val matrixLookAt = LookAtMatrix()
+    val matrixScale = Matrix(4)
 
-    private val eye = Vector3d(1.0, 0.0, 0.0)
-    private val scale = Vector3d(1.0, 1.0, 1.0)
+    val eye = Vector3d(1.0, 0.0, 0.0)
+    val scale = Vector3d(1.0, 1.0, 1.0)
 
-    companion object {
-        private val upVector = Vector3d(0.0, 1.0, 0.0)
-        private val target = Vector3d(0.0, 0.0, 0.0)
-    }
+    val upVector = Vector3d(0.0, 1.0, 0.0)
+    val target = Vector3d(0.0, 0.0, 0.0)
 
-    /**
-     * Recomputes view matrix.
-     */
-    fun compute(
-            distance: Double,
-            aspectRatio: Double,
-            horizontalRotation: Double,
-            verticalRotation: Double
-    ) {
+    return { distance, aspectRatio, horizontalRotation, verticalRotation ->
+
         matrixHorizontalRotation.rotation(2, 0, horizontalRotation)
         matrixVerticalRotation.rotation(0, 1, verticalRotation)
         matrixRotation.multiplication(matrixHorizontalRotation, matrixVerticalRotation)
@@ -47,7 +41,8 @@ class ViewMatrix : Matrix(4) {
         matrixScale.scale(scale)
 
         matrixLookAtRotation.multiplication(matrixRotation, matrixLookAt)
-        multiplication(matrixScale, matrixLookAtRotation)
-    }
+        viewMatrix.multiplication(matrixScale, matrixLookAtRotation)
 
+        viewMatrix
+    }
 }
