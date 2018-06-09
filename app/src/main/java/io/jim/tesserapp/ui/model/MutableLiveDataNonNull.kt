@@ -16,10 +16,17 @@ open class MutableLiveDataNonNull<T>(initialValue: T) : MutableLiveData<T>() {
     }
 
     /**
-     * Return the current `non-null` value.
+     * Return the current *non-null* value.
      */
     override fun getValue(): T {
         return super.getValue()!!
+    }
+
+    /**
+     * Set the *non-null* value to this live data.
+     */
+    override fun setValue(value: T) {
+        super.setValue(value!!)
     }
 
     /**
