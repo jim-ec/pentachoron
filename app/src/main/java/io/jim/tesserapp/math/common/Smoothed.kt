@@ -1,7 +1,6 @@
 package io.jim.tesserapp.math.common
 
 import io.jim.tesserapp.math.common.Smoothed.DelegationMode
-import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 /**
@@ -20,7 +19,7 @@ open class Smoothed<R>(
         startValue: Double,
         private val transitionInterval: Double,
         private val delegationMode: DelegationMode = DelegationMode.ABSOLUTE
-) : ReadWriteProperty<R, Double> {
+) {
 
     /**
      * The axis start is defined as the construction time.
@@ -83,7 +82,7 @@ open class Smoothed<R>(
      * If this value is currently transitioning, the new transition will keep the current
      * value change-rate, i.e. it will not restart from zero.
      */
-    override fun setValue(thisRef: R, property: KProperty<*>, value: Double) {
+    operator fun setValue(thisRef: R, property: KProperty<*>, value: Double) {
 
         // If currently transitioning, re-span the curve from the current point of progression:
         if (transitioning) {
@@ -113,7 +112,7 @@ open class Smoothed<R>(
     /**
      * Get the current value.
      */
-    override fun getValue(thisRef: R, property: KProperty<*>) =
+    operator fun getValue(thisRef: R, property: KProperty<*>) =
             currentValue.let { value ->
 
                 // Return difference, but remember the current value as the new old value:
