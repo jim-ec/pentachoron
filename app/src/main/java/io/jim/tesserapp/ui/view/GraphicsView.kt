@@ -25,7 +25,8 @@ class GraphicsView : GLSurfaceView {
 
     private val viewModel = (context as MainActivity).viewModel
 
-    private val renderer = Renderer(
+    @PublishedApi
+    internal val renderer = Renderer(
             context as MainActivity,
             resources.displayMetrics.xdpi.toDouble()
     )
@@ -133,7 +134,7 @@ class GraphicsView : GLSurfaceView {
      * Function called on the render thread.
      * The featured geometry is passed to it.
      */
-    fun queueEventOnFeaturedGeometry(f: (featuredGeometry: Geometry) -> Unit) {
+    inline fun queueEventOnFeaturedGeometry(crossinline f: (featuredGeometry: Geometry) -> Unit) {
         queueEvent {
             f(renderer.featuredGeometry)
         }
