@@ -3,13 +3,16 @@ package io.jim.tesserapp.ui.model
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
+import io.jim.tesserapp.util.synchronized
 
 /**
  * A wrapper for [MutableLiveData] whose value can never be `null`.
  *
+ * Additionally, [setValue] and [getValue] are thread safe.
+ *
  * @constructor Creates a live-data with an initial value.
  */
-open class MutableLiveDataNonNull<T>(initialValue: T) : MutableLiveData<T>() {
+open class MutableLiveDataNonNull<T : Any>(initialValue: T) : MutableLiveData<T>() {
 
     init {
         value = initialValue
@@ -19,14 +22,18 @@ open class MutableLiveDataNonNull<T>(initialValue: T) : MutableLiveData<T>() {
      * Return the current *non-null* value.
      */
     override fun getValue(): T {
-        return super.getValue()!!
+        return synchronized {
+            super.getValue()!!
+        }
     }
 
     /**
      * Set the *non-null* value to this live data.
      */
     override fun setValue(value: T) {
-        super.setValue(value!!)
+        synchronized {
+            super.setValue(value)
+        }
     }
 
     /**
@@ -35,9 +42,11 @@ open class MutableLiveDataNonNull<T>(initialValue: T) : MutableLiveData<T>() {
      * @param callback Called upon value changes.
      */
     fun observeNonNull(lifecycleOwner: LifecycleOwner, callback: (T) -> Unit) {
-        super.observe(lifecycleOwner, Observer {
-            callback(it!!)
-        })
+        synchronized {
+            super.observe(lifecycleOwner, Observer {
+                callback(it!!)
+            })
+        }
     }
 
     /**
@@ -46,8 +55,10 @@ open class MutableLiveDataNonNull<T>(initialValue: T) : MutableLiveData<T>() {
      * @param callback Called upon value changes.
      */
     fun observeForeverNonNull(callback: (T) -> Unit) {
-        super.observeForever {
-            callback(it!!)
+        synchronized {
+            super.observeForever {
+                callback(it!!)
+            }
         }
     }
 
