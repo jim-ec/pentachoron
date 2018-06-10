@@ -116,4 +116,21 @@ class GraphicsView : GLSurfaceView {
         return true
     }
 
+    /**
+     * Invokes [f] on the render thread, so it can safely access the featured geometry from
+     * another thread.
+     *
+     * Note that each single call allocates two new objects, so it shouldn't be called
+     * frequently.
+     *
+     * @param f
+     * Function called on the render thread.
+     * The featured geometry is passed to it.
+     */
+    fun queueEventOnFeaturedGeometry(f: (featuredGeometry: Geometry) -> Unit) {
+        queueEvent {
+            f(renderer.featuredGeometry)
+        }
+    }
+
 }

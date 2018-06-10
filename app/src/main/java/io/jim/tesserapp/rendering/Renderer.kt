@@ -16,6 +16,26 @@ import javax.microedition.khronos.opengles.GL10
  */
 class Renderer(private val context: MainActivity, private val dpi: Double) : GLSurfaceView.Renderer {
 
+    val featuredGeometry = Geometry(
+            onTransformUpdate = {
+                // Transform geometry in each frame relatively,
+                // by using the difference value returned from the smooth-delegates:
+
+                with(context.viewModel) {
+
+                    rotateX(rotationX.smoothed * Math.PI)
+                    rotateY(rotationY.smoothed * Math.PI)
+                    rotateZ(rotationZ.smoothed * Math.PI)
+
+                    translateX(translationX.smoothed)
+                    translateY(translationY.smoothed)
+                    translateZ(translationZ.smoothed)
+
+                }
+
+            }
+    )
+
     private val drawDataProvider = DrawDataProvider()
 
     private lateinit var shader: Shader
@@ -42,7 +62,7 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
     }
 
     init {
-        context.viewModel.featuredGeometry.apply {
+        featuredGeometry.apply {
             name = "Featured Geometry"
             baseColor = themedColorInt(context, R.attr.colorAccent)
 
