@@ -126,8 +126,8 @@ class GraphicsView : GLSurfaceView {
      * Invokes [f] on the render thread, so it can safely access the featured geometry from
      * another thread.
      *
-     * Note that each single call allocates two new objects, so it shouldn't be called
-     * frequently.
+     * Note that each single call allocates a new runnable to be queued to the render thread,
+     * so it shouldn't be called frequently to reduce gc-pressure.
      *
      * @param f
      * Function called on the render thread.
