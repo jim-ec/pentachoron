@@ -4,8 +4,6 @@ import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.formatNumber
 import io.jim.tesserapp.math.matrix.MatrixMultipliable
 import kotlin.math.sqrt
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
 /**
  * An n-dimensional vector.
@@ -245,23 +243,5 @@ open class VectorN(
     inner class IncompatibleVectorException(
             incompatibleVector: VectorN
     ) : MathException("$incompatibleVector is incompatible to ${this@VectorN}")
-
-    /**
-     * Associates a member with a number at a specific [index].
-     * Useful for giving index components name like `x`, `y` or `z`.
-     *
-     * Allows reading as well as writing to components.
-     */
-    inner class IndexAlias(
-            private val index: Int
-    ) : ReadWriteProperty<VectorN, Double> {
-
-        override fun getValue(thisRef: VectorN, property: KProperty<*>) =
-                this@VectorN[index]
-
-        override fun setValue(thisRef: VectorN, property: KProperty<*>, value: Double) {
-            this@VectorN[index] = value
-        }
-    }
 
 }

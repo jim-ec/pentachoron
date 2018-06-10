@@ -13,17 +13,29 @@ open class Vector3d(x: Double, y: Double, z: Double) : VectorN(x, y, z) {
     /**
      * X-component.
      */
-    var x by IndexAlias(0)
+    var x: Double
+        get() = this[0]
+        set(value) {
+            this[0] = value
+        }
 
     /**
      * Y-component.
      */
-    var y by IndexAlias(1)
+    var y: Double
+        get() = this[1]
+        set(value) {
+            this[1] = value
+        }
 
     /**
      * Z-component.
      */
-    var z by IndexAlias(2)
+    var z: Double
+        get() = this[2]
+        set(value) {
+            this[2] = value
+        }
 
     /**
      * Compute the vector product of [lhs] and [rhs], storing the result in this vector.

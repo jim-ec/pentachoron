@@ -24,22 +24,48 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
     /**
      * X-component.
      */
-    var x by IndexAlias(0)
+    var x: Double
+        get() = this[0]
+        set(value) {
+            this[0] = value
+        }
 
     /**
      * Y-component.
      */
-    var y by IndexAlias(1)
+    var y: Double
+        get() = this[1]
+        set(value) {
+            this[1] = value
+        }
 
     /**
      * Z-component.
      */
-    var z by IndexAlias(2)
+    var z: Double
+        get() = this[2]
+        set(value) {
+            this[2] = value
+        }
 
     /**
      * Q-component.
      */
-    var q by IndexAlias(3)
+    var q: Double
+        get() = this[3]
+        set(value) {
+            this[3] = value
+        }
+
+    /**
+     * W-component. This is always 1.
+     * Setting this value will lead to w-division.
+     */
+    private inline var w: Double
+        get() = 1.0
+        set(value) {
+            this /= value
+        }
 
     /**
      * Intercept getting the w-component, which is always 1.
@@ -61,15 +87,5 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
             w = value
         }
     }
-
-    /**
-     * W-component. This is always 1.
-     * Setting this value will lead to w-division.
-     */
-    private inline var w: Double
-        get() = 1.0
-        set(value) {
-            this /= value
-        }
 
 }
