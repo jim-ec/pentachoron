@@ -14,7 +14,7 @@ class Vector3dh(x: Double, y: Double, z: Double) : Vector3d(x, y, z) {
     /**
      * Though this vector is 3d, it technically has 4 columns, including the virtual w-component.
      */
-    override val cols = super.cols + 1
+    override val cols = 4
 
     /**
      * The dimension string should underline that the vector is not actually 3d.

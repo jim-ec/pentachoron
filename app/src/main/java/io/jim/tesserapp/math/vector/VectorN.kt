@@ -15,11 +15,11 @@ import kotlin.reflect.KProperty
  * That enables you to provide pre-allocated vectors, while avoiding allocating mass of vectors
  * when doing the same calculations over and over again.
  *
- * @property dimension Dimension of this vector. Determines count of numbers [doubles] holds.
+ * @property dimension Dimension of this vector. Determines count of numbers [numbers] holds.
  */
 open class VectorN(
         val dimension: Int
-) : Iterable<Double>, MatrixMultipliable() {
+) : MatrixMultipliable() {
 
     /**
      * Create a vector whose [dimension] is determined through the count of components passed
@@ -30,28 +30,19 @@ open class VectorN(
     }
 
     /**
-     * The underlying float array.
+     * The underlying number array.
      */
-    private val doubles = DoubleArray(dimension) { 0.0 }
+    private val numbers = DoubleArray(dimension) { 0.0 }
 
     /**
-     * Copy contents from [rhs] into this vector.
-     * The exact class of this and [rhs] doesn't play a role, no new object is created.
-     * @throws IncompatibleVectorException If vector dimension differ.
+     * A vector can be seen as a n-column matrix.
      */
-    fun copyFrom(rhs: VectorN) {
-        if (dimension != rhs.dimension)
-            throw IncompatibleVectorException(rhs)
-
-        rhs.forEachIndexed { index, float ->
-            this[index] = float
-        }
-    }
+    override val cols = dimension
 
     /**
-     * Iterates over the doubles.
+     * A vector can be seen as a one-row matrix.
      */
-    override fun iterator() = doubles.iterator()
+    override val rows = 1
 
     /**
      * Return a string representing this vector's dimension.
@@ -61,43 +52,62 @@ open class VectorN(
     /**
      * Represent this vector as a string.
      */
-    override fun toString() = run {
-        val sb = StringBuilder()
-        sb.append("( [").append(dimensionString).append("] ")
-        doubles.forEachIndexed { index, float ->
-            sb.append(formatNumber(float)).append(
-                    if (index != doubles.lastIndex) " | "
-                    else " )"
-            )
-        }
-        sb.toString()
-    }
+    override fun toString() =
+            StringBuilder().also { sb ->
+                sb.append("( [").append(dimensionString).append("] ")
+                numbers.forEachIndexed { index, number ->
+                    sb.append(formatNumber(number)).append(
+                            if (index != numbers.lastIndex) " | "
+                            else " )"
+                    )
+                }
+            }.toString()
 
     /**
-     * Set [index]th float to [value].
+     * Set [index]th number to [value].
      */
     operator fun set(index: Int, value: Double) {
         if (index < 0 || index >= dimension)
             throw MathException("Cannot set ${index}th component to a $dimensionString vector")
 
-        doubles[index] = value
+        numbers[index] = value
     }
 
     /**
-     * Return the [index]th float.
+     * Return the [index]th number.
      */
     operator fun get(index: Int) =
             if (index < 0 || index >= dimension)
                 throw MathException("Cannot set ${index}th component to a $dimensionString vector")
-            else doubles[index]
+            else numbers[index]
 
     /**
-     * Sets each vector component with the corresponding float in [components].
-     * @throws MathException If count of doubles passed to [components] does not match with [dimension].
+     * Setter used by the generic matrix-like multiplier,
+     * since that has a more abstract NxM view to matrix-like objects.
+     */
+    override fun set(row: Int, col: Int, value: Double) {
+        set(col, value)
+    }
+
+    /**
+     * Getter used by the generic matrix-like multiplier,
+     * since that has a more abstract NxM view to matrix-like objects.
+     */
+    override fun get(row: Int, col: Int) = this[col]
+
+    /**
+     * Sets each vector component with the corresponding number in [components].
+     *
+     * Since that allocates a `double`-array for each call due to its variadic parameters,
+     * try to avoid invoking this function frequently, or take a look at [copy].
+     *
+     * @throws MathException
+     * If count of numbers passed to [components] is greater than [dimension].
      */
     fun load(vararg components: Double) {
-        if (components.size != dimension)
-            throw MathException("Cannot load ${components.size} components into a $dimensionString vector")
+        if (components.size > dimension)
+            throw MathException("Cannot load ${components.size} components into a " +
+                    "$dimensionString vector")
 
         components.forEachIndexed { index, component ->
             this[index] = component
@@ -105,12 +115,38 @@ open class VectorN(
     }
 
     /**
+     * Copy contents of [source] into this vector.
+     * The actual dimensions can differ, as long as [counts] is chosen appropriately.
+     *
+     * @param counts
+     * How many components to copy.
+     * The default count will be the smaller vector length.
+     * I.e. the default value guarantees that the copy operation succeeds.
+     *
+     * @throws MathException
+     * If [counts] is greater than the dimension of this or the source vector.
+     */
+    fun copy(source: VectorN, counts: Int = Math.min(dimension, source.dimension)) {
+
+        if (counts > source.dimension)
+            throw MathException("Cannot copy $counts components from a " +
+                    "${source.dimensionString} vector")
+
+        if (counts > dimension)
+            throw MathException("Cannot copy $counts components to a $dimensionString vector")
+
+        for (i in 0 until counts) {
+            this[i] = source[i]
+        }
+    }
+
+    /**
      * Scalar this and [rhs].
      */
-    operator fun times(rhs: io.jim.tesserapp.math.vector.VectorN): Double {
+    operator fun times(rhs: VectorN): Double {
         var sum = 0.0
-        forEachIndexed { index, float ->
-            sum += float * rhs[index]
+        forEachIndexed { index, number ->
+            sum += number * rhs[index]
         }
         return sum
     }
@@ -129,8 +165,8 @@ open class VectorN(
         if (dimension != rhs.dimension)
             throw IncompatibleVectorException(rhs)
 
-        rhs.forEachIndexed { index, float ->
-            set(index, get(index) + float)
+        rhs.forEachIndexed { index, number ->
+            set(index, get(index) + number)
         }
     }
 
@@ -142,8 +178,8 @@ open class VectorN(
         if (dimension != rhs.dimension)
             throw IncompatibleVectorException(rhs)
 
-        rhs.forEachIndexed { index, float ->
-            set(index, get(index) - float)
+        rhs.forEachIndexed { index, number ->
+            set(index, get(index) - number)
         }
     }
 
@@ -152,8 +188,8 @@ open class VectorN(
      */
     fun normalize() {
         val oneOverLength = 1.0 / length
-        forEachIndexed { index, float ->
-            set(index, float * oneOverLength)
+        forEachIndexed { index, number ->
+            set(index, number * oneOverLength)
         }
     }
 
@@ -161,7 +197,7 @@ open class VectorN(
      * Scales this by [scale].
      */
     operator fun timesAssign(scale: Double) {
-        forEachIndexed { index, _ ->
+        forEachIndexed { index ->
             set(index, get(index) * scale)
         }
     }
@@ -170,7 +206,7 @@ open class VectorN(
      * Divides this vector through [divisor].
      */
     operator fun divAssign(divisor: Double) {
-        forEachIndexed { index, _ ->
+        forEachIndexed { index ->
             set(index, get(index) / divisor)
         }
     }
@@ -179,19 +215,29 @@ open class VectorN(
      * Negates all components.
      */
     fun negate() {
-        forEachIndexed { index, float ->
-            this[index] = -float
+        forEachIndexed { index, number ->
+            this[index] = -number
         }
     }
 
-    override fun set(row: Int, col: Int, value: Double) {
-        set(col, value)
+    /**
+     * Call [f] for each dimension index this vector holds.
+     */
+    inline fun forEachIndexed(f: (index: Int) -> Unit) {
+        for (i in 0 until dimension) {
+            f(i)
+        }
     }
 
-    override fun get(row: Int, col: Int) = this[col]
-
-    override val cols = dimension
-    override val rows = 1
+    /**
+     * Call [f] for each dimension index this vector holds.
+     * Additionally, the corresponding number is passed to [f].
+     */
+    inline fun forEachIndexed(f: (index: Int, number: Double) -> Unit) {
+        for (i in 0 until dimension) {
+            f(i, this[i])
+        }
+    }
 
     /**
      * Thrown upon operations requiring two vectors to be compatible.
@@ -201,7 +247,7 @@ open class VectorN(
     ) : MathException("$incompatibleVector is incompatible to ${this@VectorN}")
 
     /**
-     * Associates a member with a float at a specific [index].
+     * Associates a member with a number at a specific [index].
      * Useful for giving index components name like `x`, `y` or `z`.
      *
      * Allows reading as well as writing to components.
@@ -209,11 +255,6 @@ open class VectorN(
     inner class IndexAlias(
             private val index: Int
     ) : ReadWriteProperty<VectorN, Double> {
-
-        init {
-            if (index >= dimension)
-                throw MathException("Invalid index-alias #$index to a $dimensionString vector")
-        }
 
         override fun getValue(thisRef: VectorN, property: KProperty<*>) =
                 this@VectorN[index]

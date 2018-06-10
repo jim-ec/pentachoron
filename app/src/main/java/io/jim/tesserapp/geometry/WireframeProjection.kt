@@ -21,7 +21,7 @@ class WireframeProjector {
 
         geometry.transform.computeModelMatrix()
 
-        geometry.lines.forEach { line ->
+        geometry.lines.indexedForEach { line ->
             line.forEachPosition { position ->
 
                 // Apply 4-dimensional model matrix to 4d point:
@@ -30,7 +30,7 @@ class WireframeProjector {
                 // Project vector down to a 3d volume:
                 transformedPosition /= transformedPosition.q + Geometry.Q_PROJECTION_VOLUME
 
-                homogeneous.load(transformedPosition.x, transformedPosition.y, transformedPosition.z)
+                homogeneous.copy(transformedPosition)
 
                 f(homogeneous, line.color)
             }

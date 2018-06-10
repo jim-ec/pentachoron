@@ -14,7 +14,7 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
     /**
      * Though this vector is 4d, it technically has 5 columns, including the virtual w-component.
      */
-    override val cols = super.cols + 1
+    override val cols = 5
 
     /**
      * The dimension string should underline that the vector is not actually 4d.

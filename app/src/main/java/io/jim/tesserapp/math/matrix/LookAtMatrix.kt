@@ -9,9 +9,9 @@ import io.jim.tesserapp.math.vector.Vector3dh
 class LookAtMatrix {
 
     private val matrix = Matrix(4)
-    private val forward = Vector3dh()
-    private val right = Vector3dh()
-    private val up = Vector3dh()
+    private val forward = Vector3d()
+    private val right = Vector3d()
+    private val up = Vector3d()
     private val negatedEye = Vector3dh()
     private val base = Vector3dh()
 
@@ -25,7 +25,7 @@ class LookAtMatrix {
     operator fun invoke(eye: Vector3d, target: Vector3d, refUp: Vector3d): Matrix {
 
         forward.apply {
-            copyFrom(eye)
+            copy(eye)
             this -= target
             normalize()
         }
@@ -41,7 +41,7 @@ class LookAtMatrix {
         }
 
         negatedEye.apply {
-            copyFrom(eye)
+            copy(eye)
             negate()
         }
 

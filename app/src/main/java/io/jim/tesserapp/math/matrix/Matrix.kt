@@ -146,7 +146,7 @@ class Matrix(
     fun translation(v: VectorN) {
         if (rows != cols)
             throw IsNotQuadraticException()
-        if (v.dimension != cols - 1)
+        if (v.cols != cols)
             throw IncompatibleTransformDimension(v.dimension)
 
         v.forEachIndexed { col, coefficient ->

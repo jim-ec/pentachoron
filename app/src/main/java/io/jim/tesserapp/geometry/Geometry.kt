@@ -2,6 +2,7 @@ package io.jim.tesserapp.geometry
 
 import android.graphics.Color.BLACK
 import io.jim.tesserapp.math.vector.Vector4dh
+import io.jim.tesserapp.util.LinearList
 
 /**
  * A geometrical structure consisting of vertices.
@@ -34,7 +35,7 @@ class Geometry(
     /**
      * List containing all lines constructed from [positions] using indices.
      */
-    val lines = ArrayList<Line<Vector4dh>>()
+    val lines = LinearList<Line<Vector4dh>>()
 
     /**
      * This geometry's name.
@@ -157,7 +158,7 @@ class Geometry(
 
         for (i in 0 until size) {
             positions += Vector4dh().apply {
-                copyFrom(positions[i])
+                copy(positions[i])
                 this += direction
             }
         }
@@ -179,7 +180,7 @@ class Geometry(
      * Invoke [f] for each position and the color it's associated with.
      */
     inline fun forEachVertex(f: (position: Vector4dh, color: Int) -> Unit) {
-        lines.forEach {
+        lines.indexedForEach {
             f(it.start, it.color)
             f(it.end, it.color)
         }
