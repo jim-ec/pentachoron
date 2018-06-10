@@ -71,7 +71,7 @@ open class GlBuffer(
     /**
      * Calls [f] while this buffer is bound to its [target].
      */
-    inline fun bound(f: () -> Unit) {
+    inline fun bound(crossinline f: () -> Unit) {
         val oldBinding = resultCode { GLES30.glGetIntegerv(binding, resultCode) }
         GLES30.glBindBuffer(target, bufferHandle)
         f()
@@ -90,7 +90,7 @@ open class GlBuffer(
      *
      * @throws RuntimeException If the mapped buffer's size is not a multiple of four floats.
      */
-    inline fun read(vectorsPerInvocation: Int, f: (vectors: List<Vector4dh>, index: Int) -> Unit) {
+    inline fun read(vectorsPerInvocation: Int, crossinline f: (vectors: List<Vector4dh>, index: Int) -> Unit) {
         mapped(GLES30.GL_MAP_READ_BIT) { byteBuffer ->
 
             val buffer = byteBuffer.asFloatBuffer()
@@ -123,7 +123,7 @@ open class GlBuffer(
      * @throws GlException If buffer cannot be mapped, thrown before calling [f].
      * @throws GlException If buffer cannot be unmapped, thrown after calling [f].
      */
-    inline fun mapped(access: Int, f: (byteBuffer: java.nio.ByteBuffer) -> Unit) {
+    inline fun mapped(access: Int, crossinline f: (byteBuffer: java.nio.ByteBuffer) -> Unit) {
         bound {
 
             val mappedBuffer = GLES30.glMapBufferRange(target, 0, byteCount, access)

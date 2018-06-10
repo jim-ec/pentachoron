@@ -10,7 +10,7 @@ import io.jim.tesserapp.math.vector.Vector4dh
  */
 inline fun wireframeProjection(
         geometry: Geometry,
-        f: (position: Vector3dh, color: Int) -> Unit
+        crossinline f: (position: Vector3dh, color: Int) -> Unit
 ) {
     geometry.transform.computeModelMatrix()
 

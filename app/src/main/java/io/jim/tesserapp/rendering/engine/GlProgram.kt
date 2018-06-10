@@ -69,7 +69,7 @@ open class GlProgram protected constructor(
      *
      * @throws RuntimeException If another program is currently in use.
      */
-    inline fun bound(f: () -> Unit) {
+    inline fun bound(crossinline f: () -> Unit) {
         if (0 != resultCode { GLES30.glGetIntegerv(GLES30.GL_CURRENT_PROGRAM, resultCode) })
             throw RuntimeException("Another program is currently used.")
 

@@ -42,7 +42,7 @@ class GlTransformFeedback(private val varying: String, val mode: Int)
      * Enables transform feedback capturing into this buffer as long as [f] runs.
      * After that, you can read out feedback using [read].
      */
-    inline fun capturingTransformFeedback(f: () -> Unit) {
+    inline fun capturingTransformFeedback(crossinline f: () -> Unit) {
         if (allocated) {
             GLES30.glBindBufferBase(GLES30.GL_TRANSFORM_FEEDBACK_BUFFER, 0, bufferHandle)
             GLES30.glBeginTransformFeedback(mode)
