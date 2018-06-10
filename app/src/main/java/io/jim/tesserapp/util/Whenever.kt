@@ -3,9 +3,9 @@ package io.jim.tesserapp.util
 /**
  * Allows conditional branching.
  *
- * Call [if] when [condition] results to `true`.
+ * Call [f] when [condition] results to `true`.
  *
- * This' receiver is passed to [condition] and [if] as the parameter.
+ * This' receiver is passed to [condition] and [f] as the parameter.
  *
  * This utility is intended to simplify some if constructs,
  * more specifically where a temporary variable must be created since if is used in both
@@ -16,9 +16,9 @@ package io.jim.tesserapp.util
  */
 inline fun <T> T.whenever(
         condition: (T) -> Boolean,
-        `if`: (T) -> Unit
+        f: (T) -> Unit
 ) {
     if (condition(this)) {
-        `if`(this)
+        f(this)
     }
 }
