@@ -8,6 +8,7 @@ import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.graphics.*
 import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.math.matrix.ViewMatrix
+import io.jim.tesserapp.util.whenever
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -144,16 +145,37 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
 
     /**
      * Register [geometry] to be drawn by this renderer.
+     *
+     * Must be called on the render thread.
      */
     fun addGeometry(geometry: Geometry) {
+        checkRenderThread()
         drawDataProvider += geometry
     }
 
     /**
      * [geometry] is not drawn anymore by this renderer.
+     *
+     * Must be called on the render thread.
      */
     fun removeGeometry(geometry: Geometry) {
+        checkRenderThread()
         drawDataProvider -= geometry
+    }
+
+    /**
+     * Checks whether we are on the GL thread.
+     *
+     * This is simply done by checking whether the thread name start with "GLThread".
+     *
+     * We cannot simply get our thread because this instance is constructed on the main
+     * thread, and between that and the first call we can fetch, namely [onSurfaceCreated],
+     * there might be already posts.
+     */
+    private fun checkRenderThread() {
+        Thread.currentThread().whenever({ !it.name.startsWith("GLThread") }) {
+            throw RuntimeException("Unexpected call from non-GL thread ${it.name}")
+        }
     }
 
 }

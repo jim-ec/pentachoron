@@ -51,9 +51,13 @@ class GraphicsView : GLSurfaceView {
     var renderGrid = true
         set(value) {
             if (value) {
-                renderer.addGeometry(grid)
+                queueEvent {
+                    renderer.addGeometry(grid)
+                }
             } else {
-                renderer.removeGeometry(grid)
+                queueEvent {
+                    renderer.removeGeometry(grid)
+                }
             }
             field = value
         }
@@ -67,14 +71,16 @@ class GraphicsView : GLSurfaceView {
         renderMode = RENDERMODE_CONTINUOUSLY
 
         // Create axis:
-        renderer.addGeometry(Geometry().apply {
-            name = "Axis"
-            axis(
-                    xAxisColor = themedColorInt(context, R.attr.colorAxisX),
-                    yAxisColor = themedColorInt(context, R.attr.colorAxisY),
-                    zAxisColor = themedColorInt(context, R.attr.colorAxisZ)
-            )
-        })
+        queueEvent {
+            renderer.addGeometry(Geometry().apply {
+                name = "Axis"
+                axis(
+                        xAxisColor = themedColorInt(context, R.attr.colorAxisX),
+                        yAxisColor = themedColorInt(context, R.attr.colorAxisY),
+                        zAxisColor = themedColorInt(context, R.attr.colorAxisZ)
+                )
+            })
+        }
     }
 
     /**
