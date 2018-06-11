@@ -37,4 +37,20 @@ class MainActivity : AppCompatActivity() {
         controllerView.targetGraphicsView = cubeView.graphicsView
     }
 
+    /**
+     * Pause render-thread.
+     */
+    override fun onStop() {
+        super.onStop()
+        cubeView.graphicsView.onPause()
+    }
+
+    /**
+     * Resume render-thread.
+     */
+    override fun onResume() {
+        super.onResume()
+        cubeView.graphicsView.onResume()
+    }
+
 }
