@@ -11,7 +11,7 @@ class Transform {
     /**
      * Rotation matrix.
      */
-    private val rotationMatrix = Matrix(5)
+    val rotationMatrix = Matrix(5)
 
     /**
      * When transforming the geometry, the transform is firstly expressed into this matrix.
@@ -31,7 +31,7 @@ class Transform {
     /**
      * Absolute translation of this geometry.
      */
-    private val translation = Vector4dh()
+    val translation = Vector4dh()
 
     /**
      * Used in [computeModelMatrix] to express [translation] in a matrix,

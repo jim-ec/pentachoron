@@ -2,6 +2,7 @@ package io.jim.tesserapp.ui.view
 
 import android.content.Context
 import android.opengl.GLSurfaceView
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.*
@@ -11,7 +12,9 @@ import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.axis
 import io.jim.tesserapp.geometry.grid
 import io.jim.tesserapp.graphics.themedColorInt
+import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.math.vector.Vector3d
+import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.rendering.Renderer
 
 /**
@@ -137,6 +140,48 @@ class GraphicsView : GLSurfaceView {
     inline fun queueEventOnFeaturedGeometry(crossinline f: (featuredGeometry: Geometry) -> Unit) {
         queueEvent {
             f(renderer.featuredGeometry)
+        }
+    }
+
+    /**
+     * Saves the featured geometry's transform.
+     *
+     * @property rotationMatrix
+     * The whole matrix must be preserved instead of just the x-rotation, y-rotation etc,
+     * because rotation is pre-multiplied.
+     */
+    class SavedState(
+            parcelable: Parcelable,
+            val translation: Vector4dh,
+            val rotationMatrix: Matrix
+    ) : BaseSavedState(parcelable)
+
+    /**
+     * Stores the featured geometry's transform.
+     *
+     * **This is actually not thread-safe, because the featured geometry lives on the
+     * render thread.**
+     */
+    override fun onSaveInstanceState() =
+            SavedState(
+                    super.onSaveInstanceState(),
+                    renderer.featuredGeometry.transform.translation,
+                    renderer.featuredGeometry.transform.rotationMatrix)
+
+    /**
+     * Extracts the featured geometry's transform.
+     */
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        super.onRestoreInstanceState(state)
+
+        if (state !is SavedState) return
+
+        queueEventOnFeaturedGeometry {
+            // Initialize transform of featured geometry:
+            it.transform.translateX(state.translation.x)
+            it.transform.translateY(state.translation.y)
+            it.transform.translateZ(state.translation.z)
+            it.transform.rotationMatrix.swap(state.rotationMatrix)
         }
     }
 

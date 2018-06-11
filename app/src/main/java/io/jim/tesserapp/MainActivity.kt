@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.ui.model.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -34,7 +35,20 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // Associate the controller with the graphics view to control:
-        controllerView.targetGraphicsView = cubeView.graphicsView
+        controllerView.targetGraphicsView = graphicsView
+
+        graphicsView.queueEventOnFeaturedGeometry {
+            it.erase()
+
+            it.addQuadrilateral(
+                    Vector4dh(1.0, 1.0, 1.0, 0.0),
+                    Vector4dh(-1.0, 1.0, 1.0, 0.0),
+                    Vector4dh(-1.0, -1.0, 1.0, 0.0),
+                    Vector4dh(1.0, -1.0, 1.0, 0.0)
+            )
+
+            it.extrude(Vector4dh(0.0, 0.0, -2.0, 0.0))
+        }
     }
 
     /**
@@ -42,7 +56,7 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onStop() {
         super.onStop()
-        cubeView.graphicsView.onPause()
+        graphicsView.onPause()
     }
 
     /**
@@ -50,7 +64,7 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onResume() {
         super.onResume()
-        cubeView.graphicsView.onResume()
+        graphicsView.onResume()
     }
 
 }
