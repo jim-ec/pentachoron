@@ -3,15 +3,11 @@ package io.jim.tesserapp.rendering
 import android.opengl.GLES30
 import io.jim.tesserapp.rendering.engine.GlVertexBuffer
 import io.jim.tesserapp.util.BYTE_LENGTH
-import io.jim.tesserapp.util.InputStreamMemory
 
 /**
  * A specific vertex buffer drawing lines, defining vertex data layout.
  */
-class VertexBuffer(
-        shader: Shader,
-        memory: InputStreamMemory
-) : GlVertexBuffer(memory, GLES30.GL_LINES) {
+class VertexBuffer(shader: Shader) : GlVertexBuffer(GLES30.GL_LINES) {
 
     companion object {
 

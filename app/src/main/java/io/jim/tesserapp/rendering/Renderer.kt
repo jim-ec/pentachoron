@@ -95,10 +95,7 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
         shader = Shader(context.assets)
 
         // Construct vertex buffer:
-        vertexBuffer = VertexBuffer(
-                shader,
-                drawDataProvider.vertexMemory
-        )
+        vertexBuffer = VertexBuffer(shader)
     }
 
     /**
@@ -119,11 +116,10 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
         // Ensure vertex data is up-to-date:
         drawDataProvider.updateVertices()
 
-        // Vertex memory was rewritten and needs to be uploaded to GL:
-        vertexBuffer.upload()
-
         // Since that can change the vertex buffer's size, reallocate TBO as well:
-        shader.transformFeedback?.allocate(vertexBuffer.memory.writtenElementCounts)
+        shader.transformFeedback?.allocate(
+                vectorCapacity = drawDataProvider.vertexMemory.writtenElementCounts
+        )
 
         shader.bound {
 
@@ -136,8 +132,12 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
             ))
             shader.uploadProjectionMatrix(projectionMatrix)
 
+
+            // Vertex memory was rewritten and needs to be uploaded to GL:
+            vertexBuffer.upload(memory = drawDataProvider.vertexMemory)
+
             // Draw the vertex buffer:
-            vertexBuffer.draw()
+            vertexBuffer.draw(elementCounts = drawDataProvider.vertexMemory.writtenElementCounts)
 
         }
 
