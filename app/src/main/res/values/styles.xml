@@ -22,8 +22,4 @@
         <item name="colorAxisZ">#7986CB</item>
     </style>
 
-    <declare-styleable name="ControlledGraphicsContainerView">
-        <attr name="graphicsViewProvider" format="reference" />
-        <attr name="controller" format="reference" />
-    </declare-styleable>
 </resources>

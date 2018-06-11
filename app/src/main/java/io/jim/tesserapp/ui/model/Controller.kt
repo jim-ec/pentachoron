@@ -67,4 +67,13 @@ class Controller(
         onValueUpdate(value)
     }
 
+    /**
+     * Unlink this controller from the seek-bar.
+     *
+     * You **must** call this function in order to disable a controller.
+     */
+    fun unlink() {
+        seekBar.setOnSeekBarChangeListener(null)
+    }
+
 }

@@ -1,47 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<io.jim.tesserapp.ui.view.ControlledGraphicsContainerView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:controller="@id/controllerView"
-    app:graphicsViewProvider="@id/cubeView"
+    android:orientation="vertical"
     tools:context="io.jim.tesserapp.MainActivity">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:layout_weight="2">
 
-        <android.support.v7.widget.CardView
+        <io.jim.tesserapp.ui.view.CubeView
+            android:id="@+id/cubeView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2">
+            android:layout_height="match_parent" />
 
-            <io.jim.tesserapp.ui.view.CubeView
-                android:id="@+id/cubeView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+    </android.support.v7.widget.CardView>
 
-        </android.support.v7.widget.CardView>
+    <ScrollView
+        android:id="@+id/controlsScroller"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <ScrollView
+        <io.jim.tesserapp.ui.view.ControllerView
+            android:id="@+id/controllerView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_height="wrap_content">
 
-            <io.jim.tesserapp.ui.view.ControllerView
-                android:id="@+id/controllerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        </io.jim.tesserapp.ui.view.ControllerView>
 
-            </io.jim.tesserapp.ui.view.ControllerView>
-
-        </ScrollView>
+    </ScrollView>
 
 
-    </LinearLayout>
-
-
-</io.jim.tesserapp.ui.view.ControlledGraphicsContainerView>
+</LinearLayout>

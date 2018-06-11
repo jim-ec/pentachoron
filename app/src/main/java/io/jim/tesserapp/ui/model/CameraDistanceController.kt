@@ -22,5 +22,4 @@ fun cameraDistanceController(view: ControllerView) =
                         model.cameraDistance.value = value
                     }
             )
-
         }
