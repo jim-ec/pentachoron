@@ -91,11 +91,10 @@ class ControllerView : FrameLayout {
             val viewModel = (context as MainActivity).viewModel
 
             // Camera distance:
-            controllers += cameraDistanceController(
+            controllers += viewModel.cameraDistanceController(
                     context = context,
                     seekBar = cameraDistanceSeekBar,
                     watch = cameraDistanceWatch,
-                    viewModel = viewModel,
                     liveData = { cameraDistance }
             )
 

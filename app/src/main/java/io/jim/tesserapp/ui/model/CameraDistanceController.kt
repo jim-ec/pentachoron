@@ -7,28 +7,45 @@ import io.jim.tesserapp.R
 
 /**
  * Controller targeting the camera distance.
+ *
+ * @receiver
+ * The view model containing the [MainViewModel.cameraDistance].
+ * Need not to be externally synchronized, as that's done internally.
+ *
+ * @param context
+ * App context.
+ *
+ * @param seekBar
+ * Seek bar to control the camera distance.
+ *
+ * @param watch
+ * Text view representing the current camera distance.
+ *
+ * @param liveData
+ * Runs on the receiving view model.
+ * Returns the live data to be controlled.
+ *
  */
-
-inline fun <reified T : SynchronizedViewModel> cameraDistanceController(
+inline fun MainViewModel.cameraDistanceController(
         context: Context,
         seekBar: SeekBar,
         watch: TextView,
-        viewModel: T,
-        crossinline liveData: T.() -> MutableLiveDataNonNull<Double>
+        crossinline liveData: MainViewModel.() -> MutableLiveDataNonNull<Double>
 ): Controller = run {
 
-    val viewModelMonitor = viewModel.Monitor()
+    // Monitor used when accessing the view model in a synchronized manner:
+    val monitor = Monitor()
 
     Controller(
             seekBar = seekBar,
             watch = watch,
             valueRange = 3.0..15.0,
-            startValue = viewModelMonitor { viewModel: T ->
+            startValue = monitor { viewModel: MainViewModel ->
                 viewModel.liveData().value
             },
             formatString = context.getString(R.string.camera_distance_watch_format),
             onValueUpdate = { distance ->
-                viewModelMonitor { viewModel: T ->
+                monitor { viewModel: MainViewModel ->
                     liveData(viewModel).value = distance
                 }
             }
