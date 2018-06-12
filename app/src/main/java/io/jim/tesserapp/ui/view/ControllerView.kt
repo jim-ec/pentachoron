@@ -90,16 +90,16 @@ class ControllerView : FrameLayout {
 
             val viewModel = (context as MainActivity).viewModel
 
-            viewModelMonitor { ownedViewModel ->
+            // Camera distance:
+            controllers += cameraDistanceController(
+                    context = context,
+                    seekBar = cameraDistanceSeekBar,
+                    watch = cameraDistanceWatch,
+                    viewModel = viewModel,
+                    liveData = { cameraDistance }
+            )
 
-                // Camera distance:
-                controllers += cameraDistanceController(
-                        context = context,
-                        seekBar = cameraDistanceSeekBar,
-                        watch = cameraDistanceWatch,
-                        viewModel = viewModel,
-                        liveData = { cameraDistance }
-                )
+            viewModelMonitor { ownedViewModel ->
 
                 controllers += rotationController(
                         context = context,
