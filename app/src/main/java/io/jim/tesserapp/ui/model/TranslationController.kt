@@ -6,29 +6,47 @@ import android.widget.TextView
 import io.jim.tesserapp.R
 
 /**
- * A translation controller.
- * The current translation value is passed to [onTranslated].
+ * Controller targeting the translation.
+ *
+ * @receiver
+ * The view model containing the targeting live data.
+ * Need not to be externally synchronized, as that's done internally.
+ *
+ * @param context
+ * App context.
+ *
+ * @param seekBar
+ * Seek bar to control the camera distance.
+ *
+ * @param watch
+ * Text view representing the current camera distance.
+ *
+ * @param liveData
+ * Runs on the receiving view model.
+ * Returns the live data to be controlled.
  */
-inline fun <reified T : SynchronizedViewModel> translationController(
+inline fun MainViewModel.translationController(
         context: Context,
         seekBar: SeekBar,
         watch: TextView,
-        startValue: Double,
-        crossinline onTranslated: (viewModel: T, translation: Double) -> Unit,
-        viewModel: T
+        crossinline liveData: MainViewModel.() -> MutableLiveDataNonNull<Double>
 ): Controller = run {
 
-    val viewModelMonitor = viewModel.monitor<T>()
+    // Monitor used when accessing the view model in a synchronized manner:
+    val monitor = Monitor()
 
     Controller(
             seekBar = seekBar,
             watch = watch,
             valueRange = -5.0..5.0,
-            startValue = startValue,
+            startValue = monitor { viewModel: MainViewModel ->
+                viewModel.liveData().value
+            },
             formatString = context.getString(R.string.transform_translation_watch_format),
             onValueUpdate = { value ->
-                viewModelMonitor { viewModel ->
-                    onTranslated(viewModel, value)
+                monitor { viewModel: MainViewModel ->
+                    liveData(viewModel).value = value
                 }
-            })
+            }
+    )
 }

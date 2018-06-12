@@ -7,7 +7,10 @@ import android.view.View
 import android.widget.FrameLayout
 import io.jim.tesserapp.MainActivity
 import io.jim.tesserapp.R
-import io.jim.tesserapp.ui.model.*
+import io.jim.tesserapp.ui.model.Controller
+import io.jim.tesserapp.ui.model.cameraDistanceController
+import io.jim.tesserapp.ui.model.rotationController
+import io.jim.tesserapp.ui.model.translationController
 import io.jim.tesserapp.util.LinearList
 import kotlinx.android.synthetic.main.view_controller.view.*
 
@@ -23,8 +26,6 @@ class ControllerView : FrameLayout {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     private val controllers = LinearList<Controller>()
-
-    private val viewModelMonitor = (context as MainActivity).viewModel.monitor<MainViewModel>()
 
     init {
         View.inflate(context, R.layout.view_controller, this)
@@ -130,53 +131,37 @@ class ControllerView : FrameLayout {
                     liveData = { rotationQ }
             )
 
-            viewModelMonitor { ownedViewModel ->
+            // X translation:
+            controllers += viewModel.translationController(
+                    context = context,
+                    seekBar = xTranslationSeekBar,
+                    watch = xTranslationWatch,
+                    liveData = { translationX }
+            )
 
-                controllers += translationController(
-                        context = context,
-                        seekBar = xTranslationSeekBar,
-                        watch = xTranslationWatch,
-                        startValue = ownedViewModel.translationX.value,
-                        viewModel = viewModel,
-                        onTranslated = { viewModel, translation ->
-                            viewModel.translationX.value = translation
-                        }
-                )
+            // Y translation:
+            controllers += viewModel.translationController(
+                    context = context,
+                    seekBar = yTranslationSeekBar,
+                    watch = yTranslationWatch,
+                    liveData = { translationY }
+            )
 
-                controllers += translationController(
-                        context = context,
-                        seekBar = yTranslationSeekBar,
-                        watch = yTranslationWatch,
-                        startValue = ownedViewModel.translationY.value,
-                        viewModel = viewModel,
-                        onTranslated = { viewModel, translation ->
-                            viewModel.translationY.value = translation
-                        }
-                )
+            // Z translation:
+            controllers += viewModel.translationController(
+                    context = context,
+                    seekBar = zTranslationSeekBar,
+                    watch = zTranslationWatch,
+                    liveData = { translationZ }
+            )
 
-                controllers += translationController(
-                        context = context,
-                        seekBar = zTranslationSeekBar,
-                        watch = zTranslationWatch,
-                        startValue = ownedViewModel.translationZ.value,
-                        viewModel = viewModel,
-                        onTranslated = { viewModel, translation ->
-                            viewModel.translationZ.value = translation
-                        }
-                )
-
-                controllers += translationController(
-                        context = context,
-                        seekBar = qTranslationSeekBar,
-                        watch = qTranslationWatch,
-                        startValue = ownedViewModel.translationQ.value,
-                        viewModel = viewModel,
-                        onTranslated = { viewModel, translation ->
-                            viewModel.translationQ.value = translation
-                        }
-                )
-
-            }
+            // Q translation:
+            controllers += viewModel.translationController(
+                    context = context,
+                    seekBar = qTranslationSeekBar,
+                    watch = qTranslationWatch,
+                    liveData = { translationQ }
+            )
 
         }
 
