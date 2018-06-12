@@ -11,7 +11,7 @@ import io.jim.tesserapp.graphics.red
 import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.math.matrix.ViewMatrix
 import io.jim.tesserapp.ui.model.MainViewModel
-import io.jim.tesserapp.ui.model.SynchronizedViewModelMonitor
+import io.jim.tesserapp.ui.model.SynchronizedViewModel
 import io.jim.tesserapp.util.whenever
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -21,12 +21,12 @@ import javax.microedition.khronos.opengles.GL10
  */
 class Renderer(
         private val clearColor: Int,
-        val viewModelMonitor: SynchronizedViewModelMonitor<MainViewModel>,
+        val viewModelMonitor: SynchronizedViewModel.Monitor,
         private val assets: AssetManager,
         private val dpi: Double) : GLSurfaceView.Renderer {
 
     private val drawDataProvider = DrawDataProvider().apply {
-        viewModelMonitor { viewModel ->
+        viewModelMonitor { viewModel: MainViewModel ->
             this += viewModel.featuredGeometry
         }
     }
@@ -95,7 +95,7 @@ class Renderer(
 
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT or GLES30.GL_DEPTH_BUFFER_BIT)
 
-        viewModelMonitor {
+        viewModelMonitor { _: MainViewModel ->
 
             // Ensure vertex data is up-to-date:
             drawDataProvider.updateVertices()
@@ -110,7 +110,7 @@ class Renderer(
         shader.bound {
 
             // Recompute and upload view and perspective matrices:
-            viewModelMonitor { viewModel ->
+            viewModelMonitor { viewModel: MainViewModel ->
                 shader.uploadViewMatrix(viewMatrix(
                         viewModel.cameraDistance.smoothed,
                         aspectRatio,
