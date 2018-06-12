@@ -25,15 +25,16 @@ import io.jim.tesserapp.R
  * Runs on the receiving view model.
  * Returns the live data to be controlled.
  */
-inline fun MainViewModel.rotationController(
+fun MainViewModel.rotationController(
         context: Context,
         seekBar: SeekBar,
         watch: TextView,
-        crossinline liveData: MainViewModel.() -> MutableLiveDataNonNull<Double>
-) = controller(
+        liveData: MainViewModel.() -> MutableLiveDataNonNull<Double>
+) = Controller(
+        hostingViewModel = this,
+        liveData = liveData,
         seekBar = seekBar,
         watch = watch,
         watchFormatString = context.getString(R.string.transform_rotation_watch_format),
-        valueRange = 0.0..2.0,
-        liveData = liveData
+        valueRange = 0.0..2.0
 )

@@ -25,15 +25,16 @@ import io.jim.tesserapp.R
  * Runs on the receiving view model.
  * Returns the live data to be controlled.
  */
-inline fun MainViewModel.translationController(
+fun MainViewModel.translationController(
         context: Context,
         seekBar: SeekBar,
         watch: TextView,
-        crossinline liveData: MainViewModel.() -> MutableLiveDataNonNull<Double>
-) = controller(
+        liveData: MainViewModel.() -> MutableLiveDataNonNull<Double>
+) = Controller(
+        hostingViewModel = this,
+        liveData = liveData,
         seekBar = seekBar,
         watch = watch,
         watchFormatString = context.getString(R.string.transform_translation_watch_format),
-        valueRange = -5.0..5.0,
-        liveData = liveData
+        valueRange = -5.0..5.0
 )

@@ -26,10 +26,11 @@ fun MainViewModel.cameraDistanceController(
         context: Context,
         seekBar: SeekBar,
         watch: TextView
-) = controller(
+) = Controller(
+        hostingViewModel = this,
+        liveData = { cameraDistance },
         seekBar = seekBar,
         watch = watch,
         watchFormatString = context.getString(R.string.camera_distance_watch_format),
-        valueRange = 3.0..15.0,
-        liveData = { cameraDistance }
+        valueRange = 3.0..15.0
 )
