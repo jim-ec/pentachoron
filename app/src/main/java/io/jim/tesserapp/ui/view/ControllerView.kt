@@ -98,51 +98,39 @@ class ControllerView : FrameLayout {
                     liveData = { cameraDistance }
             )
 
+            // X rotation:
+            controllers += viewModel.rotationController(
+                    context = context,
+                    seekBar = xRotationSeekBar,
+                    watch = xRotationWatch,
+                    liveData = { rotationX }
+            )
+
+            // Y rotation:
+            controllers += viewModel.rotationController(
+                    context = context,
+                    seekBar = yRotationSeekBar,
+                    watch = yRotationWatch,
+                    liveData = { rotationY }
+            )
+
+            // Z rotation:
+            controllers += viewModel.rotationController(
+                    context = context,
+                    seekBar = zRotationSeekBar,
+                    watch = zRotationWatch,
+                    liveData = { rotationZ }
+            )
+
+            // Q rotation:
+            controllers += viewModel.rotationController(
+                    context = context,
+                    seekBar = qRotationSeekBar,
+                    watch = qRotationWatch,
+                    liveData = { rotationQ }
+            )
+
             viewModelMonitor { ownedViewModel ->
-
-                controllers += rotationController(
-                        context = context,
-                        seekBar = xRotationSeekBar,
-                        watch = xRotationWatch,
-                        startValue = ownedViewModel.rotationX.value,
-                        viewModel = viewModel,
-                        onRotated = { viewModel, rotation ->
-                            viewModel.rotationX.value = rotation
-                        }
-                )
-
-                controllers += rotationController(
-                        context = context,
-                        seekBar = yRotationSeekBar,
-                        watch = yRotationWatch,
-                        startValue = ownedViewModel.rotationY.value,
-                        viewModel = viewModel,
-                        onRotated = { viewModel, rotation ->
-                            viewModel.rotationY.value = rotation
-                        }
-                )
-
-                controllers += rotationController(
-                        context = context,
-                        seekBar = zRotationSeekBar,
-                        watch = zRotationWatch,
-                        startValue = ownedViewModel.rotationZ.value,
-                        viewModel = viewModel,
-                        onRotated = { viewModel, rotation ->
-                            viewModel.rotationZ.value = rotation
-                        }
-                )
-
-                controllers += rotationController(
-                        context = context,
-                        seekBar = qRotationSeekBar,
-                        watch = qRotationWatch,
-                        startValue = ownedViewModel.rotationQ.value,
-                        viewModel = viewModel,
-                        onRotated = { viewModel, rotation ->
-                            viewModel.rotationQ.value = rotation
-                        }
-                )
 
                 controllers += translationController(
                         context = context,
