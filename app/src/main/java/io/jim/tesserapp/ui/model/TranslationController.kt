@@ -9,17 +9,26 @@ import io.jim.tesserapp.R
  * A translation controller.
  * The current translation value is passed to [onTranslated].
  */
-fun translationController(
+inline fun <reified T : SynchronizedViewModel> translationController(
         context: Context,
         seekBar: SeekBar,
         watch: TextView,
         startValue: Double,
-        onTranslated: (translation: Double) -> Unit
-) = Controller(
-        seekBar = seekBar,
-        watch = watch,
-        valueRange = -5.0..5.0,
-        startValue = startValue,
-        formatString = context.getString(R.string.transform_translation_watch_format),
-        onValueUpdate = onTranslated
-)
+        crossinline onTranslated: (viewModel: T, translation: Double) -> Unit,
+        viewModel: T
+): Controller = run {
+
+    val viewModelMonitor = viewModel.monitor<T>()
+
+    Controller(
+            seekBar = seekBar,
+            watch = watch,
+            valueRange = -5.0..5.0,
+            startValue = startValue,
+            formatString = context.getString(R.string.transform_translation_watch_format),
+            onValueUpdate = { value ->
+                viewModelMonitor { viewModel ->
+                    onTranslated(viewModel, value)
+                }
+            })
+}

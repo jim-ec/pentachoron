@@ -1,13 +1,17 @@
 package io.jim.tesserapp.rendering
 
+import android.content.res.AssetManager
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
-import io.jim.tesserapp.MainActivity
-import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.graphics.*
+import io.jim.tesserapp.graphics.DrawDataProvider
+import io.jim.tesserapp.graphics.blue
+import io.jim.tesserapp.graphics.green
+import io.jim.tesserapp.graphics.red
 import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.math.matrix.ViewMatrix
+import io.jim.tesserapp.ui.model.MainViewModel
+import io.jim.tesserapp.ui.model.SynchronizedViewModelMonitor
 import io.jim.tesserapp.util.whenever
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -15,29 +19,17 @@ import javax.microedition.khronos.opengles.GL10
 /**
  * Actually renders to OpenGL.
  */
-class Renderer(private val context: MainActivity, private val dpi: Double) : GLSurfaceView.Renderer {
+class Renderer(
+        private val clearColor: Int,
+        val viewModelMonitor: SynchronizedViewModelMonitor<MainViewModel>,
+        private val assets: AssetManager,
+        private val dpi: Double) : GLSurfaceView.Renderer {
 
-    val featuredGeometry = Geometry(
-            onTransformUpdate = {
-                // Transform geometry in each frame relatively,
-                // by using the difference value returned from the smooth-delegates:
-
-                with(context.viewModel) {
-
-                    rotateX(rotationX.smoothed * Math.PI)
-                    rotateY(rotationY.smoothed * Math.PI)
-                    rotateZ(rotationZ.smoothed * Math.PI)
-
-                    translateX(translationX.smoothed)
-                    translateY(translationY.smoothed)
-                    translateZ(translationZ.smoothed)
-
-                }
-
-            }
-    )
-
-    private val drawDataProvider = DrawDataProvider()
+    private val drawDataProvider = DrawDataProvider().apply {
+        viewModelMonitor { viewModel ->
+            this += viewModel.featuredGeometry
+        }
+    }
 
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
@@ -46,7 +38,6 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
     private val viewMatrix = ViewMatrix()
 
     private var aspectRatio: Double = 1.0
-    private val clearColor = themedColorInt(context, android.R.attr.windowBackground)
 
     companion object {
 
@@ -60,15 +51,6 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
          */
         private const val LINE_WIDTH_MM = 0.15
 
-    }
-
-    init {
-        featuredGeometry.apply {
-            name = "Featured Geometry"
-            baseColor = themedColorInt(context, R.attr.colorAccent)
-
-            drawDataProvider += this
-        }
     }
 
     /**
@@ -92,7 +74,7 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
         println("Vendor: ${GLES30.glGetString(GLES30.GL_VENDOR)}")
 
         // Construct shader:
-        shader = Shader(context.assets)
+        shader = Shader(assets)
 
         // Construct vertex buffer:
         vertexBuffer = VertexBuffer(shader)
@@ -113,8 +95,12 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
 
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT or GLES30.GL_DEPTH_BUFFER_BIT)
 
-        // Ensure vertex data is up-to-date:
-        drawDataProvider.updateVertices()
+        viewModelMonitor {
+
+            // Ensure vertex data is up-to-date:
+            drawDataProvider.updateVertices()
+
+        }
 
         // Since that can change the vertex buffer's size, reallocate TBO as well:
         shader.transformFeedback?.allocate(
@@ -124,12 +110,15 @@ class Renderer(private val context: MainActivity, private val dpi: Double) : GLS
         shader.bound {
 
             // Recompute and upload view and perspective matrices:
-            shader.uploadViewMatrix(viewMatrix(
-                    context.viewModel.cameraDistance.smoothed,
-                    aspectRatio,
-                    context.viewModel.horizontalCameraRotation.smoothed,
-                    context.viewModel.verticalCameraRotation.smoothed
-            ))
+            viewModelMonitor { viewModel ->
+                shader.uploadViewMatrix(viewMatrix(
+                        viewModel.cameraDistance.smoothed,
+                        aspectRatio,
+                        viewModel.horizontalCameraRotation.smoothed,
+                        viewModel.verticalCameraRotation.smoothed
+                ))
+            }
+
             shader.uploadProjectionMatrix(projectionMatrix)
 
 

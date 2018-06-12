@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import io.jim.tesserapp.graphics.themedColorInt
 import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.ui.model.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,6 +25,22 @@ class MainActivity : AppCompatActivity() {
         // Fetch view model:
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
+        viewModel.featuredGeometry.apply {
+            name = "Featured Geometry"
+            baseColor = themedColorInt(this@MainActivity, R.attr.colorAccent)
+
+            erase()
+
+            addQuadrilateral(
+                    Vector4dh(1.0, 1.0, 1.0, 0.0),
+                    Vector4dh(-1.0, 1.0, 1.0, 0.0),
+                    Vector4dh(-1.0, -1.0, 1.0, 0.0),
+                    Vector4dh(1.0, -1.0, 1.0, 0.0)
+            )
+
+            extrude(Vector4dh(0.0, 0.0, -2.0, 0.0))
+        }
+
         // Set theme according to a shared preference.
         // Light theme is the default, and need not to be set explicitly therefore.
         if (getPreferences(Context.MODE_PRIVATE).getBoolean(
@@ -36,19 +53,6 @@ class MainActivity : AppCompatActivity() {
 
         // Associate the controller with the graphics view to control:
         controllerView.targetGraphicsView = graphicsView
-
-        graphicsView.queueEventOnFeaturedGeometry {
-            it.erase()
-
-            it.addQuadrilateral(
-                    Vector4dh(1.0, 1.0, 1.0, 0.0),
-                    Vector4dh(-1.0, 1.0, 1.0, 0.0),
-                    Vector4dh(-1.0, -1.0, 1.0, 0.0),
-                    Vector4dh(1.0, -1.0, 1.0, 0.0)
-            )
-
-            it.extrude(Vector4dh(0.0, 0.0, -2.0, 0.0))
-        }
     }
 
     /**

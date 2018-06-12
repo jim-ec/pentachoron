@@ -10,17 +10,26 @@ import io.jim.tesserapp.R
  * While the internal value is kept between 0.0 and 2.0, the updater function passes that value
  * multiplied by two pi to [onRotated].
  */
-fun rotationController(
+inline fun <reified T : SynchronizedViewModel> rotationController(
         context: Context,
         seekBar: SeekBar,
         watch: TextView,
         startValue: Double,
-        onRotated: (rotation: Double) -> Unit
-) = Controller(
-        seekBar = seekBar,
-        watch = watch,
-        valueRange = 0.0..2.0,
-        startValue = startValue,
-        formatString = context.getString(R.string.transform_rotation_watch_format),
-        onValueUpdate = onRotated
-)
+        crossinline onRotated: (viewModel: T, rotation: Double) -> Unit,
+        viewModel: T
+): Controller = run {
+
+    val viewModelMonitor = viewModel.monitor<T>()
+
+    Controller(
+            seekBar = seekBar,
+            watch = watch,
+            valueRange = 0.0..2.0,
+            startValue = startValue,
+            formatString = context.getString(R.string.transform_rotation_watch_format),
+            onValueUpdate = { value ->
+                viewModelMonitor { viewModel ->
+                    onRotated(viewModel, value)
+                }
+            })
+}

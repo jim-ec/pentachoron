@@ -7,10 +7,7 @@ import android.view.View
 import android.widget.FrameLayout
 import io.jim.tesserapp.MainActivity
 import io.jim.tesserapp.R
-import io.jim.tesserapp.ui.model.Controller
-import io.jim.tesserapp.ui.model.cameraDistanceController
-import io.jim.tesserapp.ui.model.rotationController
-import io.jim.tesserapp.ui.model.translationController
+import io.jim.tesserapp.ui.model.*
 import io.jim.tesserapp.util.LinearList
 import kotlinx.android.synthetic.main.view_controller.view.*
 
@@ -26,6 +23,8 @@ class ControllerView : FrameLayout {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     private val controllers = LinearList<Controller>()
+
+    private val viewModelMonitor = (context as MainActivity).viewModel.monitor<MainViewModel>()
 
     init {
         View.inflate(context, R.layout.view_controller, this)
@@ -87,74 +86,107 @@ class ControllerView : FrameLayout {
                 }
             }
 
-            // Camera distance:
-            controllers += cameraDistanceController(this)
-
             // Link individual controllers to view-model entries:
-            (context as MainActivity).viewModel.apply {
+
+            val viewModel = (context as MainActivity).viewModel
+
+            viewModelMonitor { ownedViewModel ->
+
+                // Camera distance:
+                controllers += cameraDistanceController(
+                        context = context,
+                        seekBar = cameraDistanceSeekBar,
+                        watch = cameraDistanceWatch,
+                        viewModel = viewModel,
+                        liveData = { it.cameraDistance }
+                )
 
                 controllers += rotationController(
                         context = context,
                         seekBar = xRotationSeekBar,
                         watch = xRotationWatch,
-                        startValue = rotationX.value,
-                        onRotated = rotationX::setValue
+                        startValue = ownedViewModel.rotationX.value,
+                        viewModel = viewModel,
+                        onRotated = { viewModel, rotation ->
+                            viewModel.rotationX.value = rotation
+                        }
                 )
 
                 controllers += rotationController(
                         context = context,
                         seekBar = yRotationSeekBar,
                         watch = yRotationWatch,
-                        startValue = rotationY.value,
-                        onRotated = rotationY::setValue
+                        startValue = ownedViewModel.rotationY.value,
+                        viewModel = viewModel,
+                        onRotated = { viewModel, rotation ->
+                            viewModel.rotationY.value = rotation
+                        }
                 )
 
                 controllers += rotationController(
                         context = context,
                         seekBar = zRotationSeekBar,
                         watch = zRotationWatch,
-                        startValue = rotationZ.value,
-                        onRotated = rotationZ::setValue
+                        startValue = ownedViewModel.rotationZ.value,
+                        viewModel = viewModel,
+                        onRotated = { viewModel, rotation ->
+                            viewModel.rotationZ.value = rotation
+                        }
                 )
 
                 controllers += rotationController(
                         context = context,
                         seekBar = qRotationSeekBar,
                         watch = qRotationWatch,
-                        startValue = rotationQ.value,
-                        onRotated = rotationQ::setValue
+                        startValue = ownedViewModel.rotationQ.value,
+                        viewModel = viewModel,
+                        onRotated = { viewModel, rotation ->
+                            viewModel.rotationQ.value = rotation
+                        }
                 )
 
                 controllers += translationController(
                         context = context,
                         seekBar = xTranslationSeekBar,
                         watch = xTranslationWatch,
-                        startValue = translationX.value,
-                        onTranslated = translationX::setValue
+                        startValue = ownedViewModel.translationX.value,
+                        viewModel = viewModel,
+                        onTranslated = { viewModel, translation ->
+                            viewModel.translationX.value = translation
+                        }
                 )
 
                 controllers += translationController(
                         context = context,
                         seekBar = yTranslationSeekBar,
                         watch = yTranslationWatch,
-                        startValue = translationY.value,
-                        onTranslated = translationY::setValue
+                        startValue = ownedViewModel.translationY.value,
+                        viewModel = viewModel,
+                        onTranslated = { viewModel, translation ->
+                            viewModel.translationY.value = translation
+                        }
                 )
 
                 controllers += translationController(
                         context = context,
                         seekBar = zTranslationSeekBar,
                         watch = zTranslationWatch,
-                        startValue = translationZ.value,
-                        onTranslated = translationZ::setValue
+                        startValue = ownedViewModel.translationZ.value,
+                        viewModel = viewModel,
+                        onTranslated = { viewModel, translation ->
+                            viewModel.translationZ.value = translation
+                        }
                 )
 
                 controllers += translationController(
                         context = context,
                         seekBar = qTranslationSeekBar,
                         watch = qTranslationWatch,
-                        startValue = translationQ.value,
-                        onTranslated = translationQ::setValue
+                        startValue = ownedViewModel.translationQ.value,
+                        viewModel = viewModel,
+                        onTranslated = { viewModel, translation ->
+                            viewModel.translationQ.value = translation
+                        }
                 )
 
             }
