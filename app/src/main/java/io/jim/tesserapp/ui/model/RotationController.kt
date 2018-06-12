@@ -30,23 +30,10 @@ inline fun MainViewModel.rotationController(
         seekBar: SeekBar,
         watch: TextView,
         crossinline liveData: MainViewModel.() -> MutableLiveDataNonNull<Double>
-): Controller = run {
-
-    // Monitor used when accessing the view model in a synchronized manner:
-    val monitor = Monitor()
-
-    Controller(
-            seekBar = seekBar,
-            watch = watch,
-            valueRange = 0.0..2.0,
-            startValue = monitor { viewModel: MainViewModel ->
-                viewModel.liveData().value
-            },
-            formatString = context.getString(R.string.transform_rotation_watch_format),
-            onValueUpdate = { value ->
-                monitor { viewModel: MainViewModel ->
-                    liveData(viewModel).value = value
-                }
-            }
-    )
-}
+) = controller(
+        seekBar = seekBar,
+        watch = watch,
+        watchFormatString = context.getString(R.string.transform_rotation_watch_format),
+        valueRange = 0.0..2.0,
+        liveData = liveData
+)

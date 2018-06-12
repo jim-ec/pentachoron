@@ -24,7 +24,7 @@ class Controller(
         private val watch: TextView,
         private val valueRange: ClosedRange<Double>,
         startValue: Double,
-        private val formatString: String,
+        private val watchFormatString: String,
         private val onValueUpdate: (value: Double) -> Unit
 ) {
 
@@ -63,7 +63,7 @@ class Controller(
      */
     private fun update() {
         val value = mapped(seekBar.progress.toDouble(), seekBarRange, valueRange)
-        watch.text = String.format(formatString, formatNumber(value))
+        watch.text = String.format(watchFormatString, formatNumber(value))
         onValueUpdate(value)
     }
 
@@ -75,5 +75,56 @@ class Controller(
     fun unlink() {
         seekBar.setOnSeekBarChangeListener(null)
     }
+
+}
+
+/**
+ * Controller any live data.
+ *
+ * @receiver
+ * The view model containing the targeting live data.
+ * Need not to be externally synchronized, as that's done internally.
+ *
+ * @param seekBar
+ * Seek bar to control the camera distance.
+ *
+ * @param watch
+ * Text view representing the current camera distance.
+ *
+ * @param watchFormatString
+ * String to format the watch.
+ *
+ * @param valueRange
+ * Range to which the seek-bar progress is mapped.
+ *
+ * @param liveData
+ * Runs on the receiving view model.
+ * Returns the live data to be controlled.
+ */
+inline fun MainViewModel.controller(
+        seekBar: SeekBar,
+        watch: TextView,
+        watchFormatString: String,
+        valueRange: ClosedRange<Double>,
+        crossinline liveData: MainViewModel.() -> MutableLiveDataNonNull<Double>
+) = run {
+
+    // Monitor used when accessing the view model in a synchronized manner:
+    val monitor = Monitor()
+
+    Controller(
+            seekBar = seekBar,
+            watch = watch,
+            valueRange = valueRange,
+            startValue = monitor { viewModel: MainViewModel ->
+                viewModel.liveData().value
+            },
+            watchFormatString = watchFormatString,
+            onValueUpdate = { value ->
+                monitor { viewModel: MainViewModel ->
+                    liveData(viewModel).value = value
+                }
+            }
+    )
 
 }
