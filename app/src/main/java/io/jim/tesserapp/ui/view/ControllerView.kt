@@ -98,7 +98,7 @@ class ControllerView : FrameLayout {
                         seekBar = cameraDistanceSeekBar,
                         watch = cameraDistanceWatch,
                         viewModel = viewModel,
-                        liveData = { it.cameraDistance }
+                        liveData = { cameraDistance }
                 )
 
                 controllers += rotationController(

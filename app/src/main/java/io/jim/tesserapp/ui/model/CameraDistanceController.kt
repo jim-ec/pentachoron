@@ -14,7 +14,7 @@ inline fun <reified T : SynchronizedViewModel> cameraDistanceController(
         seekBar: SeekBar,
         watch: TextView,
         viewModel: T,
-        crossinline liveData: (viewModel: T) -> MutableLiveDataNonNull<Double>
+        crossinline liveData: T.() -> MutableLiveDataNonNull<Double>
 ): Controller = run {
 
     val viewModelMonitor = viewModel.monitor<T>()
@@ -23,7 +23,7 @@ inline fun <reified T : SynchronizedViewModel> cameraDistanceController(
             seekBar = seekBar,
             watch = watch,
             valueRange = 3.0..15.0,
-            startValue = liveData(viewModel).value,
+            startValue = viewModel.liveData().value,
             formatString = context.getString(R.string.camera_distance_watch_format),
             onValueUpdate = { distance ->
                 viewModelMonitor { _ ->
@@ -32,30 +32,3 @@ inline fun <reified T : SynchronizedViewModel> cameraDistanceController(
             }
     )
 }
-
-/*
-inline fun <reified T : SynchronizedViewModel> cameraDistanceController(
-        context: Context,
-        seekBar: SeekBar,
-        watch: TextView,
-        startValue: Double,
-        crossinline onDistanceChanged: (viewModel: T, distance: Double) -> Unit,
-        viewModel: T
-): Controller = run {
-
-    val viewModelMonitor = viewModel.monitor<T>()
-
-    Controller(
-            seekBar = seekBar,
-            watch = watch,
-            valueRange = 3.0..15.0,
-            startValue = startValue,
-            formatString = context.getString(R.string.camera_distance_watch_format),
-            onValueUpdate = { distance ->
-                viewModelMonitor { viewModel ->
-                    onDistanceChanged(viewModel, distance)
-                }
-            }
-    )
-}
-*/
