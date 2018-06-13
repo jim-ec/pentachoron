@@ -6,9 +6,6 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.*
 import io.jim.tesserapp.MainActivity
-import io.jim.tesserapp.R
-import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.geometry.axis
 import io.jim.tesserapp.graphics.themedColorInt
 import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.rendering.Renderer
@@ -47,18 +44,6 @@ class GraphicsView : GLSurfaceView {
         setRenderer(renderer)
         debugFlags = DEBUG_CHECK_GL_ERROR
         renderMode = RENDERMODE_CONTINUOUSLY
-
-        // Create axis:
-        viewModel {
-            viewModel.geometries += Geometry().apply {
-                name = "Axis"
-                axis(
-                        xAxisColor = themedColorInt(context, R.attr.colorAxisX),
-                        yAxisColor = themedColorInt(context, R.attr.colorAxisY),
-                        zAxisColor = themedColorInt(context, R.attr.colorAxisZ)
-                )
-            }
-        }
     }
 
     /**

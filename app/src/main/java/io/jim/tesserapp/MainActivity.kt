@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import io.jim.tesserapp.geometry.axis
 import io.jim.tesserapp.geometry.grid
 import io.jim.tesserapp.graphics.themedColorInt
 import io.jim.tesserapp.math.vector.Vector4dh
@@ -48,6 +49,16 @@ class MainActivity : AppCompatActivity() {
                 erase()
                 baseColor = themedColorInt(this@MainActivity, R.attr.colorGrid)
                 grid()
+            }
+
+            // Create axis:
+            viewModel.axisGeometry.apply {
+                erase()
+                axis(
+                        xAxisColor = themedColorInt(this@MainActivity, R.attr.colorAxisX),
+                        yAxisColor = themedColorInt(this@MainActivity, R.attr.colorAxisY),
+                        zAxisColor = themedColorInt(this@MainActivity, R.attr.colorAxisZ)
+                )
             }
 
         }

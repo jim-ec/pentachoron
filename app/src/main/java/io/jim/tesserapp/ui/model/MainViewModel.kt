@@ -10,6 +10,18 @@ import io.jim.tesserapp.math.common.Smoothed
 class MainViewModel : SynchronizedViewModel() {
 
     /**
+     * List containing all geometries.
+     *
+     * The geometries are kept inside a hash-set instead of in a simply list because
+     * geometries added multiple times should not result in the same geometry stored
+     * more once in the set.
+     *
+     * This happens because this set outlives the UI, and the UI may initially add
+     * geometry to the set each time the UI is set up.
+     */
+    val geometries = HashSet<Geometry>()
+
+    /**
      * The featured geometry.
      */
     val featuredGeometry = Geometry(
@@ -28,7 +40,9 @@ class MainViewModel : SynchronizedViewModel() {
                 }
 
             }
-    )
+    ).apply {
+        geometries += this
+    }
 
     /**
      * The grid geometry representing a cartesian coordinate system unit grid.
@@ -53,17 +67,11 @@ class MainViewModel : SynchronizedViewModel() {
         get() = geometries.contains(gridGeometry)
 
     /**
-     * List containing all geometries.
-     *
-     * The geometries are kept inside a hash-set instead of in a simply list because
-     * geometries added multiple times should not result in the same geometry stored
-     * more once in the set.
-     *
-     * This happens because this set outlives the UI, and the UI may initially add
-     * geometry to the set each time the UI is set up.
+     * The axis geometry representing the origin of the cartesian coordinate system.
      */
-    val geometries = HashSet<Geometry>().apply {
-        add(featuredGeometry)
+    val axisGeometry = Geometry().apply {
+        name = "Axis"
+        geometries += this
     }
 
     /**
