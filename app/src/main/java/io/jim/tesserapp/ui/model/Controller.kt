@@ -8,9 +8,8 @@ import io.jim.tesserapp.math.common.mapped
 /**
  * Controller targeting a specific live data.
  *
- * @param hostingViewModel
- * The view model containing the targeting live data.
- * Need not to be externally synchronized, as that's done internally.
+ * @param monitor
+ * The monitor this controller uses to safely access a [MainViewModel].
  *
  * @param seekBar
  * Seek bar to control the camera distance.
@@ -30,12 +29,12 @@ import io.jim.tesserapp.math.common.mapped
  *
  */
 class Controller(
-        hostingViewModel: MainViewModel,
-        private val liveData: MainViewModel.() -> MutableLiveDataNonNull<Double>,
-        private val seekBar: SeekBar,
-        private val watch: TextView,
-        private val valueRange: ClosedRange<Double>,
-        private val watchFormatString: String
+        val monitor: SynchronizedViewModel.Monitor,
+        val liveData: MainViewModel.() -> MutableLiveDataNonNull<Double>,
+        val seekBar: SeekBar,
+        val watch: TextView,
+        val valueRange: ClosedRange<Double>,
+        val watchFormatString: String
 ) {
 
     /**
@@ -44,8 +43,6 @@ class Controller(
      * of one tenth.
      */
     private val seekBarRange = 0.0..(valueRange.endInclusive - valueRange.start) * 10.0
-
-    private val monitor = hostingViewModel.Monitor()
 
     init {
         monitor { viewModel: MainViewModel ->
