@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import io.jim.tesserapp.geometry.grid
 import io.jim.tesserapp.graphics.themedColorInt
 import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.ui.model.MainViewModel
@@ -25,20 +26,30 @@ class MainActivity : AppCompatActivity() {
         // Fetch view model:
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
-        viewModel.featuredGeometry.apply {
-            name = "Featured Geometry"
-            baseColor = themedColorInt(this@MainActivity, R.attr.colorAccent)
+        viewModel {
 
-            erase()
+            viewModel.featuredGeometry.apply {
+                name = "Featured Geometry"
+                baseColor = themedColorInt(this@MainActivity, R.attr.colorAccent)
 
-            addQuadrilateral(
-                    Vector4dh(1.0, 1.0, 1.0, 0.0),
-                    Vector4dh(-1.0, 1.0, 1.0, 0.0),
-                    Vector4dh(-1.0, -1.0, 1.0, 0.0),
-                    Vector4dh(1.0, -1.0, 1.0, 0.0)
-            )
+                erase()
 
-            extrude(Vector4dh(0.0, 0.0, -2.0, 0.0))
+                addQuadrilateral(
+                        Vector4dh(1.0, 1.0, 1.0, 0.0),
+                        Vector4dh(-1.0, 1.0, 1.0, 0.0),
+                        Vector4dh(-1.0, -1.0, 1.0, 0.0),
+                        Vector4dh(1.0, -1.0, 1.0, 0.0)
+                )
+
+                extrude(Vector4dh(0.0, 0.0, -2.0, 0.0))
+            }
+
+            viewModel.gridGeometry.apply {
+                erase()
+                baseColor = themedColorInt(this@MainActivity, R.attr.colorGrid)
+                grid()
+            }
+
         }
 
         // Set theme according to a shared preference.

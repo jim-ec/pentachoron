@@ -3,7 +3,6 @@ package io.jim.tesserapp.rendering
 import android.content.res.AssetManager
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
-import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.graphics.DrawDataProvider
 import io.jim.tesserapp.graphics.blue
 import io.jim.tesserapp.graphics.green
@@ -12,7 +11,6 @@ import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.math.matrix.ViewMatrix
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.ui.model.SynchronizedViewModel
-import io.jim.tesserapp.util.whenever
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -25,11 +23,7 @@ class Renderer(
         private val assets: AssetManager,
         private val dpi: Double) : GLSurfaceView.Renderer {
 
-    private val drawDataProvider = DrawDataProvider().apply {
-        viewModelMonitor { viewModel: MainViewModel ->
-            this += viewModel.featuredGeometry
-        }
-    }
+    private val drawDataProvider = DrawDataProvider()
 
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
@@ -95,10 +89,10 @@ class Renderer(
 
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT or GLES30.GL_DEPTH_BUFFER_BIT)
 
-        viewModelMonitor { _: MainViewModel ->
+        viewModelMonitor { viewModel: MainViewModel ->
 
             // Ensure vertex data is up-to-date:
-            drawDataProvider.updateVertices()
+            drawDataProvider.updateVertices(viewModel.geometries)
 
         }
 
@@ -130,41 +124,6 @@ class Renderer(
 
         }
 
-    }
-
-    /**
-     * Register [geometry] to be drawn by this renderer.
-     *
-     * Must be called on the render thread.
-     */
-    fun addGeometry(geometry: Geometry) {
-        checkRenderThread()
-        drawDataProvider += geometry
-    }
-
-    /**
-     * [geometry] is not drawn anymore by this renderer.
-     *
-     * Must be called on the render thread.
-     */
-    fun removeGeometry(geometry: Geometry) {
-        checkRenderThread()
-        drawDataProvider -= geometry
-    }
-
-    /**
-     * Checks whether we are on the GL thread.
-     *
-     * This is simply done by checking whether the thread name start with "GLThread".
-     *
-     * We cannot simply get our thread because this instance is constructed on the main
-     * thread, and between that and the first call we can fetch, namely [onSurfaceCreated],
-     * there might be already posts.
-     */
-    private fun checkRenderThread() {
-        Thread.currentThread().whenever({ !it.name.startsWith("GLThread") }) {
-            throw RuntimeException("Unexpected call from non-GL thread ${it.name}")
-        }
     }
 
 }

@@ -66,6 +66,8 @@ class ControllerView : FrameLayout {
 
             field = graphicsView
 
+            val viewModel = (context as MainActivity).viewModel
+
             // Remove previous controllers:
             controllers.indexedForEach {
                 it.unlink()
@@ -79,17 +81,19 @@ class ControllerView : FrameLayout {
             renderOptionGridSwitch.apply {
 
                 // Set render grid option to current checked state:
-                graphicsView.renderGrid = isChecked
+                viewModel {
+                    viewModel.enableGrid = isChecked
+                }
 
                 // Update the render grid option every times the checked state changes:
                 setOnCheckedChangeListener { _, isChecked ->
-                    graphicsView.renderGrid = isChecked
+                    viewModel {
+                        viewModel.enableGrid = isChecked
+                    }
                 }
             }
 
             // Link individual controllers to view-model entries:
-
-            val viewModel = (context as MainActivity).viewModel
 
             // Camera distance:
             controllers += viewModel.cameraDistanceController(

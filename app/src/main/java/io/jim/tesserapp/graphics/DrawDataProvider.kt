@@ -4,7 +4,6 @@ import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.WireframeProjector
 import io.jim.tesserapp.rendering.VertexBuffer
 import io.jim.tesserapp.util.InputStreamMemory
-import io.jim.tesserapp.util.LinearList
 
 /**
  * Gathers all data necessary for drawing geometry.
@@ -21,39 +20,18 @@ class DrawDataProvider {
     val vertexMemory = InputStreamMemory(100, VertexBuffer.ATTRIBUTE_COUNTS)
 
     /**
-     * List containing all managed geometries.
-     */
-    private val geometries = LinearList<Geometry>()
-
-    /**
      * Projector used to project 4d geometry into 3d space.
      */
     private val wireframeProjector = WireframeProjector()
 
     /**
-     * Add [geometry] to this provider.
-     * Does nothing if [geometry] has already been added.
-     */
-    operator fun plusAssign(geometry: Geometry) {
-        geometries.add(geometry)
-    }
-
-    /**
-     * Removes [geometry] from this provider.
-     * Does nothing if [geometry] has not been added to this provider.
-     */
-    operator fun minusAssign(geometry: Geometry) {
-        geometries.remove(geometry)
-    }
-
-    /**
      * Compute new model matrices and rewrite the vertex memory.
      */
-    fun updateVertices() {
+    fun updateVertices(geometries: Iterable<Geometry>) {
 
         vertexMemory.rewind()
 
-        geometries.indexedForEach { geometry ->
+        geometries.forEach { geometry ->
 
             // Update geometry transform in each frame, used to implement smoothed transform:
             geometry.updateTransform()

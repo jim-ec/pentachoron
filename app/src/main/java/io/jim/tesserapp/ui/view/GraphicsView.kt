@@ -9,7 +9,6 @@ import io.jim.tesserapp.MainActivity
 import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.axis
-import io.jim.tesserapp.geometry.grid
 import io.jim.tesserapp.graphics.themedColorInt
 import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.rendering.Renderer
@@ -36,34 +35,10 @@ class GraphicsView : GLSurfaceView {
     private val touchStartPosition = Vector3d(0.0, 0.0, 0.0)
     private var touchStartTime = 0L
 
-    private val grid =
-            Geometry().apply {
-                name = "Grid"
-                baseColor = themedColorInt(context, R.attr.colorGrid)
-                grid()
-            }
-
     companion object {
         private const val CLICK_TIME_MS = 100L
         private const val TOUCH_ROTATION_SENSITIVITY = 0.008
     }
-
-    /**
-     * Enable or disable grid rendering.
-     */
-    var renderGrid = true
-        set(value) {
-            if (value) {
-                queueEvent {
-                    renderer.addGeometry(grid)
-                }
-            } else {
-                queueEvent {
-                    renderer.removeGeometry(grid)
-                }
-            }
-            field = value
-        }
 
     init {
 
@@ -74,15 +49,15 @@ class GraphicsView : GLSurfaceView {
         renderMode = RENDERMODE_CONTINUOUSLY
 
         // Create axis:
-        queueEvent {
-            renderer.addGeometry(Geometry().apply {
+        viewModel {
+            viewModel.geometries += Geometry().apply {
                 name = "Axis"
                 axis(
                         xAxisColor = themedColorInt(context, R.attr.colorAxisX),
                         yAxisColor = themedColorInt(context, R.attr.colorAxisY),
                         zAxisColor = themedColorInt(context, R.attr.colorAxisZ)
                 )
-            })
+            }
         }
     }
 
