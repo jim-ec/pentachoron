@@ -45,8 +45,8 @@ class Controller(
     private val seekBarRange = 0.0..(valueRange.endInclusive - valueRange.start) * 10.0
 
     init {
-        monitor { viewModel: MainViewModel ->
-            val startValue = viewModel.liveData().value
+        monitor<MainViewModel> {
+            val startValue = liveData().value
 
             if (valueRange.isEmpty())
                 throw RuntimeException("Controller value-range cannot be empty")
@@ -77,8 +77,8 @@ class Controller(
     private fun update() {
         val value = mapped(seekBar.progress.toDouble(), seekBarRange, valueRange)
         watch.text = String.format(watchFormatString, formatNumber(value))
-        monitor { viewModel: MainViewModel ->
-            liveData(viewModel).value = value
+        monitor<MainViewModel> {
+            liveData().value = value
         }
     }
 

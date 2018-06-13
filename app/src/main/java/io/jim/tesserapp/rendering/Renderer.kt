@@ -89,10 +89,10 @@ class Renderer(
 
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT or GLES30.GL_DEPTH_BUFFER_BIT)
 
-        viewModelMonitor { viewModel: MainViewModel ->
+        viewModelMonitor<MainViewModel> {
 
             // Ensure vertex data is up-to-date:
-            drawDataProvider.updateVertices(viewModel.geometries)
+            drawDataProvider.updateVertices(geometries)
 
         }
 
@@ -104,12 +104,12 @@ class Renderer(
         shader.bound {
 
             // Recompute and upload view and perspective matrices:
-            viewModelMonitor { viewModel: MainViewModel ->
+            viewModelMonitor<MainViewModel> {
                 shader.uploadViewMatrix(viewMatrix(
-                        viewModel.cameraDistance.smoothed,
+                        cameraDistance.smoothed,
                         aspectRatio,
-                        viewModel.horizontalCameraRotation.smoothed,
-                        viewModel.verticalCameraRotation.smoothed
+                        horizontalCameraRotation.smoothed,
+                        verticalCameraRotation.smoothed
                 ))
             }
 
