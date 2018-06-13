@@ -10,20 +10,6 @@ import io.jim.tesserapp.math.common.Smoothed
 class MainViewModel : SynchronizedViewModel() {
 
     /**
-     * List containing all geometries.
-     *
-     * The geometries are kept inside a hash-set instead of in a simply list because
-     * geometries added multiple times should not result in the same geometry stored
-     * more once in the set.
-     *
-     * This happens because this set outlives the UI, and the UI may initially add
-     * geometry to the set each time the UI is set up.
-     */
-    val geometries = HashSet<Geometry>().apply {
-        add(featuredGeometry)
-    }
-
-    /**
      * The featured geometry.
      */
     val featuredGeometry = Geometry(
@@ -65,6 +51,20 @@ class MainViewModel : SynchronizedViewModel() {
             }
         }
         get() = geometries.contains(gridGeometry)
+
+    /**
+     * List containing all geometries.
+     *
+     * The geometries are kept inside a hash-set instead of in a simply list because
+     * geometries added multiple times should not result in the same geometry stored
+     * more once in the set.
+     *
+     * This happens because this set outlives the UI, and the UI may initially add
+     * geometry to the set each time the UI is set up.
+     */
+    val geometries = HashSet<Geometry>().apply {
+        add(featuredGeometry)
+    }
 
     /**
      * X rotation, in units of PI.
