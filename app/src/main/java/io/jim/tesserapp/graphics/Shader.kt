@@ -1,11 +1,11 @@
-package io.jim.tesserapp.rendering
+package io.jim.tesserapp.graphics
 
 import android.content.res.AssetManager
 import android.opengl.GLES30
+import io.jim.tesserapp.graphics.engine.GlException
+import io.jim.tesserapp.graphics.engine.GlProgram
+import io.jim.tesserapp.graphics.engine.GlTransformFeedback
 import io.jim.tesserapp.math.matrix.Matrix
-import io.jim.tesserapp.rendering.engine.GlException
-import io.jim.tesserapp.rendering.engine.GlProgram
-import io.jim.tesserapp.rendering.engine.GlTransformFeedback
 import io.jim.tesserapp.util.allocateNativeFloatMemory
 
 /**

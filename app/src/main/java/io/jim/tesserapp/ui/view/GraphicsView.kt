@@ -6,9 +6,9 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.*
 import io.jim.tesserapp.MainActivity
+import io.jim.tesserapp.graphics.Renderer
 import io.jim.tesserapp.graphics.themedColorInt
 import io.jim.tesserapp.math.vector.Vector3d
-import io.jim.tesserapp.rendering.Renderer
 
 /**
  * A view capable of rendering 3D geometry.

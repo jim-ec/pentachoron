@@ -1,4 +1,4 @@
-package io.jim.tesserapp.rendering.engine
+package io.jim.tesserapp.graphics.engine
 
 import java.nio.FloatBuffer
 import java.nio.IntBuffer

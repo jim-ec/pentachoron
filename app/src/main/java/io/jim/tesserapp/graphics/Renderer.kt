@@ -1,12 +1,8 @@
-package io.jim.tesserapp.rendering
+package io.jim.tesserapp.graphics
 
 import android.content.res.AssetManager
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
-import io.jim.tesserapp.graphics.DrawDataProvider
-import io.jim.tesserapp.graphics.blue
-import io.jim.tesserapp.graphics.green
-import io.jim.tesserapp.graphics.red
 import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.math.matrix.ViewMatrix
 import io.jim.tesserapp.ui.model.MainViewModel

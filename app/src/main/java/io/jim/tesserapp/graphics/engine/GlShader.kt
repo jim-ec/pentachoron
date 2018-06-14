@@ -1,4 +1,4 @@
-package io.jim.tesserapp.rendering.engine
+package io.jim.tesserapp.graphics.engine
 
 import android.content.res.AssetManager
 import android.opengl.GLES20

@@ -2,7 +2,6 @@ package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.WireframeProjector
-import io.jim.tesserapp.rendering.VertexBuffer
 import io.jim.tesserapp.util.InputStreamMemory
 
 /**

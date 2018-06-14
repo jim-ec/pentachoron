@@ -1,4 +1,4 @@
-package io.jim.tesserapp.rendering.engine
+package io.jim.tesserapp.graphics.engine
 
 import android.opengl.GLES30
 import io.jim.tesserapp.util.InputStreamMemory

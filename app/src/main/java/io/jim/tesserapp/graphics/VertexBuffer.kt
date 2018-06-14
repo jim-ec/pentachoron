@@ -1,7 +1,7 @@
-package io.jim.tesserapp.rendering
+package io.jim.tesserapp.graphics
 
 import android.opengl.GLES30
-import io.jim.tesserapp.rendering.engine.GlVertexBuffer
+import io.jim.tesserapp.graphics.engine.GlVertexBuffer
 import io.jim.tesserapp.util.BYTE_LENGTH
 
 /**
