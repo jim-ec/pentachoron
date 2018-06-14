@@ -9,6 +9,7 @@ import io.jim.tesserapp.geometry.grid
 import io.jim.tesserapp.graphics.themedColorInt
 import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.ui.model.MainViewModel
+import io.jim.tesserapp.util.synchronized
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -27,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         // Fetch view model:
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
-        viewModel {
+        viewModel.synchronized {
 
             viewModel.featuredGeometry.apply {
                 name = "Featured Geometry"

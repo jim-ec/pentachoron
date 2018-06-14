@@ -12,6 +12,7 @@ import io.jim.tesserapp.ui.model.cameraDistanceController
 import io.jim.tesserapp.ui.model.rotationController
 import io.jim.tesserapp.ui.model.translationController
 import io.jim.tesserapp.util.LinearList
+import io.jim.tesserapp.util.synchronized
 import kotlinx.android.synthetic.main.view_controller.view.*
 
 
@@ -81,13 +82,13 @@ class ControllerView : FrameLayout {
             renderOptionGridSwitch.apply {
 
                 // Set render grid option to current checked state:
-                viewModel {
+                viewModel.synchronized {
                     viewModel.enableGrid = isChecked
                 }
 
                 // Update the render grid option every times the checked state changes:
                 setOnCheckedChangeListener { _, isChecked ->
-                    viewModel {
+                    viewModel.synchronized {
                         viewModel.enableGrid = isChecked
                     }
                 }

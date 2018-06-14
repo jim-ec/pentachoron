@@ -1,13 +1,15 @@
 package io.jim.tesserapp.ui.model
 
+import android.arch.lifecycle.ViewModel
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.math.common.Smoothed
+import io.jim.tesserapp.util.synchronized
 
 /**
  * Stores persistent data related to the main activity,
  * inter alia transform of the featured geometry.
  */
-class MainViewModel : SynchronizedViewModel() {
+class MainViewModel : ViewModel() {
 
     /**
      * List containing all geometries.
@@ -29,7 +31,7 @@ class MainViewModel : SynchronizedViewModel() {
                 // Transform geometry in each frame relatively,
                 // by using the difference value returned from the smooth-delegates:
 
-                this@MainViewModel {
+                this@MainViewModel.synchronized {
                     rotateX(rotationX.smoothed * java.lang.Math.PI)
                     rotateY(rotationY.smoothed * java.lang.Math.PI)
                     rotateZ(rotationZ.smoothed * java.lang.Math.PI)

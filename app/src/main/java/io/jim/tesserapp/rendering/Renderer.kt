@@ -10,6 +10,7 @@ import io.jim.tesserapp.graphics.red
 import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.math.matrix.ViewMatrix
 import io.jim.tesserapp.ui.model.MainViewModel
+import io.jim.tesserapp.util.synchronized
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -88,7 +89,7 @@ class Renderer(
 
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT or GLES30.GL_DEPTH_BUFFER_BIT)
 
-        viewModel {
+        viewModel.synchronized {
 
             // Ensure vertex data is up-to-date:
             drawDataProvider.updateVertices(viewModel.geometries)
@@ -103,7 +104,7 @@ class Renderer(
         shader.bound {
 
             // Recompute and upload view and perspective matrices:
-            viewModel {
+            viewModel.synchronized {
                 shader.uploadViewMatrix(viewMatrix(
                         viewModel.cameraDistance.smoothed,
                         aspectRatio,

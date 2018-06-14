@@ -4,6 +4,7 @@ import android.widget.SeekBar
 import android.widget.TextView
 import io.jim.tesserapp.math.common.formatNumber
 import io.jim.tesserapp.math.common.mapped
+import io.jim.tesserapp.util.synchronized
 
 /**
  * Controller targeting a specific live data.
@@ -45,7 +46,7 @@ class Controller(
     private val seekBarRange = 0.0..(valueRange.endInclusive - valueRange.start) * 10.0
 
     init {
-        viewModel {
+        viewModel.synchronized {
             val startValue = viewModel.liveData().value
 
             if (valueRange.isEmpty())
@@ -77,7 +78,7 @@ class Controller(
     private fun update() {
         val value = mapped(seekBar.progress.toDouble(), seekBarRange, valueRange)
         watch.text = String.format(watchFormatString, formatNumber(value))
-        viewModel {
+        viewModel.synchronized {
             viewModel.liveData().value = value
         }
     }
