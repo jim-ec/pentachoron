@@ -23,6 +23,6 @@
     <string name="render_option_grid">Grid</string>
     <string name="dark_theme">Dark Theme</string>
 
-    <string name="pref_dark_theme_enabled">io.jim.tesserapp.PREF_DARK_THEME_ENABLED</string>
+    <string name="pref_dark_theme_enabled" translatable="false">io.jim.tesserapp.PREF_DARK_THEME_ENABLED</string>
 
 </resources>
