@@ -47,7 +47,7 @@ class Controller(
 
     init {
         viewModel.synchronized {
-            val startValue = viewModel.liveData().value
+            val startValue = liveData().value
 
             if (valueRange.isEmpty())
                 throw RuntimeException("Controller value-range cannot be empty")
@@ -79,7 +79,7 @@ class Controller(
         val value = mapped(seekBar.progress.toDouble(), seekBarRange, valueRange)
         watch.text = String.format(watchFormatString, formatNumber(value))
         viewModel.synchronized {
-            viewModel.liveData().value = value
+            liveData().value = value
         }
     }
 

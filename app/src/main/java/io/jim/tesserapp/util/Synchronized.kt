@@ -5,7 +5,7 @@ package io.jim.tesserapp.util
  *
  * Equivalent to call `synchronized(this) { ... }`.
  */
-inline fun <T : Any, R> T.synchronized(crossinline f: () -> R): R {
+inline fun <T : Any, R> T.synchronized(crossinline f: T.() -> R): R {
     return synchronized(this) {
         f()
     }

@@ -92,7 +92,7 @@ class Renderer(
         viewModel.synchronized {
 
             // Ensure vertex data is up-to-date:
-            drawDataProvider.updateVertices(viewModel.geometries)
+            drawDataProvider.updateVertices(geometries)
 
         }
 
@@ -106,10 +106,10 @@ class Renderer(
             // Recompute and upload view and perspective matrices:
             viewModel.synchronized {
                 shader.uploadViewMatrix(viewMatrix(
-                        viewModel.cameraDistance.smoothed,
+                        cameraDistance.smoothed,
                         aspectRatio,
-                        viewModel.horizontalCameraRotation.smoothed,
-                        viewModel.verticalCameraRotation.smoothed
+                        horizontalCameraRotation.smoothed,
+                        verticalCameraRotation.smoothed
                 ))
             }
 

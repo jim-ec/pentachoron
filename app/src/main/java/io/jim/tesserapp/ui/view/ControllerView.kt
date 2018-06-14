@@ -83,13 +83,13 @@ class ControllerView : FrameLayout {
 
                 // Set render grid option to current checked state:
                 viewModel.synchronized {
-                    viewModel.enableGrid = isChecked
+                    enableGrid = isChecked
                 }
 
                 // Update the render grid option every times the checked state changes:
                 setOnCheckedChangeListener { _, isChecked ->
                     viewModel.synchronized {
-                        viewModel.enableGrid = isChecked
+                        enableGrid = isChecked
                     }
                 }
             }

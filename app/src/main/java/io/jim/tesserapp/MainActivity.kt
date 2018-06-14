@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.synchronized {
 
-            viewModel.featuredGeometry.apply {
+            featuredGeometry.apply {
                 name = "Featured Geometry"
                 baseColor = themedColorInt(this@MainActivity, R.attr.colorAccent)
 
@@ -46,14 +46,14 @@ class MainActivity : AppCompatActivity() {
                 extrude(Vector4dh(0.0, 0.0, -2.0, 0.0))
             }
 
-            viewModel.gridGeometry.apply {
+            gridGeometry.apply {
                 erase()
                 baseColor = themedColorInt(this@MainActivity, R.attr.colorGrid)
                 grid()
             }
 
             // Create axis:
-            viewModel.axisGeometry.apply {
+            axisGeometry.apply {
                 erase()
                 axis(
                         xAxisColor = themedColorInt(this@MainActivity, R.attr.colorAxisX),
