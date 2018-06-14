@@ -8,8 +8,8 @@ import io.jim.tesserapp.math.common.mapped
 /**
  * Controller targeting a specific live data.
  *
- * @param monitor
- * The monitor this controller uses to safely access a [MainViewModel].
+ * @param viewModel
+ * The targeting view model.
  *
  * @param seekBar
  * Seek bar to control the camera distance.
@@ -29,7 +29,7 @@ import io.jim.tesserapp.math.common.mapped
  *
  */
 class Controller(
-        val monitor: SynchronizedViewModel.Monitor,
+        val viewModel: MainViewModel,
         val liveData: MainViewModel.() -> MutableLiveDataNonNull<Double>,
         val seekBar: SeekBar,
         val watch: TextView,
@@ -45,8 +45,8 @@ class Controller(
     private val seekBarRange = 0.0..(valueRange.endInclusive - valueRange.start) * 10.0
 
     init {
-        monitor<MainViewModel> {
-            val startValue = liveData().value
+        viewModel {
+            val startValue = viewModel.liveData().value
 
             if (valueRange.isEmpty())
                 throw RuntimeException("Controller value-range cannot be empty")
@@ -77,8 +77,8 @@ class Controller(
     private fun update() {
         val value = mapped(seekBar.progress.toDouble(), seekBarRange, valueRange)
         watch.text = String.format(watchFormatString, formatNumber(value))
-        monitor<MainViewModel> {
-            liveData().value = value
+        viewModel {
+            viewModel.liveData().value = value
         }
     }
 

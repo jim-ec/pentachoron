@@ -27,7 +27,7 @@ fun MainViewModel.cameraDistanceController(
         seekBar: SeekBar,
         watch: TextView
 ) = Controller(
-        monitor = Monitor(),
+        viewModel = this,
         liveData = { cameraDistance },
         seekBar = seekBar,
         watch = watch,

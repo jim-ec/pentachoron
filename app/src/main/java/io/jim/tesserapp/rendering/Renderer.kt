@@ -10,7 +10,6 @@ import io.jim.tesserapp.graphics.red
 import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.math.matrix.ViewMatrix
 import io.jim.tesserapp.ui.model.MainViewModel
-import io.jim.tesserapp.ui.model.SynchronizedViewModel
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -18,10 +17,10 @@ import javax.microedition.khronos.opengles.GL10
  * Actually renders to OpenGL.
  */
 class Renderer(
-        private val clearColor: Int,
-        val viewModelMonitor: SynchronizedViewModel.Monitor,
-        private val assets: AssetManager,
-        private val dpi: Double) : GLSurfaceView.Renderer {
+        val clearColor: Int,
+        val viewModel: MainViewModel,
+        val assets: AssetManager,
+        val dpi: Double) : GLSurfaceView.Renderer {
 
     private val drawDataProvider = DrawDataProvider()
 
@@ -89,10 +88,10 @@ class Renderer(
 
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT or GLES30.GL_DEPTH_BUFFER_BIT)
 
-        viewModelMonitor<MainViewModel> {
+        viewModel {
 
             // Ensure vertex data is up-to-date:
-            drawDataProvider.updateVertices(geometries)
+            drawDataProvider.updateVertices(viewModel.geometries)
 
         }
 
@@ -104,12 +103,12 @@ class Renderer(
         shader.bound {
 
             // Recompute and upload view and perspective matrices:
-            viewModelMonitor<MainViewModel> {
+            viewModel {
                 shader.uploadViewMatrix(viewMatrix(
-                        cameraDistance.smoothed,
+                        viewModel.cameraDistance.smoothed,
                         aspectRatio,
-                        horizontalCameraRotation.smoothed,
-                        verticalCameraRotation.smoothed
+                        viewModel.horizontalCameraRotation.smoothed,
+                        viewModel.verticalCameraRotation.smoothed
                 ))
             }
 

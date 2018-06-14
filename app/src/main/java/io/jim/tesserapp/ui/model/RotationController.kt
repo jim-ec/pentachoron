@@ -31,7 +31,7 @@ fun MainViewModel.rotationController(
         watch: TextView,
         liveData: MainViewModel.() -> MutableLiveDataNonNull<Double>
 ) = Controller(
-        monitor = Monitor(),
+        viewModel = this,
         liveData = liveData,
         seekBar = seekBar,
         watch = watch,
