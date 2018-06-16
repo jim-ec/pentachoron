@@ -14,13 +14,13 @@ import io.jim.tesserapp.math.vector.Vector3d
  * A view capable of rendering 3D geometry.
  */
 class GraphicsView : GLSurfaceView {
-
+    
     constructor(context: Context) : super(context)
-
+    
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-
+    
     private val viewModel = (context as MainActivity).viewModel
-
+    
     @PublishedApi
     internal val renderer = Renderer(
             themedColorInt(context, android.R.attr.windowBackground),
@@ -28,24 +28,24 @@ class GraphicsView : GLSurfaceView {
             context.assets,
             resources.displayMetrics.xdpi.toDouble()
     )
-
+    
     private val touchStartPosition = Vector3d(0.0, 0.0, 0.0)
     private var touchStartTime = 0L
-
+    
     companion object {
         private const val CLICK_TIME_MS = 100L
         private const val TOUCH_ROTATION_SENSITIVITY = 0.008
     }
-
+    
     init {
-
+        
         // Setup renderer:
         setEGLContextClientVersion(3)
         setRenderer(renderer)
         debugFlags = DEBUG_CHECK_GL_ERROR
         renderMode = RENDERMODE_CONTINUOUSLY
     }
-
+    
     /**
      * Handles camera orbit position upon touch events.
      */
@@ -61,10 +61,10 @@ class GraphicsView : GLSurfaceView {
                 event.action == ACTION_MOVE -> {
                     val dx = event.x - touchStartPosition.x
                     val dy = event.y - touchStartPosition.y
-
+    
                     viewModel.horizontalCameraRotation.value += dx * TOUCH_ROTATION_SENSITIVITY
                     viewModel.verticalCameraRotation.value -= dy * TOUCH_ROTATION_SENSITIVITY
-
+    
                     touchStartPosition.x = event.x.toDouble()
                     touchStartPosition.y = event.y.toDouble()
                     true
@@ -76,7 +76,7 @@ class GraphicsView : GLSurfaceView {
                 }
                 else -> false
             }
-
+    
     /**
      * Clicks rewind camera position to default.
      */
@@ -84,5 +84,5 @@ class GraphicsView : GLSurfaceView {
         super.performClick()
         return true
     }
-
+    
 }

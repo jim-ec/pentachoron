@@ -13,12 +13,12 @@ import android.opengl.GLES30
  * @param fileName Name of shader source file.
  */
 class GlShader(assets: AssetManager, fileName: String) {
-
+    
     /**
      * Actual handle retrieved from GL.
      */
     val shaderHandle: Int
-
+    
     init {
         // Generate handle. Type is deduced from file extension.
         shaderHandle = GLES20.glCreateShader(
@@ -32,24 +32,24 @@ class GlShader(assets: AssetManager, fileName: String) {
                     "frag" -> GLES30.GL_FRAGMENT_SHADER
                     else -> throw RuntimeException("Unsupported source file extension in $fileName")
                 })
-
+        
         // Retrieve lines from shader file:
         GLES30.glShaderSource(shaderHandle, (assets.open(fileName)
                 ?: throw RuntimeException("Cannot open shader file $fileName"))
                 .bufferedReader().useLines { sequence: Sequence<String> ->
                     sequence.reduce { a, b -> "$a\n$b" }
                 })
-
+        
         // Compile shader and check for success:
         GLES30.glCompileShader(shaderHandle)
-
+        
         GLES30.glGetShaderiv(shaderHandle, GLES30.GL_COMPILE_STATUS, resultCode)
         if (GLES30.GL_TRUE != resultCode()) {
             throw GlException("Cannot compile vertex shader: " +
                     GLES30.glGetShaderInfoLog(shaderHandle))
         }
-
+        
         GlException.check("Shader initialization")
     }
-
+    
 }

@@ -4,12 +4,12 @@ package io.jim.tesserapp.math.vector
  * A 3d vector.
  */
 open class Vector3d(x: Double, y: Double, z: Double) : VectorN(x, y, z) {
-
+    
     /**
      * Construct a vector with all components set to zero.
      */
     constructor() : this(0.0, 0.0, 0.0)
-
+    
     /**
      * X-component.
      */
@@ -18,7 +18,7 @@ open class Vector3d(x: Double, y: Double, z: Double) : VectorN(x, y, z) {
         set(value) {
             this[0] = value
         }
-
+    
     /**
      * Y-component.
      */
@@ -27,7 +27,7 @@ open class Vector3d(x: Double, y: Double, z: Double) : VectorN(x, y, z) {
         set(value) {
             this[1] = value
         }
-
+    
     /**
      * Z-component.
      */
@@ -36,7 +36,7 @@ open class Vector3d(x: Double, y: Double, z: Double) : VectorN(x, y, z) {
         set(value) {
             this[2] = value
         }
-
+    
     /**
      * Compute the vector product of [lhs] and [rhs], storing the result in this vector.
      */
@@ -45,5 +45,5 @@ open class Vector3d(x: Double, y: Double, z: Double) : VectorN(x, y, z) {
         y = lhs.z * rhs.x - lhs.x * rhs.z
         z = lhs.x * rhs.y - lhs.y * rhs.x
     }
-
+    
 }

@@ -15,43 +15,43 @@ import io.jim.tesserapp.util.LinearList
 class Geometry(
         private val onTransformUpdate: Transform.() -> Unit = {}
 ) {
-
+    
     companion object {
-
+        
         /**
          * The volume onto which 4 dimensional vectors are projected.
          * This value should be well chosen, as no vector should ever have such a q-value,
          * since that will lead to projection into infinity.
          */
         const val Q_PROJECTION_VOLUME = 1.0
-
+        
     }
-
+    
     /**
      * List containing all positions.
      */
     private val positions = ArrayList<Vector4dh>()
-
+    
     /**
      * List containing all lines constructed from [positions] using indices.
      */
     val lines = LinearList<Line<Vector4dh>>()
-
+    
     /**
      * This geometry's name.
      */
     var name = ""
-
+    
     /**
      * Color of this geometry.
      */
     var baseColor = BLACK
-
+    
     /**
      * Model-transform.
      */
     val transform = Transform()
-
+    
     /**
      * Trigger the [onTransformUpdate] callback.
      * This function is intended to be called in each frame to implement smoothed transform.
@@ -59,7 +59,7 @@ class Geometry(
     fun updateTransform() {
         onTransformUpdate(transform)
     }
-
+    
     /**
      * Remove all stored positions and lines.
      */
@@ -67,7 +67,7 @@ class Geometry(
         lines.clear()
         positions.clear()
     }
-
+    
     /**
      * Add a series of vertices.
      * The actual lines are drawn from indices to these vertices.
@@ -75,7 +75,7 @@ class Geometry(
     private fun addPosition(position: Vector4dh) {
         positions += position
     }
-
+    
     /**
      * Add a line spanning between two positions.
      * @param a Index to the start position.
@@ -85,7 +85,7 @@ class Geometry(
     private fun addLine(a: Int, b: Int, color: Int = baseColor) {
         lines += Line(positions, a, b, color)
     }
-
+    
     /**
      * Add a line from position [a] to position [b].
      * This actually creates to new positions.
@@ -98,7 +98,7 @@ class Geometry(
         addPosition(b)
         addLine(positions.lastIndex - 1, positions.lastIndex, color)
     }
-
+    
     /**
      * Add a quadrilateral with four corner and an optional color.
      * @param a First corner.
@@ -123,7 +123,7 @@ class Geometry(
         addLine(2, 3, color)
         addLine(3, 0, color)
     }
-
+    
     /**
      * Colorize the [lineIndex]th line to [color].
      * @throws IndexOutOfBoundsException If index is out of bounds.
@@ -132,7 +132,7 @@ class Geometry(
     fun colorizeLine(lineIndex: Int, color: Int) {
         lines[lineIndex].color = color
     }
-
+    
     /**
      * Colorize the [lineIndex]th line to [baseColor].
      * @throws IndexOutOfBoundsException If index is out of bounds.
@@ -141,7 +141,7 @@ class Geometry(
     fun decolorizeLine(lineIndex: Int) {
         colorizeLine(lineIndex, baseColor)
     }
-
+    
     /**
      * Extrudes the whole geometry in the given [direction].
      * This works by duplicating the whole geometry and then connecting all point duplicate
@@ -155,14 +155,14 @@ class Geometry(
             connectorColor: Int = baseColor
     ) {
         val size = positions.size
-
+        
         for (i in 0 until size) {
             positions += Vector4dh().apply {
                 copy(positions[i])
                 this += direction
             }
         }
-
+        
         lines += lines.map {
             Line(
                     positions,
@@ -175,7 +175,7 @@ class Geometry(
             addLine(i, i + size, connectorColor)
         }
     }
-
+    
     /**
      * Invoke [f] for each position and the color it's associated with.
      */
@@ -185,10 +185,10 @@ class Geometry(
             f(it.end, it.color)
         }
     }
-
+    
     /**
      * Represents this geometry in a string.
      */
     override fun toString() = name
-
+    
 }

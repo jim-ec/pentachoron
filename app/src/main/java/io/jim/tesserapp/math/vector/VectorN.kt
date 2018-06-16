@@ -18,7 +18,7 @@ import kotlin.math.sqrt
 open class VectorN(
         val dimension: Int
 ) : MatrixMultipliable() {
-
+    
     /**
      * Create a vector whose [dimension] is determined through the count of components passed
      * to [components]. Initialize the vector components with [components].
@@ -26,27 +26,27 @@ open class VectorN(
     constructor(vararg components: Double) : this(components.size) {
         load(*components)
     }
-
+    
     /**
      * The underlying number array.
      */
     private val numbers = DoubleArray(dimension) { 0.0 }
-
+    
     /**
      * A vector can be seen as a n-column matrix.
      */
     override val cols = dimension
-
+    
     /**
      * A vector can be seen as a one-row matrix.
      */
     override val rows = 1
-
+    
     /**
      * Return a string representing this vector's dimension.
      */
     open val dimensionString = "${dimension}d"
-
+    
     /**
      * Represent this vector as a string.
      */
@@ -60,17 +60,17 @@ open class VectorN(
                     )
                 }
             }.toString()
-
+    
     /**
      * Set [index]th number to [value].
      */
     operator fun set(index: Int, value: Double) {
         if (index < 0 || index >= dimension)
             throw MathException("Cannot set ${index}th component to a $dimensionString vector")
-
+        
         numbers[index] = value
     }
-
+    
     /**
      * Return the [index]th number.
      */
@@ -78,7 +78,7 @@ open class VectorN(
             if (index < 0 || index >= dimension)
                 throw MathException("Cannot set ${index}th component to a $dimensionString vector")
             else numbers[index]
-
+    
     /**
      * Setter used by the generic matrix-like multiplier,
      * since that has a more abstract NxM view to matrix-like objects.
@@ -86,13 +86,13 @@ open class VectorN(
     override fun set(row: Int, col: Int, value: Double) {
         set(col, value)
     }
-
+    
     /**
      * Getter used by the generic matrix-like multiplier,
      * since that has a more abstract NxM view to matrix-like objects.
      */
     override fun get(row: Int, col: Int) = this[col]
-
+    
     /**
      * Sets each vector component with the corresponding number in [components].
      *
@@ -106,12 +106,12 @@ open class VectorN(
         if (components.size > dimension)
             throw MathException("Cannot load ${components.size} components into a " +
                     "$dimensionString vector")
-
+        
         components.forEachIndexed { index, component ->
             this[index] = component
         }
     }
-
+    
     /**
      * Copy contents of [source] into this vector.
      * The actual dimensions can differ, as long as [counts] is chosen appropriately.
@@ -125,19 +125,19 @@ open class VectorN(
      * If [counts] is greater than the dimension of this or the source vector.
      */
     fun copy(source: VectorN, counts: Int = Math.min(dimension, source.dimension)) {
-
+        
         if (counts > source.dimension)
             throw MathException("Cannot copy $counts components from a " +
                     "${source.dimensionString} vector")
-
+        
         if (counts > dimension)
             throw MathException("Cannot copy $counts components to a $dimensionString vector")
-
+        
         for (i in 0 until counts) {
             this[i] = source[i]
         }
     }
-
+    
     /**
      * Scalar this and [rhs].
      */
@@ -148,13 +148,13 @@ open class VectorN(
         }
         return sum
     }
-
+    
     /**
      * Compute this vector's length.
      */
     inline val length
         get() = sqrt(this * this)
-
+    
     /**
      * Add [rhs] to this vector.
      * @throws IncompatibleVectorException If vector dimension differ
@@ -162,12 +162,12 @@ open class VectorN(
     operator fun plusAssign(rhs: VectorN) {
         if (dimension != rhs.dimension)
             throw IncompatibleVectorException(rhs)
-
+        
         rhs.forEachIndexed { index, number ->
             set(index, get(index) + number)
         }
     }
-
+    
     /**
      * Subtract [rhs] from this vector.
      * @throws IncompatibleVectorException If vector dimension differ
@@ -175,12 +175,12 @@ open class VectorN(
     operator fun minusAssign(rhs: VectorN) {
         if (dimension != rhs.dimension)
             throw IncompatibleVectorException(rhs)
-
+        
         rhs.forEachIndexed { index, number ->
             set(index, get(index) - number)
         }
     }
-
+    
     /**
      * Normalize this vector.
      */
@@ -190,7 +190,7 @@ open class VectorN(
             set(index, number * oneOverLength)
         }
     }
-
+    
     /**
      * Scales this by [scale].
      */
@@ -199,7 +199,7 @@ open class VectorN(
             set(index, get(index) * scale)
         }
     }
-
+    
     /**
      * Divides this vector through [divisor].
      */
@@ -208,7 +208,7 @@ open class VectorN(
             set(index, get(index) / divisor)
         }
     }
-
+    
     /**
      * Negates all components.
      */
@@ -217,7 +217,7 @@ open class VectorN(
             this[index] = -number
         }
     }
-
+    
     /**
      * Call [f] for each dimension index this vector holds.
      */
@@ -226,7 +226,7 @@ open class VectorN(
             f(i)
         }
     }
-
+    
     /**
      * Call [f] for each dimension index this vector holds.
      * Additionally, the corresponding number is passed to [f].
@@ -236,12 +236,12 @@ open class VectorN(
             f(i, this[i])
         }
     }
-
+    
     /**
      * Thrown upon operations requiring two vectors to be compatible.
      */
     inner class IncompatibleVectorException(
             incompatibleVector: VectorN
     ) : MathException("$incompatibleVector is incompatible to ${this@VectorN}")
-
+    
 }

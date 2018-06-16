@@ -13,7 +13,7 @@ class SmoothedLiveData(
         delegationMode: Smoothed.DelegationMode = Smoothed.DelegationMode.ABSOLUTE,
         transitionInterval: Double = 200.0
 ) : MutableLiveDataNonNull<Double>(initialValue) {
-
+    
     /**
      * Reflect the live-data's value, but interpolates smoothly between changes.
      * You cannot set this smoothed *variant* directly since it's automatically
@@ -21,11 +21,11 @@ class SmoothedLiveData(
      */
     var smoothed by Smoothed(initialValue, transitionInterval, delegationMode)
         private set
-
+    
     init {
         observeForeverNonNull {
             smoothed = it
         }
     }
-
+    
 }

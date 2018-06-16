@@ -20,30 +20,30 @@ open class Smoothed<R>(
         private val transitionInterval: Double,
         private val delegationMode: DelegationMode = DelegationMode.ABSOLUTE
 ) {
-
+    
     /**
      * The axis start is defined as the construction time.
      */
     open val x0 = System.currentTimeMillis().toDouble()
-
+    
     /**
      * Axis progression is defined by the time passed since construction time.
      */
     open val x: Double
         get() = System.currentTimeMillis() - x0
-
+    
     /**
      * The underlying curve used to model transitions.
      * Though the count of transitions is not limited, the curve is allocated only once and
      * then reused.
      */
     private var curve = CubicPolynomial(y0 = startValue)
-
+    
     /**
      * The last axis position a transition started.
      */
     private var lastTransitionStartX = 0.0
-
+    
     /**
      * Whether the value is currently transitioning.
      *
@@ -54,14 +54,14 @@ open class Smoothed<R>(
      */
     private inline val transitioning: Boolean
         get() = x - lastTransitionStartX < transitionInterval
-
+    
     /**
      * Only used when delegating with [DelegationMode.RELATIVE_TO_LAST_READ].
      * Store the value existed when the last read operation occurred,
      * so we can return the difference.
      */
     private var oldValue = startValue
-
+    
     /**
      * The current value.
      *
@@ -76,14 +76,14 @@ open class Smoothed<R>(
                 curve(x)
             else
                 curve(lastTransitionStartX + transitionInterval)
-
+    
     /**
      * Trigger a new transition interval.
      * If this value is currently transitioning, the new transition will keep the current
      * value change-rate, i.e. it will not restart from zero.
      */
     operator fun setValue(thisRef: R, property: KProperty<*>, value: Double) {
-
+        
         // If currently transitioning, re-span the curve from the current point of progression:
         if (transitioning) {
             curve.reSpan(
@@ -104,35 +104,35 @@ open class Smoothed<R>(
                     sourceGradient = 0.0
             )
         }
-
+        
         // Mark the transition start:
         lastTransitionStartX = x
     }
-
+    
     /**
      * Get the current value.
      */
     operator fun getValue(thisRef: R, property: KProperty<*>) =
             currentValue.let { value ->
-
+    
                 // Return difference, but remember the current value as the new old value:
                 when (delegationMode) {
                     DelegationMode.ABSOLUTE -> value
                     DelegationMode.RELATIVE_TO_LAST_READ -> (value - oldValue).also { oldValue = value }
                 }
             }
-
+    
     /**
      * How the value is delegated when read.
      */
     enum class DelegationMode {
-
+        
         /**
          * Each read will return current absolute value.
          * This is the default behaviour you would expect.
          */
         ABSOLUTE,
-
+        
         /**
          * Each read operation will return the *difference* between the current value
          * and the value hold when the last read operation occurred.
@@ -147,5 +147,5 @@ open class Smoothed<R>(
          */
         RELATIVE_TO_LAST_READ
     }
-
+    
 }

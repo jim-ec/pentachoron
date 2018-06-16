@@ -6,7 +6,7 @@ import java.util.*
  * Modified version of an [ArrayList].
  */
 class LinearList<T> : ArrayList<T>() {
-
+    
     /**
      * Calls [f] for each list entry.
      *
@@ -21,12 +21,12 @@ class LinearList<T> : ArrayList<T>() {
                 throw ConcurrentModificationException()
         }
     }
-
+    
     @PublishedApi
     internal var accessModCount: Int
         get() = modCount
         set(value) {
             modCount = value
         }
-
+    
 }

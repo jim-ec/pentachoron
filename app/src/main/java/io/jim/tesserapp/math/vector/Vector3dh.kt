@@ -5,22 +5,22 @@ package io.jim.tesserapp.math.vector
  * with 4xN matrices.
  */
 class Vector3dh(x: Double, y: Double, z: Double) : Vector3d(x, y, z) {
-
+    
     /**
      * Construct a vector with all components set to zero, except [w].
      */
     constructor() : this(0.0, 0.0, 0.0)
-
+    
     /**
      * Though this vector is 3d, it technically has 4 columns, including the virtual w-component.
      */
     override val cols = 4
-
+    
     /**
      * The dimension string should underline that the vector is not actually 3d.
      */
     override val dimensionString = "3dh"
-
+    
     /**
      * Intercept getting the w-component, which is always 1.
      */
@@ -30,7 +30,7 @@ class Vector3dh(x: Double, y: Double, z: Double) : Vector3d(x, y, z) {
         else
             w
     }
-
+    
     /**
      * Intercept setting values to the fourth column, which will effectively lead to w-division.
      */
@@ -41,7 +41,7 @@ class Vector3dh(x: Double, y: Double, z: Double) : Vector3d(x, y, z) {
             w = value
         }
     }
-
+    
     /**
      * W-component. This is always 1.
      * Setting this value will lead to w-division.
@@ -51,5 +51,5 @@ class Vector3dh(x: Double, y: Double, z: Double) : Vector3d(x, y, z) {
         set(value) {
             this /= value
         }
-
+    
 }

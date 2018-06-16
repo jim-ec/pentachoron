@@ -19,13 +19,13 @@ class Matrix(
         override val rows: Int,
         override val cols: Int
 ) : MatrixMultipliable(), Parcelable {
-
+    
     /**
      * Underlying number list.
      * The reference is kept re-assignable to enable optimized operations like swapping contents.
      */
     private var doubles = DoubleBuffer.allocate(rows * cols)
-
+    
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readInt()) {
@@ -33,18 +33,18 @@ class Matrix(
             this[row, col] = parcel.readDouble()
         }
     }
-
+    
     /**
      * Construct a quadratic matrix with [size] rows and columns.
      */
     constructor(size: Int) : this(size, size)
-
+    
     init {
         if (rows <= 0 || cols <= 0)
             throw MathException("Matrix must have non-null positive dimensions")
         identity()
     }
-
+    
     /**
      * Loads the identity matrix.
      */
@@ -53,7 +53,7 @@ class Matrix(
             doubles.put(rowMajorIndex(row, col), if (row == col) 1.0 else 0.0)
         }
     }
-
+    
     /**
      * Swap contents of this and [other] matrix.
      * This is a more performance oriented way of copying contents of matrices.
@@ -65,12 +65,12 @@ class Matrix(
     fun swap(other: Matrix) {
         if (cols != other.cols || rows != other.cols)
             throw MathException("Cannot swap $this with $other, dimensions differ")
-
+        
         val tmp = doubles
         doubles = other.doubles
         other.doubles = tmp
     }
-
+    
     /**
      * Converts a row into a [VectorN].
      * The [VectorN.dimension] is determined by this matrix' column count.
@@ -80,7 +80,7 @@ class Matrix(
             it[i] = this[row, i]
         }
     }
-
+    
     /**
      * Loads a complete set of doubles into the matrix.
      *
@@ -91,30 +91,30 @@ class Matrix(
     fun load(vararg rowVectors: VectorN) {
         if (rowVectors.size != rows)
             throw MathException("Row count must match with matrix row count $rows")
-
+        
         rowVectors.forEachIndexed { rowIndex, row ->
             if (row.dimension != cols)
                 throw MathException("Columns per row vector must match with matrix column count $cols")
-
+            
             row.forEachIndexed { colIndex, coefficient ->
                 this[rowIndex, colIndex] = coefficient
             }
         }
     }
-
+    
     /**
      * Thrown when an operation's requirement to be called on a quadratic matrix is not met.
      */
     inner class IsNotQuadraticException :
             MathException("Matrix needs to be quadratic but is ${this@Matrix}")
-
+    
     /**
      * Thrown when a transform is incompatible with a matrix in terms of dimension.
      * @param transformDimension The incompatible transform dimension.
      */
     inner class IncompatibleTransformDimension(transformDimension: Int) :
             MathException("${transformDimension}d transform not compatible with $this")
-
+    
     /**
      * Load a scale matrix.
      * @param factors Scale amount for each matrix axis.
@@ -126,12 +126,12 @@ class Matrix(
             throw IsNotQuadraticException()
         if (factors.dimension != cols - 1)
             throw IncompatibleTransformDimension(factors.dimension)
-
+        
         for (i in 0 until cols - 1) {
             this[i, i] = factors[i]
         }
     }
-
+    
     /**
      * Load a scale matrix.
      * @param factor Scale amount for each matrix axis.
@@ -140,12 +140,12 @@ class Matrix(
     fun scale(factor: Double) {
         if (rows != cols)
             throw IsNotQuadraticException()
-
+        
         for (i in 0 until cols - 1) {
             this[i, i] = factor
         }
     }
-
+    
     /**
      * Load a translation.
      * This does not reset any parts of the matrix,
@@ -158,12 +158,12 @@ class Matrix(
             throw IsNotQuadraticException()
         if (v.cols != cols)
             throw IncompatibleTransformDimension(v.dimension)
-
+        
         v.forEachIndexed { col, coefficient ->
             this[rows - 1, col] = coefficient
         }
     }
-
+    
     /**
      * Load a rotation matrix.
      * The rotation takes place on the given [a]-[b]-plane, the angle is defined in [radians].
@@ -174,13 +174,13 @@ class Matrix(
             throw IncompatibleTransformDimension(a + 1)
         if (b + 1 >= rows || b + 1 >= cols)
             throw IncompatibleTransformDimension(b + 1)
-
+        
         this[a, a] = cos(radians)
         this[a, b] = sin(radians)
         this[b, a] = -sin(radians)
         this[b, b] = cos(radians)
     }
-
+    
     /**
      * Load a 3D to 2D perspective matrix.
      * The z component gets remapping between a near and far value.
@@ -188,16 +188,16 @@ class Matrix(
      * @param far Far plane. If Vector lies on that plane (negated), it will be projected to 1.
      */
     fun perspective2D(near: Double, far: Double) {
-
+        
         if (near <= 0.0 || far <= 0.0 || near > far)
             throw MathException("Invalid near=$near or far=$far parameter")
-
+        
         perspective2D()
-
+        
         this[2, 2] = -far / (far - near)
         this[3, 2] = -(far * near) / (far - near)
     }
-
+    
     /**
      * Load a 3D to 2D perspective matrix without remapping z.
      */
@@ -205,7 +205,7 @@ class Matrix(
         this[2, 3] = -1.0
         this[3, 3] = 0.0
     }
-
+    
     /**
      * Transpose the matrix.
      */
@@ -220,29 +220,29 @@ class Matrix(
             }
         }
     }
-
+    
     /**
      * Return a linear row-major index referring to the cell at [row]/[col].
      */
     fun rowMajorIndex(row: Int, col: Int) = row * cols + col
-
+    
     /**
      * Set the float at [row]/[col] to [value].
      */
     public override operator fun set(row: Int, col: Int, value: Double) {
         doubles.put(rowMajorIndex(row, col), value)
     }
-
+    
     /**
      * Return the float at [row]/[col].
      */
     public override operator fun get(row: Int, col: Int) = doubles[rowMajorIndex(row, col)]
-
+    
     /**
      * Shortly represents this matrix as a string.
      */
     override fun toString() = "[${rows}x$cols]"
-
+    
     /**
      * Prints the whole matrix into a string representation.
      */
@@ -262,7 +262,7 @@ class Matrix(
         sb.append(" ]")
         return sb.toString()
     }
-
+    
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(rows)
         parcel.writeInt(cols)
@@ -270,19 +270,19 @@ class Matrix(
             parcel.writeDouble(this[row, col])
         }
     }
-
+    
     override fun describeContents(): Int {
         return 0
     }
-
+    
     companion object CREATOR : Parcelable.Creator<Matrix> {
         override fun createFromParcel(parcel: Parcel): Matrix {
             return Matrix(parcel)
         }
-
+        
         override fun newArray(size: Int): Array<Matrix?> {
             return arrayOfNulls(size)
         }
     }
-
+    
 }
