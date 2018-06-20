@@ -23,7 +23,7 @@ class GraphicsView : GLSurfaceView {
     
     @PublishedApi
     internal val renderer = Renderer(
-            themedColorInt(context, android.R.attr.windowBackground),
+            context.themedColorInt(android.R.attr.windowBackground),
             viewModel,
             context.assets,
             resources.displayMetrics.xdpi.toDouble()

@@ -29,12 +29,12 @@ class MainActivity : AppCompatActivity() {
         viewModel.synchronized {
             colorResolver = { color ->
                 when (color) {
-                    Geometry.Color.PRIMARY -> themedColorInt(this@MainActivity, R.attr.colorPrimaryGeometry)
-                    Geometry.Color.ACCENT -> themedColorInt(this@MainActivity, R.attr.colorAccent)
-                    Geometry.Color.X -> themedColorInt(this@MainActivity, R.attr.colorAxisX)
-                    Geometry.Color.Y -> themedColorInt(this@MainActivity, R.attr.colorAxisY)
-                    Geometry.Color.Z -> themedColorInt(this@MainActivity, R.attr.colorAxisZ)
-                    Geometry.Color.Q -> themedColorInt(this@MainActivity, R.attr.colorAccent)
+                    Geometry.Color.PRIMARY -> themedColorInt(R.attr.colorPrimaryGeometry)
+                    Geometry.Color.ACCENT -> themedColorInt(R.attr.colorAccent)
+                    Geometry.Color.X -> themedColorInt(R.attr.colorAxisX)
+                    Geometry.Color.Y -> themedColorInt(R.attr.colorAxisY)
+                    Geometry.Color.Z -> themedColorInt(R.attr.colorAxisZ)
+                    Geometry.Color.Q -> themedColorInt(R.attr.colorAccent)
                 }
             }
         }
