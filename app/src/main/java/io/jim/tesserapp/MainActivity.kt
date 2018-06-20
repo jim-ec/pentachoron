@@ -5,10 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.geometry.axis
-import io.jim.tesserapp.geometry.grid
 import io.jim.tesserapp.graphics.themedColorInt
-import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
 import kotlinx.android.synthetic.main.activity_main.*
@@ -40,41 +37,6 @@ class MainActivity : AppCompatActivity() {
                     Geometry.Color.Q -> themedColorInt(this@MainActivity, R.attr.colorAccent)
                 }
             }
-        }
-        
-        viewModel.synchronized {
-            
-            featuredGeometry.apply {
-                name = "Featured Geometry"
-                
-                erase()
-                
-                addQuadrilateral(
-                        Vector4dh(1.0, 1.0, 1.0, 0.0),
-                        Vector4dh(-1.0, 1.0, 1.0, 0.0),
-                        Vector4dh(-1.0, -1.0, 1.0, 0.0),
-                        Vector4dh(1.0, -1.0, 1.0, 0.0),
-                        color = Geometry.Color.ACCENT
-                )
-    
-                extrude(
-                        direction = Vector4dh(0.0, 0.0, -2.0, 0.0),
-                        keepColors = true,
-                        connectorColor = Geometry.Color.ACCENT
-                )
-            }
-            
-            gridGeometry.apply {
-                erase()
-                grid()
-            }
-            
-            // Create axis:
-            axisGeometry.apply {
-                erase()
-                axis()
-            }
-            
         }
         
         // Set theme according to a shared preference.

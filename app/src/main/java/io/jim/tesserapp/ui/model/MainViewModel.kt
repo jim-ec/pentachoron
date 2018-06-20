@@ -3,7 +3,10 @@ package io.jim.tesserapp.ui.model
 import android.arch.lifecycle.ViewModel
 import android.graphics.Color
 import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.geometry.axis
+import io.jim.tesserapp.geometry.grid
 import io.jim.tesserapp.math.common.Smoothed
+import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.util.synchronized
 
 /**
@@ -45,6 +48,22 @@ class MainViewModel : ViewModel() {
             }
     ).apply {
         geometries += this
+    
+        name = "Featured Geometry"
+    
+        addQuadrilateral(
+                Vector4dh(1.0, 1.0, 1.0, 0.0),
+                Vector4dh(-1.0, 1.0, 1.0, 0.0),
+                Vector4dh(-1.0, -1.0, 1.0, 0.0),
+                Vector4dh(1.0, -1.0, 1.0, 0.0),
+                color = Geometry.Color.ACCENT
+        )
+    
+        extrude(
+                direction = Vector4dh(0.0, 0.0, -2.0, 0.0),
+                keepColors = true,
+                connectorColor = Geometry.Color.ACCENT
+        )
     }
     
     /**
@@ -52,6 +71,8 @@ class MainViewModel : ViewModel() {
      */
     val gridGeometry = Geometry().apply {
         name = "Grid"
+    
+        grid()
     }
     
     /**
@@ -74,6 +95,8 @@ class MainViewModel : ViewModel() {
     val axisGeometry = Geometry().apply {
         name = "Axis"
         geometries += this
+    
+        axis()
     }
     
     /**
