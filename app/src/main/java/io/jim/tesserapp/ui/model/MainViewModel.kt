@@ -36,13 +36,15 @@ class MainViewModel : ViewModel() {
                 // by using the difference value returned from the smooth-delegates:
                 
                 this@MainViewModel.synchronized {
-                    rotateX(rotationX.smoothed * java.lang.Math.PI)
-                    rotateY(rotationY.smoothed * java.lang.Math.PI)
-                    rotateZ(rotationZ.smoothed * java.lang.Math.PI)
+                    rotateX(rotationX.smoothed * Math.PI)
+                    rotateY(rotationY.smoothed * Math.PI)
+                    rotateZ(rotationZ.smoothed * Math.PI)
+                    rotateQ(rotationQ.smoothed * Math.PI)
                     
                     translateX(translationX.smoothed)
                     translateY(translationY.smoothed)
                     translateZ(translationZ.smoothed)
+                    translateQ(translationQ.smoothed)
                 }
                 
             }
@@ -144,8 +146,9 @@ class MainViewModel : ViewModel() {
     /**
      * Q translation.
      */
-    val translationQ =
-            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+    val translationQ = SmoothedLiveData(
+            initialValue = 1.5,
+            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
     
     /**
      * Camera distance.
@@ -168,5 +171,12 @@ class MainViewModel : ViewModel() {
             SmoothedLiveData(initialValue = -Math.PI / 8.0, transitionInterval = 80.0)
     
     var colorResolver: (color: Geometry.Color) -> Int = { Color.BLACK }
+    
+    enum class RenderMode {
+        WIREFRAME_PROJECTION,
+        COLLAPSE_Z
+    }
+    
+    var renderMode = RenderMode.WIREFRAME_PROJECTION
     
 }

@@ -82,6 +82,18 @@ class Transform {
     }
     
     /**
+     * Rotate the geometry in the *global* the xq-plane.
+     * The set rotation is in no ways absolute, but rather accumulated to the current transform.
+     *
+     * @param deltaAngle Amount of rotation, in radians.
+     */
+    fun rotateQ(deltaAngle: Double) {
+        newRotationMatrix.identity()
+        newRotationMatrix.rotation(a = 0, b = 3, radians = deltaAngle)
+        applyNewRotation()
+    }
+    
+    /**
      * Apply rotation described in [newRotationMatrix] to [rotationMatrix].
      */
     private fun applyNewRotation() {
@@ -120,6 +132,16 @@ class Transform {
      */
     fun translateZ(deltaAmount: Double) {
         translation.z += deltaAmount
+    }
+    
+    /**
+     * Translate the geometry along the q-axis.
+     * The set translation is in no ways absolute, but rather accumulated to the current transform.
+     *
+     * @param deltaAmount Amount of translation.
+     */
+    fun translateQ(deltaAmount: Double) {
+        translation.q += deltaAmount
     }
     
     /**

@@ -1,7 +1,7 @@
 package io.jim.tesserapp.graphics
 
-import io.jim.tesserapp.geometry.CollapseQ
 import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.util.InputStreamMemory
 
 /**
@@ -19,15 +19,11 @@ class DrawDataProvider {
     val vertexMemory = InputStreamMemory(100, VertexBuffer.ATTRIBUTE_COUNTS)
     
     /**
-     * Projector used to project 4d geometry into 3d space.
-     */
-    private val wireframeProjector = CollapseQ()
-    
-    /**
      * Compute new model matrices and rewrite the vertex memory.
      */
     fun updateVertices(
             geometries: Iterable<Geometry>,
+            interpreter: (Geometry, (position: Vector4dh, color: Geometry.Color) -> Unit) -> Unit,
             colorResolver: (Geometry.Color) -> Int
     ) {
         
@@ -37,8 +33,8 @@ class DrawDataProvider {
             
             // Update geometry transform in each frame, used to implement smoothed transform:
             geometry.updateTransform()
-            
-            wireframeProjector(geometry) { position, color ->
+    
+            interpreter(geometry) { position, color ->
     
                 vertexMemory.record {
         

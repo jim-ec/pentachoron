@@ -4,13 +4,11 @@ import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.AdapterView
 import android.widget.FrameLayout
 import io.jim.tesserapp.MainActivity
 import io.jim.tesserapp.R
-import io.jim.tesserapp.ui.model.Controller
-import io.jim.tesserapp.ui.model.cameraDistanceController
-import io.jim.tesserapp.ui.model.rotationController
-import io.jim.tesserapp.ui.model.translationController
+import io.jim.tesserapp.ui.model.*
 import io.jim.tesserapp.util.LinearList
 import io.jim.tesserapp.util.synchronized
 import kotlinx.android.synthetic.main.view_controller.view.*
@@ -30,10 +28,6 @@ class ControllerView : FrameLayout {
     
     init {
         View.inflate(context, R.layout.view_controller, this)
-        
-        // Disable 4th dimensional seeker as that is a feature not implemented yet:
-        qRotationSeekBar.isEnabled = false
-        qTranslationSeekBar.isEnabled = false
         
         // Set theme-switch-button to currently set theme:
         darkThemeSwitch.isChecked = with(context as Activity) {
@@ -92,6 +86,22 @@ class ControllerView : FrameLayout {
                         enableGrid = isChecked
                     }
                 }
+            }
+    
+            renderModeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    viewModel.synchronized {
+                        viewModel.renderMode = when (position) {
+                            0 -> MainViewModel.RenderMode.WIREFRAME_PROJECTION
+                            1 -> MainViewModel.RenderMode.COLLAPSE_Z
+                            else -> throw RuntimeException("Unknown render mode $position selected")
+                        }
+                    }
+                }
+        
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+        
             }
             
             // Link individual controllers to view-model entries:

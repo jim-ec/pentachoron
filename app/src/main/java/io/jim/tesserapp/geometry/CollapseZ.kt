@@ -6,7 +6,7 @@ import io.jim.tesserapp.math.vector.Vector4dh
  * Project [geometry] down to a 3d wireframe.
  * @param f Called for each wireframe vertex, i.e. its position and color.
  */
-inline fun projectWireframe(
+inline fun collapseZ(
         geometry: Geometry,
         crossinline f: (position: Vector4dh, color: Geometry.Color) -> Unit) {
     
@@ -19,8 +19,8 @@ inline fun projectWireframe(
             val transformedPosition = Vector4dh()
             transformedPosition.multiplication(position, geometry.transform.modelMatrix)
             
-            // Project vector down to a 3d volume:
-            transformedPosition /= transformedPosition.q + Geometry.Q_PROJECTION_VOLUME
+            transformedPosition.z = transformedPosition.q // Store q as z
+            transformedPosition.q = 0.0
             
             f(transformedPosition, line.color)
         }

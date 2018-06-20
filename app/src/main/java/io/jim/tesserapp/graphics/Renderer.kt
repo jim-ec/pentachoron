@@ -3,6 +3,8 @@ package io.jim.tesserapp.graphics
 import android.content.res.AssetManager
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
+import io.jim.tesserapp.geometry.collapseZ
+import io.jim.tesserapp.geometry.projectWireframe
 import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.math.matrix.ViewMatrix
 import io.jim.tesserapp.ui.model.MainViewModel
@@ -88,7 +90,14 @@ class Renderer(
         viewModel.synchronized {
             
             // Ensure vertex data is up-to-date:
-            drawDataProvider.updateVertices(geometries, colorResolver)
+            drawDataProvider.updateVertices(
+                    geometries,
+                    when (renderMode) {
+                        MainViewModel.RenderMode.WIREFRAME_PROJECTION -> ::projectWireframe
+                        MainViewModel.RenderMode.COLLAPSE_Z -> ::collapseZ
+                    },
+                    colorResolver
+            )
             
         }
         
