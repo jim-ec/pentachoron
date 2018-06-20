@@ -1,7 +1,7 @@
 package io.jim.tesserapp.graphics
 
+import io.jim.tesserapp.geometry.CollapseQ
 import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.geometry.WireframeProjector
 import io.jim.tesserapp.util.InputStreamMemory
 
 /**
@@ -21,7 +21,7 @@ class DrawDataProvider {
     /**
      * Projector used to project 4d geometry into 3d space.
      */
-    private val wireframeProjector = WireframeProjector()
+    private val wireframeProjector = CollapseQ()
     
     /**
      * Compute new model matrices and rewrite the vertex memory.
