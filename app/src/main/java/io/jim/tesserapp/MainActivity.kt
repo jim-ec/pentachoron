@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         
         // Fetch view model:
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-    
+        
         viewModel.synchronized {
             colorResolver = { color ->
                 when (color) {

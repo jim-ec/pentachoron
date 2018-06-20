@@ -16,9 +16,9 @@ class GlException(msg: String, error: Int = GLES30.glGetError()) :
             GLES30.GL_OUT_OF_MEMORY -> "out of memory"
             else -> "unknown error"
         } + "): " + msg) {
-
+    
     companion object {
-
+        
         /**
          * Simply checks for an error-state and throws [GlException] if so.
          * @param currentAction Short description what the caller is currently about to do.
@@ -28,7 +28,7 @@ class GlException(msg: String, error: Int = GLES30.glGetError()) :
                 throw GlException("Occurred when: $currentAction", it)
             }
         }
-
+        
     }
-
+    
 }

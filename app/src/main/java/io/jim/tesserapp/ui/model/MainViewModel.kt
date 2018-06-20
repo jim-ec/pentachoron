@@ -34,23 +34,23 @@ class MainViewModel : ViewModel() {
             onTransformUpdate = {
                 // Transform geometry in each frame relatively,
                 // by using the difference value returned from the smooth-delegates:
-    
+                
                 this@MainViewModel.synchronized {
                     rotateX(rotationX.smoothed * java.lang.Math.PI)
                     rotateY(rotationY.smoothed * java.lang.Math.PI)
                     rotateZ(rotationZ.smoothed * java.lang.Math.PI)
-        
+                    
                     translateX(translationX.smoothed)
                     translateY(translationY.smoothed)
                     translateZ(translationZ.smoothed)
                 }
-    
+                
             }
     ).apply {
         geometries += this
-    
+        
         name = "Featured Geometry"
-    
+        
         addQuadrilateral(
                 Vector4dh(1.0, 1.0, 1.0, 0.0),
                 Vector4dh(-1.0, 1.0, 1.0, 0.0),
@@ -58,7 +58,7 @@ class MainViewModel : ViewModel() {
                 Vector4dh(1.0, -1.0, 1.0, 0.0),
                 color = Geometry.Color.ACCENT
         )
-    
+        
         extrude(
                 direction = Vector4dh(0.0, 0.0, -2.0, 0.0),
                 keepColors = true,
@@ -71,7 +71,7 @@ class MainViewModel : ViewModel() {
      */
     val gridGeometry = Geometry().apply {
         name = "Grid"
-    
+        
         grid()
     }
     
@@ -95,7 +95,7 @@ class MainViewModel : ViewModel() {
     val axisGeometry = Geometry().apply {
         name = "Axis"
         geometries += this
-    
+        
         axis()
     }
     

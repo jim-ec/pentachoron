@@ -7,27 +7,27 @@ import io.jim.tesserapp.math.common.MathException
  * These are matrices and vectors.
  */
 abstract class MatrixMultipliable {
-
+    
     /**
      * Rows taken account into matrix multiplication.
      */
     abstract val rows: Int
-
+    
     /**
      * Columns taken account into matrix multiplication.
      */
     abstract val cols: Int
-
+    
     /**
      * Set value at a specific matrix cell to [value].
      */
     protected abstract operator fun set(row: Int, col: Int, value: Double)
-
+    
     /**
      * Get value at a specific matrix cell.
      */
     protected abstract operator fun get(row: Int, col: Int): Double
-
+    
     /**
      * Calls [f] for each coefficient.
      */
@@ -38,7 +38,7 @@ abstract class MatrixMultipliable {
             }
         }
     }
-
+    
     /**
      * Multiply [lhs] and [rhs] matrix storing the result in this matrix.
      *
@@ -49,16 +49,16 @@ abstract class MatrixMultipliable {
             throw MathException("Cannot multiply $lhs * $rhs")
         if (lhs.rows != rows || rhs.cols != cols)
             throw MathException("Target matrix $this is incompatible for $lhs * $rhs")
-
+        
         forEachComponent { row, col ->
             var sum = 0.0
-
+            
             for (i in 0 until lhs.cols) {
                 sum += lhs[row, i] * rhs[i, col]
             }
-
+            
             this[row, col] = sum
         }
     }
-
+    
 }

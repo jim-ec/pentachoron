@@ -18,17 +18,17 @@ class Line<out T : VectorN>(
         val endIndex: Int,
         var color: Geometry.Color
 ) {
-
+    
     /**
      * Start point.
      */
     val start = positions[startIndex]
-
+    
     /**
      * End point.
      */
     val end = positions[endIndex]
-
+    
     /**
      * Calls [f] for both the start position and the end position.
      */
@@ -36,5 +36,5 @@ class Line<out T : VectorN>(
         f(start)
         f(end)
     }
-
+    
 }

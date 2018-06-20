@@ -5,22 +5,22 @@ package io.jim.tesserapp.math.vector
  * The first 4 components are called: `x`, `y`, `z` and `q`.
  */
 class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q) {
-
+    
     /**
      * Construct a vector with all components set to zero.
      */
     constructor() : this(0.0, 0.0, 0.0, 0.0)
-
+    
     /**
      * Though this vector is 4d, it technically has 5 columns, including the virtual w-component.
      */
     override val cols = 5
-
+    
     /**
      * The dimension string should underline that the vector is not actually 4d.
      */
     override val dimensionString = "4dh"
-
+    
     /**
      * X-component.
      */
@@ -29,7 +29,7 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
         set(value) {
             this[0] = value
         }
-
+    
     /**
      * Y-component.
      */
@@ -38,7 +38,7 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
         set(value) {
             this[1] = value
         }
-
+    
     /**
      * Z-component.
      */
@@ -47,7 +47,7 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
         set(value) {
             this[2] = value
         }
-
+    
     /**
      * Q-component.
      */
@@ -56,7 +56,7 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
         set(value) {
             this[3] = value
         }
-
+    
     /**
      * W-component. This is always 1.
      * Setting this value will lead to w-division.
@@ -66,7 +66,7 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
         set(value) {
             this /= value
         }
-
+    
     /**
      * Intercept getting the w-component, which is always 1.
      */
@@ -76,7 +76,7 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
         else
             w
     }
-
+    
     /**
      * Intercept setting values to the fourth column, which will effectively lead to w-division.
      */
@@ -87,5 +87,5 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
             w = value
         }
     }
-
+    
 }

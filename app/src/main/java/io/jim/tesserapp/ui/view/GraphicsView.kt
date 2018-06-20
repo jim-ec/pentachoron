@@ -61,10 +61,10 @@ class GraphicsView : GLSurfaceView {
                 event.action == ACTION_MOVE -> {
                     val dx = event.x - touchStartPosition.x
                     val dy = event.y - touchStartPosition.y
-    
+                    
                     viewModel.horizontalCameraRotation.value += dx * TOUCH_ROTATION_SENSITIVITY
                     viewModel.verticalCameraRotation.value -= dy * TOUCH_ROTATION_SENSITIVITY
-    
+                    
                     touchStartPosition.x = event.x.toDouble()
                     touchStartPosition.y = event.y.toDouble()
                     true

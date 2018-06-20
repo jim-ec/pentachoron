@@ -11,16 +11,16 @@ import java.nio.Buffer
  */
 class GlTransformFeedback(private val varying: String, val mode: Int)
     : GlBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_STATIC_READ) {
-
+    
     /**
      * Indicates whether the transform feedback object has already allocated its memory.
      * If not, no capturing occurs.
      */
     var allocated = false
         private set
-
+    
     //var lastDump = 0L
-
+    
     /**
      * Setup the feedback capturing information.
      * Is automatically called by [GlProgram] when creating its program instance.
@@ -32,12 +32,12 @@ class GlTransformFeedback(private val varying: String, val mode: Int)
                 GLES30.GL_INTERLEAVED_ATTRIBS
         )
     }
-
+    
     override fun allocate(vectorCapacity: Int, data: Buffer?) {
         super.allocate(vectorCapacity, data)
         allocated = true
     }
-
+    
     /**
      * Enables transform feedback capturing into this buffer as long as [f] runs.
      * After that, you can read out feedback using [read].
@@ -47,14 +47,14 @@ class GlTransformFeedback(private val varying: String, val mode: Int)
             GLES30.glBindBufferBase(GLES30.GL_TRANSFORM_FEEDBACK_BUFFER, 0, bufferHandle)
             GLES30.glBeginTransformFeedback(mode)
             GlException.check("Begin transform feedback")
-
+            
             f()
-
+            
             GLES30.glEndTransformFeedback()
             GlException.check("End transform feedback")
-
+            
             GLES30.glFlush()
-
+            
             /*if (System.currentTimeMillis() - lastDump > 1000) {
                 lastDump = System.currentTimeMillis()
                 println("-----------------------------------------------------------------")
@@ -66,7 +66,7 @@ class GlTransformFeedback(private val varying: String, val mode: Int)
         } else {
             f()
         }
-
+        
     }
-
+    
 }

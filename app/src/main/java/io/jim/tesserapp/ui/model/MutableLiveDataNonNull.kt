@@ -13,11 +13,11 @@ import io.jim.tesserapp.util.synchronized
  * @constructor Creates a live-data with an initial value.
  */
 open class MutableLiveDataNonNull<T : Any>(initialValue: T) : MutableLiveData<T>() {
-
+    
     init {
         value = initialValue
     }
-
+    
     /**
      * Return the current *non-null* value.
      */
@@ -26,7 +26,7 @@ open class MutableLiveDataNonNull<T : Any>(initialValue: T) : MutableLiveData<T>
             super.getValue()!!
         }
     }
-
+    
     /**
      * Set the *non-null* value to this live data.
      */
@@ -35,7 +35,7 @@ open class MutableLiveDataNonNull<T : Any>(initialValue: T) : MutableLiveData<T>
             super.setValue(value)
         }
     }
-
+    
     /**
      * Install an observer bound to [lifecycleOwner]'s life duration.
      *
@@ -48,7 +48,7 @@ open class MutableLiveDataNonNull<T : Any>(initialValue: T) : MutableLiveData<T>
             })
         }
     }
-
+    
     /**
      * Install an immortal observer.
      *
@@ -61,5 +61,5 @@ open class MutableLiveDataNonNull<T : Any>(initialValue: T) : MutableLiveData<T>
             }
         }
     }
-
+    
 }

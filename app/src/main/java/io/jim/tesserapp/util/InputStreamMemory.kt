@@ -142,12 +142,12 @@ class InputStreamMemory(
      * @throws ExcessVectorRecordedException If recorded vector counts does not match up with
      * vectors consumed per element.
      */
-    inline fun record(f: (memory: InputStreamMemory) -> Unit) {
+    inline fun record(f: () -> Unit) {
 
         // Remember count of written vectors before executing lambda:
         val oldVectorCounts = writtenVectorCounts
-
-        f(this)
+    
+        f()
 
         // Compute counts of excessively written vectors:
         val excessVectors = (writtenVectorCounts - oldVectorCounts) % vectorsPerElement

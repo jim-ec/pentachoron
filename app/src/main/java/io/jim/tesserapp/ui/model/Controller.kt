@@ -37,40 +37,40 @@ class Controller(
         val valueRange: ClosedRange<Double>,
         val watchFormatString: String
 ) {
-
+    
     /**
      * Range of possible seek-bar results.
      * The range is chosen in such a manner that you can chose values with a precision
      * of one tenth.
      */
     private val seekBarRange = 0.0..(valueRange.endInclusive - valueRange.start) * 10.0
-
+    
     init {
         viewModel.synchronized {
             val startValue = liveData().value
-
+            
             if (valueRange.isEmpty())
                 throw RuntimeException("Controller value-range cannot be empty")
             if (!valueRange.contains(startValue))
                 throw RuntimeException("Start value must be located in $valueRange")
-
+            
             seekBar.progress = mapped(startValue, valueRange, seekBarRange).toInt()
             seekBar.max = seekBarRange.endInclusive.toInt()
         }
-
+        
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 update()
             }
-
+            
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
-
+        
         // Initially format the value label, using the start value:
         update()
     }
-
+    
     /**
      * Called when seek-bar progress changes.
      * Updates the watch text and passes the new value to the live data.
@@ -82,7 +82,7 @@ class Controller(
             liveData().value = value
         }
     }
-
+    
     /**
      * Unlink this controller from the seek-bar.
      *
@@ -91,5 +91,5 @@ class Controller(
     fun unlink() {
         seekBar.setOnSeekBarChangeListener(null)
     }
-
+    
 }

@@ -11,7 +11,7 @@ data class CubicPolynomial(
         private var x0: Double = 0.0,
         private var y0: Double = 0.0
 ) {
-
+    
     /**
      * Spans the curve from a source point to a target point.
      *
@@ -33,17 +33,17 @@ data class CubicPolynomial(
     ) {
         if (sourceX == targetX)
             throw MathException("X-range of curve cannot be zero")
-
+        
         val dx = targetX - sourceX
         val dy = targetY - sourceY
-
+        
         a = (sourceGradient * dx - 2 * dy) / (dx * dx * dx)
         b = (3 * dy - 2 * sourceGradient * dx) / (dx * dx)
         c = sourceGradient
         x0 = sourceX
         y0 = sourceY
     }
-
+    
     /**
      * Re-spans the curve to a new point from a source point on the old curve.
      *
@@ -69,17 +69,17 @@ data class CubicPolynomial(
                 sourceGradient = if (keepSourceGradient) derivation(sourceX) else 0.0
         )
     }
-
+    
     /**
      * Compute `f([x])`.
      */
     operator fun invoke(x: Double) =
             (x - x0).let { dx -> a * dx * dx * dx + b * dx * dx + c * dx + y0 }
-
+    
     /**
      * Compute the derivation `f'([x])`.
      */
     fun derivation(x: Double) =
             (x - x0).let { dx -> 3 * a * dx * dx + 2 * b * dx + c }
-
+    
 }

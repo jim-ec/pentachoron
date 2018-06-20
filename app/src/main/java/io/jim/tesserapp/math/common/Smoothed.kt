@@ -93,7 +93,7 @@ open class Smoothed<R>(
                     keepSourceGradient = true
             )
         }
-
+        
         // Otherwise, span a completely new curve, using final value from the last transition:
         else {
             curve.span(
@@ -114,7 +114,7 @@ open class Smoothed<R>(
      */
     operator fun getValue(thisRef: R, property: KProperty<*>) =
             currentValue.let { value ->
-    
+                
                 // Return difference, but remember the current value as the new old value:
                 when (delegationMode) {
                     DelegationMode.ABSOLUTE -> value
