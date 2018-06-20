@@ -5,7 +5,7 @@
         <item name="colorPrimaryDark">#e0e0e0</item>
         <item name="colorAccent">#00BFA5</item>
 
-        <item name="colorGrid">#bdbdbd</item>
+        <item name="colorPrimaryGeometry">#bdbdbd</item>
         <item name="colorAxisX">#f44336</item>
         <item name="colorAxisY">#8BC34A</item>
         <item name="colorAxisZ">#3F51B5</item>
@@ -16,7 +16,7 @@
         <item name="colorPrimaryDark">#424242</item>
         <item name="colorAccent">#1DE9B6</item>
 
-        <item name="colorGrid">#bdbdbd</item>
+        <item name="colorPrimaryGeometry">#bdbdbd</item>
         <item name="colorAxisX">#e57373</item>
         <item name="colorAxisY">#DCE775</item>
         <item name="colorAxisZ">#7986CB</item>

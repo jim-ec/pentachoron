@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.axis
 import io.jim.tesserapp.geometry.grid
 import io.jim.tesserapp.graphics.themedColorInt
@@ -27,12 +28,24 @@ class MainActivity : AppCompatActivity() {
         
         // Fetch view model:
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+    
+        viewModel.synchronized {
+            colorResolver = { color ->
+                when (color) {
+                    Geometry.Color.PRIMARY -> themedColorInt(this@MainActivity, R.attr.colorPrimaryGeometry)
+                    Geometry.Color.ACCENT -> themedColorInt(this@MainActivity, R.attr.colorAccent)
+                    Geometry.Color.X -> themedColorInt(this@MainActivity, R.attr.colorAxisX)
+                    Geometry.Color.Y -> themedColorInt(this@MainActivity, R.attr.colorAxisY)
+                    Geometry.Color.Z -> themedColorInt(this@MainActivity, R.attr.colorAxisZ)
+                    Geometry.Color.Q -> themedColorInt(this@MainActivity, R.attr.colorAccent)
+                }
+            }
+        }
         
         viewModel.synchronized {
             
             featuredGeometry.apply {
                 name = "Featured Geometry"
-                baseColor = themedColorInt(this@MainActivity, R.attr.colorAccent)
                 
                 erase()
                 
@@ -40,26 +53,26 @@ class MainActivity : AppCompatActivity() {
                         Vector4dh(1.0, 1.0, 1.0, 0.0),
                         Vector4dh(-1.0, 1.0, 1.0, 0.0),
                         Vector4dh(-1.0, -1.0, 1.0, 0.0),
-                        Vector4dh(1.0, -1.0, 1.0, 0.0)
+                        Vector4dh(1.0, -1.0, 1.0, 0.0),
+                        color = Geometry.Color.ACCENT
                 )
-                
-                extrude(Vector4dh(0.0, 0.0, -2.0, 0.0))
+    
+                extrude(
+                        direction = Vector4dh(0.0, 0.0, -2.0, 0.0),
+                        keepColors = true,
+                        connectorColor = Geometry.Color.ACCENT
+                )
             }
             
             gridGeometry.apply {
                 erase()
-                baseColor = themedColorInt(this@MainActivity, R.attr.colorGrid)
                 grid()
             }
             
             // Create axis:
             axisGeometry.apply {
                 erase()
-                axis(
-                        xAxisColor = themedColorInt(this@MainActivity, R.attr.colorAxisX),
-                        yAxisColor = themedColorInt(this@MainActivity, R.attr.colorAxisY),
-                        zAxisColor = themedColorInt(this@MainActivity, R.attr.colorAxisZ)
-                )
+                axis()
             }
             
         }

@@ -16,7 +16,7 @@ class Line<out T : VectorN>(
         positions: List<T>,
         val startIndex: Int,
         val endIndex: Int,
-        var color: Int
+        var color: Geometry.Color
 ) {
 
     /**

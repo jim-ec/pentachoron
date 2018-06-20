@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="colorGrid" format="color" />
+    <attr name="colorPrimaryGeometry" format="color" />
     <attr name="colorAxisX" format="color" />
     <attr name="colorAxisY" format="color" />
     <attr name="colorAxisZ" format="color" />

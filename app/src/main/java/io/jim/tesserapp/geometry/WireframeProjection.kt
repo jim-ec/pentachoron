@@ -17,7 +17,7 @@ class WireframeProjector {
      */
     inline operator fun invoke(
             geometry: Geometry,
-            crossinline f: (position: Vector3dh, color: Int) -> Unit) {
+            crossinline f: (position: Vector3dh, color: Geometry.Color) -> Unit) {
 
         geometry.transform.computeModelMatrix()
 

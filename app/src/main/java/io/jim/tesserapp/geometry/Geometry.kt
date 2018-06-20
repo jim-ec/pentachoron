@@ -1,6 +1,5 @@
 package io.jim.tesserapp.geometry
 
-import android.graphics.Color.BLACK
 import io.jim.tesserapp.math.vector.Vector4dh
 import io.jim.tesserapp.util.LinearList
 
@@ -43,11 +42,6 @@ class Geometry(
     var name = ""
     
     /**
-     * Color of this geometry.
-     */
-    var baseColor = BLACK
-    
-    /**
      * Model-transform.
      */
     val transform = Transform()
@@ -80,9 +74,9 @@ class Geometry(
      * Add a line spanning between two positions.
      * @param a Index to the start position.
      * @param b Index to the end position.
-     * @param color Line color, defaults to geometry's [baseColor].
+     * @param color Line color.
      */
-    private fun addLine(a: Int, b: Int, color: Int = baseColor) {
+    private fun addLine(a: Int, b: Int, color: Color = Color.PRIMARY) {
         lines += Line(positions, a, b, color)
     }
     
@@ -91,9 +85,9 @@ class Geometry(
      * This actually creates to new positions.
      * @param a Starting position.
      * @param b End position.
-     * @param color Line color, defaults to geometry's [baseColor].
+     * @param color Line color.
      */
-    fun addLine(a: Vector4dh, b: Vector4dh, color: Int = baseColor) {
+    fun addLine(a: Vector4dh, b: Vector4dh, color: Color = Color.PRIMARY) {
         addPosition(a)
         addPosition(b)
         addLine(positions.lastIndex - 1, positions.lastIndex, color)
@@ -105,14 +99,14 @@ class Geometry(
      * @param b Second corner.
      * @param c Third corner.
      * @param d Fourth corner.
-     * @param color Color of added lines. Defaults to [baseColor].
+     * @param color Color of added lines.
      */
     fun addQuadrilateral(
             a: Vector4dh,
             b: Vector4dh,
             c: Vector4dh,
             d: Vector4dh,
-            color: Int = baseColor
+            color: Color = Color.PRIMARY
     ) {
         addPosition(a)
         addPosition(b)
@@ -128,18 +122,8 @@ class Geometry(
      * Colorize the [lineIndex]th line to [color].
      * @throws IndexOutOfBoundsException If index is out of bounds.
      */
-    @Suppress("MemberVisibilityCanBePrivate")
-    fun colorizeLine(lineIndex: Int, color: Int) {
+    fun colorizeLine(lineIndex: Int, color: Color) {
         lines[lineIndex].color = color
-    }
-    
-    /**
-     * Colorize the [lineIndex]th line to [baseColor].
-     * @throws IndexOutOfBoundsException If index is out of bounds.
-     */
-    @Suppress("unused")
-    fun decolorizeLine(lineIndex: Int) {
-        colorizeLine(lineIndex, baseColor)
     }
     
     /**
@@ -152,7 +136,7 @@ class Geometry(
     fun extrude(
             direction: Vector4dh,
             keepColors: Boolean = false,
-            connectorColor: Int = baseColor
+            connectorColor: Color = Color.PRIMARY
     ) {
         val size = positions.size
         
@@ -168,7 +152,7 @@ class Geometry(
                     positions,
                     it.startIndex + size,
                     it.endIndex + size,
-                    if (keepColors) it.color else baseColor
+                    if (keepColors) it.color else Color.PRIMARY
             )
         }
         for (i in 0 until size) {
@@ -179,7 +163,7 @@ class Geometry(
     /**
      * Invoke [f] for each position and the color it's associated with.
      */
-    inline fun forEachVertex(f: (position: Vector4dh, color: Int) -> Unit) {
+    inline fun forEachVertex(f: (position: Vector4dh, color: Color) -> Unit) {
         lines.indexedForEach {
             f(it.start, it.color)
             f(it.end, it.color)
@@ -190,5 +174,23 @@ class Geometry(
      * Represents this geometry in a string.
      */
     override fun toString() = name
+    
+    /**
+     * Symbolic colors.
+     *
+     * Geometries are colored indirectly using this palette.
+     * The actual color integer is not relevant to the geometry.
+     *
+     * This is used to implement dynamic coloring when switching themes, without having to
+     * rebuild the geometry just to change the color.
+     */
+    enum class Color {
+        PRIMARY,
+        ACCENT,
+        X,
+        Y,
+        Z,
+        Q
+    }
     
 }

@@ -1,6 +1,7 @@
 package io.jim.tesserapp.ui.model
 
 import android.arch.lifecycle.ViewModel
+import android.graphics.Color
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.math.common.Smoothed
 import io.jim.tesserapp.util.synchronized
@@ -142,5 +143,7 @@ class MainViewModel : ViewModel() {
      */
     val verticalCameraRotation =
             SmoothedLiveData(initialValue = -Math.PI / 8.0, transitionInterval = 80.0)
+    
+    var colorResolver: (color: Geometry.Color) -> Int = { Color.BLACK }
     
 }

@@ -88,7 +88,7 @@ class Renderer(
         viewModel.synchronized {
             
             // Ensure vertex data is up-to-date:
-            drawDataProvider.updateVertices(geometries)
+            drawDataProvider.updateVertices(geometries, colorResolver)
             
         }
         

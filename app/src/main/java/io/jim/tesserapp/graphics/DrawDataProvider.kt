@@ -26,7 +26,10 @@ class DrawDataProvider {
     /**
      * Compute new model matrices and rewrite the vertex memory.
      */
-    fun updateVertices(geometries: Iterable<Geometry>) {
+    fun updateVertices(
+            geometries: Iterable<Geometry>,
+            colorResolver: (Geometry.Color) -> Int
+    ) {
 
         vertexMemory.rewind()
 
@@ -34,11 +37,19 @@ class DrawDataProvider {
 
             // Update geometry transform in each frame, used to implement smoothed transform:
             geometry.updateTransform()
-
-            wireframeProjector(geometry) { position, (red, green, blue) ->
+    
+            wireframeProjector(geometry) { position, color ->
+                
                 vertexMemory.record { memory ->
+    
                     memory.write(position.x, position.y, position.z, 1.0)
-                    memory.write(red, green, blue, 1f)
+    
+                    // Resolve symbolic geometry color into an actual integer and write
+                    // that into the memory:
+                    with(colorResolver(color)) {
+                        memory.write(red, green, blue, 1f)
+                    }
+                    
                 }
             }
         }
