@@ -110,7 +110,7 @@ class Renderer(
             
             // Recompute and upload view and perspective matrices:
             viewModel.synchronized {
-                shader.uploadViewMatrix(viewMatrix(
+                shader.uploadViewMatrix(viewMatrix.computed(
                         cameraDistance.smoothed,
                         aspectRatio,
                         horizontalCameraRotation.smoothed,

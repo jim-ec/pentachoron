@@ -8,7 +8,7 @@ import io.jim.tesserapp.math.vector.Vector3dh
 class LookAtMatrix {
 
     private val matrix = Matrix(4)
-    private val forward = Vector3dh()
+    private val forward = Vector3dh().apply { x = 1.0 }
     private val right = Vector3dh()
     private val up = Vector3dh()
     private val negatedEye = Vector3dh()
@@ -16,18 +16,11 @@ class LookAtMatrix {
 
     /**
      * Compute view matrix.
-     * @param eye Eye position.
-     * @param target Target position.
+     * @param distance Position of eye along the x-axis.
      * @param refUp Up direction of camera.
      * @return The view matrix. Each invocation returns the same matrix with updated values.
      */
-    operator fun invoke(eye: Vector3dh, target: Vector3dh, refUp: Vector3dh): Matrix {
-
-        forward.apply {
-            copy(eye)
-            this -= target
-            normalize()
-        }
+    fun computed(distance: Double, refUp: Vector3dh): Matrix {
 
         right.apply {
             crossed(refUp, forward)
@@ -39,10 +32,7 @@ class LookAtMatrix {
             normalize()
         }
 
-        negatedEye.apply {
-            copy(eye)
-            negate()
-        }
+        negatedEye.x = -distance
 
         matrix[0, 0] = right.x
         matrix[0, 1] = right.y

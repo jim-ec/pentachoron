@@ -17,28 +17,29 @@ class Shader(assets: AssetManager) : GlProgram(
         vertexShaderFile = "lines.vert",
         fragmentShaderFile = "lines.frag",
         transformFeedback = GlTransformFeedback("gl_Position", GLES30.GL_LINES)) {
-    
+
     /**
      * GLSL location of position attribute.
      */
     val positionAttributeLocation = GLES30.glGetAttribLocation(programHandle, "position")
-    
+
     /**
      * GLSL location of color attribute.
      */
     val colorAttributeLocation = GLES30.glGetAttribLocation(programHandle, "color")
-    
+
     private val viewMatrixLocation = GLES30.glGetUniformLocation(programHandle, "V")
     private val projectionMatrixLocation = GLES30.glGetUniformLocation(programHandle, "P")
-    
+
     private val floatBuffer = allocateNativeFloatMemory(16).asFloatBuffer()
-    
+
     private fun writeMatrixIntoFloatBuffer(matrix: Matrix) {
         matrix.forEachComponent { row, col ->
-            floatBuffer.put(matrix.rowMajorIndex(row, col), matrix[row, col].toFloat())
+            if (row <= 3 && col <= 3)
+                floatBuffer.put(row * 4 + col, matrix[row, col].toFloat())
         }
     }
-    
+
     /**
      * Upload [matrix] to the view matrix uniform.
      */
@@ -47,7 +48,7 @@ class Shader(assets: AssetManager) : GlProgram(
         GLES30.glUniformMatrix4fv(viewMatrixLocation, 1, false, floatBuffer)
         GlException.check("Uploading view matrix")
     }
-    
+
     /**
      * Upload [matrix] to the projection matrix uniform.
      */
@@ -56,5 +57,5 @@ class Shader(assets: AssetManager) : GlProgram(
         GLES30.glUniformMatrix4fv(projectionMatrixLocation, 1, false, floatBuffer)
         GlException.check("Uploading projection matrix")
     }
-    
+
 }

@@ -15,12 +15,10 @@ class ViewMatrix {
     private val matrixLookAt = LookAtMatrix()
     private val matrixScale = Matrix(4)
 
-    private val eye = Vector3dh(1.0, 0.0, 0.0)
     private val scale = Vector3dh(1.0, 1.0, 1.0)
 
     private val upVector = Vector3dh(0.0, 1.0, 0.0)
-    private val target = Vector3dh(0.0, 0.0, 0.0)
-    
+
     /**
      * Compute the view matrix.
      *
@@ -29,7 +27,7 @@ class ViewMatrix {
      *
      * @return Computed view matrix. Returned instance is the same for each call.
      */
-    operator fun invoke(
+    fun computed(
             distance: Double,
             aspectRatio: Double,
             horizontalRotation: Double,
@@ -38,10 +36,8 @@ class ViewMatrix {
         matrixHorizontalRotation.rotation(2, 0, horizontalRotation)
         matrixVerticalRotation.rotation(0, 1, verticalRotation)
         matrixRotation.multiplication(matrixHorizontalRotation, matrixVerticalRotation)
-        
-        eye.x = distance
-        
-        matrixLookAtRotation.multiplication(matrixRotation, matrixLookAt(eye, target, upVector))
+
+        matrixLookAtRotation.multiplication(matrixRotation, matrixLookAt.computed(distance, upVector))
         
         if (aspectRatio > 1) {
             // Viewport is wide => shrink horizontally
