@@ -9,6 +9,9 @@ import kotlin.reflect.KProperty
  * @param startValue
  * The start the property should has.
  *
+ * Note that if the property is delegated using [DelegationMode.RELATIVE_TO_LAST_READ], the very first
+ * read will return this initial value. Subsequent read calls return 0, unless the property is changed.
+ *
  * @property transitionInterval
  * The time it should take to fulfil one transition interval.
  *
@@ -60,7 +63,7 @@ open class Smoothed<R>(
      * Store the value existed when the last read operation occurred,
      * so we can return the difference.
      */
-    private var oldValue = startValue
+    private var oldValue = 0.0
     
     /**
      * The current value.

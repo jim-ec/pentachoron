@@ -147,7 +147,7 @@ class MainViewModel : ViewModel() {
      * Q translation.
      */
     val translationQ = SmoothedLiveData(
-            initialValue = 1.5,
+            initialValue = 0.5,
             delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
     
     /**
