@@ -27,7 +27,7 @@ class Vector3dhTest {
     @Test
     fun multiply() {
         val projection = Matrix(4).apply { perspective2D() }
-        val translation = Matrix(4).apply { translation(Vector3d(0.0, 0.0, 1.0)) }
+        val translation = Matrix(4).apply { translation(Vector3dh(0.0, 0.0, 1.0)) }
         val matrix = Matrix(4).apply { multiplication(translation, projection) }
 
         val result = Vector3dh()

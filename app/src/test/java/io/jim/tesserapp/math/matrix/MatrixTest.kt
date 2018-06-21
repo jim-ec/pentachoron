@@ -1,7 +1,6 @@
 package io.jim.tesserapp.math.matrix
 
 import io.jim.tesserapp.math.common.MathException
-import io.jim.tesserapp.math.vector.Vector3d
 import io.jim.tesserapp.math.vector.Vector3dh
 import io.jim.tesserapp.math.vector.VectorN
 import org.junit.Assert.assertEquals
@@ -70,7 +69,7 @@ class MatrixTest {
 
     @Test(expected = Matrix.IsNotQuadraticException::class)
     fun translationNotQuadratic() {
-        Matrix(3, 4).translation(Vector3d(2.0, 5.0, 6.0))
+        Matrix(3, 4).translation(VectorN(2.0, 5.0, 6.0))
     }
 
     @Test(expected = Matrix.IncompatibleTransformDimension::class)
@@ -80,7 +79,7 @@ class MatrixTest {
 
     @Test
     fun translation() {
-        matrix.translation(VectorN(2.0, 3.0, 4.0))
+        matrix.translation(Vector3dh(2.0, 3.0, 4.0))
         val vector = Vector3dh(5.0, 6.0, 7.0)
 
         Vector3dh().apply {
@@ -172,9 +171,9 @@ class MatrixTest {
     @Test
     fun lookAt() {
         val matrix = LookAtMatrix()(
-                eye = Vector3d(2.0, 2.0, 2.0),
-                target = Vector3d(0.0, 0.0, 0.0),
-                refUp = Vector3d(0.0, 1.0, 0.0)
+                eye = Vector3dh(2.0, 2.0, 2.0),
+                target = Vector3dh(0.0, 0.0, 0.0),
+                refUp = Vector3dh(0.0, 1.0, 0.0)
         )
 
         // Check the all matrix axis are unit vectors:

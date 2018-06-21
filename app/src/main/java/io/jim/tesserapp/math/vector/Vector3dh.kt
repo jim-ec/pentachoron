@@ -4,7 +4,7 @@ package io.jim.tesserapp.math.vector
  * A homogeneous 3d vector. Since it is effectively a 4D vector, it can only be multiplied
  * with 4xN matrices.
  */
-class Vector3dh(x: Double, y: Double, z: Double) : Vector3d(x, y, z) {
+class Vector3dh(x: Double, y: Double, z: Double) : VectorN(x, y, z) {
     
     /**
      * Construct a vector with all components set to zero, except [w].
@@ -20,6 +20,33 @@ class Vector3dh(x: Double, y: Double, z: Double) : Vector3d(x, y, z) {
      * The dimension string should underline that the vector is not actually 3d.
      */
     override val dimensionString = "3dh"
+
+    /**
+     * X-component.
+     */
+    var x: Double
+        get() = this[0]
+        set(value) {
+            this[0] = value
+        }
+
+    /**
+     * Y-component.
+     */
+    var y: Double
+        get() = this[1]
+        set(value) {
+            this[1] = value
+        }
+
+    /**
+     * Z-component.
+     */
+    var z: Double
+        get() = this[2]
+        set(value) {
+            this[2] = value
+        }
     
     /**
      * Intercept getting the w-component, which is always 1.
@@ -51,5 +78,14 @@ class Vector3dh(x: Double, y: Double, z: Double) : Vector3d(x, y, z) {
         set(value) {
             this /= value
         }
+
+    /**
+     * Compute the vector product of [lhs] and [rhs], storing the result in this vector.
+     */
+    fun crossed(lhs: Vector3dh, rhs: Vector3dh) {
+        x = lhs.y * rhs.z - lhs.z * rhs.y
+        y = lhs.z * rhs.x - lhs.x * rhs.z
+        z = lhs.x * rhs.y - lhs.y * rhs.x
+    }
     
 }

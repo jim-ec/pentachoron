@@ -8,7 +8,7 @@ import android.view.MotionEvent.*
 import io.jim.tesserapp.MainActivity
 import io.jim.tesserapp.graphics.Renderer
 import io.jim.tesserapp.graphics.themedColorInt
-import io.jim.tesserapp.math.vector.Vector3d
+import io.jim.tesserapp.math.vector.Vector3dh
 
 /**
  * A view capable of rendering 3D geometry.
@@ -28,8 +28,8 @@ class GraphicsView : GLSurfaceView {
             context.assets,
             resources.displayMetrics.xdpi.toDouble()
     )
-    
-    private val touchStartPosition = Vector3d(0.0, 0.0, 0.0)
+
+    private val touchStartPosition = Vector3dh(0.0, 0.0, 0.0)
     private var touchStartTime = 0L
     
     companion object {

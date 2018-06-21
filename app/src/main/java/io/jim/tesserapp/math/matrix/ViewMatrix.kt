@@ -1,6 +1,6 @@
 package io.jim.tesserapp.math.matrix
 
-import io.jim.tesserapp.math.vector.Vector3d
+import io.jim.tesserapp.math.vector.Vector3dh
 
 /**
  * Responsible for computing a view matrix.
@@ -14,12 +14,12 @@ class ViewMatrix {
     private val matrixVerticalRotation = Matrix(4)
     private val matrixLookAt = LookAtMatrix()
     private val matrixScale = Matrix(4)
-    
-    private val eye = Vector3d(1.0, 0.0, 0.0)
-    private val scale = Vector3d(1.0, 1.0, 1.0)
-    
-    private val upVector = Vector3d(0.0, 1.0, 0.0)
-    private val target = Vector3d(0.0, 0.0, 0.0)
+
+    private val eye = Vector3dh(1.0, 0.0, 0.0)
+    private val scale = Vector3dh(1.0, 1.0, 1.0)
+
+    private val upVector = Vector3dh(0.0, 1.0, 0.0)
+    private val target = Vector3dh(0.0, 0.0, 0.0)
     
     /**
      * Compute the view matrix.

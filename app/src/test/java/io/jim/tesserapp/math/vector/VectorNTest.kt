@@ -108,8 +108,8 @@ class VectorNTest {
 
     @Test
     fun cross() {
-        (Vector3d()).apply {
-            crossed(Vector3d(3.0, 1.0, 4.0), Vector3d(1.0, 2.0, 5.0))
+        (Vector3dh()).apply {
+            crossed(Vector3dh(3.0, 1.0, 4.0), Vector3dh(1.0, 2.0, 5.0))
 
             assertEquals(-3.0, x, 0.1)
             assertEquals(-11.0, y, 0.1)
