@@ -1,7 +1,5 @@
 package io.jim.tesserapp.math.matrix
 
-import android.os.Parcel
-import android.os.Parcelable
 import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.formatNumber
 import io.jim.tesserapp.math.vector.VectorN
@@ -18,21 +16,13 @@ import kotlin.math.sin
 class Matrix(
         override val rows: Int,
         override val cols: Int
-) : MatrixMultipliable(), Parcelable {
+) : MatrixMultipliable() {
     
     /**
      * Underlying number list.
      * The reference is kept re-assignable to enable optimized operations like swapping contents.
      */
     private var doubles = DoubleBuffer.allocate(rows * cols)
-    
-    constructor(parcel: Parcel) : this(
-            parcel.readInt(),
-            parcel.readInt()) {
-        forEachComponent { row, col ->
-            this[row, col] = parcel.readDouble()
-        }
-    }
     
     /**
      * Construct a quadratic matrix with [size] rows and columns.
@@ -262,27 +252,5 @@ class Matrix(
         sb.append(" ]")
         return sb.toString()
     }
-    
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(rows)
-        parcel.writeInt(cols)
-        forEachComponent { row, col ->
-            parcel.writeDouble(this[row, col])
-        }
-    }
-    
-    override fun describeContents(): Int {
-        return 0
-    }
-    
-    companion object CREATOR : Parcelable.Creator<Matrix> {
-        override fun createFromParcel(parcel: Parcel): Matrix {
-            return Matrix(parcel)
-        }
-        
-        override fun newArray(size: Int): Array<Matrix?> {
-            return arrayOfNulls(size)
-        }
-    }
-    
+
 }
