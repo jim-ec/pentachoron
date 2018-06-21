@@ -34,6 +34,8 @@ class LookAtMatrix {
 
         negatedEye.x = -distance
 
+        matrix.identity()
+
         matrix[0, 0] = right.x
         matrix[0, 1] = right.y
         matrix[0, 2] = right.z
@@ -46,19 +48,13 @@ class LookAtMatrix {
         matrix[2, 1] = forward.y
         matrix[2, 2] = forward.z
 
-        matrix[3, 0] = 0.0
-        matrix[3, 1] = 0.0
-        matrix[3, 2] = 0.0
-        matrix[3, 3] = 1.0
-
         matrix.transpose()
 
         base.multiplication(
                 lhs = negatedEye,
                 rhs = matrix
         )
-        for (col in 0 until 3)
-            matrix[3, col] = base[col]
+        matrix.translation(base)
 
         return matrix
     }
