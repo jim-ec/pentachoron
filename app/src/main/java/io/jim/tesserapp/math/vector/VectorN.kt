@@ -2,7 +2,7 @@ package io.jim.tesserapp.math.vector
 
 import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.formatNumber
-import io.jim.tesserapp.math.matrix.MatrixMultipliable
+import io.jim.tesserapp.math.matrix.Matrix
 import kotlin.math.sqrt
 
 /**
@@ -53,7 +53,7 @@ open class VectorN(
      *
      * @throws MathException If the dimension requirement `MxP * PxN = MxN` is not met.
      */
-    fun multiplication(lhs: VectorN, rhs: MatrixMultipliable) {
+    fun multiplication(lhs: VectorN, rhs: Matrix) {
         if (lhs.cols != rhs.rows)
             throw MathException("Cannot multiply $lhs * $rhs")
         if (lhs.rows != rows || rhs.cols != cols)
