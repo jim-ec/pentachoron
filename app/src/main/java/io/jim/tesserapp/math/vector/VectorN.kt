@@ -59,15 +59,13 @@ open class VectorN(
         if (rhs.cols != dimension + 1)
             throw MathException("Target matrix $this is incompatible for $lhs * $rhs")
 
-        for (col in 0 until dimension + 1) {
-            var sum = 0.0
+        for (col in 0 until dimension) {
+            this[col] = (0 until lhs.dimension).sumByDouble { i -> lhs[i] * rhs[i, col] } + rhs[dimension, col]
+        }
 
-            for (i in 0 until lhs.dimension) {
-                sum += lhs[i] * rhs[i, col]
-            }
-            sum += rhs[dimension, col]
-
-            this[col] = sum
+        val w = (0 until lhs.dimension).sumByDouble { i -> lhs[i] * rhs[i, dimension] } + rhs[dimension, dimension]
+        for (i in 0 until dimension) {
+            this[i] /= w
         }
     }
 
@@ -124,28 +122,13 @@ open class VectorN(
     /**
      * Return the [index]th number.
      */
-    operator fun get(index: Int) =
-            if (index < 0 || index >= dimension + 1)
-                throw MathException("Cannot set ${index}th component to a $dimensionString vector")
-            else if (index < dimension)
-                numbers[index]
-            else
-                1.0
+    operator fun get(index: Int) = numbers[index]
 
     /**
      * Set [index]th number to [value].
      */
     operator fun set(index: Int, value: Double) {
-        if (index < 0 || index >= dimension + 1)
-            throw MathException("Cannot set ${index}th component to a $dimensionString vector")
-
-        if (index < dimension)
-            numbers[index] = value
-        else {
-            for (i in 0 until dimension) {
-                this[i] /= value
-            }
-        }
+        numbers[index] = value
     }
 
     /**
