@@ -14,7 +14,7 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
     /**
      * Though this vector is 4d, it technically has 5 columns, including the virtual w-component.
      */
-    override val cols = 5
+    override val cols = dimension + 1
     
     /**
      * Q-component.
@@ -29,7 +29,7 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
      * Intercept getting the w-component, which is always 1.
      */
     override fun get(row: Int, col: Int): Double {
-        return if (col < 4)
+        return if (col < dimension)
             super.get(row, col)
         else
             1.0
@@ -39,7 +39,7 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
      * Intercept setting values to the fourth column, which will effectively lead to w-division.
      */
     override fun set(row: Int, col: Int, value: Double) {
-        if (col < 4)
+        if (col < dimension)
             super.set(row, col, value)
         else {
             x /= value
