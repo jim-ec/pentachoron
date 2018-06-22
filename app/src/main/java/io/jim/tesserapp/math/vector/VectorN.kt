@@ -23,19 +23,19 @@ class VectorN(
      * Construct a 3d vector.
      */
     constructor(x: Double, y: Double, z: Double) : this(3) {
-        this.x = x
-        this.y = y
-        this.z = z
+        this[0] = x
+        this[1] = y
+        this[2] = z
     }
 
     /**
      * Construct a 4d vector.
      */
     constructor(x: Double, y: Double, z: Double, q: Double) : this(4) {
-        this.x = x
-        this.y = y
-        this.z = z
-        this.q = q
+        this[0] = x
+        this[1] = y
+        this[2] = z
+        this[3] = q
     }
 
     constructor(rhs: VectorN) : this(rhs.dimension) {

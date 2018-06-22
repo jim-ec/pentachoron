@@ -15,8 +15,6 @@ class ViewMatrix {
     private val matrixLookAt = LookAtMatrix()
     private val matrixScale = Matrix(4)
 
-    private val scale = VectorN(1.0, 1.0, 1.0)
-
     private val upVector = VectorN(0.0, 1.0, 0.0)
 
     /**
@@ -38,15 +36,16 @@ class ViewMatrix {
         matrixRotation.multiplication(matrixHorizontalRotation, matrixVerticalRotation)
 
         matrixLookAtRotation.multiplication(matrixRotation, matrixLookAt.computed(distance, upVector))
-        
-        if (aspectRatio > 1) {
-            // Viewport is wide => shrink horizontally
-            scale.x = 1 / aspectRatio
-        } else {
-            // Viewport is tall => shrink vertically
-            scale.y = aspectRatio
-        }
-        matrixScale.scale(scale)
+
+        matrixScale.scale(
+                if (aspectRatio > 1) {
+                    // Viewport is wide => shrink horizontally
+                    VectorN(1 / aspectRatio, 1.0, 1.0)
+                } else {
+                    // Viewport is tall => shrink vertically
+                    VectorN(1.0, aspectRatio, 1.0)
+                }
+        )
         viewMatrix.multiplication(matrixLookAtRotation, matrixScale)
         
         return viewMatrix

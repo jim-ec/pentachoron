@@ -8,8 +8,7 @@ import io.jim.tesserapp.math.vector.VectorN
 class LookAtMatrix {
 
     private val matrix = Matrix(4)
-    private val forward = VectorN(3).apply { x = 1.0 }
-    private val negatedEye = VectorN(3)
+    private val forward = VectorN(1.0, 0.0, 0.0)
     private val base = VectorN(3)
 
     /**
@@ -22,8 +21,6 @@ class LookAtMatrix {
 
         val right = (refUp cross forward).normalized()
         val up = (forward cross right).normalized()
-
-        negatedEye.x = -distance
 
         matrix.identity()
 
@@ -42,7 +39,7 @@ class LookAtMatrix {
         matrix.transpose()
 
         base.multiplication(
-                lhs = negatedEye,
+                lhs = VectorN(-distance, 0.0, 0.0),
                 rhs = matrix
         )
         matrix.translation(base)
