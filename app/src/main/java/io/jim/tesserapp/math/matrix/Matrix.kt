@@ -19,15 +19,27 @@ class Matrix(
 ) {
     
     /**
+     * Construct a quadratic matrix with [size] rows and columns.
+     */
+    constructor(size: Int) : this(size, size)
+    
+    /**
+     * Construct a matrix with given [rows] and [cols].
+     *
+     * @param initializer
+     * Ran for each coefficient in order to determine the initial value.
+     */
+    constructor(rows: Int, cols: Int, initializer: (row: Int, col: Int) -> Double) : this(rows, cols) {
+        forEachComponent { row, col ->
+            this[row, col] = initializer(row, col)
+        }
+    }
+    
+    /**
      * Underlying number list.
      * The reference is kept re-assignable to enable optimized operations like swapping contents.
      */
     private var doubles = DoubleBuffer.allocate(rows * cols)
-    
-    /**
-     * Construct a quadratic matrix with [size] rows and columns.
-     */
-    constructor(size: Int) : this(size, size)
     
     init {
         if (rows <= 0 || cols <= 0)
@@ -45,28 +57,19 @@ class Matrix(
             }
         }
     }
-
+    
     /**
-     * Multiply [lhs] and [rhs] matrix storing the result in this matrix.
+     * Multiply this and [rhs] matrix returning the resulting matrix.
      *
      * @throws MathException If the dimension requirement `MxP * PxN = MxN` is not met.
      */
-    fun multiplication(lhs: Matrix, rhs: Matrix) {
-        if (lhs.cols != rhs.rows)
-            throw MathException("Cannot multiply $lhs * $rhs")
-        if (lhs.rows != rows || rhs.cols != cols)
-            throw MathException("Target matrix $this is incompatible for $lhs * $rhs")
-
-        forEachComponent { row, col ->
-            var sum = 0.0
-
-            for (i in 0 until lhs.cols) {
-                sum += lhs[row, i] * rhs[i, col]
-            }
-
-            this[row, col] = sum
-        }
-    }
+    operator fun times(rhs: Matrix) =
+            if (cols != rhs.rows)
+                throw MathException("Cannot multiply $this * $rhs")
+            else
+                Matrix(rows, rhs.cols) { row, col ->
+                    (0 until cols).sumByDouble { this[row, it] * rhs[it, col] }
+                }
     
     /**
      * Loads the identity matrix.

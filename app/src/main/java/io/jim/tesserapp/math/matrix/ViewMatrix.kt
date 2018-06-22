@@ -8,15 +8,13 @@ import io.jim.tesserapp.math.vector.VectorN
 class ViewMatrix {
     
     private val viewMatrix = Matrix(4)
-    private val matrixLookAtRotation = Matrix(4)
-    private val matrixRotation = Matrix(4)
     private val matrixHorizontalRotation = Matrix(4)
     private val matrixVerticalRotation = Matrix(4)
     private val matrixLookAt = LookAtMatrix()
     private val matrixScale = Matrix(4)
-
+    
     private val upVector = VectorN(0.0, 1.0, 0.0)
-
+    
     /**
      * Compute the view matrix.
      *
@@ -33,10 +31,7 @@ class ViewMatrix {
     ): Matrix {
         matrixHorizontalRotation.rotation(2, 0, horizontalRotation)
         matrixVerticalRotation.rotation(0, 1, verticalRotation)
-        matrixRotation.multiplication(matrixHorizontalRotation, matrixVerticalRotation)
-
-        matrixLookAtRotation.multiplication(matrixRotation, matrixLookAt.computed(distance, upVector))
-
+        
         matrixScale.scale(
                 if (aspectRatio > 1) {
                     // Viewport is wide => shrink horizontally
@@ -46,9 +41,11 @@ class ViewMatrix {
                     VectorN(1.0, aspectRatio, 1.0)
                 }
         )
-        viewMatrix.multiplication(matrixLookAtRotation, matrixScale)
         
-        return viewMatrix
+        return matrixHorizontalRotation *
+                matrixVerticalRotation *
+                matrixLookAt.computed(distance, upVector) *
+                matrixScale
     }
     
 }

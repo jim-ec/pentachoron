@@ -11,7 +11,7 @@ class Transform {
     /**
      * Rotation matrix.
      */
-    val rotationMatrix = Matrix(5)
+    var rotationMatrix = Matrix(5)
     
     /**
      * When transforming the geometry, the transform is firstly expressed into this matrix.
@@ -43,7 +43,7 @@ class Transform {
      * This geometries model matrix.
      * [computeModelMatrix] must be called in order to keep the model matrix up-to-date.
      */
-    val modelMatrix = Matrix(5)
+    var modelMatrix = Matrix(5)
     
     /**
      * Rotate the geometry around the *global* x-axis, i.e. the yz-plane.
@@ -100,8 +100,8 @@ class Transform {
         
         // Move contents of model matrix into the temporary buffer-like old-model-matrix:
         oldRotationMatrix.swap(rotationMatrix)
-
-        rotationMatrix.multiplication(newRotationMatrix, oldRotationMatrix)
+    
+        rotationMatrix = newRotationMatrix * oldRotationMatrix
     }
     
     /**
@@ -149,10 +149,7 @@ class Transform {
      */
     fun computeModelMatrix() {
         translationMatrix.translation(translation)
-        modelMatrix.multiplication(
-                rotationMatrix,
-                translationMatrix
-        )
+        modelMatrix = rotationMatrix * translationMatrix
     }
     
 }
