@@ -8,7 +8,6 @@ import android.view.MotionEvent.*
 import io.jim.tesserapp.MainActivity
 import io.jim.tesserapp.graphics.Renderer
 import io.jim.tesserapp.graphics.themedColorInt
-import io.jim.tesserapp.math.vector.VectorN
 
 /**
  * A view capable of rendering 3D geometry.
@@ -29,7 +28,8 @@ class GraphicsView : GLSurfaceView {
             resources.displayMetrics.xdpi.toDouble()
     )
 
-    private val touchStartPosition = VectorN(3)
+    private var touchStartPositionX = 0f
+    private var touchStartPositionY = 0f
     private var touchStartTime = 0L
     
     companion object {
@@ -53,20 +53,20 @@ class GraphicsView : GLSurfaceView {
             if (null == event) false
             else when {
                 event.action == ACTION_DOWN -> {
-                    touchStartPosition.x = event.x.toDouble()
-                    touchStartPosition.y = event.y.toDouble()
+                    touchStartPositionX = event.x
+                    touchStartPositionY = event.y
                     touchStartTime = System.currentTimeMillis()
                     true
                 }
                 event.action == ACTION_MOVE -> {
-                    val dx = event.x - touchStartPosition.x
-                    val dy = event.y - touchStartPosition.y
+                    val dx = event.x - touchStartPositionX
+                    val dy = event.y - touchStartPositionY
                     
                     viewModel.horizontalCameraRotation.value += dx * TOUCH_ROTATION_SENSITIVITY
                     viewModel.verticalCameraRotation.value -= dy * TOUCH_ROTATION_SENSITIVITY
-                    
-                    touchStartPosition.x = event.x.toDouble()
-                    touchStartPosition.y = event.y.toDouble()
+
+                    touchStartPositionX = event.x
+                    touchStartPositionY = event.y
                     true
                 }
                 event.action == ACTION_UP
