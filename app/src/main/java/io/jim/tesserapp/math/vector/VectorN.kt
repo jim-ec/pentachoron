@@ -90,30 +90,19 @@ open class VectorN(
             }.toString()
 
     /**
-     * Set [index]th number to [value].
+     * Getter used by the generic matrix-like multiplier,
+     * since that has a more abstract NxM view to matrix-like objects.
      */
-    operator fun set(index: Int, value: Double) {
-        if (index < 0 || index >= dimension)
-            throw MathException("Cannot set ${index}th component to a $dimensionString vector")
-
-        numbers[index] = value
-    }
+    final override fun get(row: Int, col: Int) = this[col]
 
     /**
      * Return the [index]th number.
      */
     operator fun get(index: Int) =
-            if (index < 0 || index >= dimension)
+            if (index < 0 || index >= cols)
                 throw MathException("Cannot set ${index}th component to a $dimensionString vector")
-            else numbers[index]
-
-    /**
-     * Getter used by the generic matrix-like multiplier,
-     * since that has a more abstract NxM view to matrix-like objects.
-     */
-    final override fun get(row: Int, col: Int) =
-            if (col < dimension)
-                this[col]
+            else if (index < dimension)
+                numbers[index]
             else
                 1.0
 
@@ -121,8 +110,18 @@ open class VectorN(
      * Intercept setting values to the fourth column, which will effectively lead to w-division.
      */
     final override fun set(row: Int, col: Int, value: Double) {
-        if (col < dimension)
-            set(col, value)
+        set(col, value)
+    }
+
+    /**
+     * Set [index]th number to [value].
+     */
+    operator fun set(index: Int, value: Double) {
+        if (index < 0 || index >= cols)
+            throw MathException("Cannot set ${index}th component to a $dimensionString vector")
+
+        if (index < dimension)
+            numbers[index] = value
         else {
             for (i in 0 until dimension) {
                 this[i] /= value
