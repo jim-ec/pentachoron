@@ -8,6 +8,16 @@ import org.junit.Test
 
 class MatrixTest {
 
+    /**
+     * Converts a row into a [VectorN].
+     * The [VectorN.dimension] is determined by this matrix' column count.
+     */
+    fun Matrix.toVector(row: Int) = VectorN(cols).also {
+        for (i in 0 until it.dimension) {
+            it[i] = this[row, i]
+        }
+    }
+
     private val matrix = Matrix(4)
 
     @Test

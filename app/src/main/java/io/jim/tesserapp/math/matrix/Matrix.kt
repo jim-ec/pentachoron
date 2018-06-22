@@ -95,16 +95,6 @@ class Matrix(
     }
     
     /**
-     * Converts a row into a [VectorN].
-     * The [VectorN.dimension] is determined by this matrix' column count.
-     */
-    fun toVector(row: Int) = VectorN(cols).also {
-        for (i in 0 until it.dimension) {
-            it[i] = this[row, i]
-        }
-    }
-    
-    /**
      * Loads a complete set of doubles into the matrix.
      *
      * @param rowVectors Lists containing doubles. Each list is considered as one matrix row.
