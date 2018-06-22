@@ -1,6 +1,5 @@
 package io.jim.tesserapp.math.matrix
 
-import io.jim.tesserapp.math.vector.Vector3dh
 import io.jim.tesserapp.math.vector.VectorN
 
 /**
@@ -11,9 +10,9 @@ class LookAtMatrix {
     private val matrix = Matrix(4)
     private val forward = VectorN(3).apply { x = 1.0 }
     private val right = VectorN(3)
-    private val up = Vector3dh()
-    private val negatedEye = Vector3dh()
-    private val base = Vector3dh()
+    private val up = VectorN(3)
+    private val negatedEye = VectorN(3)
+    private val base = VectorN(3)
 
     /**
      * Compute view matrix.
@@ -21,7 +20,7 @@ class LookAtMatrix {
      * @param refUp Up direction of camera.
      * @return The view matrix. Each invocation returns the same matrix with updated values.
      */
-    fun computed(distance: Double, refUp: Vector3dh): Matrix {
+    fun computed(distance: Double, refUp: VectorN): Matrix {
 
         right.apply {
             crossed(refUp, forward)

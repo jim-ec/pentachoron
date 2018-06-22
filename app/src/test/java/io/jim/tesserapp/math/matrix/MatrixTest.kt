@@ -1,7 +1,6 @@
 package io.jim.tesserapp.math.matrix
 
 import io.jim.tesserapp.math.common.MathException
-import io.jim.tesserapp.math.vector.Vector3dh
 import io.jim.tesserapp.math.vector.VectorN
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -79,10 +78,10 @@ class MatrixTest {
 
     @Test
     fun translation() {
-        matrix.translation(Vector3dh(2.0, 3.0, 4.0))
-        val vector = Vector3dh(5.0, 6.0, 7.0)
+        matrix.translation(VectorN(2.0, 3.0, 4.0))
+        val vector = VectorN(5.0, 6.0, 7.0)
 
-        Vector3dh().apply {
+        VectorN(3).apply {
             multiplication(vector, matrix)
 
             assertEquals(7.0, x, 0.1)
@@ -94,9 +93,9 @@ class MatrixTest {
     @Test
     fun rotation() {
         matrix.rotation(1, 2, Math.PI / 2)
-        val vector = Vector3dh(0.0, 3.0, 0.0)
+        val vector = VectorN(0.0, 3.0, 0.0)
 
-        Vector3dh().apply {
+        VectorN(3).apply {
             multiplication(vector, matrix)
 
             assertEquals(0.0, x, 0.1)
@@ -108,9 +107,9 @@ class MatrixTest {
     @Test
     fun scaleUniformly() {
         matrix.scale(2.0)
-        val vector = Vector3dh(5.0, 6.0, 7.0)
+        val vector = VectorN(5.0, 6.0, 7.0)
 
-        Vector3dh().apply {
+        VectorN(3).apply {
             multiplication(vector, matrix)
 
             assertEquals(10.0, x, 0.1)
@@ -122,9 +121,9 @@ class MatrixTest {
     @Test
     fun scaleByIndividualFactors() {
         matrix.scale(VectorN(2.0, 3.0, 4.0))
-        val vector = Vector3dh(5.0, 6.0, 7.0)
+        val vector = VectorN(5.0, 6.0, 7.0)
 
-        Vector3dh().apply {
+        VectorN(3).apply {
             multiplication(vector, matrix)
 
             assertEquals(10.0, x, 0.1)
@@ -137,31 +136,31 @@ class MatrixTest {
     fun perspective2D() {
         matrix.perspective2D(5.0, 10.0)
 
-        val homogeneous = Vector3dh()
+        val homogeneous = VectorN(3)
 
         homogeneous.apply {
-            multiplication(Vector3dh(2.0, 3.0, -10.0), matrix)
+            multiplication(VectorN(2.0, 3.0, -10.0), matrix)
             assertEquals(1.0, z, 0.1)
             assertEquals(2.0 / 10.0, x, 0.1)
             assertEquals(3.0 / 10.0, y, 0.1)
         }
 
         homogeneous.apply {
-            multiplication(Vector3dh(2.0, 3.0, -5.0), matrix)
+            multiplication(VectorN(2.0, 3.0, -5.0), matrix)
             assertEquals(0.0, z, 0.1)
             assertEquals(2.0 / 5.0, x, 0.1)
             assertEquals(3.0 / 5.0, y, 0.1)
         }
 
         homogeneous.apply {
-            multiplication(Vector3dh(2.0, 3.0, -7.0), matrix)
+            multiplication(VectorN(2.0, 3.0, -7.0), matrix)
             assertTrue(0.0 < z && z < 1.0)
             assertEquals(2.0 / 7.0, x, 0.1)
             assertEquals(3.0 / 7.0, y, 0.1)
         }
 
         homogeneous.apply {
-            multiplication(Vector3dh(2.0, 3.0, -2.0), matrix)
+            multiplication(VectorN(2.0, 3.0, -2.0), matrix)
             assertTrue(z < 0.0)
             assertEquals(2.0 / 2.0, x, 0.1)
             assertEquals(3.0 / 2.0, y, 0.1)
@@ -172,7 +171,7 @@ class MatrixTest {
     fun lookAt() {
         val matrix = LookAtMatrix().computed(
                 distance = 2.0,
-                refUp = Vector3dh(0.0, 1.0, 0.0)
+                refUp = VectorN(0.0, 1.0, 0.0)
         )
 
         // Check the all matrix axis are unit vectors:
@@ -185,8 +184,8 @@ class MatrixTest {
         assertEquals(0.0, matrix.toVector(1) * matrix.toVector(2), 0.1)
         assertEquals(0.0, matrix.toVector(0) * matrix.toVector(2), 0.1)
 
-        Vector3dh().apply {
-            multiplication(lhs = Vector3dh(0.0, 0.0, 0.0), rhs = matrix)
+        VectorN(3).apply {
+            multiplication(lhs = VectorN(0.0, 0.0, 0.0), rhs = matrix)
             assertEquals(0.0, x, 0.1)
             assertEquals(0.0, y, 0.1)
             assertTrue(z < 0.0)
@@ -203,8 +202,8 @@ class MatrixTest {
 
         matrix.transpose()
 
-        Vector3dh().apply {
-            multiplication(lhs = Vector3dh(1.0, 2.0, 3.0), rhs = matrix)
+        VectorN(3).apply {
+            multiplication(lhs = VectorN(1.0, 2.0, 3.0), rhs = matrix)
             val w = 72.0
             assertEquals(52.0 / w, x, 0.1)
             assertEquals(58.0 / w, y, 0.1)
