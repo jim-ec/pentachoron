@@ -26,25 +26,13 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
         }
     
     /**
-     * W-component. This is always 1.
-     * Setting this value will lead to w-division.
-     */
-    private inline var w: Double
-        get() = 1.0
-        set(value) {
-            if (value != 1.0) {
-                this /= value
-            }
-        }
-    
-    /**
      * Intercept getting the w-component, which is always 1.
      */
     override fun get(row: Int, col: Int): Double {
         return if (col < 4)
             super.get(row, col)
         else
-            w
+            1.0
     }
     
     /**
@@ -54,7 +42,10 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
         if (col < 4)
             super.set(row, col, value)
         else {
-            w = value
+            x /= value
+            y /= value
+            z /= value
+            q /= value
         }
     }
     
