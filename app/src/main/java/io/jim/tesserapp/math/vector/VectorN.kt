@@ -138,6 +138,12 @@ class VectorN(
     }
 
     /**
+     * Compute this vector's length.
+     */
+    inline val length
+        get() = sqrt(this * this)
+
+    /**
      * Scalar this and [rhs].
      */
     operator fun times(rhs: VectorN): Double {
@@ -147,12 +153,6 @@ class VectorN(
         }
         return sum
     }
-
-    /**
-     * Compute this vector's length.
-     */
-    inline val length
-        get() = sqrt(this * this)
 
     /**
      * Add [rhs] to this vector.
@@ -181,16 +181,6 @@ class VectorN(
     }
 
     /**
-     * Normalize this vector.
-     */
-    fun normalize() {
-        val oneOverLength = 1.0 / length
-        forEachIndexed { index, number ->
-            set(index, number * oneOverLength)
-        }
-    }
-
-    /**
      * Scales this by [scale].
      */
     operator fun timesAssign(scale: Double) {
@@ -209,6 +199,11 @@ class VectorN(
     }
 
     /**
+     * Return a this vector in its normalized form.
+     */
+    fun normalized() = VectorN(this).also { it *= 1 / length }
+
+    /**
      * Call [f] for each dimension index this vector holds.
      */
     inline fun forEachIndexed(f: (index: Int) -> Unit) {
@@ -218,6 +213,14 @@ class VectorN(
     }
 
     /**
+     * Compute the vector product of this and [rhs].
+     */
+    infix fun cross(rhs: VectorN) =
+            VectorN(y * rhs.z - z * rhs.y,
+                    z * rhs.x - x * rhs.z,
+                    x * rhs.y - y * rhs.x)
+
+    /**
      * Call [f] for each dimension index this vector holds.
      * Additionally, the corresponding number is passed to [f].
      */
@@ -225,15 +228,6 @@ class VectorN(
         for (i in 0 until dimension) {
             f(i, this[i])
         }
-    }
-
-    /**
-     * Compute the vector product of [lhs] and [rhs], storing the result in this vector.
-     */
-    fun crossed(lhs: VectorN, rhs: VectorN) {
-        x = lhs.y * rhs.z - lhs.z * rhs.y
-        y = lhs.z * rhs.x - lhs.x * rhs.z
-        z = lhs.x * rhs.y - lhs.y * rhs.x
     }
 
     /**

@@ -107,9 +107,7 @@ class VectorNTest {
 
     @Test
     fun cross() {
-        (VectorN(3)).apply {
-            crossed(VectorN(3.0, 1.0, 4.0), VectorN(1.0, 2.0, 5.0))
-
+        (VectorN(3.0, 1.0, 4.0) cross VectorN(1.0, 2.0, 5.0)).apply {
             assertEquals(-3.0, x, 0.1)
             assertEquals(-11.0, y, 0.1)
             assertEquals(5.0, z, 0.1)
@@ -123,9 +121,7 @@ class VectorNTest {
 
     @Test
     fun normalized() {
-        VectorN(3.0, 1.0, 4.0, 5.0).apply {
-            normalize()
-
+        VectorN(3.0, 1.0, 4.0, 5.0).normalized().apply {
             assertEquals(1.0, length, 0.1)
         }
     }

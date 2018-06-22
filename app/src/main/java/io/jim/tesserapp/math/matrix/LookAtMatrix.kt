@@ -9,8 +9,6 @@ class LookAtMatrix {
 
     private val matrix = Matrix(4)
     private val forward = VectorN(3).apply { x = 1.0 }
-    private val right = VectorN(3)
-    private val up = VectorN(3)
     private val negatedEye = VectorN(3)
     private val base = VectorN(3)
 
@@ -22,15 +20,8 @@ class LookAtMatrix {
      */
     fun computed(distance: Double, refUp: VectorN): Matrix {
 
-        right.apply {
-            crossed(refUp, forward)
-            normalize()
-        }
-
-        up.apply {
-            crossed(forward, right)
-            normalize()
-        }
+        val right = (refUp cross forward).normalized()
+        val up = (forward cross right).normalized()
 
         negatedEye.x = -distance
 
