@@ -45,7 +45,7 @@ class GlTransformFeedback(private val varying: String, val mode: Int) {
      */
     inline fun capturingTransformFeedback(crossinline f: () -> Unit) {
         if (allocated) {
-            GLES30.glBindBufferBase(GLES30.GL_TRANSFORM_FEEDBACK_BUFFER, 0, buffer.bufferHandle)
+            GLES30.glBindBufferBase(GLES30.GL_TRANSFORM_FEEDBACK_BUFFER, 0, buffer.handle)
             GLES30.glBeginTransformFeedback(mode)
             GlException.check("Begin transform feedback")
             

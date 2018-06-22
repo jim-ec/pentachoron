@@ -23,15 +23,15 @@ class Shader(assets: AssetManager) {
     /**
      * GLSL location of position attribute.
      */
-    val positionAttributeLocation = GLES30.glGetAttribLocation(program.programHandle, "position")
+    val positionAttributeLocation = GLES30.glGetAttribLocation(program.handle, "position")
 
     /**
      * GLSL location of color attribute.
      */
-    val colorAttributeLocation = GLES30.glGetAttribLocation(program.programHandle, "color")
+    val colorAttributeLocation = GLES30.glGetAttribLocation(program.handle, "color")
 
-    private val viewMatrixLocation = GLES30.glGetUniformLocation(program.programHandle, "V")
-    private val projectionMatrixLocation = GLES30.glGetUniformLocation(program.programHandle, "P")
+    private val viewMatrixLocation = GLES30.glGetUniformLocation(program.handle, "V")
+    private val projectionMatrixLocation = GLES30.glGetUniformLocation(program.handle, "P")
 
     private val floatBuffer = allocateNativeFloatMemory(16).asFloatBuffer()
 

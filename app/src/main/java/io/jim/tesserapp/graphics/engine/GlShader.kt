@@ -17,11 +17,11 @@ class GlShader(assets: AssetManager, fileName: String) {
     /**
      * Actual handle retrieved from GL.
      */
-    val shaderHandle: Int
+    val handle: Int
     
     init {
         // Generate handle. Type is deduced from file extension.
-        shaderHandle = GLES20.glCreateShader(
+        handle = GLES20.glCreateShader(
                 when (fileName.substring(fileName.lastIndexOf('.').also { index ->
                     if (index == -1)
                         throw RuntimeException("Malformed file name, no '.' found in: $fileName")
@@ -34,19 +34,19 @@ class GlShader(assets: AssetManager, fileName: String) {
                 })
         
         // Retrieve lines from shader file:
-        GLES30.glShaderSource(shaderHandle, (assets.open(fileName)
+        GLES30.glShaderSource(handle, (assets.open(fileName)
                 ?: throw RuntimeException("Cannot open shader file $fileName"))
                 .bufferedReader().useLines { sequence: Sequence<String> ->
                     sequence.reduce { a, b -> "$a\n$b" }
                 })
         
         // Compile shader and check for success:
-        GLES30.glCompileShader(shaderHandle)
-        
-        GLES30.glGetShaderiv(shaderHandle, GLES30.GL_COMPILE_STATUS, resultCode)
+        GLES30.glCompileShader(handle)
+
+        GLES30.glGetShaderiv(handle, GLES30.GL_COMPILE_STATUS, resultCode)
         if (GLES30.GL_TRUE != resultCode()) {
             throw GlException("Cannot compile vertex shader: " +
-                    GLES30.glGetShaderInfoLog(shaderHandle))
+                    GLES30.glGetShaderInfoLog(handle))
         }
         
         GlException.check("Shader initialization")

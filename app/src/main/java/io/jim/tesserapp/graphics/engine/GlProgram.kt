@@ -38,27 +38,27 @@ class GlProgram(
     /**
      * Actual program handle retrieved from GL.
      */
-    val programHandle = GLES20.glCreateProgram()
+    val handle = GLES20.glCreateProgram()
     
     init {
-        GLES30.glAttachShader(programHandle, vertexShader.shaderHandle)
-        GLES30.glAttachShader(programHandle, fragmentShader.shaderHandle)
-        
-        transformFeedback?.setup(programHandle)
+        GLES30.glAttachShader(handle, vertexShader.handle)
+        GLES30.glAttachShader(handle, fragmentShader.handle)
+
+        transformFeedback?.setup(handle)
         GlException.check("Setting up transform feedback")
         
         // Link program together:
-        GLES30.glLinkProgram(programHandle)
-        GLES30.glGetProgramiv(programHandle, GLES30.GL_LINK_STATUS, resultCode)
+        GLES30.glLinkProgram(handle)
+        GLES30.glGetProgramiv(handle, GLES30.GL_LINK_STATUS, resultCode)
         if (GLES30.GL_TRUE != resultCode()) {
-            throw GlException("Cannot link program: ${GLES30.glGetProgramInfoLog(programHandle)}")
+            throw GlException("Cannot link program: ${GLES30.glGetProgramInfoLog(handle)}")
         }
         
         // Validate program:
-        GLES30.glValidateProgram(programHandle)
-        GLES30.glGetProgramiv(programHandle, GLES30.GL_VALIDATE_STATUS, resultCode)
+        GLES30.glValidateProgram(handle)
+        GLES30.glGetProgramiv(handle, GLES30.GL_VALIDATE_STATUS, resultCode)
         if (GLES30.GL_TRUE != resultCode()) {
-            throw GlException("Cannot validate program: ${GLES30.glGetProgramInfoLog(programHandle)}")
+            throw GlException("Cannot validate program: ${GLES30.glGetProgramInfoLog(handle)}")
         }
         
         GlException.check("Program initialization")
@@ -72,8 +72,8 @@ class GlProgram(
     inline fun bound(crossinline f: () -> Unit) {
         if (0 != resultCode { GLES30.glGetIntegerv(GLES30.GL_CURRENT_PROGRAM, resultCode) })
             throw RuntimeException("Another program is currently used.")
-        
-        GLES30.glUseProgram(programHandle)
+
+        GLES30.glUseProgram(handle)
         
         // If a transform feedback is attached, do drawing while capture feedback.
         // Otherwise, just do the draw code:

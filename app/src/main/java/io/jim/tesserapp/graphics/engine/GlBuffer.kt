@@ -23,7 +23,7 @@ class GlBuffer(
     /**
      * The actual handle retrieved from GL.
      */
-    val bufferHandle = resultCode { GLES30.glGenBuffers(1, resultCode) }
+    val handle = resultCode { GLES30.glGenBuffers(1, resultCode) }
     
     /**
      * Buffer size in bytes.
@@ -67,7 +67,7 @@ class GlBuffer(
      */
     inline fun bound(crossinline f: () -> Unit) {
         val oldBinding = resultCode { GLES30.glGetIntegerv(binding, resultCode) }
-        GLES30.glBindBuffer(target, bufferHandle)
+        GLES30.glBindBuffer(target, handle)
         f()
         GLES30.glBindBuffer(target, oldBinding)
     }
