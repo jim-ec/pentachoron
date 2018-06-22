@@ -44,17 +44,6 @@ open class VectorN(
     private val numbers = DoubleArray(dimension) { 0.0 }
 
     /**
-     * A vector can be seen as a n-column matrix.
-     * This vector is considered to be homogeneous.
-     */
-    val cols = dimension + 1
-
-    /**
-     * A vector can be seen as a one-row matrix.
-     */
-    val rows = 1
-
-    /**
      * Return a string representing this vector's dimension.
      */
     val dimensionString = "${dimension}d"
@@ -65,28 +54,20 @@ open class VectorN(
      * @throws MathException If the dimension requirement `MxP * PxN = MxN` is not met.
      */
     fun multiplication(lhs: VectorN, rhs: Matrix) {
-        if (lhs.cols != rhs.rows)
+        if (lhs.dimension + 1 != rhs.rows)
             throw MathException("Cannot multiply $lhs * $rhs")
-        if (lhs.rows != rows || rhs.cols != cols)
+        if (rhs.cols != dimension + 1)
             throw MathException("Target matrix $this is incompatible for $lhs * $rhs")
 
-        forEachComponent { col ->
+        for (col in 0 until dimension + 1) {
             var sum = 0.0
 
-            for (i in 0 until lhs.cols) {
+            for (i in 0 until lhs.dimension) {
                 sum += lhs[i] * rhs[i, col]
             }
+            sum += rhs[dimension, col]
 
             this[col] = sum
-        }
-    }
-
-    /**
-     * Calls [f] for each coefficient.
-     */
-    inline fun forEachComponent(f: (index: Int) -> Unit) {
-        for (i in 0 until cols) {
-            f(i)
         }
     }
 
@@ -144,7 +125,7 @@ open class VectorN(
      * Return the [index]th number.
      */
     operator fun get(index: Int) =
-            if (index < 0 || index >= cols)
+            if (index < 0 || index >= dimension + 1)
                 throw MathException("Cannot set ${index}th component to a $dimensionString vector")
             else if (index < dimension)
                 numbers[index]
@@ -155,7 +136,7 @@ open class VectorN(
      * Set [index]th number to [value].
      */
     operator fun set(index: Int, value: Double) {
-        if (index < 0 || index >= cols)
+        if (index < 0 || index >= dimension + 1)
             throw MathException("Cannot set ${index}th component to a $dimensionString vector")
 
         if (index < dimension)
