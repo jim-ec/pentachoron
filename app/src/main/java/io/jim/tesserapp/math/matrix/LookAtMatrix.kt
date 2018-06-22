@@ -1,6 +1,7 @@
 package io.jim.tesserapp.math.matrix
 
 import io.jim.tesserapp.math.vector.Vector3dh
+import io.jim.tesserapp.math.vector.VectorN
 
 /**
  * Responsible for computing a look-at matrix.
@@ -8,7 +9,7 @@ import io.jim.tesserapp.math.vector.Vector3dh
 class LookAtMatrix {
 
     private val matrix = Matrix(4)
-    private val forward = Vector3dh().apply { x = 1.0 }
+    private val forward = VectorN(3).apply { x = 1.0 }
     private val right = Vector3dh()
     private val up = Vector3dh()
     private val negatedEye = Vector3dh()
