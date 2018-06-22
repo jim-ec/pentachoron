@@ -118,9 +118,7 @@ class Geometry(
         val size = positions.size
         
         for (i in 0 until size) {
-            positions += VectorN(positions[i]).apply {
-                this += direction
-            }
+            positions += positions[i] + direction
         }
         
         lines += lines.map {

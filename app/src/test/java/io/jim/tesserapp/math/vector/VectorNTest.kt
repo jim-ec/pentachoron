@@ -39,31 +39,14 @@ class VectorNTest {
 
     @Test
     fun addition() {
-        val v = VectorN(1.0, 2.0, 5.0, 0.0)
         val u = VectorN(3.0, 1.0, 4.0, 1.0)
+        val v = VectorN(1.0, 2.0, 5.0, 0.0)
 
-        v += u
-
-        v.apply {
+        (v + u).apply {
             assertEquals(4.0, x, 0.1)
             assertEquals(3.0, y, 0.1)
             assertEquals(9.0, z, 0.1)
             assertEquals(1.0, q, 0.1)
-        }
-    }
-
-    @Test
-    fun subtraction() {
-        val v = VectorN(3.0, 1.0, 4.0, 1.0)
-        val u = VectorN(1.0, 2.0, 5.0, 2.0)
-
-        v -= u
-
-        v.apply {
-            assertEquals(2.0, x, 0.1)
-            assertEquals(-1.0, y, 0.1)
-            assertEquals(-1.0, z, 0.1)
-            assertEquals(-1.0, q, 0.1)
         }
     }
 

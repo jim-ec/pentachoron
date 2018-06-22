@@ -146,37 +146,14 @@ class VectorN(
     /**
      * Scalar this and [rhs].
      */
-    operator fun times(rhs: VectorN): Double {
-        var sum = 0.0
-        forEachIndexed { index, number ->
-            sum += number * rhs[index]
-        }
-        return sum
-    }
+    operator fun times(rhs: VectorN) = numbers.zip(rhs.numbers).sumByDouble { (a, b) -> a * b }
 
     /**
-     * Add [rhs] to this vector.
-     * @throws IncompatibleVectorException If vector dimension differ
+     * Return this vector component-wise added to [rhs].
      */
-    operator fun plusAssign(rhs: VectorN) {
-        if (dimension != rhs.dimension)
-            throw IncompatibleVectorException(rhs)
-
-        rhs.forEachIndexed { index, number ->
-            set(index, get(index) + number)
-        }
-    }
-
-    /**
-     * Subtract [rhs] from this vector.
-     * @throws IncompatibleVectorException If vector dimension differ
-     */
-    operator fun minusAssign(rhs: VectorN) {
-        if (dimension != rhs.dimension)
-            throw IncompatibleVectorException(rhs)
-
-        rhs.forEachIndexed { index, number ->
-            set(index, get(index) - number)
+    operator fun plus(rhs: VectorN) = VectorN(this).apply {
+        rhs.forEachIndexed { i, number ->
+            this[i] += number
         }
     }
 
@@ -220,12 +197,5 @@ class VectorN(
             f(i, this[i])
         }
     }
-
-    /**
-     * Thrown upon operations requiring two vectors to be compatible.
-     */
-    inner class IncompatibleVectorException(
-            incompatibleVector: VectorN
-    ) : MathException("$incompatibleVector is incompatible to ${this@VectorN}")
 
 }
