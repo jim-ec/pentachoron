@@ -15,7 +15,7 @@ import kotlin.math.sqrt
  *
  * @property dimension Dimension of this vector. Determines count of numbers [numbers] holds.
  */
-open class VectorN(
+class VectorN(
         val dimension: Int
 ) {
 
@@ -269,7 +269,7 @@ open class VectorN(
     /**
      * Compute the vector product of [lhs] and [rhs], storing the result in this vector.
      */
-    open fun crossed(lhs: VectorN, rhs: VectorN) {
+    fun crossed(lhs: VectorN, rhs: VectorN) {
         x = lhs.y * rhs.z - lhs.z * rhs.y
         y = lhs.z * rhs.x - lhs.x * rhs.z
         z = lhs.x * rhs.y - lhs.y * rhs.x
