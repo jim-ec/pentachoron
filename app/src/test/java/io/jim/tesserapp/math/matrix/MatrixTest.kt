@@ -170,9 +170,8 @@ class MatrixTest {
 
     @Test
     fun lookAt() {
-        val matrix = LookAtMatrix()(
-                eye = Vector3dh(2.0, 2.0, 2.0),
-                target = Vector3dh(0.0, 0.0, 0.0),
+        val matrix = LookAtMatrix().computed(
+                distance = 2.0,
                 refUp = Vector3dh(0.0, 1.0, 0.0)
         )
 
