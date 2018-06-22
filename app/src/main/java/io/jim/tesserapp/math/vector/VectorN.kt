@@ -20,11 +20,22 @@ open class VectorN(
 ) {
 
     /**
-     * Create a vector whose [dimension] is determined through the count of components passed
-     * to [components]. Initialize the vector components with [components].
+     * Construct a 3d vector.
      */
-    constructor(vararg components: Double) : this(components.size) {
-        load(*components)
+    constructor(x: Double, y: Double, z: Double) : this(3) {
+        this.x = x
+        this.y = y
+        this.z = z
+    }
+
+    /**
+     * Construct a 4d vector.
+     */
+    constructor(x: Double, y: Double, z: Double, q: Double) : this(4) {
+        this.x = x
+        this.y = y
+        this.z = z
+        this.q = q
     }
 
     /**

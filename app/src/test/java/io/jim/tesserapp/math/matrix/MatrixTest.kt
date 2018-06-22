@@ -73,7 +73,7 @@ class MatrixTest {
 
     @Test(expected = Matrix.IncompatibleTransformDimension::class)
     fun translationIncompatibleDimension() {
-        matrix.translation(VectorN(2.0, 5.0))
+        matrix.translation(VectorN(2.0, 5.0, 1.0, 1.0))
     }
 
     @Test
