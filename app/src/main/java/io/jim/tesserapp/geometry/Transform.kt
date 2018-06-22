@@ -100,8 +100,8 @@ class Transform {
         
         // Move contents of model matrix into the temporary buffer-like old-model-matrix:
         oldRotationMatrix.swap(rotationMatrix)
-        
-        rotationMatrix.multiplication(oldRotationMatrix, newRotationMatrix)
+
+        rotationMatrix.multiplication(newRotationMatrix, oldRotationMatrix)
     }
     
     /**
