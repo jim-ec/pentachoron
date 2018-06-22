@@ -8,7 +8,7 @@ import io.jim.tesserapp.util.InputStreamMemory
  *
  * @property drawMode Mode how to draw the vertices, e.g. [GLES30.GL_TRIANGLE_STRIP].
  */
-open class GlVertexBuffer(
+class GlVertexBuffer(
         private val drawMode: Int
 ) : GlBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_STATIC_DRAW) {
     

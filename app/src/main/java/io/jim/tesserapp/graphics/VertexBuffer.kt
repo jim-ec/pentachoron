@@ -3,11 +3,14 @@ package io.jim.tesserapp.graphics
 import android.opengl.GLES30
 import io.jim.tesserapp.graphics.engine.GlVertexBuffer
 import io.jim.tesserapp.util.BYTE_LENGTH
+import io.jim.tesserapp.util.InputStreamMemory
 
 /**
  * A specific vertex buffer drawing lines, defining vertex data layout.
  */
-class VertexBuffer(shader: Shader) : GlVertexBuffer(GLES30.GL_LINES) {
+class VertexBuffer(shader: Shader) {
+
+    val vertexBuffer = GlVertexBuffer(GLES30.GL_LINES)
     
     companion object {
         
@@ -57,9 +60,9 @@ class VertexBuffer(shader: Shader) : GlVertexBuffer(GLES30.GL_LINES) {
     
     init {
         // Instruct VAO:
-        vertexArrayBound {
-            
-            bound {
+        vertexBuffer.vertexArrayBound {
+
+            vertexBuffer.bound {
                 
                 // Position attribute:
                 GLES30.glEnableVertexAttribArray(shader.positionAttributeLocation)
@@ -84,6 +87,11 @@ class VertexBuffer(shader: Shader) : GlVertexBuffer(GLES30.GL_LINES) {
                 )
             }
         }
+    }
+
+    fun draw(memory: InputStreamMemory, elementCounts: Int) {
+        vertexBuffer.upload(memory)
+        vertexBuffer.draw(elementCounts)
     }
     
 }

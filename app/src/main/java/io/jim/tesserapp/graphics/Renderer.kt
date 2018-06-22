@@ -120,12 +120,11 @@ class Renderer(
             
             shader.uploadProjectionMatrix(projectionMatrix)
             
-            
-            // Vertex memory was rewritten and needs to be uploaded to GL:
-            vertexBuffer.upload(memory = drawDataProvider.vertexMemory)
-            
             // Draw the vertex buffer:
-            vertexBuffer.draw(elementCounts = drawDataProvider.vertexMemory.writtenElementCounts)
+            vertexBuffer.draw(
+                    memory = drawDataProvider.vertexMemory,
+                    elementCounts = drawDataProvider.vertexMemory.writtenElementCounts
+            )
             
         }
         
