@@ -83,9 +83,7 @@ class VectorNTest {
 
     @Test
     fun division() {
-        VectorN(3.0, 1.0, 4.0, 0.0).apply {
-            this /= 2.0
-
+        (VectorN(3.0, 1.0, 4.0, 0.0) / 2.0).apply {
             assertEquals(1.5, x, 0.1)
             assertEquals(0.5, y, 0.1)
             assertEquals(2.0, z, 0.1)
@@ -95,9 +93,7 @@ class VectorNTest {
 
     @Test
     fun scale() {
-        VectorN(3.0, 1.0, 4.0, 4.0).apply {
-            this *= 2.0
-
+        (VectorN(3.0, 1.0, 4.0, 4.0) * 2.0).apply {
             assertEquals(6.0, x, 0.1)
             assertEquals(2.0, y, 0.1)
             assertEquals(8.0, z, 0.1)

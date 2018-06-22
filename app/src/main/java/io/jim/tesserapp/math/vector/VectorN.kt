@@ -181,36 +181,27 @@ class VectorN(
     }
 
     /**
-     * Scales this by [scale].
+     * Return a vector multiplied by [factor].
      */
-    operator fun timesAssign(scale: Double) {
-        forEachIndexed { index ->
-            set(index, get(index) * scale)
+    operator fun times(factor: Double) = VectorN(this).apply {
+        forEachIndexed { i, number ->
+            this[i] = number * factor
         }
     }
 
     /**
-     * Divides this vector through [divisor].
+     * Return a vector divided through [divisor].
      */
-    operator fun divAssign(divisor: Double) {
-        forEachIndexed { index ->
-            set(index, get(index) / divisor)
+    operator fun div(divisor: Double) = VectorN(this).apply {
+        forEachIndexed { i, number ->
+            this[i] = number / divisor
         }
     }
 
     /**
      * Return a this vector in its normalized form.
      */
-    fun normalized() = VectorN(this).also { it *= 1 / length }
-
-    /**
-     * Call [f] for each dimension index this vector holds.
-     */
-    inline fun forEachIndexed(f: (index: Int) -> Unit) {
-        for (i in 0 until dimension) {
-            f(i)
-        }
-    }
+    fun normalized() = VectorN(this) / length
 
     /**
      * Compute the vector product of this and [rhs].
