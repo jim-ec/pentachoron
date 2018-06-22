@@ -1,6 +1,6 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.math.vector.Vector4dh
+import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.util.LinearList
 
 /**
@@ -29,12 +29,12 @@ class Geometry(
     /**
      * List containing all positions.
      */
-    private val positions = ArrayList<Vector4dh>()
+    private val positions = ArrayList<VectorN>()
     
     /**
      * List containing all lines constructed from [positions] using indices.
      */
-    val lines = LinearList<Line<Vector4dh>>()
+    val lines = LinearList<Line<VectorN>>()
     
     /**
      * This geometry's name.
@@ -53,20 +53,12 @@ class Geometry(
     fun updateTransform() {
         onTransformUpdate(transform)
     }
-    
-    /**
-     * Remove all stored positions and lines.
-     */
-    fun erase() {
-        lines.clear()
-        positions.clear()
-    }
-    
+
     /**
      * Add a series of vertices.
      * The actual lines are drawn from indices to these vertices.
      */
-    private fun addPosition(position: Vector4dh) {
+    private fun addPosition(position: VectorN) {
         positions += position
     }
     
@@ -87,7 +79,7 @@ class Geometry(
      * @param b End position.
      * @param color Line color.
      */
-    fun addLine(a: Vector4dh, b: Vector4dh, color: Color = Color.PRIMARY) {
+    fun addLine(a: VectorN, b: VectorN, color: Color = Color.PRIMARY) {
         addPosition(a)
         addPosition(b)
         addLine(positions.lastIndex - 1, positions.lastIndex, color)
@@ -102,10 +94,10 @@ class Geometry(
      * @param color Color of added lines.
      */
     fun addQuadrilateral(
-            a: Vector4dh,
-            b: Vector4dh,
-            c: Vector4dh,
-            d: Vector4dh,
+            a: VectorN,
+            b: VectorN,
+            c: VectorN,
+            d: VectorN,
             color: Color = Color.PRIMARY
     ) {
         addPosition(a)
@@ -117,15 +109,7 @@ class Geometry(
         addLine(2, 3, color)
         addLine(3, 0, color)
     }
-    
-    /**
-     * Colorize the [lineIndex]th line to [color].
-     * @throws IndexOutOfBoundsException If index is out of bounds.
-     */
-    fun colorizeLine(lineIndex: Int, color: Color) {
-        lines[lineIndex].color = color
-    }
-    
+
     /**
      * Extrudes the whole geometry in the given [direction].
      * This works by duplicating the whole geometry and then connecting all point duplicate
@@ -134,14 +118,14 @@ class Geometry(
      * @param connectorColor Color of the lines connecting the original and generated lines.
      */
     fun extrude(
-            direction: Vector4dh,
+            direction: VectorN,
             keepColors: Boolean = false,
             connectorColor: Color = Color.PRIMARY
     ) {
         val size = positions.size
         
         for (i in 0 until size) {
-            positions += Vector4dh().apply {
+            positions += VectorN(4).apply {
                 copy(positions[i])
                 this += direction
             }
@@ -163,7 +147,7 @@ class Geometry(
     /**
      * Invoke [f] for each position and the color it's associated with.
      */
-    inline fun forEachVertex(f: (position: Vector4dh, color: Color) -> Unit) {
+    inline fun forEachVertex(f: (position: VectorN, color: Color) -> Unit) {
         lines.indexedForEach {
             f(it.start, it.color)
             f(it.end, it.color)

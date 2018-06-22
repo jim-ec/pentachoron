@@ -1,7 +1,7 @@
 package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.math.vector.Vector4dh
+import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.util.InputStreamMemory
 
 /**
@@ -23,7 +23,7 @@ class DrawDataProvider {
      */
     fun updateVertices(
             geometries: Iterable<Geometry>,
-            interpreter: (Geometry, (position: Vector4dh, color: Geometry.Color) -> Unit) -> Unit,
+            interpreter: (Geometry, (position: VectorN, color: Geometry.Color) -> Unit) -> Unit,
             colorResolver: (Geometry.Color) -> Int
     ) {
         

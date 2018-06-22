@@ -1,7 +1,7 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.math.matrix.Matrix
-import io.jim.tesserapp.math.vector.Vector4dh
+import io.jim.tesserapp.math.vector.VectorN
 
 /**
  *
@@ -31,7 +31,7 @@ class Transform {
     /**
      * Absolute translation of this geometry.
      */
-    val translation = Vector4dh()
+    val translation = VectorN(4)
     
     /**
      * Used in [computeModelMatrix] to express [translation] in a matrix,

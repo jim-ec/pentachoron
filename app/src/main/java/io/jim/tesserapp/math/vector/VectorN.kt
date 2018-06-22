@@ -76,6 +76,15 @@ open class VectorN(
         }
 
     /**
+     * Q-component.
+     */
+    var q: Double
+        get() = this[3]
+        set(value) {
+            this[3] = value
+        }
+
+    /**
      * Represent this vector as a string.
      */
     override fun toString() =

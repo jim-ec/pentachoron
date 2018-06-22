@@ -1,6 +1,6 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.math.vector.Vector4dh
+import io.jim.tesserapp.math.vector.VectorN
 
 /**
  * Geometry representing a flat, orthogonal grid.
@@ -9,19 +9,19 @@ import io.jim.tesserapp.math.vector.Vector4dh
 fun Geometry.grid() {
     
     for (i in -5..-1) {
-        addLine(Vector4dh(i.toDouble(), 0.0, -5.0, 0.0), Vector4dh(i.toDouble(), 0.0, 5.0, 0.0))
-        addLine(Vector4dh(-5.0, 0.0, i.toDouble(), 0.0), Vector4dh(5.0, 0.0, i.toDouble(), 0.0))
+        addLine(VectorN(i.toDouble(), 0.0, -5.0, 0.0), VectorN(i.toDouble(), 0.0, 5.0, 0.0))
+        addLine(VectorN(-5.0, 0.0, i.toDouble(), 0.0), VectorN(5.0, 0.0, i.toDouble(), 0.0))
     }
     
     for (i in 1..5) {
-        addLine(Vector4dh(i.toDouble(), 0.0, -5.0, 0.0), Vector4dh(i.toDouble(), 0.0, 5.0, 0.0))
-        addLine(Vector4dh(-5.0, 0.0, i.toDouble(), 0.0), Vector4dh(5.0, 0.0, i.toDouble(), 0.0))
+        addLine(VectorN(i.toDouble(), 0.0, -5.0, 0.0), VectorN(i.toDouble(), 0.0, 5.0, 0.0))
+        addLine(VectorN(-5.0, 0.0, i.toDouble(), 0.0), VectorN(5.0, 0.0, i.toDouble(), 0.0))
     }
-    
-    addLine(Vector4dh(-5.0, 0.0, 0.0, 0.0), Vector4dh(0.0, 0.0, 0.0, 0.0))
-    addLine(Vector4dh(1.0, 0.0, 0.0, 0.0), Vector4dh(5.0, 0.0, 0.0, 0.0))
-    
-    addLine(Vector4dh(0.0, 0.0, -5.0, 0.0), Vector4dh(0.0, 0.0, 0.0, 0.0))
-    addLine(Vector4dh(0.0, 0.0, 1.0, 0.0), Vector4dh(0.0, 0.0, 5.0, 0.0))
+
+    addLine(VectorN(-5.0, 0.0, 0.0, 0.0), VectorN(0.0, 0.0, 0.0, 0.0))
+    addLine(VectorN(1.0, 0.0, 0.0, 0.0), VectorN(5.0, 0.0, 0.0, 0.0))
+
+    addLine(VectorN(0.0, 0.0, -5.0, 0.0), VectorN(0.0, 0.0, 0.0, 0.0))
+    addLine(VectorN(0.0, 0.0, 1.0, 0.0), VectorN(0.0, 0.0, 5.0, 0.0))
     
 }

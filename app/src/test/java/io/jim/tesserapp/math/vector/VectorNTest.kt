@@ -8,7 +8,7 @@ class VectorNTest {
 
     @Test
     fun construction() {
-        Vector4dh(1.0, 2.0, 5.0, 4.0).apply {
+        VectorN(1.0, 2.0, 5.0, 4.0).apply {
             assertEquals(1.0, x, 0.1)
             assertEquals(2.0, y, 0.1)
             assertEquals(5.0, z, 0.1)
@@ -23,7 +23,7 @@ class VectorNTest {
 
     @Test
     fun load() {
-        Vector4dh().apply {
+        VectorN(4).apply {
             load(1.0, 2.0, 5.0, 4.0)
 
             assertEquals(1.0, x, 0.1)
@@ -40,8 +40,8 @@ class VectorNTest {
 
     @Test
     fun addition() {
-        val v = Vector4dh(1.0, 2.0, 5.0, 0.0)
-        val u = Vector4dh(3.0, 1.0, 4.0, 1.0)
+        val v = VectorN(1.0, 2.0, 5.0, 0.0)
+        val u = VectorN(3.0, 1.0, 4.0, 1.0)
 
         v += u
 
@@ -55,8 +55,8 @@ class VectorNTest {
 
     @Test
     fun subtraction() {
-        val v = Vector4dh(3.0, 1.0, 4.0, 1.0)
-        val u = Vector4dh(1.0, 2.0, 5.0, 2.0)
+        val v = VectorN(3.0, 1.0, 4.0, 1.0)
+        val u = VectorN(1.0, 2.0, 5.0, 2.0)
 
         v -= u
 
@@ -84,7 +84,7 @@ class VectorNTest {
 
     @Test
     fun division() {
-        Vector4dh(3.0, 1.0, 4.0, 0.0).apply {
+        VectorN(3.0, 1.0, 4.0, 0.0).apply {
             this /= 2.0
 
             assertEquals(1.5, x, 0.1)
@@ -96,7 +96,7 @@ class VectorNTest {
 
     @Test
     fun scale() {
-        Vector4dh(3.0, 1.0, 4.0, 4.0).apply {
+        VectorN(3.0, 1.0, 4.0, 4.0).apply {
             this *= 2.0
 
             assertEquals(6.0, x, 0.1)

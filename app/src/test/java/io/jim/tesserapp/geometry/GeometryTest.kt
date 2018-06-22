@@ -1,6 +1,6 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.math.vector.Vector4dh
+import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.util.assertEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -19,9 +19,9 @@ class GeometryTest {
             transform.computeModelMatrix()
         }
 
-        Vector4dh().apply {
+        VectorN(4).apply {
             multiplication(
-                    lhs = Vector4dh(1.0, 0.0, 0.0, 0.0),
+                    lhs = VectorN(1.0, 0.0, 0.0, 0.0),
                     rhs = geometry.transform.modelMatrix
             )
 
@@ -35,17 +35,17 @@ class GeometryTest {
     @Test
     fun extruding() {
         Geometry().apply {
-            addLine(Vector4dh(1.0, 1.0, 0.0, 0.0), Vector4dh(2.0, 2.0, 0.0, 0.0))
-            extrude(Vector4dh(0.0, 0.0, 1.0, 0.0))
+            addLine(VectorN(1.0, 1.0, 0.0, 0.0), VectorN(2.0, 2.0, 0.0, 0.0))
+            extrude(VectorN(0.0, 0.0, 1.0, 0.0))
         }
     }
 
     @Test
     fun vertexPoints() {
-        val a = Vector4dh(0.0, 0.0, 0.0, 0.0)
-        val b = Vector4dh(1.0, 0.0, 0.0, 0.0)
-        val c = Vector4dh(1.0, 1.0, 0.0, 0.0)
-        val d = Vector4dh(0.0, 1.0, 0.0, 0.0)
+        val a = VectorN(0.0, 0.0, 0.0, 0.0)
+        val b = VectorN(1.0, 0.0, 0.0, 0.0)
+        val c = VectorN(1.0, 1.0, 0.0, 0.0)
+        val d = VectorN(0.0, 1.0, 0.0, 0.0)
 
         Geometry().apply {
 

@@ -1,6 +1,6 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.math.vector.Vector4dh
+import io.jim.tesserapp.math.vector.VectorN
 
 /**
  * Project [geometry] down to a 3d wireframe.
@@ -8,7 +8,7 @@ import io.jim.tesserapp.math.vector.Vector4dh
  */
 inline fun collapseZ(
         geometry: Geometry,
-        crossinline f: (position: Vector4dh, color: Geometry.Color) -> Unit) {
+        crossinline f: (position: VectorN, color: Geometry.Color) -> Unit) {
     
     geometry.transform.computeModelMatrix()
     
@@ -16,7 +16,7 @@ inline fun collapseZ(
         line.forEachPosition { position ->
             
             // Apply 4-dimensional model matrix to 4d point:
-            val transformedPosition = Vector4dh()
+            val transformedPosition = VectorN(4)
             transformedPosition.multiplication(position, geometry.transform.modelMatrix)
             
             transformedPosition.z = transformedPosition.q // Store q as z

@@ -6,7 +6,7 @@ import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.axis
 import io.jim.tesserapp.geometry.grid
 import io.jim.tesserapp.math.common.Smoothed
-import io.jim.tesserapp.math.vector.Vector4dh
+import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.util.synchronized
 
 /**
@@ -54,15 +54,15 @@ class MainViewModel : ViewModel() {
         name = "Featured Geometry"
         
         addQuadrilateral(
-                Vector4dh(1.0, 1.0, 1.0, 0.0),
-                Vector4dh(-1.0, 1.0, 1.0, 0.0),
-                Vector4dh(-1.0, -1.0, 1.0, 0.0),
-                Vector4dh(1.0, -1.0, 1.0, 0.0),
+                VectorN(1.0, 1.0, 1.0, 0.0),
+                VectorN(-1.0, 1.0, 1.0, 0.0),
+                VectorN(-1.0, -1.0, 1.0, 0.0),
+                VectorN(1.0, -1.0, 1.0, 0.0),
                 color = Geometry.Color.ACCENT
         )
         
         extrude(
-                direction = Vector4dh(0.0, 0.0, -2.0, 0.0),
+                direction = VectorN(0.0, 0.0, -2.0, 0.0),
                 keepColors = true,
                 connectorColor = Geometry.Color.ACCENT
         )
