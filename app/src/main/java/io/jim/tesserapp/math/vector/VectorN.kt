@@ -17,7 +17,7 @@ import kotlin.math.sqrt
  */
 open class VectorN(
         val dimension: Int
-) : MatrixMultipliable() {
+) {
 
     /**
      * Create a vector whose [dimension] is determined through the count of components passed
@@ -36,12 +36,12 @@ open class VectorN(
      * A vector can be seen as a n-column matrix.
      * This vector is considered to be homogeneous.
      */
-    final override val cols = dimension + 1
+    val cols = dimension + 1
 
     /**
      * A vector can be seen as a one-row matrix.
      */
-    override val rows = 1
+    val rows = 1
 
     /**
      * Return a string representing this vector's dimension.
@@ -130,12 +130,6 @@ open class VectorN(
             }.toString()
 
     /**
-     * Getter used by the generic matrix-like multiplier,
-     * since that has a more abstract NxM view to matrix-like objects.
-     */
-    final override fun get(row: Int, col: Int) = this[col]
-
-    /**
      * Return the [index]th number.
      */
     operator fun get(index: Int) =
@@ -145,13 +139,6 @@ open class VectorN(
                 numbers[index]
             else
                 1.0
-
-    /**
-     * Intercept setting values to the fourth column, which will effectively lead to w-division.
-     */
-    final override fun set(row: Int, col: Int, value: Double) {
-        set(col, value)
-    }
 
     /**
      * Set [index]th number to [value].
