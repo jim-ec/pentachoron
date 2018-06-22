@@ -17,38 +17,6 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
     override val cols = 5
     
     /**
-     * The dimension string should underline that the vector is not actually 4d.
-     */
-    override val dimensionString = "4dh"
-    
-    /**
-     * X-component.
-     */
-    var x: Double
-        get() = this[0]
-        set(value) {
-            this[0] = value
-        }
-    
-    /**
-     * Y-component.
-     */
-    var y: Double
-        get() = this[1]
-        set(value) {
-            this[1] = value
-        }
-    
-    /**
-     * Z-component.
-     */
-    var z: Double
-        get() = this[2]
-        set(value) {
-            this[2] = value
-        }
-    
-    /**
      * Q-component.
      */
     var q: Double

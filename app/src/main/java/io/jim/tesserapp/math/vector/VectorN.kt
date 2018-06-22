@@ -45,7 +45,34 @@ open class VectorN(
     /**
      * Return a string representing this vector's dimension.
      */
-    open val dimensionString = "${dimension}d"
+    val dimensionString = "${dimension}d"
+
+    /**
+     * X-component.
+     */
+    var x: Double
+        get() = this[0]
+        set(value) {
+            this[0] = value
+        }
+
+    /**
+     * Y-component.
+     */
+    var y: Double
+        get() = this[1]
+        set(value) {
+            this[1] = value
+        }
+
+    /**
+     * Z-component.
+     */
+    var z: Double
+        get() = this[2]
+        set(value) {
+            this[2] = value
+        }
     
     /**
      * Represent this vector as a string.
