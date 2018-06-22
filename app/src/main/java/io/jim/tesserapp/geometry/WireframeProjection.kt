@@ -18,9 +18,11 @@ inline fun projectWireframe(
             // Apply 4-dimensional model matrix to 4d point:
             val transformedPosition = VectorN(4)
             transformedPosition.multiplication(position, geometry.transform.modelMatrix)
-            
-            // Project vector down to a 3d volume:
-            transformedPosition /= transformedPosition.q + Geometry.Q_PROJECTION_VOLUME
+
+            if (geometry.isFourDimensional) {
+                // Project vector down to a 3d volume:
+                transformedPosition /= transformedPosition.q
+            }
             
             f(transformedPosition, line.color)
         }

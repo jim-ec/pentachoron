@@ -19,6 +19,7 @@ class MainViewModel : ViewModel() {
      * The featured geometry.
      */
     val featuredGeometry = Geometry(
+            isFourDimensional = true,
             onTransformUpdate = {
                 // Transform geometry in each frame relatively,
                 // by using the difference value returned from the smooth-delegates:
@@ -146,7 +147,7 @@ class MainViewModel : ViewModel() {
      * Q translation.
      */
     val translationQ = SmoothedLiveData(
-            initialValue = 0.5,
+            initialValue = 2.0,
             delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
     
     /**

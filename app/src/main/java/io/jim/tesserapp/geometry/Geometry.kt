@@ -10,22 +10,16 @@ import io.jim.tesserapp.util.LinearList
  * Called in every render frame to update this geometry's transform.
  * The actual transform owned by this geometry is passed as the receiver to [onTransformUpdate].
  * To trigger an [onTransformUpdate] invocation, call [updateTransform].
+ *
+ * @property isFourDimensional
+ * If true, a special geometry visualization is done in order to represent the four dimensional geometry
+ * in a three dimensional space.
  */
 class Geometry(
-        private val onTransformUpdate: Transform.() -> Unit = {}
+        private val onTransformUpdate: Transform.() -> Unit = {},
+        val isFourDimensional: Boolean = false
 ) {
-    
-    companion object {
-        
-        /**
-         * The volume onto which 4 dimensional vectors are projected.
-         * This value should be well chosen, as no vector should ever have such a q-value,
-         * since that will lead to projection into infinity.
-         */
-        const val Q_PROJECTION_VOLUME = 1.0
-        
-    }
-    
+
     /**
      * List containing all positions.
      */
