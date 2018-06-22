@@ -18,7 +18,7 @@ import android.opengl.GLES30
  * If a transform feedback object is present, drawing happens inside its
  * [GlTransformFeedback.capturingTransformFeedback] block.
  */
-open class GlProgram protected constructor(
+class GlProgram(
         assets: AssetManager,
         vertexShaderFile: String,
         fragmentShaderFile: String,
