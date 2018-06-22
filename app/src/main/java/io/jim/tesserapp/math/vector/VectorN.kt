@@ -108,14 +108,6 @@ open class VectorN(
             else numbers[index]
 
     /**
-     * Setter used by the generic matrix-like multiplier,
-     * since that has a more abstract NxM view to matrix-like objects.
-     */
-    override fun set(row: Int, col: Int, value: Double) {
-        set(col, value)
-    }
-
-    /**
      * Getter used by the generic matrix-like multiplier,
      * since that has a more abstract NxM view to matrix-like objects.
      */
@@ -124,6 +116,19 @@ open class VectorN(
                 this[col]
             else
                 1.0
+
+    /**
+     * Intercept setting values to the fourth column, which will effectively lead to w-division.
+     */
+    final override fun set(row: Int, col: Int, value: Double) {
+        if (col < dimension)
+            set(col, value)
+        else {
+            for (i in 0 until dimension) {
+                this[i] /= value
+            }
+        }
+    }
 
     /**
      * Sets each vector component with the corresponding number in [components].

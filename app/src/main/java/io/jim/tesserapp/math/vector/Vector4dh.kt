@@ -19,19 +19,5 @@ class Vector4dh(x: Double, y: Double, z: Double, q: Double) : VectorN(x, y, z, q
         set(value) {
             this[3] = value
         }
-    
-    /**
-     * Intercept setting values to the fourth column, which will effectively lead to w-division.
-     */
-    override fun set(row: Int, col: Int, value: Double) {
-        if (col < dimension)
-            super.set(row, col, value)
-        else {
-            x /= value
-            y /= value
-            z /= value
-            q /= value
-        }
-    }
-    
+
 }
