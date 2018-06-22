@@ -17,7 +17,7 @@ import kotlin.math.sqrt
  */
 class VectorN(
         val dimension: Int
-) {
+) : Iterable<Double> {
 
     /**
      * Construct a 3d vector.
@@ -48,32 +48,6 @@ class VectorN(
      * The underlying number array.
      */
     private val numbers = DoubleArray(dimension) { 0.0 }
-
-    /**
-     * Return a string representing this vector's dimension.
-     */
-    val dimensionString = "${dimension}d"
-
-    /**
-     * Multiply [lhs] and [rhs] matrix storing the result in this matrix.
-     *
-     * @throws MathException If the dimension requirement `MxP * PxN = MxN` is not met.
-     */
-    fun multiplication(lhs: VectorN, rhs: Matrix) {
-        if (lhs.dimension + 1 != rhs.rows)
-            throw MathException("Cannot multiply $lhs * $rhs")
-        if (rhs.cols != dimension + 1)
-            throw MathException("Target matrix $this is incompatible for $lhs * $rhs")
-
-        for (col in 0 until dimension) {
-            this[col] = (0 until lhs.dimension).sumByDouble { i -> lhs[i] * rhs[i, col] } + rhs[dimension, col]
-        }
-
-        val w = (0 until lhs.dimension).sumByDouble { i -> lhs[i] * rhs[i, dimension] } + rhs[dimension, dimension]
-        for (i in 0 until dimension) {
-            this[i] /= w
-        }
-    }
 
     /**
      * X-component.
@@ -111,12 +85,14 @@ class VectorN(
             this[3] = value
         }
 
+    override fun iterator() = numbers.iterator()
+
     /**
      * Represent this vector as a string.
      */
     override fun toString() =
             StringBuilder().also { sb ->
-                sb.append("( [").append(dimensionString).append("] ")
+                sb.append("( [").append(dimension).append("d] ")
                 numbers.forEachIndexed { index, number ->
                     sb.append(formatNumber(number)).append(
                             if (index != numbers.lastIndex) " | "
@@ -189,12 +165,23 @@ class VectorN(
                     x * rhs.y - y * rhs.x)
 
     /**
-     * Call [f] for each dimension index this vector holds.
-     * Additionally, the corresponding number is passed to [f].
+     * Multiply [lhs] and [rhs] matrix storing the result in this matrix.
+     *
+     * @throws MathException If the dimension requirement `MxP * PxN = MxN` is not met.
      */
-    inline fun forEachIndexed(f: (index: Int, number: Double) -> Unit) {
+    fun multiplication(lhs: VectorN, rhs: Matrix) {
+        if (lhs.dimension + 1 != rhs.rows)
+            throw MathException("Cannot multiply $lhs * $rhs")
+        if (rhs.cols != dimension + 1)
+            throw MathException("Target matrix $this is incompatible for $lhs * $rhs")
+
+        for (col in 0 until dimension) {
+            this[col] = (0 until lhs.dimension).sumByDouble { i -> lhs[i] * rhs[i, col] } + rhs[dimension, col]
+        }
+
+        val w = (0 until lhs.dimension).sumByDouble { i -> lhs[i] * rhs[i, dimension] } + rhs[dimension, dimension]
         for (i in 0 until dimension) {
-            f(i, this[i])
+            this[i] /= w
         }
     }
 
