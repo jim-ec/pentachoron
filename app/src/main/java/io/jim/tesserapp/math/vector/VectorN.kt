@@ -49,6 +49,37 @@ open class VectorN(
     val dimensionString = "${dimension}d"
 
     /**
+     * Multiply [lhs] and [rhs] matrix storing the result in this matrix.
+     *
+     * @throws MathException If the dimension requirement `MxP * PxN = MxN` is not met.
+     */
+    fun multiplication(lhs: VectorN, rhs: MatrixMultipliable) {
+        if (lhs.cols != rhs.rows)
+            throw MathException("Cannot multiply $lhs * $rhs")
+        if (lhs.rows != rows || rhs.cols != cols)
+            throw MathException("Target matrix $this is incompatible for $lhs * $rhs")
+
+        forEachComponent { col ->
+            var sum = 0.0
+
+            for (i in 0 until lhs.cols) {
+                sum += lhs[i] * rhs[i, col]
+            }
+
+            this[col] = sum
+        }
+    }
+
+    /**
+     * Calls [f] for each coefficient.
+     */
+    inline fun forEachComponent(f: (index: Int) -> Unit) {
+        for (i in 0 until cols) {
+            f(i)
+        }
+    }
+
+    /**
      * X-component.
      */
     var x: Double
