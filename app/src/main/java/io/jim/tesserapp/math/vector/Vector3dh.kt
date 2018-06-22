@@ -27,7 +27,7 @@ class Vector3dh(x: Double, y: Double, z: Double) : VectorN(x, y, z) {
     /**
      * Compute the vector product of [lhs] and [rhs], storing the result in this vector.
      */
-    fun crossed(lhs: VectorN, rhs: VectorN) {
+    override fun crossed(lhs: VectorN, rhs: VectorN) {
         x = lhs.y * rhs.z - lhs.z * rhs.y
         y = lhs.z * rhs.x - lhs.x * rhs.z
         z = lhs.x * rhs.y - lhs.y * rhs.x

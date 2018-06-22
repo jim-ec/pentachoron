@@ -10,7 +10,7 @@ class LookAtMatrix {
 
     private val matrix = Matrix(4)
     private val forward = VectorN(3).apply { x = 1.0 }
-    private val right = Vector3dh()
+    private val right = VectorN(3)
     private val up = Vector3dh()
     private val negatedEye = Vector3dh()
     private val base = Vector3dh()
