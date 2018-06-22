@@ -1,7 +1,7 @@
 package io.jim.tesserapp.math.common
 
 /**
- * Represents a shiftable cubic polynomial function.
+ * Represents a cubic polynomial function.
  * @constructor Create the function mapping `x ↦ a(x - x0)³ + b(x - x0)² + c(x - x0) + y0`.
  */
 data class CubicPolynomial(

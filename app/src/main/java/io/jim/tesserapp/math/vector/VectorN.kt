@@ -255,15 +255,6 @@ open class VectorN(
     }
 
     /**
-     * Negates all components.
-     */
-    fun negate() {
-        forEachIndexed { index, number ->
-            this[index] = -number
-        }
-    }
-
-    /**
      * Call [f] for each dimension index this vector holds.
      */
     inline fun forEachIndexed(f: (index: Int) -> Unit) {
