@@ -38,6 +38,12 @@ class VectorN(
         this.q = q
     }
 
+    constructor(rhs: VectorN) : this(rhs.dimension) {
+        for (i in 0 until dimension) {
+            this[i] = rhs[i]
+        }
+    }
+
     /**
      * The underlying number array.
      */
@@ -129,51 +135,6 @@ class VectorN(
      */
     operator fun set(index: Int, value: Double) {
         numbers[index] = value
-    }
-
-    /**
-     * Sets each vector component with the corresponding number in [components].
-     *
-     * Since that allocates a `double`-array for each call due to its variadic parameters,
-     * try to avoid invoking this function frequently, or take a look at [copy].
-     *
-     * @throws MathException
-     * If count of numbers passed to [components] is greater than [dimension].
-     */
-    fun load(vararg components: Double) {
-        if (components.size > dimension)
-            throw MathException("Cannot load ${components.size} components into a " +
-                    "$dimensionString vector")
-
-        components.forEachIndexed { index, component ->
-            this[index] = component
-        }
-    }
-
-    /**
-     * Copy contents of [source] into this vector.
-     * The actual dimensions can differ, as long as [counts] is chosen appropriately.
-     *
-     * @param counts
-     * How many components to copy.
-     * The default count will be the smaller vector length.
-     * I.e. the default value guarantees that the copy operation succeeds.
-     *
-     * @throws MathException
-     * If [counts] is greater than the dimension of this or the source vector.
-     */
-    fun copy(source: VectorN, counts: Int = Math.min(dimension, source.dimension)) {
-
-        if (counts > source.dimension)
-            throw MathException("Cannot copy $counts components from a " +
-                    "${source.dimensionString} vector")
-
-        if (counts > dimension)
-            throw MathException("Cannot copy $counts components to a $dimensionString vector")
-
-        for (i in 0 until counts) {
-            this[i] = source[i]
-        }
     }
 
     /**

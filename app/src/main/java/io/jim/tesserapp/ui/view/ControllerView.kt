@@ -9,7 +9,6 @@ import android.widget.FrameLayout
 import io.jim.tesserapp.MainActivity
 import io.jim.tesserapp.R
 import io.jim.tesserapp.ui.model.*
-import io.jim.tesserapp.util.LinearList
 import io.jim.tesserapp.util.synchronized
 import kotlinx.android.synthetic.main.view_controller.view.*
 
@@ -23,8 +22,8 @@ class ControllerView : FrameLayout {
     constructor(context: Context) : super(context)
     
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    
-    private val controllers = LinearList<Controller>()
+
+    private val controllers = ArrayList<Controller>()
     
     init {
         View.inflate(context, R.layout.view_controller, this)
@@ -64,7 +63,7 @@ class ControllerView : FrameLayout {
             val viewModel = (context as MainActivity).viewModel
             
             // Remove previous controllers:
-            controllers.indexedForEach {
+            controllers.forEach {
                 it.unlink()
             }
             controllers.clear()

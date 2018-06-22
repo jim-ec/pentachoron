@@ -12,8 +12,8 @@ import io.jim.tesserapp.math.vector.VectorN
  * @property endIndex Index to position at which the line ends.
  * @property color Line color.
  */
-class Line<out T : VectorN>(
-        positions: List<T>,
+class Line(
+        positions: List<VectorN>,
         val startIndex: Int,
         val endIndex: Int,
         var color: Geometry.Color
@@ -32,7 +32,7 @@ class Line<out T : VectorN>(
     /**
      * Calls [f] for both the start position and the end position.
      */
-    inline fun forEachPosition(f: (position: T) -> Unit) {
+    inline fun forEachPosition(f: (position: VectorN) -> Unit) {
         f(start)
         f(end)
     }

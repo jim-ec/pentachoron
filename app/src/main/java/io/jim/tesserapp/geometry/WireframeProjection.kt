@@ -11,8 +11,8 @@ inline fun projectWireframe(
         crossinline f: (position: VectorN, color: Geometry.Color) -> Unit) {
     
     geometry.transform.computeModelMatrix()
-    
-    geometry.lines.indexedForEach { line ->
+
+    geometry.lines.forEach { line ->
         line.forEachPosition { position ->
             
             // Apply 4-dimensional model matrix to 4d point:

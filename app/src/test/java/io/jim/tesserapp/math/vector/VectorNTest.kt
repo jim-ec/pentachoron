@@ -23,8 +23,7 @@ class VectorNTest {
 
     @Test
     fun load() {
-        VectorN(4).apply {
-            load(1.0, 2.0, 5.0, 4.0)
+        VectorN(1.0, 2.0, 5.0, 4.0).apply {
 
             assertEquals(1.0, x, 0.1)
             assertEquals(2.0, y, 0.1)

@@ -1,7 +1,6 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.math.vector.VectorN
-import io.jim.tesserapp.util.LinearList
 
 /**
  * A geometrical structure consisting of vertices.
@@ -28,7 +27,7 @@ class Geometry(
     /**
      * List containing all lines constructed from [positions] using indices.
      */
-    val lines = LinearList<Line<VectorN>>()
+    val lines = ArrayList<Line>()
     
     /**
      * This geometry's name.
@@ -119,8 +118,7 @@ class Geometry(
         val size = positions.size
         
         for (i in 0 until size) {
-            positions += VectorN(4).apply {
-                copy(positions[i])
+            positions += VectorN(positions[i]).apply {
                 this += direction
             }
         }
@@ -142,7 +140,7 @@ class Geometry(
      * Invoke [f] for each position and the color it's associated with.
      */
     inline fun forEachVertex(f: (position: VectorN, color: Color) -> Unit) {
-        lines.indexedForEach {
+        lines.forEach {
             f(it.start, it.color)
             f(it.end, it.color)
         }
