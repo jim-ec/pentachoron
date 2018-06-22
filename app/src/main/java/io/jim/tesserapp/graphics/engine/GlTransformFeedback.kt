@@ -9,8 +9,9 @@ import java.nio.Buffer
  * @property varying Varying to be captured.
  * @property mode Transform feedback mode, e.g. [GLES30.GL_TRIANGLES].
  */
-class GlTransformFeedback(private val varying: String, val mode: Int)
-    : GlBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_STATIC_READ) {
+class GlTransformFeedback(private val varying: String, val mode: Int) {
+
+    val buffer = GlBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_STATIC_READ)
     
     /**
      * Indicates whether the transform feedback object has already allocated its memory.
@@ -32,19 +33,19 @@ class GlTransformFeedback(private val varying: String, val mode: Int)
                 GLES30.GL_INTERLEAVED_ATTRIBS
         )
     }
-    
-    override fun allocate(vectorCapacity: Int, data: Buffer?) {
-        super.allocate(vectorCapacity, data)
+
+    fun allocate(vectorCapacity: Int, data: Buffer? = null) {
+        buffer.allocate(vectorCapacity, data)
         allocated = true
     }
     
     /**
      * Enables transform feedback capturing into this buffer as long as [f] runs.
-     * After that, you can read out feedback using [read].
+     * After that, you can read out feedback using [GlBuffer.read].
      */
     inline fun capturingTransformFeedback(crossinline f: () -> Unit) {
         if (allocated) {
-            GLES30.glBindBufferBase(GLES30.GL_TRANSFORM_FEEDBACK_BUFFER, 0, bufferHandle)
+            GLES30.glBindBufferBase(GLES30.GL_TRANSFORM_FEEDBACK_BUFFER, 0, buffer.bufferHandle)
             GLES30.glBeginTransformFeedback(mode)
             GlException.check("Begin transform feedback")
             

@@ -15,7 +15,7 @@ import java.nio.ByteOrder
  * @property target The GL target this buffer is bound to, e.g. [GLES30.GL_ARRAY_BUFFER].
  * @property usage How this buffer is intended to be used, see [GLES30.glBufferData].
  */
-open class GlBuffer(
+class GlBuffer(
         val target: Int,
         private val usage: Int
 ) {
@@ -34,13 +34,7 @@ open class GlBuffer(
                 GLES30.glGetBufferParameteriv(target, GLES30.GL_BUFFER_SIZE, resultCode)
             }
         }
-    
-    /**
-     * Buffer size in floats.
-     */
-    inline val floatCount: Int
-        get() = byteCount / 4
-    
+
     /**
      * Maps GL targets to their binding-query constant counterparts.
      */
@@ -50,13 +44,13 @@ open class GlBuffer(
             GLES30.GL_ELEMENT_ARRAY_BUFFER -> GLES30.GL_ELEMENT_ARRAY_BUFFER_BINDING
             else -> throw RuntimeException("Unknown binding known for target $target")
         }
-    
+
     /**
      * Allocate memory and optionally write data in.
      * @param vectorCapacity Counts of 4d vectors to be written.
      * @param data Data to be written.
      */
-    open fun allocate(vectorCapacity: Int, data: java.nio.Buffer? = null) {
+    fun allocate(vectorCapacity: Int, data: java.nio.Buffer? = null) {
         bound {
             GLES30.glBufferData(
                     target,
