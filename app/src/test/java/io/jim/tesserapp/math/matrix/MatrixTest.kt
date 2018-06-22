@@ -90,10 +90,8 @@ class MatrixTest {
     fun translation() {
         matrix.translation(VectorN(2.0, 3.0, 4.0))
         val vector = VectorN(5.0, 6.0, 7.0)
-
-        VectorN(3).apply {
-            multiplication(vector, matrix)
-
+    
+        (vector * matrix).apply {
             assertEquals(7.0, x, 0.1)
             assertEquals(9.0, y, 0.1)
             assertEquals(11.0, z, 0.1)
@@ -104,10 +102,8 @@ class MatrixTest {
     fun rotation() {
         matrix.rotation(1, 2, Math.PI / 2)
         val vector = VectorN(0.0, 3.0, 0.0)
-
-        VectorN(3).apply {
-            multiplication(vector, matrix)
-
+    
+        (vector * matrix).apply {
             assertEquals(0.0, x, 0.1)
             assertEquals(0.0, y, 0.1)
             assertEquals(3.0, z, 0.1)
@@ -118,10 +114,8 @@ class MatrixTest {
     fun scaleUniformly() {
         matrix.scale(2.0)
         val vector = VectorN(5.0, 6.0, 7.0)
-
-        VectorN(3).apply {
-            multiplication(vector, matrix)
-
+    
+        (vector * matrix).apply {
             assertEquals(10.0, x, 0.1)
             assertEquals(12.0, y, 0.1)
             assertEquals(14.0, z, 0.1)
@@ -132,10 +126,8 @@ class MatrixTest {
     fun scaleByIndividualFactors() {
         matrix.scale(VectorN(2.0, 3.0, 4.0))
         val vector = VectorN(5.0, 6.0, 7.0)
-
-        VectorN(3).apply {
-            multiplication(vector, matrix)
-
+    
+        (vector * matrix).apply {
             assertEquals(10.0, x, 0.1)
             assertEquals(18.0, y, 0.1)
             assertEquals(28.0, z, 0.1)
@@ -145,32 +137,26 @@ class MatrixTest {
     @Test
     fun perspective2D() {
         matrix.perspective2D(5.0, 10.0)
-
-        val homogeneous = VectorN(3)
-
-        homogeneous.apply {
-            multiplication(VectorN(2.0, 3.0, -10.0), matrix)
+    
+        (VectorN(2.0, 3.0, -10.0) * matrix).apply {
             assertEquals(1.0, z, 0.1)
             assertEquals(2.0 / 10.0, x, 0.1)
             assertEquals(3.0 / 10.0, y, 0.1)
         }
-
-        homogeneous.apply {
-            multiplication(VectorN(2.0, 3.0, -5.0), matrix)
+    
+        (VectorN(2.0, 3.0, -5.0) * matrix).apply {
             assertEquals(0.0, z, 0.1)
             assertEquals(2.0 / 5.0, x, 0.1)
             assertEquals(3.0 / 5.0, y, 0.1)
         }
-
-        homogeneous.apply {
-            multiplication(VectorN(2.0, 3.0, -7.0), matrix)
+    
+        (VectorN(2.0, 3.0, -7.0) * matrix).apply {
             assertTrue(0.0 < z && z < 1.0)
             assertEquals(2.0 / 7.0, x, 0.1)
             assertEquals(3.0 / 7.0, y, 0.1)
         }
-
-        homogeneous.apply {
-            multiplication(VectorN(2.0, 3.0, -2.0), matrix)
+    
+        (VectorN(2.0, 3.0, -2.0) * matrix).apply {
             assertTrue(z < 0.0)
             assertEquals(2.0 / 2.0, x, 0.1)
             assertEquals(3.0 / 2.0, y, 0.1)
@@ -193,9 +179,8 @@ class MatrixTest {
         assertEquals(0.0, matrix.toVector(0) * matrix.toVector(1), 0.1)
         assertEquals(0.0, matrix.toVector(1) * matrix.toVector(2), 0.1)
         assertEquals(0.0, matrix.toVector(0) * matrix.toVector(2), 0.1)
-
-        VectorN(3).apply {
-            multiplication(lhs = VectorN(0.0, 0.0, 0.0), rhs = matrix)
+    
+        (VectorN(0.0, 0.0, 0.0) * matrix).apply {
             assertEquals(0.0, x, 0.1)
             assertEquals(0.0, y, 0.1)
             assertTrue(z < 0.0)
@@ -211,9 +196,8 @@ class MatrixTest {
                 VectorN(4.0, 8.0, 12.0, 16.0))
 
         matrix.transpose()
-
-        VectorN(3).apply {
-            multiplication(lhs = VectorN(1.0, 2.0, 3.0), rhs = matrix)
+    
+        (VectorN(1.0, 2.0, 3.0) * matrix).apply {
             val w = 72.0
             assertEquals(52.0 / w, x, 0.1)
             assertEquals(58.0 / w, y, 0.1)

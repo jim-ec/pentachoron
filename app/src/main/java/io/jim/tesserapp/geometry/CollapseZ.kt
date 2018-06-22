@@ -11,13 +11,12 @@ inline fun collapseZ(
         crossinline f: (position: VectorN, color: Geometry.Color) -> Unit) {
     
     geometry.transform.computeModelMatrix()
-
+    
     geometry.lines.forEach { line ->
         line.forEachPosition { position ->
             
             // Apply 4-dimensional model matrix to 4d point:
-            val transformedPosition = VectorN(4)
-            transformedPosition.multiplication(position, geometry.transform.modelMatrix)
+            val transformedPosition = position * geometry.transform.modelMatrix
             
             transformedPosition.z = transformedPosition.q // Store q as z
             transformedPosition.q = 0.0

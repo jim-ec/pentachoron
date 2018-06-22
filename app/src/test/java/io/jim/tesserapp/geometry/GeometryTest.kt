@@ -18,13 +18,8 @@ class GeometryTest {
             transform.translateX(1.0)
             transform.computeModelMatrix()
         }
-
-        VectorN(4).apply {
-            multiplication(
-                    lhs = VectorN(1.0, 0.0, 0.0, 0.0),
-                    rhs = geometry.transform.modelMatrix
-            )
-
+    
+        (VectorN(1.0, 0.0, 0.0, 0.0) * geometry.transform.modelMatrix).apply {
             assertEquals(1.0, x, 0.1)
             assertEquals(1.0, y, 0.1)
             assertEquals(0.0, z, 0.1)

@@ -9,7 +9,6 @@ class LookAtMatrix {
 
     private val matrix = Matrix(4)
     private val forward = VectorN(1.0, 0.0, 0.0)
-    private val base = VectorN(3)
 
     /**
      * Compute view matrix.
@@ -37,12 +36,7 @@ class LookAtMatrix {
         matrix[2, 2] = forward.z
 
         matrix.transpose()
-
-        base.multiplication(
-                lhs = VectorN(-distance, 0.0, 0.0),
-                rhs = matrix
-        )
-        matrix.translation(base)
+        matrix.translation(VectorN(-distance, 0.0, 0.0) * matrix)
 
         return matrix
     }
