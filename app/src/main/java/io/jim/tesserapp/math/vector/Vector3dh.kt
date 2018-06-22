@@ -7,7 +7,7 @@ package io.jim.tesserapp.math.vector
 class Vector3dh(x: Double, y: Double, z: Double) : VectorN(x, y, z) {
     
     /**
-     * Construct a vector with all components set to zero, except [w].
+     * Construct a vector with all components set to zero.
      */
     constructor() : this(0.0, 0.0, 0.0)
     
@@ -15,7 +15,7 @@ class Vector3dh(x: Double, y: Double, z: Double) : VectorN(x, y, z) {
      * Though this vector is 3d, it technically has 4 columns, including the virtual w-component.
      */
     override val cols = 4
-    
+
     /**
      * Intercept getting the w-component, which is always 1.
      */
@@ -23,7 +23,7 @@ class Vector3dh(x: Double, y: Double, z: Double) : VectorN(x, y, z) {
         return if (col < 3)
             super.get(row, col)
         else
-            w
+            1.0
     }
     
     /**
@@ -33,19 +33,11 @@ class Vector3dh(x: Double, y: Double, z: Double) : VectorN(x, y, z) {
         if (col < 3)
             super.set(row, col, value)
         else {
-            w = value
+            x /= value
+            y /= value
+            z /= value
         }
     }
-    
-    /**
-     * W-component. This is always 1.
-     * Setting this value will lead to w-division.
-     */
-    private inline var w: Double
-        get() = 1.0
-        set(value) {
-            this /= value
-        }
 
     /**
      * Compute the vector product of [lhs] and [rhs], storing the result in this vector.
