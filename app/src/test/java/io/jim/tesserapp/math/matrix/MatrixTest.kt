@@ -90,7 +90,7 @@ class MatrixTest {
     
     @Test
     fun perspective2D() {
-        matrix.perspective2D(5.0, 10.0)
+        val matrix = Matrix.perspective(5.0, 10.0)
         
         (VectorN(2.0, 3.0, -10.0) * matrix).apply {
             assertEquals(1.0, z, 0.1)

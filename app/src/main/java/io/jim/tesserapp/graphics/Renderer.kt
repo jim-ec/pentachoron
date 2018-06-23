@@ -26,7 +26,7 @@ class Renderer(
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
     
-    private val projectionMatrix = Matrix(4).apply { perspective2D(near = 0.1, far = 100.0) }
+    private val projectionMatrix = Matrix.perspective(near = 0.1, far = 100.0)
     
     private var aspectRatio: Double = 1.0
     

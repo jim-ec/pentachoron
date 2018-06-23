@@ -35,6 +35,11 @@ class Matrix(
         }
     }
     
+    constructor(rows: Int, cols: Int, initialValues: Map<Pair<Int, Int>, Double>)
+            : this(rows, cols, { row, col ->
+        initialValues[row to col] ?: if (row == col) 1.0 else 0.0
+    })
+    
     /**
      * Underlying number list.
      */
@@ -99,45 +104,26 @@ class Matrix(
                     }
     
         fun rotation(size: Int, a: Int, b: Int, radians: Double) =
-                Matrix(size, size) { row, col ->
-                    if (row == a && col == a)
-                        cos(radians)
-                    else if (row == a && col == b)
-                        sin(radians)
-                    else if (row == b && col == a)
-                        -sin(radians)
-                    else if (row == b && col == b)
-                        cos(radians)
-                    else if (row == col)
-                        1.0
-                    else
-                        0.0
-                }
-    }
+                Matrix(size, size, mapOf(
+                        a to a to cos(radians),
+                        a to b to sin(radians),
+                        b to a to -sin(radians),
+                        b to b to cos(radians)
+                ))
     
-    /**
-     * Load a 3D to 2D perspective matrix.
-     * The z component gets remapping between a near and far value.
-     * @param near Near plane. If Vector lies on that plane (negated), it will be projected to 0.
-     * @param far Far plane. If Vector lies on that plane (negated), it will be projected to 1.
-     */
-    fun perspective2D(near: Double, far: Double) {
-        
-        if (near <= 0.0 || far <= 0.0 || near > far)
-            throw MathException("Invalid near=$near or far=$far parameter")
-        
-        perspective2D()
-        
-        this[2, 2] = -far / (far - near)
-        this[3, 2] = -(far * near) / (far - near)
-    }
-    
-    /**
-     * Load a 3D to 2D perspective matrix without remapping z.
-     */
-    fun perspective2D() {
-        this[2, 3] = -1.0
-        this[3, 3] = 0.0
+        /**
+         * Load a 3D to 2D perspective matrix.
+         * The z component gets remapping between a near and far value.
+         * @param near Near plane. If Vector lies on that plane (negated), it will be projected to 0.
+         * @param far Far plane. If Vector lies on that plane (negated), it will be projected to 1.
+         */
+        fun perspective(near: Double, far: Double) =
+                Matrix(4, 4, mapOf(
+                        2 to 3 to -1.0,
+                        3 to 3 to 0.0,
+                        2 to 2 to -far / (far - near),
+                        3 to 2 to -(far * near) / (far - near)
+                ))
     }
     
     /**
