@@ -4,8 +4,6 @@ import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.formatNumber
 import io.jim.tesserapp.math.vector.VectorN
 import java.nio.DoubleBuffer
-import kotlin.math.cos
-import kotlin.math.sin
 
 /**
  * A row-major matrix with [rows] rows and [cols] columns.
@@ -90,14 +88,6 @@ class Matrix(val rows: Int, val cols: Int, initializer: (row: Int, col: Int) -> 
                             else -> 0.0
                         }
                     }
-    
-        fun rotation(size: Int, a: Int, b: Int, radians: Double) =
-                Matrix(size, mapOf(
-                        a to a to cos(radians),
-                        a to b to sin(radians),
-                        b to a to -sin(radians),
-                        b to b to cos(radians)
-                ))
     
         /**
          * Load a 3D to 2D perspective matrix.

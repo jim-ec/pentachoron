@@ -15,8 +15,8 @@ fun viewMatrix(
         aspectRatio: Double,
         horizontalRotation: Double,
         verticalRotation: Double
-) = Matrix.rotation(4, 2, 0, horizontalRotation) *
-        Matrix.rotation(4, 0, 1, verticalRotation) *
+) = rotation(4, RotationPlane.XZ, horizontalRotation) *
+        rotation(4, RotationPlane.XY, verticalRotation) *
         lookAt(distance, refUp = VectorN(0.0, 1.0, 0.0)) *
         Matrix.scale(4, if (aspectRatio > 1) {
             // Viewport is wide => shrink horizontally

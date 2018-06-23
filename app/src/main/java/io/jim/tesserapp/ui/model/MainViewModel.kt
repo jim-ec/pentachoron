@@ -7,6 +7,8 @@ import io.jim.tesserapp.geometry.axis
 import io.jim.tesserapp.geometry.grid
 import io.jim.tesserapp.math.common.Smoothed
 import io.jim.tesserapp.math.matrix.Matrix
+import io.jim.tesserapp.math.matrix.RotationPlane
+import io.jim.tesserapp.math.matrix.rotation
 import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.util.synchronized
 
@@ -26,10 +28,10 @@ class MainViewModel : ViewModel() {
                 // Transform geometry in each frame relatively,
                 // by using the difference value returned from the smooth-delegates:
                 this@MainViewModel.synchronized {
-                    Matrix.rotation(5, 1, 2, rotationX.smoothed * Math.PI) *
-                            Matrix.rotation(5, 2, 0, rotationY.smoothed * Math.PI) *
-                            Matrix.rotation(5, 0, 1, rotationZ.smoothed * Math.PI) *
-                            Matrix.rotation(5, 0, 3, rotationQ.smoothed * Math.PI) *
+                    rotation(5, RotationPlane.YZ, rotationX.smoothed * Math.PI) *
+                            rotation(5, RotationPlane.XZ, rotationY.smoothed * Math.PI) *
+                            rotation(5, RotationPlane.XY, rotationZ.smoothed * Math.PI) *
+                            rotation(5, RotationPlane.XQ, rotationQ.smoothed * Math.PI) *
                             Matrix.translation(5, VectorN(
                                     translationX.smoothed,
                                     translationY.smoothed,
