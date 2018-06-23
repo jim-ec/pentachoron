@@ -24,7 +24,7 @@ fun view(
  * I.e. a wide viewport causes horizontal down-scaling, while a tall viewport causes vertical down-scaling.
  */
 fun aspectRatioCorrection(aspectRatio: Double) =
-        Matrix.scale(4,
+        scale(4,
                 if (aspectRatio > 1)
                     VectorN(1 / aspectRatio, 1.0, 1.0)
                 else
@@ -42,7 +42,7 @@ fun lookAt(distance: Double, refUp: VectorN) = run {
     val right = refUp.normalized() cross forward
     val up = forward cross right
     
-    Matrix.translation(4, VectorN(-distance, 0.0, 0.0)) * Matrix(4, mapOf(
+    translation(4, VectorN(-distance, 0.0, 0.0)) * Matrix(4, mapOf(
             0 to 0 to right.x,
             0 to 1 to right.y,
             0 to 2 to right.z,

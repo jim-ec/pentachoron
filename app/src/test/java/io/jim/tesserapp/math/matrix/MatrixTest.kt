@@ -52,12 +52,12 @@ class MatrixTest {
     
     @Test(expected = MathException::class)
     fun translationIncompatibleDimension() {
-        Matrix.translation(4, VectorN(2.0, 5.0, 1.0, 1.0))
+        translation(4, VectorN(2.0, 5.0, 1.0, 1.0))
     }
     
     @Test
     fun translation() {
-        (VectorN(5.0, 6.0, 7.0) * Matrix.translation(4, VectorN(2.0, 3.0, 4.0))).apply {
+        (VectorN(5.0, 6.0, 7.0) * translation(4, VectorN(2.0, 3.0, 4.0))).apply {
             assertEquals(7.0, x, 0.1)
             assertEquals(9.0, y, 0.1)
             assertEquals(11.0, z, 0.1)
@@ -75,7 +75,7 @@ class MatrixTest {
     
     @Test
     fun scaleByIndividualFactors() {
-        (VectorN(5.0, 6.0, 7.0) * Matrix.scale(4, VectorN(2.0, 3.0, 4.0))).apply {
+        (VectorN(5.0, 6.0, 7.0) * scale(4, VectorN(2.0, 3.0, 4.0))).apply {
             assertEquals(10.0, x, 0.1)
             assertEquals(18.0, y, 0.1)
             assertEquals(28.0, z, 0.1)
@@ -84,7 +84,7 @@ class MatrixTest {
     
     @Test
     fun perspective2D() {
-        val matrix = Matrix.perspective(5.0, 10.0)
+        val matrix = perspective(5.0, 10.0)
         
         (VectorN(2.0, 3.0, -10.0) * matrix).apply {
             assertEquals(1.0, z, 0.1)

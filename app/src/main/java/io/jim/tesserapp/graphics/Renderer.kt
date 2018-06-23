@@ -5,7 +5,7 @@ import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.collapseZ
 import io.jim.tesserapp.geometry.projectWireframe
-import io.jim.tesserapp.math.matrix.Matrix
+import io.jim.tesserapp.math.matrix.perspective
 import io.jim.tesserapp.math.matrix.view
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
@@ -26,7 +26,7 @@ class Renderer(
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
     
-    private val projectionMatrix = Matrix.perspective(near = 0.1, far = 100.0)
+    private val projectionMatrix = perspective(near = 0.1, far = 100.0)
     
     private var aspectRatio: Double = 1.0
     

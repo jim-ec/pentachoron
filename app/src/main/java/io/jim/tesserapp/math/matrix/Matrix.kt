@@ -2,7 +2,6 @@ package io.jim.tesserapp.math.matrix
 
 import io.jim.tesserapp.math.common.MathException
 import io.jim.tesserapp.math.common.formatNumber
-import io.jim.tesserapp.math.vector.VectorN
 import java.nio.DoubleBuffer
 
 /**
@@ -64,45 +63,6 @@ class Matrix(val rows: Int, val cols: Int, initializer: (row: Int, col: Int) -> 
                 Matrix(rows, rhs.cols) { row, col ->
                     (0 until cols).sumByDouble { this[row, it] * rhs[it, col] }
                 }
-    
-    companion object {
-        
-        fun scale(size: Int, factors: VectorN) =
-                if (factors.dimension != size - 1)
-                    throw MathException("")
-                else
-                    Matrix(size) { row, col ->
-                        if (row == size - 1 && col == size - 1) 1.0
-                        else if (row == col) factors[row]
-                        else 0.0
-                    }
-        
-        fun translation(size: Int, v: VectorN) =
-                if (v.dimension != size - 1)
-                    throw MathException("")
-                else
-                    Matrix(size) { row, col ->
-                        when (row) {
-                            col -> 1.0
-                            size - 1 -> v[col]
-                            else -> 0.0
-                        }
-                    }
-    
-        /**
-         * Load a 3D to 2D perspective matrix.
-         * The z component gets remapping between a near and far value.
-         * @param near Near plane. If Vector lies on that plane (negated), it will be projected to 0.
-         * @param far Far plane. If Vector lies on that plane (negated), it will be projected to 1.
-         */
-        fun perspective(near: Double, far: Double) =
-                Matrix(4, 4, mapOf(
-                        2 to 3 to -1.0,
-                        3 to 3 to 0.0,
-                        2 to 2 to -far / (far - near),
-                        3 to 2 to -(far * near) / (far - near)
-                ))
-    }
     
     /**
      * Transpose the matrix.

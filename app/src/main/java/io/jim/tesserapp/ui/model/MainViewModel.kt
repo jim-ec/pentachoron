@@ -6,9 +6,9 @@ import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.axis
 import io.jim.tesserapp.geometry.grid
 import io.jim.tesserapp.math.common.Smoothed
-import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.math.matrix.RotationPlane
 import io.jim.tesserapp.math.matrix.rotation
+import io.jim.tesserapp.math.matrix.translation
 import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.util.synchronized
 
@@ -32,7 +32,7 @@ class MainViewModel : ViewModel() {
                             rotation(5, RotationPlane.XZ, rotationY.smoothed * Math.PI) *
                             rotation(5, RotationPlane.XY, rotationZ.smoothed * Math.PI) *
                             rotation(5, RotationPlane.XQ, rotationQ.smoothed * Math.PI) *
-                            Matrix.translation(5, VectorN(
+                            translation(5, VectorN(
                                     translationX.smoothed,
                                     translationY.smoothed,
                                     translationZ.smoothed,
