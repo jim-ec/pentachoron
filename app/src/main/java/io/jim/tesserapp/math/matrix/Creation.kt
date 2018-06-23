@@ -22,11 +22,11 @@ fun identity(size: Int) =
  * @param size
  * Side length of matrix.
  *
- * @param initialValues
+ * @param values
  * Initial values associated to a pair of row and column index.
  * Cells which are not explicitly initialized are set to match an identity matrix.
  */
-fun identity(size: Int, initialValues: Map<Pair<Int, Int>, Double>) =
+fun identity(size: Int, values: Map<Pair<Int, Int>, Double>) =
         quadratic(size) { row, col ->
-            initialValues[row to col] ?: if (row == col) 1.0 else 0.0
+            values[row to col] ?: if (row == col) 1.0 else 0.0
         }
