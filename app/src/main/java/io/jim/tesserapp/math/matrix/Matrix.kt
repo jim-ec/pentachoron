@@ -42,19 +42,6 @@ class Matrix(val rows: Int, val cols: Int, initializer: (row: Int, col: Int) -> 
     }
     
     /**
-     * Multiply this and [rhs] matrix returning the resulting matrix.
-     *
-     * @throws MathException If the dimension requirement `MxP * PxN = MxN` is not met.
-     */
-    operator fun times(rhs: Matrix) =
-            if (cols != rhs.rows)
-                throw MathException("Cannot multiply $this * $rhs")
-            else
-                Matrix(rows, rhs.cols) { row, col ->
-                    (0 until cols).sumByDouble { this[row, it] * rhs[it, col] }
-                }
-    
-    /**
      * Transpose the matrix.
      */
     fun transposed() = Matrix(cols, rows) { row, col -> this[col, row] }

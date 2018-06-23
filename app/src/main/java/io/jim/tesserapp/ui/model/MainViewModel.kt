@@ -8,6 +8,7 @@ import io.jim.tesserapp.geometry.grid
 import io.jim.tesserapp.math.common.Smoothed
 import io.jim.tesserapp.math.matrix.RotationPlane
 import io.jim.tesserapp.math.matrix.rotation
+import io.jim.tesserapp.math.matrix.transformChain
 import io.jim.tesserapp.math.matrix.translation
 import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.util.synchronized
@@ -25,34 +26,33 @@ class MainViewModel : ViewModel() {
             name = "Featured Geometry",
             isFourDimensional = true,
             onTransformUpdate = {
-                // Transform geometry in each frame relatively,
-                // by using the difference value returned from the smooth-delegates:
-                this@MainViewModel.synchronized {
-                    rotation(5, RotationPlane.YZ, rotationX.smoothed * Math.PI) *
-                            rotation(5, RotationPlane.XZ, rotationY.smoothed * Math.PI) *
-                            rotation(5, RotationPlane.XY, rotationZ.smoothed * Math.PI) *
-                            rotation(5, RotationPlane.XQ, rotationQ.smoothed * Math.PI) *
+                synchronized {
+                    transformChain(listOf(
+                            rotation(5, RotationPlane.YZ, rotationX.smoothed * Math.PI),
+                            rotation(5, RotationPlane.XZ, rotationY.smoothed * Math.PI),
+                            rotation(5, RotationPlane.XY, rotationZ.smoothed * Math.PI),
+                            rotation(5, RotationPlane.XQ, rotationQ.smoothed * Math.PI),
                             translation(5, VectorN(
                                     translationX.smoothed,
                                     translationY.smoothed,
                                     translationZ.smoothed,
                                     translationQ.smoothed
                             ))
+                    ))
                 }
-                
             }
     ).apply {
         
         addQuadrilateral(
-                VectorN(1.0, 1.0, 1.0, 0.0),
-                VectorN(-1.0, 1.0, 1.0, 0.0),
-                VectorN(-1.0, -1.0, 1.0, 0.0),
-                VectorN(1.0, -1.0, 1.0, 0.0),
+                VectorN(2.0, 2.0, 2.0, 0.0),
+                VectorN(-2.0, 2.0, 2.0, 0.0),
+                VectorN(-2.0, -2.0, 2.0, 0.0),
+                VectorN(2.0, -2.0, 2.0, 0.0),
                 color = Geometry.Color.ACCENT
         )
         
         extrude(
-                direction = VectorN(0.0, 0.0, -2.0, 0.0),
+                direction = VectorN(0.0, 0.0, -4.0, 0.0),
                 keepColors = true,
                 connectorColor = Geometry.Color.ACCENT
         )
@@ -147,7 +147,7 @@ class MainViewModel : ViewModel() {
      * Q translation.
      */
     val translationQ = SmoothedLiveData(
-            initialValue = 2.0,
+            initialValue = 3.0,
             delegationMode = Smoothed.DelegationMode.ABSOLUTE)
     
     /**
