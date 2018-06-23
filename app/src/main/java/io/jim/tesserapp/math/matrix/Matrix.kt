@@ -97,23 +97,22 @@ class Matrix(
                             else -> 0.0
                         }
                     }
-    }
     
-    /**
-     * Load a rotation matrix.
-     * The rotation takes place on the given [a]-[b]-plane, the angle is defined in [radians].
-     * @throws IncompatibleTransformDimension
-     */
-    fun rotation(a: Int, b: Int, radians: Double) {
-        if (a + 1 >= rows || a + 1 >= cols)
-            throw IncompatibleTransformDimension(a + 1)
-        if (b + 1 >= rows || b + 1 >= cols)
-            throw IncompatibleTransformDimension(b + 1)
-        
-        this[a, a] = cos(radians)
-        this[a, b] = sin(radians)
-        this[b, a] = -sin(radians)
-        this[b, b] = cos(radians)
+        fun rotation(size: Int, a: Int, b: Int, radians: Double) =
+                Matrix(size, size) { row, col ->
+                    if (row == a && col == a)
+                        cos(radians)
+                    else if (row == a && col == b)
+                        sin(radians)
+                    else if (row == b && col == a)
+                        -sin(radians)
+                    else if (row == b && col == b)
+                        cos(radians)
+                    else if (row == col)
+                        1.0
+                    else
+                        0.0
+                }
     }
     
     /**
@@ -187,18 +186,5 @@ class Matrix(
         sb.append(" ]")
         return sb.toString()
     }
-    
-    /**
-     * Thrown when an operation's requirement to be called on a quadratic matrix is not met.
-     */
-    inner class IsNotQuadraticException :
-            MathException("Matrix needs to be quadratic but is ${this@Matrix}")
-    
-    /**
-     * Thrown when a transform is incompatible with a matrix in terms of dimension.
-     * @param transformDimension The incompatible transform dimension.
-     */
-    inner class IncompatibleTransformDimension(transformDimension: Int) :
-            MathException("${transformDimension}d transform not compatible with $this")
     
 }

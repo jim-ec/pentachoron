@@ -22,18 +22,22 @@ class MatrixTest {
     
     @Test
     fun initialization() {
-        assertEquals(4, matrix.rows)
-        assertEquals(4, matrix.cols)
-        matrix.forEachComponent { row, col ->
-            assertEquals(if (row == col) 1.0 else 0.0, matrix[row, col], 0.1)
+        Matrix(4).apply {
+            assertEquals(4, rows)
+            assertEquals(4, cols)
+        
+            forEachComponent { row, col ->
+                assertEquals(if (row == col) 1.0 else 0.0, this[row, col], 0.1)
+            }
         }
     }
     
     @Test
     fun constructNonQuadraticMatrix() {
-        val vec = Matrix(4, 7)
-        assertEquals(4, vec.rows)
-        assertEquals(7, vec.cols)
+        Matrix(4, 7).apply {
+            assertEquals(4, rows)
+            assertEquals(7, cols)
+        }
     }
     
     @Test(expected = MathException::class)
@@ -68,10 +72,7 @@ class MatrixTest {
     
     @Test
     fun rotation() {
-        matrix.rotation(1, 2, Math.PI / 2)
-        val vector = VectorN(0.0, 3.0, 0.0)
-        
-        (vector * matrix).apply {
+        (VectorN(0.0, 3.0, 0.0) * Matrix.rotation(4, 1, 2, Math.PI / 2)).apply {
             assertEquals(0.0, x, 0.1)
             assertEquals(0.0, y, 0.1)
             assertEquals(3.0, z, 0.1)
@@ -80,9 +81,7 @@ class MatrixTest {
     
     @Test
     fun scaleByIndividualFactors() {
-        val vector = VectorN(5.0, 6.0, 7.0)
-    
-        (vector * Matrix.scale(4, VectorN(2.0, 3.0, 4.0))).apply {
+        (VectorN(5.0, 6.0, 7.0) * Matrix.scale(4, VectorN(2.0, 3.0, 4.0))).apply {
             assertEquals(10.0, x, 0.1)
             assertEquals(18.0, y, 0.1)
             assertEquals(28.0, z, 0.1)

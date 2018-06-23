@@ -17,7 +17,7 @@ class GeometryTest {
         val geometry = Geometry(
                 name = "Test geometry",
                 onTransformUpdate = {
-                    Matrix(5).apply { rotation(0, 1, Math.PI / 2.0) } *
+                    Matrix.rotation(5, 0, 1, Math.PI / 2.0) *
                             Matrix.translation(5, VectorN(1.0, 0.0, 0.0, 0.0))
                 })
         

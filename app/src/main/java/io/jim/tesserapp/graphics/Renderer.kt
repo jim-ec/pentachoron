@@ -6,7 +6,7 @@ import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.collapseZ
 import io.jim.tesserapp.geometry.projectWireframe
 import io.jim.tesserapp.math.matrix.Matrix
-import io.jim.tesserapp.math.matrix.ViewMatrix
+import io.jim.tesserapp.math.matrix.viewMatrix
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
 import javax.microedition.khronos.egl.EGLConfig
@@ -27,7 +27,6 @@ class Renderer(
     private lateinit var vertexBuffer: VertexBuffer
     
     private val projectionMatrix = Matrix(4).apply { perspective2D(near = 0.1, far = 100.0) }
-    private val viewMatrix = ViewMatrix()
     
     private var aspectRatio: Double = 1.0
     
@@ -110,7 +109,7 @@ class Renderer(
             
             // Recompute and upload view and perspective matrices:
             viewModel.synchronized {
-                shader.uploadViewMatrix(viewMatrix.computed(
+                shader.uploadViewMatrix(viewMatrix(
                         cameraDistance.smoothed,
                         aspectRatio,
                         horizontalCameraRotation.smoothed,
