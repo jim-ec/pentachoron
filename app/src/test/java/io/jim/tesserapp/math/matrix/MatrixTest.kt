@@ -87,23 +87,10 @@ class MatrixTest {
     }
     
     @Test
-    fun scaleUniformly() {
-        matrix.scale(2.0)
-        val vector = VectorN(5.0, 6.0, 7.0)
-        
-        (vector * matrix).apply {
-            assertEquals(10.0, x, 0.1)
-            assertEquals(12.0, y, 0.1)
-            assertEquals(14.0, z, 0.1)
-        }
-    }
-    
-    @Test
     fun scaleByIndividualFactors() {
-        matrix.scale(VectorN(2.0, 3.0, 4.0))
         val vector = VectorN(5.0, 6.0, 7.0)
-        
-        (vector * matrix).apply {
+    
+        (vector * Matrix.scale(4, VectorN(2.0, 3.0, 4.0))).apply {
             assertEquals(10.0, x, 0.1)
             assertEquals(18.0, y, 0.1)
             assertEquals(28.0, z, 0.1)

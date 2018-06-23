@@ -50,6 +50,20 @@ class Matrix(
         }
     }
     
+    companion object {
+        
+        fun scale(size: Int, factors: VectorN) =
+                if (factors.dimension != size - 1)
+                    throw MathException("")
+                else
+                    Matrix(size, size) { row, col ->
+                        if (row == size - 1 && col == size - 1) 1.0
+                        else if (row == col) factors[row]
+                        else 0.0
+                    }
+        
+    }
+    
     /**
      * Calls [f] for each coefficient.
      */
@@ -107,37 +121,6 @@ class Matrix(
      */
     inner class IncompatibleTransformDimension(transformDimension: Int) :
             MathException("${transformDimension}d transform not compatible with $this")
-    
-    /**
-     * Load a scale matrix.
-     * @param factors Scale amount for each matrix axis.
-     * @throws IncompatibleTransformDimension
-     * @throws IsNotQuadraticException
-     */
-    fun scale(factors: VectorN) {
-        if (rows != cols)
-            throw IsNotQuadraticException()
-        if (factors.dimension != cols - 1)
-            throw IncompatibleTransformDimension(factors.dimension)
-        
-        for (i in 0 until cols - 1) {
-            this[i, i] = factors[i]
-        }
-    }
-    
-    /**
-     * Load a scale matrix.
-     * @param factor Scale amount for each matrix axis.
-     * @throws IsNotQuadraticException
-     */
-    fun scale(factor: Double) {
-        if (rows != cols)
-            throw IsNotQuadraticException()
-        
-        for (i in 0 until cols - 1) {
-            this[i, i] = factor
-        }
-    }
     
     /**
      * Load a translation.
