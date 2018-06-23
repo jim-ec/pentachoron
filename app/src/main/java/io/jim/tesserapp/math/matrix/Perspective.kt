@@ -7,7 +7,7 @@ package io.jim.tesserapp.math.matrix
  * @param far Far plane. If Vector lies on that plane (negated), it will be projected to 1.
  */
 fun perspective(near: Double, far: Double) =
-        Matrix(4, 4, mapOf(
+        identity(4, mapOf(
                 2 to 3 to -1.0,
                 3 to 3 to 0.0,
                 2 to 2 to -far / (far - near),

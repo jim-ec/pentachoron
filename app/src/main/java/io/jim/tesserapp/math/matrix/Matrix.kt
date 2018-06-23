@@ -6,29 +6,15 @@ import java.nio.DoubleBuffer
 
 /**
  * A row-major matrix with [rows] rows and [cols] columns.
+ *
+ * @constructor
+ * Create a matrix, while initializing every coefficient.
+ *
+ * @param initializer
+ * Called for each coefficient with the given row and column index.
+ * The returned value represents the value for this specific matrix cell.
  */
 class Matrix(val rows: Int, val cols: Int, initializer: (row: Int, col: Int) -> Double) {
-    
-    /**
-     * Create a matrix, while initializing every coefficient.
-     *
-     * @param size
-     * Side length of matrix.
-     *
-     * @param initializer
-     * Called for each coefficient with the given row and column index.
-     * The returned value represents the value for this specific matrix cell.
-     */
-    constructor(size: Int, initializer: (row: Int, col: Int) -> Double)
-            : this(size, size, initializer)
-    
-    constructor(size: Int, initialValues: Map<Pair<Int, Int>, Double>)
-            : this(size, size, initialValues)
-    
-    constructor(rows: Int, cols: Int, initialValues: Map<Pair<Int, Int>, Double>)
-            : this(rows, cols, { row, col ->
-        initialValues[row to col] ?: if (row == col) 1.0 else 0.0
-    })
     
     /**
      * Underlying number list.

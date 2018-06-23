@@ -13,7 +13,7 @@ enum class RotationPlane(inline val a: Int, inline val b: Int) {
 }
 
 fun rotation(size: Int, plane: RotationPlane, radians: Radians) =
-        Matrix(size, mapOf(
+        identity(size, mapOf(
                 plane.a to plane.a to cos(radians),
                 plane.a to plane.b to sin(radians),
                 plane.b to plane.a to -sin(radians),

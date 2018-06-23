@@ -23,7 +23,7 @@ class MatrixTest {
         identity(4).apply {
             assertEquals(4, rows)
             assertEquals(4, cols)
-        
+    
             forEachComponent { row, col ->
                 assertEquals(if (row == col) 1.0 else 0.0, this[row, col], 0.1)
             }
@@ -32,7 +32,7 @@ class MatrixTest {
     
     @Test
     fun constructNonQuadraticMatrix() {
-        Matrix(4, 7, mapOf()).apply {
+        Matrix(4, 7) { _, _ -> 0.0 }.apply {
             assertEquals(4, rows)
             assertEquals(7, cols)
         }
@@ -40,12 +40,12 @@ class MatrixTest {
     
     @Test(expected = MathException::class)
     fun invalidMatrixDimension() {
-        Matrix(0, -3, mapOf())
+        Matrix(0, -3) { _, _ -> 0.0 }
     }
     
     @Test(expected = MathException::class)
     fun invalidMultiplicationLhs() {
-        Matrix(1, 5, mapOf()) * identity(4)
+        Matrix(1, 5) { _, _ -> 0.0 } * identity(4)
     }
     
     @Test(expected = MathException::class)
