@@ -7,10 +7,8 @@ import io.jim.tesserapp.math.vector.VectorN
  */
 class ViewMatrix {
     
-    private val viewMatrix = Matrix(4)
     private val matrixHorizontalRotation = Matrix(4)
     private val matrixVerticalRotation = Matrix(4)
-    private val matrixLookAt = LookAtMatrix()
     private val matrixScale = Matrix(4)
     
     private val upVector = VectorN(0.0, 1.0, 0.0)
@@ -44,7 +42,7 @@ class ViewMatrix {
         
         return matrixHorizontalRotation *
                 matrixVerticalRotation *
-                matrixLookAt.computed(distance, upVector) *
+                lookAt(distance, upVector) *
                 matrixScale
     }
     

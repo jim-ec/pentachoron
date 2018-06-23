@@ -156,7 +156,7 @@ class MatrixTest {
     
     @Test
     fun lookAt() {
-        val matrix = LookAtMatrix().computed(
+        val matrix = lookAt(
                 distance = 2.0,
                 refUp = VectorN(0.0, 1.0, 0.0)
         )
