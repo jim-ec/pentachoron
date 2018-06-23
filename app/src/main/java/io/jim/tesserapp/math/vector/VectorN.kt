@@ -65,38 +65,26 @@ class VectorN(
     /**
      * X-component.
      */
-    var x: Double
+    inline val x: Double
         get() = this[0]
-        set(value) {
-            this[0] = value
-        }
     
     /**
      * Y-component.
      */
-    var y: Double
+    inline val y: Double
         get() = this[1]
-        set(value) {
-            this[1] = value
-        }
     
     /**
      * Z-component.
      */
-    var z: Double
+    inline val z: Double
         get() = this[2]
-        set(value) {
-            this[2] = value
-        }
     
     /**
      * Q-component.
      */
-    var q: Double
+    inline val q: Double
         get() = this[3]
-        set(value) {
-            this[3] = value
-        }
     
     override fun iterator() = numbers.iterator()
     

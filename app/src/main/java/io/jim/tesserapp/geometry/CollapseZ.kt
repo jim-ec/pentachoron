@@ -14,14 +14,9 @@ inline fun collapseZ(
     
     geometry.lines.forEach { line ->
         line.forEachPosition { position ->
-            
-            // Apply 4-dimensional model matrix to 4d point:
-            val transformedPosition = position * modelMatrix
-            
-            transformedPosition.z = transformedPosition.q // Store q as z
-            transformedPosition.q = 0.0
-            
-            f(transformedPosition, line.color)
+            f(with(position * modelMatrix) {
+                VectorN(x, y, q, 0.0)
+            }, line.color)
         }
     }
 }
