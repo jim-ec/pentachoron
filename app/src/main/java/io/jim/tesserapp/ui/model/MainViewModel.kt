@@ -20,6 +20,7 @@ class MainViewModel : ViewModel() {
      * The featured geometry.
      */
     val featuredGeometry = Geometry(
+            name = "Featured Geometry",
             isFourDimensional = true,
             onTransformUpdate = {
                 // Transform geometry in each frame relatively,
@@ -42,8 +43,6 @@ class MainViewModel : ViewModel() {
             }
     ).apply {
         
-        name = "Featured Geometry"
-        
         addQuadrilateral(
                 VectorN(1.0, 1.0, 1.0, 0.0),
                 VectorN(-1.0, 1.0, 1.0, 0.0),
@@ -62,8 +61,7 @@ class MainViewModel : ViewModel() {
     /**
      * The grid geometry representing a cartesian coordinate system unit grid.
      */
-    val gridGeometry = Geometry().apply {
-        name = "Grid"
+    val gridGeometry = Geometry(name = "Grid").apply {
         grid()
     }
     
@@ -84,8 +82,7 @@ class MainViewModel : ViewModel() {
     /**
      * The axis geometry representing the origin of the cartesian coordinate system.
      */
-    val axisGeometry = Geometry().apply {
-        name = "Axis"
+    val axisGeometry = Geometry(name = "Axis").apply {
         axis()
     }
     

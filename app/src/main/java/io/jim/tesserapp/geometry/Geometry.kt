@@ -11,6 +11,7 @@ import io.jim.tesserapp.math.vector.VectorN
  * in a three dimensional space.
  */
 class Geometry(
+        val name: String,
         val onTransformUpdate: () -> Matrix = { Matrix(5) },
         val isFourDimensional: Boolean = false
 ) {
@@ -24,11 +25,6 @@ class Geometry(
      * List containing all lines constructed from [positions] using indices.
      */
     val lines = ArrayList<Line>()
-    
-    /**
-     * This geometry's name.
-     */
-    var name = ""
 
     /**
      * Add a series of vertices.
