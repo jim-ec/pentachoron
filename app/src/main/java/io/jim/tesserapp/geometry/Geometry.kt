@@ -1,6 +1,7 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.math.matrix.Matrix
+import io.jim.tesserapp.math.matrix.identity
 import io.jim.tesserapp.math.vector.VectorN
 
 /**
@@ -12,7 +13,7 @@ import io.jim.tesserapp.math.vector.VectorN
  */
 class Geometry(
         val name: String,
-        val onTransformUpdate: () -> Matrix = { Matrix(5) },
+        val onTransformUpdate: () -> Matrix = { identity(5) },
         val isFourDimensional: Boolean = false
 ) {
 

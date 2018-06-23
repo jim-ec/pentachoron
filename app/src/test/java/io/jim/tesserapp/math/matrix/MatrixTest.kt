@@ -18,11 +18,9 @@ class MatrixTest {
         }
     }
     
-    private val matrix = Matrix(4)
-    
     @Test
     fun initialization() {
-        Matrix(4).apply {
+        identity(4).apply {
             assertEquals(4, rows)
             assertEquals(4, cols)
         
@@ -34,7 +32,7 @@ class MatrixTest {
     
     @Test
     fun constructNonQuadraticMatrix() {
-        Matrix(4, 7).apply {
+        Matrix(4, 7, mapOf()).apply {
             assertEquals(4, rows)
             assertEquals(7, cols)
         }
@@ -42,12 +40,12 @@ class MatrixTest {
     
     @Test(expected = MathException::class)
     fun invalidMatrixDimension() {
-        Matrix(0, -3)
+        Matrix(0, -3, mapOf())
     }
     
     @Test(expected = MathException::class)
     fun invalidMultiplicationLhs() {
-        Matrix(1, 5) * matrix
+        Matrix(1, 5, mapOf()) * identity(4)
     }
     
     @Test(expected = MathException::class)

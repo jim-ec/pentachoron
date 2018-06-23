@@ -9,12 +9,16 @@ import java.nio.DoubleBuffer
  */
 class Matrix(val rows: Int, val cols: Int, initializer: (row: Int, col: Int) -> Double) {
     
-    constructor(size: Int)
-            : this(size, mapOf())
-    
-    constructor(rows: Int, cols: Int)
-            : this(rows, cols, mapOf())
-    
+    /**
+     * Create a matrix, while initializing every coefficient.
+     *
+     * @param size
+     * Side length of matrix.
+     *
+     * @param initializer
+     * Called for each coefficient with the given row and column index.
+     * The returned value represents the value for this specific matrix cell.
+     */
     constructor(size: Int, initializer: (row: Int, col: Int) -> Double)
             : this(size, size, initializer)
     
