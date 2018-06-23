@@ -8,7 +8,7 @@ import io.jim.tesserapp.math.common.MathException
  *
  * This function is intended to be preferred over [Matrix.times] when many matrices are multiplied together.
  */
-fun transformChain(matrices: List<Matrix>) = matrices.reduceRight { acc, matrix -> acc * matrix }
+fun transformChain(matrices: List<Matrix>) = matrices.reduce { acc, matrix -> acc * matrix }
 
 /**
  * Multiply this and [rhs] matrix returning the resulting matrix.

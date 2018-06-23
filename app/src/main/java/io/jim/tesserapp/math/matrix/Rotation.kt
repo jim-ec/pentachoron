@@ -6,9 +6,9 @@ import kotlin.math.sin
 typealias Radians = Double
 
 enum class RotationPlane(inline val a: Int, inline val b: Int) {
-    YZ(1, 2),
-    XZ(2, 0),
-    XY(0, 1),
+    AROUND_X(1, 2),
+    AROUND_Y(2, 0),
+    AROUND_Z(0, 1),
     XQ(0, 3)
 }
 

@@ -8,14 +8,18 @@ import io.jim.tesserapp.math.vector.VectorN
  */
 fun Geometry.grid() {
     
-    for (i in -5..-1) {
-        addLine(VectorN(i.toDouble(), 0.0, -5.0, 0.0), VectorN(i.toDouble(), 0.0, 5.0, 0.0))
-        addLine(VectorN(-5.0, 0.0, i.toDouble(), 0.0), VectorN(5.0, 0.0, i.toDouble(), 0.0))
+    for (i in -10..-1) {
+        (i / 2.0).also {
+            addLine(VectorN(it, 0.0, -5.0, 0.0), VectorN(it, 0.0, 5.0, 0.0))
+            addLine(VectorN(-5.0, 0.0, it, 0.0), VectorN(5.0, 0.0, it, 0.0))
+        }
     }
     
-    for (i in 1..5) {
-        addLine(VectorN(i.toDouble(), 0.0, -5.0, 0.0), VectorN(i.toDouble(), 0.0, 5.0, 0.0))
-        addLine(VectorN(-5.0, 0.0, i.toDouble(), 0.0), VectorN(5.0, 0.0, i.toDouble(), 0.0))
+    for (i in 1..10) {
+        (i / 2.0).also {
+            addLine(VectorN(it, 0.0, -5.0, 0.0), VectorN(it, 0.0, 5.0, 0.0))
+            addLine(VectorN(-5.0, 0.0, it, 0.0), VectorN(5.0, 0.0, it, 0.0))
+        }
     }
 
     addLine(VectorN(-5.0, 0.0, 0.0, 0.0), VectorN(0.0, 0.0, 0.0, 0.0))

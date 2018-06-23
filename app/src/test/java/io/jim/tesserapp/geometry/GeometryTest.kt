@@ -20,7 +20,7 @@ class GeometryTest {
         val geometry = Geometry(
                 name = "Test geometry",
                 onTransformUpdate = {
-                    rotation(5, RotationPlane.XY, Math.PI / 2.0) *
+                    rotation(5, RotationPlane.AROUND_Z, Math.PI / 2.0) *
                             translation(5, VectorN(1.0, 0.0, 0.0, 0.0))
                 })
         

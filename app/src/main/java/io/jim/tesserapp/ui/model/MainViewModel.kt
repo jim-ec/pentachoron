@@ -28,9 +28,9 @@ class MainViewModel : ViewModel() {
             onTransformUpdate = {
                 synchronized {
                     transformChain(listOf(
-                            rotation(5, RotationPlane.YZ, rotationX.smoothed * Math.PI),
-                            rotation(5, RotationPlane.XZ, rotationY.smoothed * Math.PI),
-                            rotation(5, RotationPlane.XY, rotationZ.smoothed * Math.PI),
+                            rotation(5, RotationPlane.AROUND_X, rotationX.smoothed * Math.PI),
+                            rotation(5, RotationPlane.AROUND_Y, rotationY.smoothed * Math.PI),
+                            rotation(5, RotationPlane.AROUND_Z, rotationZ.smoothed * Math.PI),
                             rotation(5, RotationPlane.XQ, rotationQ.smoothed * Math.PI),
                             translation(5, VectorN(
                                     translationX.smoothed,

@@ -64,7 +64,7 @@ class MatrixTest {
     
     @Test
     fun rotation() {
-        (VectorN(0.0, 3.0, 0.0) * rotation(4, RotationPlane.YZ, Math.PI / 2)).apply {
+        (VectorN(0.0, 3.0, 0.0) * rotation(4, RotationPlane.AROUND_X, Math.PI / 2)).apply {
             assertEquals(0.0, x, 0.1)
             assertEquals(0.0, y, 0.1)
             assertEquals(3.0, z, 0.1)

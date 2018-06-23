@@ -52,6 +52,11 @@ class Matrix(val rows: Int, val cols: Int, initializer: (row: Int, col: Int) -> 
     operator fun get(row: Int, col: Int) = coefficients[rowMajorIndex(row, col)]
     
     /**
+     * Create a float array containing all matrix coefficients in row major order.
+     */
+    fun toFloatArray() = FloatArray(rows * cols) { index -> coefficients[index].toFloat() }
+    
+    /**
      * Return a linear row-major index referring to the cell at [row]/[col].
      */
     private fun rowMajorIndex(row: Int, col: Int) = row * cols + col
