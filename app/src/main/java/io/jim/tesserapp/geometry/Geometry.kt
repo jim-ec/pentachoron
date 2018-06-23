@@ -18,37 +18,6 @@ class Geometry constructor(
         val points: List<Line>
 ) {
     
-    ///**
-    // * Extrudes the whole geometry in the given [direction].
-    // * This works by duplicating the whole geometry and then connecting all point duplicate
-    // * counterparts.
-    // * @param keepColors The generated copy will have matching colors to the line set it originated from.
-    // * @param connectorColor Color of the lines connecting the original and generated lines.
-    // */
-    /*fun extrude(
-            direction: VectorN,
-            keepColors: Boolean = false,
-            connectorColor: Color = Color.PRIMARY
-    ) {
-        val size = positions.size
-        
-        for (i in 0 until size) {
-            positions += positions[i] + direction
-        }
-        
-        lines += lines.map {
-            Line(
-                    positions,
-                    it.startIndex + size,
-                    it.endIndex + size,
-                    if (keepColors) it.color else Color.PRIMARY
-            )
-        }
-        for (i in 0 until size) {
-            addLine(i, i + size, connectorColor)
-        }
-    }*/
-    
     /**
      * Invoke [f] for each position and the color it's associated with.
      */

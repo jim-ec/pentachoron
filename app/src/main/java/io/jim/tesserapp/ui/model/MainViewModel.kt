@@ -2,10 +2,7 @@ package io.jim.tesserapp.ui.model
 
 import android.arch.lifecycle.ViewModel
 import android.graphics.Color
-import io.jim.tesserapp.geometry.Geometry
-import io.jim.tesserapp.geometry.axis
-import io.jim.tesserapp.geometry.grid
-import io.jim.tesserapp.geometry.quadrilateral
+import io.jim.tesserapp.geometry.*
 import io.jim.tesserapp.math.common.Smoothed
 import io.jim.tesserapp.math.matrix.RotationPlane
 import io.jim.tesserapp.math.matrix.rotation
@@ -42,18 +39,18 @@ class MainViewModel : ViewModel() {
                     ))
                 }
             },
-            points = quadrilateral(VectorN(2.0, 2.0, 2.0, 0.0),
-                    VectorN(-2.0, 2.0, 2.0, 0.0),
-                    VectorN(-2.0, -2.0, 2.0, 0.0),
-                    VectorN(2.0, -2.0, 2.0, 0.0),
-                    color = Geometry.Color.ACCENT)
-    ).apply {
-        //extrude(
-        //        direction = VectorN(0.0, 0.0, -4.0, 0.0),
-        //        keepColors = true,
-        //        connectorColor = Geometry.Color.ACCENT
-        //)
-    }
+            points = extruded(
+                    quadrilateral(
+                            VectorN(2.0, 2.0, 2.0, 0.0),
+                            VectorN(-2.0, 2.0, 2.0, 0.0),
+                            VectorN(-2.0, -2.0, 2.0, 0.0),
+                            VectorN(2.0, -2.0, 2.0, 0.0),
+                            color = Geometry.Color.ACCENT),
+                    direction = VectorN(0.0, 0.0, -4.0, 0.0),
+                    keepColors = true,
+                    connectorColor = Geometry.Color.ACCENT
+            )
+    )
     
     /**
      * The grid geometry representing a cartesian coordinate system unit grid.
