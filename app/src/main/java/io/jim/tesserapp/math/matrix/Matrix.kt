@@ -9,31 +9,20 @@ import kotlin.math.sin
 
 /**
  * A row-major matrix with [rows] rows and [cols] columns.
- *
- * @constructor Construct an identity matrix.
- * @throws MathException If either [rows] or [cols] are less than 1.
  */
-class Matrix(
-        val rows: Int,
-        val cols: Int
-) {
+class Matrix(val rows: Int, val cols: Int, initializer: (row: Int, col: Int) -> Double) {
     
-    /**
-     * Construct a quadratic matrix with [size] rows and columns.
-     */
-    constructor(size: Int) : this(size, size)
+    constructor(size: Int)
+            : this(size, mapOf())
     
-    /**
-     * Construct a matrix with given [rows] and [cols].
-     *
-     * @param initializer
-     * Ran for each coefficient in order to determine the initial value.
-     */
-    constructor(rows: Int, cols: Int, initializer: (row: Int, col: Int) -> Double) : this(rows, cols) {
-        forEachComponent { row, col ->
-            this[row, col] = initializer(row, col)
-        }
-    }
+    constructor(rows: Int, cols: Int)
+            : this(rows, cols, mapOf())
+    
+    constructor(size: Int, initializer: (row: Int, col: Int) -> Double)
+            : this(size, size, initializer)
+    
+    constructor(size: Int, initialValues: Map<Pair<Int, Int>, Double>)
+            : this(size, size, initialValues)
     
     constructor(rows: Int, cols: Int, initialValues: Map<Pair<Int, Int>, Double>)
             : this(rows, cols, { row, col ->
@@ -43,15 +32,14 @@ class Matrix(
     /**
      * Underlying number list.
      */
-    private val doubles = DoubleBuffer.allocate(rows * cols)
+    private val coefficients = DoubleBuffer.allocate(rows * cols)
     
     init {
         if (rows <= 0 || cols <= 0)
-            throw MathException("Matrix must have non-null positive dimensions")
-    
-        // Load identity matrix:
+            throw MathException("Invalid matrix dimension $this")
+        
         forEachComponent { row, col ->
-            doubles.put(rowMajorIndex(row, col), if (row == col) 1.0 else 0.0)
+            coefficients.put(rowMajorIndex(row, col), initializer(row, col))
         }
     }
     
@@ -85,7 +73,7 @@ class Matrix(
                 if (factors.dimension != size - 1)
                     throw MathException("")
                 else
-                    Matrix(size, size) { row, col ->
+                    Matrix(size) { row, col ->
                         if (row == size - 1 && col == size - 1) 1.0
                         else if (row == col) factors[row]
                         else 0.0
@@ -95,7 +83,7 @@ class Matrix(
                 if (v.dimension != size - 1)
                     throw MathException("")
                 else
-                    Matrix(size, size) { row, col ->
+                    Matrix(size) { row, col ->
                         when (row) {
                             col -> 1.0
                             size - 1 -> v[col]
@@ -104,7 +92,7 @@ class Matrix(
                     }
     
         fun rotation(size: Int, a: Int, b: Int, radians: Double) =
-                Matrix(size, size, mapOf(
+                Matrix(size, mapOf(
                         a to a to cos(radians),
                         a to b to sin(radians),
                         b to a to -sin(radians),
@@ -132,21 +120,14 @@ class Matrix(
     fun transposed() = Matrix(cols, rows) { row, col -> this[col, row] }
     
     /**
-     * Return a linear row-major index referring to the cell at [row]/[col].
-     */
-    fun rowMajorIndex(row: Int, col: Int) = row * cols + col
-    
-    /**
-     * Set the float at [row]/[col] to [value].
-     */
-    operator fun set(row: Int, col: Int, value: Double) {
-        doubles.put(rowMajorIndex(row, col), value)
-    }
-    
-    /**
      * Return the float at [row]/[col].
      */
-    operator fun get(row: Int, col: Int) = doubles[rowMajorIndex(row, col)]
+    operator fun get(row: Int, col: Int) = coefficients[rowMajorIndex(row, col)]
+    
+    /**
+     * Return a linear row-major index referring to the cell at [row]/[col].
+     */
+    private fun rowMajorIndex(row: Int, col: Int) = row * cols + col
     
     /**
      * Shortly represents this matrix as a string.

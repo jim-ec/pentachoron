@@ -13,7 +13,7 @@ fun lookAt(distance: Double, refUp: VectorN) = run {
     val right = refUp.normalized() cross forward
     val up = forward cross right
     
-    Matrix.translation(4, VectorN(-distance, 0.0, 0.0)) * Matrix(4, 4, mapOf(
+    Matrix.translation(4, VectorN(-distance, 0.0, 0.0)) * Matrix(4, mapOf(
             0 to 0 to right.x,
             0 to 1 to right.y,
             0 to 2 to right.z,

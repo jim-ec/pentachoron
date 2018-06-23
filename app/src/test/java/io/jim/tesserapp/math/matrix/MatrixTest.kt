@@ -45,12 +45,6 @@ class MatrixTest {
         Matrix(0, -3)
     }
     
-    @Test
-    fun setGet() {
-        matrix[2, 0] = 4.0
-        assertEquals(4.0, matrix[2, 0], 0.1)
-    }
-    
     @Test(expected = MathException::class)
     fun invalidMultiplicationLhs() {
         Matrix(1, 5) * matrix
