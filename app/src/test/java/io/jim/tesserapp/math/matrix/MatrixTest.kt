@@ -47,21 +47,6 @@ class MatrixTest {
         assertEquals(4.0, matrix[2, 0], 0.1)
     }
     
-    @Test
-    fun identity() {
-        
-        // Write random stuff into the matrix:
-        matrix.forEachComponent { row, col ->
-            matrix[row, col] = row + 3.0 * col
-        }
-        
-        // Reload identity and check for it:
-        matrix.identity()
-        matrix.forEachComponent { row, col ->
-            assertEquals(if (row == col) 1.0 else 0.0, matrix[row, col], 0.1)
-        }
-    }
-    
     @Test(expected = MathException::class)
     fun invalidMultiplicationLhs() {
         Matrix(1, 5) * matrix
