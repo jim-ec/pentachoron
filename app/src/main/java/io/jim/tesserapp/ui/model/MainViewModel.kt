@@ -5,6 +5,7 @@ import android.graphics.Color
 import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.axis
 import io.jim.tesserapp.geometry.grid
+import io.jim.tesserapp.geometry.quadrilateral
 import io.jim.tesserapp.math.common.Smoothed
 import io.jim.tesserapp.math.matrix.RotationPlane
 import io.jim.tesserapp.math.matrix.rotation
@@ -40,17 +41,13 @@ class MainViewModel : ViewModel() {
                             ))
                     ))
                 }
-            }
+            },
+            points = quadrilateral(VectorN(2.0, 2.0, 2.0, 0.0),
+                    VectorN(-2.0, 2.0, 2.0, 0.0),
+                    VectorN(-2.0, -2.0, 2.0, 0.0),
+                    VectorN(2.0, -2.0, 2.0, 0.0),
+                    color = Geometry.Color.ACCENT)
     ).apply {
-        
-        addQuadrilateral(
-                VectorN(2.0, 2.0, 2.0, 0.0),
-                VectorN(-2.0, 2.0, 2.0, 0.0),
-                VectorN(-2.0, -2.0, 2.0, 0.0),
-                VectorN(2.0, -2.0, 2.0, 0.0),
-                color = Geometry.Color.ACCENT
-        )
-    
         //extrude(
         //        direction = VectorN(0.0, 0.0, -4.0, 0.0),
         //        keepColors = true,
@@ -61,9 +58,7 @@ class MainViewModel : ViewModel() {
     /**
      * The grid geometry representing a cartesian coordinate system unit grid.
      */
-    val gridGeometry = Geometry(name = "Grid").apply {
-        grid()
-    }
+    val gridGeometry = Geometry(name = "Grid", points = grid())
     
     /**
      * Enable or disable grid rendering.
@@ -82,9 +77,7 @@ class MainViewModel : ViewModel() {
     /**
      * The axis geometry representing the origin of the cartesian coordinate system.
      */
-    val axisGeometry = Geometry(name = "Axis").apply {
-        axis()
-    }
+    val axisGeometry = Geometry(name = "Axis", points = axis())
     
     /**
      * List containing all geometries.

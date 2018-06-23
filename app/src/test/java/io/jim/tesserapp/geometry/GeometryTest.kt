@@ -22,7 +22,8 @@ class GeometryTest {
                 onTransformUpdate = {
                     rotation(5, RotationPlane.AROUND_Z, Math.PI / 2.0) *
                             translation(5, VectorN(1.0, 0.0, 0.0, 0.0))
-                })
+                },
+                points = listOf())
         
         (VectorN(1.0, 0.0, 0.0, 0.0) * geometry.onTransformUpdate()).apply {
             assertEquals(1.0, x, 0.1)
@@ -33,24 +34,16 @@ class GeometryTest {
     }
     
     @Test
-    fun extruding() {
-        Geometry("Test geometry").apply {
-            addLine(VectorN(1.0, 1.0, 0.0, 0.0), VectorN(2.0, 2.0, 0.0, 0.0))
-            extrude(VectorN(0.0, 0.0, 1.0, 0.0))
-        }
-    }
-    
-    @Test
     fun vertexPoints() {
         val a = VectorN(0.0, 0.0, 0.0, 0.0)
         val b = VectorN(1.0, 0.0, 0.0, 0.0)
         val c = VectorN(1.0, 1.0, 0.0, 0.0)
         val d = VectorN(0.0, 1.0, 0.0, 0.0)
     
-        Geometry("Test geometry").apply {
-            
-            addQuadrilateral(a, b, c, d)
-            
+        Geometry(
+                "Test geometry",
+                points = quadrilateral(a, b, c, d)
+        ).apply {
             var invocationCount = 0
             
             forEachVertex { position, _ ->

@@ -11,34 +11,12 @@ import io.jim.tesserapp.math.vector.VectorN
  * If true, a special geometry visualization is done in order to represent the four dimensional geometry
  * in a three dimensional space.
  */
-class Geometry(
+class Geometry constructor(
         val name: String,
         val onTransformUpdate: () -> Matrix = { identity(5) },
-        val isFourDimensional: Boolean = false
+        val isFourDimensional: Boolean = false,
+        val points: List<Line>
 ) {
-    
-    val points = ArrayList<Line>()
-    
-    /**
-     * Add a quadrilateral with four corner and an optional color.
-     * @param a First corner.
-     * @param b Second corner.
-     * @param c Third corner.
-     * @param d Fourth corner.
-     * @param color Color of added lines.
-     */
-    fun addQuadrilateral(
-            a: VectorN,
-            b: VectorN,
-            c: VectorN,
-            d: VectorN,
-            color: Color = Color.PRIMARY
-    ) {
-        points += Line(a, b, color)
-        points += Line(b, c, color)
-        points += Line(c, d, color)
-        points += Line(d, a, color)
-    }
     
     ///**
     // * Extrudes the whole geometry in the given [direction].
