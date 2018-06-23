@@ -52,22 +52,14 @@ class MatrixTest {
         Matrix(1, 5) * matrix
     }
     
-    @Test(expected = Matrix.IsNotQuadraticException::class)
-    fun translationNotQuadratic() {
-        Matrix(3, 4).translation(VectorN(2.0, 5.0, 6.0))
-    }
-    
-    @Test(expected = Matrix.IncompatibleTransformDimension::class)
+    @Test(expected = MathException::class)
     fun translationIncompatibleDimension() {
-        matrix.translation(VectorN(2.0, 5.0, 1.0, 1.0))
+        Matrix.translation(4, VectorN(2.0, 5.0, 1.0, 1.0))
     }
     
     @Test
     fun translation() {
-        matrix.translation(VectorN(2.0, 3.0, 4.0))
-        val vector = VectorN(5.0, 6.0, 7.0)
-        
-        (vector * matrix).apply {
+        (VectorN(5.0, 6.0, 7.0) * Matrix.translation(4, VectorN(2.0, 3.0, 4.0))).apply {
             assertEquals(7.0, x, 0.1)
             assertEquals(9.0, y, 0.1)
             assertEquals(11.0, z, 0.1)
@@ -152,12 +144,8 @@ class MatrixTest {
     
     @Test
     fun transpose() {
-        matrix.load(
-                VectorN(1.0, 5.0, 9.0, 13.0),
-                VectorN(2.0, 6.0, 10.0, 14.0),
-                VectorN(3.0, 7.0, 11.0, 15.0),
-                VectorN(4.0, 8.0, 12.0, 16.0))
-    
+        val matrix = Matrix(4, 4) { row, col -> row + col * 4.0 }
+        
         (VectorN(1.0, 2.0, 3.0) * matrix.transposed()).apply {
             val w = 72.0
             assertEquals(52.0 / w, x, 0.1)

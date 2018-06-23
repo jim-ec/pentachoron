@@ -30,14 +30,12 @@ class MainViewModel : ViewModel() {
                             Matrix(5).apply { rotation(2, 0, rotationY.smoothed * Math.PI) } *
                             Matrix(5).apply { rotation(0, 1, rotationZ.smoothed * Math.PI) } *
                             Matrix(5).apply { rotation(0, 3, rotationQ.smoothed * Math.PI) } *
-                            Matrix(5).apply {
-                                translation(VectorN(
-                                        translationX.smoothed,
-                                        translationY.smoothed,
-                                        translationZ.smoothed,
-                                        translationQ.smoothed
-                                ))
-                            }
+                            Matrix.translation(5, VectorN(
+                                    translationX.smoothed,
+                                    translationY.smoothed,
+                                    translationZ.smoothed,
+                                    translationQ.smoothed
+                            ))
                 }
                 
             }

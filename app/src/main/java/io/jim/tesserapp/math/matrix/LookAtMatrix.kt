@@ -27,5 +27,5 @@ fun lookAt(distance: Double, refUp: VectorN): Matrix {
     matrix[2, 1] = forward.y
     matrix[2, 2] = forward.z
     
-    return matrix.transposed().apply { translation(VectorN(-distance, 0.0, 0.0) * this) }
+    return Matrix.translation(4, VectorN(-distance, 0.0, 0.0)) * matrix.transposed()
 }

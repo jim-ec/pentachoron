@@ -50,20 +50,6 @@ class Matrix(
         }
     }
     
-    companion object {
-        
-        fun scale(size: Int, factors: VectorN) =
-                if (factors.dimension != size - 1)
-                    throw MathException("")
-                else
-                    Matrix(size, size) { row, col ->
-                        if (row == size - 1 && col == size - 1) 1.0
-                        else if (row == col) factors[row]
-                        else 0.0
-                    }
-        
-    }
-    
     /**
      * Calls [f] for each coefficient.
      */
@@ -88,56 +74,29 @@ class Matrix(
                     (0 until cols).sumByDouble { this[row, it] * rhs[it, col] }
                 }
     
-    /**
-     * Loads a complete set of doubles into the matrix.
-     *
-     * @param rowVectors Lists containing doubles. Each list is considered as one matrix row.
-     * @throws MathException If [rowVectors] has not [rows] rows.
-     * @throws MathException If any list in [rowVectors] has not [cols] columns.
-     */
-    fun load(vararg rowVectors: VectorN) {
-        if (rowVectors.size != rows)
-            throw MathException("Row count must match with matrix row count $rows")
+    companion object {
         
-        rowVectors.forEachIndexed { rowIndex, row ->
-            if (row.dimension != cols)
-                throw MathException("Columns per row vector must match with matrix column count $cols")
-            
-            row.forEachIndexed { colIndex, coefficient ->
-                this[rowIndex, colIndex] = coefficient
-            }
-        }
-    }
-    
-    /**
-     * Thrown when an operation's requirement to be called on a quadratic matrix is not met.
-     */
-    inner class IsNotQuadraticException :
-            MathException("Matrix needs to be quadratic but is ${this@Matrix}")
-    
-    /**
-     * Thrown when a transform is incompatible with a matrix in terms of dimension.
-     * @param transformDimension The incompatible transform dimension.
-     */
-    inner class IncompatibleTransformDimension(transformDimension: Int) :
-            MathException("${transformDimension}d transform not compatible with $this")
-    
-    /**
-     * Load a translation.
-     * This does not reset any parts of the matrix,
-     * just the doubles representing translation are modified.
-     * @throws IncompatibleTransformDimension
-     * @throws IsNotQuadraticException
-     */
-    fun translation(v: VectorN) {
-        if (rows != cols)
-            throw IsNotQuadraticException()
-        if (v.dimension != cols - 1)
-            throw IncompatibleTransformDimension(v.dimension)
+        fun scale(size: Int, factors: VectorN) =
+                if (factors.dimension != size - 1)
+                    throw MathException("")
+                else
+                    Matrix(size, size) { row, col ->
+                        if (row == size - 1 && col == size - 1) 1.0
+                        else if (row == col) factors[row]
+                        else 0.0
+                    }
         
-        v.forEachIndexed { col, coefficient ->
-            this[rows - 1, col] = coefficient
-        }
+        fun translation(size: Int, v: VectorN) =
+                if (v.dimension != size - 1)
+                    throw MathException("")
+                else
+                    Matrix(size, size) { row, col ->
+                        when (row) {
+                            col -> 1.0
+                            size - 1 -> v[col]
+                            else -> 0.0
+                        }
+                    }
     }
     
     /**
@@ -228,5 +187,18 @@ class Matrix(
         sb.append(" ]")
         return sb.toString()
     }
+    
+    /**
+     * Thrown when an operation's requirement to be called on a quadratic matrix is not met.
+     */
+    inner class IsNotQuadraticException :
+            MathException("Matrix needs to be quadratic but is ${this@Matrix}")
+    
+    /**
+     * Thrown when a transform is incompatible with a matrix in terms of dimension.
+     * @param transformDimension The incompatible transform dimension.
+     */
+    inner class IncompatibleTransformDimension(transformDimension: Int) :
+            MathException("${transformDimension}d transform not compatible with $this")
     
 }

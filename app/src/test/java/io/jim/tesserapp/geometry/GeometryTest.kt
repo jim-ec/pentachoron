@@ -18,7 +18,7 @@ class GeometryTest {
                 name = "Test geometry",
                 onTransformUpdate = {
                     Matrix(5).apply { rotation(0, 1, Math.PI / 2.0) } *
-                            Matrix(5).apply { translation(VectorN(1.0, 0.0, 0.0, 0.0)) }
+                            Matrix.translation(5, VectorN(1.0, 0.0, 0.0, 0.0))
                 })
         
         (VectorN(1.0, 0.0, 0.0, 0.0) * geometry.onTransformUpdate()).apply {
