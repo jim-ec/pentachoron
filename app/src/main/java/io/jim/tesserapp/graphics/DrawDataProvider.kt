@@ -30,9 +30,6 @@ class DrawDataProvider {
         vertexMemory.rewind()
         
         geometries.forEach { geometry ->
-            
-            // Update geometry transform in each frame, used to implement smoothed transform:
-            geometry.updateTransform()
     
             interpreter(geometry) { position, color ->
     

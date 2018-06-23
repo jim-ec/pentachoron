@@ -6,6 +6,7 @@ import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.geometry.axis
 import io.jim.tesserapp.geometry.grid
 import io.jim.tesserapp.math.common.Smoothed
+import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.util.synchronized
 
@@ -23,17 +24,19 @@ class MainViewModel : ViewModel() {
             onTransformUpdate = {
                 // Transform geometry in each frame relatively,
                 // by using the difference value returned from the smooth-delegates:
-                
                 this@MainViewModel.synchronized {
-                    rotateX(rotationX.smoothed * Math.PI)
-                    rotateY(rotationY.smoothed * Math.PI)
-                    rotateZ(rotationZ.smoothed * Math.PI)
-                    rotateQ(rotationQ.smoothed * Math.PI)
-                    
-                    translateX(translationX.smoothed)
-                    translateY(translationY.smoothed)
-                    translateZ(translationZ.smoothed)
-                    translateQ(translationQ.smoothed)
+                    Matrix(5).apply { rotation(1, 2, rotationX.smoothed * Math.PI) } *
+                            Matrix(5).apply { rotation(2, 0, rotationY.smoothed * Math.PI) } *
+                            Matrix(5).apply { rotation(0, 1, rotationZ.smoothed * Math.PI) } *
+                            Matrix(5).apply { rotation(0, 3, rotationQ.smoothed * Math.PI) } *
+                            Matrix(5).apply {
+                                translation(VectorN(
+                                        translationX.smoothed,
+                                        translationY.smoothed,
+                                        translationZ.smoothed,
+                                        translationQ.smoothed
+                                ))
+                            }
                 }
                 
             }
@@ -85,7 +88,7 @@ class MainViewModel : ViewModel() {
         name = "Axis"
         axis()
     }
-
+    
     /**
      * List containing all geometries.
      *
@@ -105,50 +108,50 @@ class MainViewModel : ViewModel() {
      * X rotation, in units of PI.
      */
     val rotationX =
-            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.ABSOLUTE)
     
     /**
      * Y rotation, in units of PI.
      */
     val rotationY =
-            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.ABSOLUTE)
     
     /**
      * Z rotation, in units of PI.
      */
     val rotationZ =
-            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.ABSOLUTE)
     
     /**
      * Q rotation, in units of PI.
      */
     val rotationQ =
-            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.ABSOLUTE)
     
     /**
      * X translation.
      */
     val translationX =
-            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.ABSOLUTE)
     
     /**
      * Y translation.
      */
     val translationY =
-            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.ABSOLUTE)
     
     /**
      * Z translation.
      */
     val translationZ =
-            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.ABSOLUTE)
     
     /**
      * Q translation.
      */
     val translationQ = SmoothedLiveData(
             initialValue = 2.0,
-            delegationMode = Smoothed.DelegationMode.RELATIVE_TO_LAST_READ)
+            delegationMode = Smoothed.DelegationMode.ABSOLUTE)
     
     /**
      * Camera distance.

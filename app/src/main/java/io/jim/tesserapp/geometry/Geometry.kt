@@ -1,21 +1,17 @@
 package io.jim.tesserapp.geometry
 
+import io.jim.tesserapp.math.matrix.Matrix
 import io.jim.tesserapp.math.vector.VectorN
 
 /**
  * A geometrical structure consisting of vertices.
- *
- * @property onTransformUpdate
- * Called in every render frame to update this geometry's transform.
- * The actual transform owned by this geometry is passed as the receiver to [onTransformUpdate].
- * To trigger an [onTransformUpdate] invocation, call [updateTransform].
  *
  * @property isFourDimensional
  * If true, a special geometry visualization is done in order to represent the four dimensional geometry
  * in a three dimensional space.
  */
 class Geometry(
-        private val onTransformUpdate: Transform.() -> Unit = {},
+        val onTransformUpdate: () -> Matrix = { Matrix(5) },
         val isFourDimensional: Boolean = false
 ) {
 
@@ -33,19 +29,6 @@ class Geometry(
      * This geometry's name.
      */
     var name = ""
-    
-    /**
-     * Model-transform.
-     */
-    val transform = Transform()
-    
-    /**
-     * Trigger the [onTransformUpdate] callback.
-     * This function is intended to be called in each frame to implement smoothed transform.
-     */
-    fun updateTransform() {
-        onTransformUpdate(transform)
-    }
 
     /**
      * Add a series of vertices.
