@@ -14,7 +14,7 @@ class GlVertexBuffer(private val drawMode: Int) {
      * Store vertex attribute pointers.
      */
     val vertexArray = GlVertexArray()
-
+    
     val buffer = GlBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_STATIC_DRAW)
     
     /**
@@ -45,7 +45,7 @@ class GlVertexBuffer(private val drawMode: Int) {
             GlException.check("Draw vertex memory")
         }
     }
-
+    
     /**
      * Call [f] while the VBO and VAO are bound.
      */

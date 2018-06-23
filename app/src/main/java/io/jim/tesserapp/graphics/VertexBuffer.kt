@@ -9,59 +9,59 @@ import io.jim.tesserapp.util.InputStreamMemory
  * A specific vertex buffer drawing lines, defining vertex data layout.
  */
 class VertexBuffer(shader: Shader) {
-
+    
     val vertexBuffer = GlVertexBuffer(GLES30.GL_LINES)
-
+    
     companion object {
-
+        
         /**
          * Floats take by one attribute.
          * Due to alignment, each attribute has 4 float values, regardless of how many
          * it actually uses.
          */
         const val ATTRIBUTE_FLOATS = 4
-
+        
         /**
          * Counts of different attributes.
          * - Position
          * - Color
          */
         const val ATTRIBUTE_COUNTS = 2
-
+        
         /**
          * Floats taken by one complete vertex.
          */
         private const val VERTEX_FLOATS = ATTRIBUTE_COUNTS * ATTRIBUTE_FLOATS
-
+        
         /**
          * Bytes taken by one complete vertex.
          */
         private val BYTES_PER_VERTEX =
                 VERTEX_FLOATS * Float.BYTE_LENGTH
-
+        
         /**
          * Vertex stride, in bytes.
          */
         private val STRIDE =
                 BYTES_PER_VERTEX
-
+        
         /**
          * Position attribute offset, in bytes.
          */
         private val OFFSET_POSITION =
                 0 * Float.BYTE_LENGTH
-
+        
         /**
          * Color attribute offset, in bytes.
          */
         private val OFFSET_COLOR =
                 OFFSET_POSITION + ATTRIBUTE_FLOATS * Float.BYTE_LENGTH
     }
-
+    
     init {
         // Instruct VAO:
         vertexBuffer.bound {
-
+    
             // Position attribute:
             GLES30.glEnableVertexAttribArray(shader.positionAttributeLocation)
             GLES30.glVertexAttribPointer(
@@ -72,7 +72,7 @@ class VertexBuffer(shader: Shader) {
                     STRIDE,
                     OFFSET_POSITION
             )
-
+    
             // Color attribute:
             GLES30.glEnableVertexAttribArray(shader.colorAttributeLocation)
             GLES30.glVertexAttribPointer(
@@ -85,10 +85,10 @@ class VertexBuffer(shader: Shader) {
             )
         }
     }
-
+    
     fun draw(memory: InputStreamMemory, elementCounts: Int) {
         vertexBuffer.upload(memory)
         vertexBuffer.draw(elementCounts)
     }
-
+    
 }

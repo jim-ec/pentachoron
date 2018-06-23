@@ -43,7 +43,7 @@ class GlProgram(
     init {
         GLES30.glAttachShader(handle, vertexShader.handle)
         GLES30.glAttachShader(handle, fragmentShader.handle)
-
+    
         transformFeedback?.setup(handle)
         GlException.check("Setting up transform feedback")
         
@@ -72,7 +72,7 @@ class GlProgram(
     inline fun bound(crossinline f: () -> Unit) {
         if (0 != resultCode { GLES30.glGetIntegerv(GLES30.GL_CURRENT_PROGRAM, resultCode) })
             throw RuntimeException("Another program is currently used.")
-
+    
         GLES30.glUseProgram(handle)
         
         // If a transform feedback is attached, do drawing while capture feedback.

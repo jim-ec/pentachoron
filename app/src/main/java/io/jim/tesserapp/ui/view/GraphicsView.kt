@@ -27,7 +27,7 @@ class GraphicsView : GLSurfaceView {
             context.assets,
             resources.displayMetrics.xdpi.toDouble()
     )
-
+    
     private var touchStartPositionX = 0f
     private var touchStartPositionY = 0f
     private var touchStartTime = 0L
@@ -64,7 +64,7 @@ class GraphicsView : GLSurfaceView {
                     
                     viewModel.horizontalCameraRotation.value += dx * TOUCH_ROTATION_SENSITIVITY
                     viewModel.verticalCameraRotation.value -= dy * TOUCH_ROTATION_SENSITIVITY
-
+    
                     touchStartPositionX = event.x
                     touchStartPositionY = event.y
                     true

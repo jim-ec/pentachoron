@@ -42,7 +42,7 @@ class GlShader(assets: AssetManager, fileName: String) {
         
         // Compile shader and check for success:
         GLES30.glCompileShader(handle)
-
+    
         GLES30.glGetShaderiv(handle, GLES30.GL_COMPILE_STATUS, resultCode)
         if (GLES30.GL_TRUE != resultCode()) {
             throw GlException("Cannot compile vertex shader: " +

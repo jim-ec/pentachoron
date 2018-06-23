@@ -19,12 +19,12 @@ class GlBuffer(
         val target: Int,
         private val usage: Int
 ) {
-
+    
     /**
      * The actual handle retrieved from GL.
      */
     val handle = resultCode { GLES30.glGenBuffers(1, resultCode) }
-
+    
     /**
      * Buffer size in bytes.
      */
@@ -34,7 +34,7 @@ class GlBuffer(
                 GLES30.glGetBufferParameteriv(target, GLES30.GL_BUFFER_SIZE, resultCode)
             }
         }
-
+    
     /**
      * Maps GL targets to their binding-query constant counterparts.
      */
@@ -44,7 +44,7 @@ class GlBuffer(
             GLES30.GL_ELEMENT_ARRAY_BUFFER -> GLES30.GL_ELEMENT_ARRAY_BUFFER_BINDING
             else -> throw RuntimeException("Unknown binding known for target $target")
         }
-
+    
     /**
      * Allocate memory and optionally write data in.
      * @param vectorCapacity Counts of 4d vectors to be written.
@@ -61,7 +61,7 @@ class GlBuffer(
             GlException.check("Allocate memory memory")
         }
     }
-
+    
     /**
      * Calls [f] while this buffer is bound to its [target].
      */
@@ -71,7 +71,7 @@ class GlBuffer(
         f()
         GLES30.glBindBuffer(target, oldBinding)
     }
-
+    
     /**
      * Read the buffer contents out by calling [f] successively
      * for each collection of vectors.
@@ -86,15 +86,15 @@ class GlBuffer(
      */
     inline fun read(vectorsPerInvocation: Int, crossinline f: (vectors: List<VectorN>, index: Int) -> Unit) {
         mapped(GLES30.GL_MAP_READ_BIT) { byteBuffer ->
-
+    
             val buffer = byteBuffer.asFloatBuffer()
-
+    
             if (buffer.capacity() % (vectorsPerInvocation * 4) != 0)
                 throw RuntimeException("Read memory size=${buffer.capacity()} is not a multiple of ${vectorsPerInvocation * 4}")
-
-
+    
+    
             for (i in 0 until buffer.capacity() step (vectorsPerInvocation * 4)) {
-
+        
                 val list: List<VectorN> = (0 until vectorsPerInvocation).map { c ->
                     VectorN(
                             buffer[i + c * 4 + 0].toDouble(),
@@ -103,13 +103,13 @@ class GlBuffer(
                             buffer[i + c * 4 + 3].toDouble()
                     )
                 }
-
+        
                 f(list, i / (vectorsPerInvocation * 4))
             }
-
+    
         }
     }
-
+    
     /**
      * Calls [f] while this buffer is being mapped.
      * After [f] returns, the buffer is automatically unmapped again.
@@ -122,18 +122,18 @@ class GlBuffer(
      */
     inline fun mapped(access: Int, crossinline f: (byteBuffer: java.nio.ByteBuffer) -> Unit) {
         bound {
-
+    
             val mappedBuffer = GLES30.glMapBufferRange(target, 0, byteCount, access)
                     ?: throw GlException("Cannot map memory")
-
+    
             mappedBuffer as ByteBuffer
             mappedBuffer.order(ByteOrder.nativeOrder())
-
+    
             f(mappedBuffer)
-
+    
             GLES30.glUnmapBuffer(target)
             GlException.check("Cannot un-map memory")
         }
     }
-
+    
 }

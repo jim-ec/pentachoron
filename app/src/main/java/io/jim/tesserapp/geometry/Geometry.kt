@@ -11,7 +11,7 @@ import io.jim.tesserapp.math.vector.VectorN
  * If true, a special geometry visualization is done in order to represent the four dimensional geometry
  * in a three dimensional space.
  */
-class Geometry constructor(
+class Geometry(
         val name: String,
         val onTransformUpdate: () -> Matrix = { identity(5) },
         val isFourDimensional: Boolean = false,

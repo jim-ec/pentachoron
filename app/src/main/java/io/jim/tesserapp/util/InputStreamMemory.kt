@@ -22,55 +22,55 @@ package io.jim.tesserapp.util
  * - Each vector consists of exactly **4 floats**, due to alignment.
  */
 class InputStreamMemory(
-
+        
         /**
          * Count of elements the memory grows by when reallocating.
          */
         private val allocationGranularity: Int,
-
+        
         /**
          * Counts of vectors each element consists of.
          */
         val vectorsPerElement: Int
 ) {
-
+    
     /**
      * Count of floats one element hold.
      * Depends on the count of vectors one element hold.
      */
     val floatsPerElement = vectorsPerElement * 4
-
+    
     /**
      * Underlying byte memory.
      */
     private var byteMemory = allocateNativeFloatMemory(allocationGranularity * floatsPerElement)
-
+    
     /**
      * Underlying float memory.
      */
     var floatMemory = byteMemory.asFloatBuffer()
             ?: throw RuntimeException("Cannot create float memory view onto byte memory")
-
+    
     /**
      * Capacity of memory, expressed in elements.
      */
     inline val elementCapacity: Int
         get() = floatMemory.capacity() / floatsPerElement
-
+    
     /**
      * The count of elements written into memory since the last call to [rewind] or
      * construction time.
      */
     inline val writtenElementCounts: Int
         get() = writtenVectorCounts / vectorsPerElement
-
+    
     /**
      * Count of written vectors.
      * This number is reset by a call to [rewind].
      */
     var writtenVectorCounts = 0
         private set
-
+    
     /**
      * Write a single vector into the memory.
      * If necessary, memory is increased by [allocationGranularity] elements.
@@ -85,22 +85,22 @@ class InputStreamMemory(
      * @see record
      */
     fun write(x: Double, y: Double, z: Double, q: Double) {
-
+        
         // Check if memory must be extended:
         if (writtenElementCounts * floatsPerElement >= floatMemory.capacity()) {
             increaseMemory()
         }
-
+        
         // Put the whole given vector into the float memory:
         floatMemory.put(writtenVectorCounts * 4 + 0, x.toFloat())
         floatMemory.put(writtenVectorCounts * 4 + 1, y.toFloat())
         floatMemory.put(writtenVectorCounts * 4 + 2, z.toFloat())
         floatMemory.put(writtenVectorCounts * 4 + 3, q.toFloat())
-
+        
         // Increment counts of written vectors:
         writtenVectorCounts++
     }
-
+    
     /**
      * Write a single vector into the memory.
      * If necessary, memory is increased by [allocationGranularity] elements.
@@ -115,22 +115,22 @@ class InputStreamMemory(
      * @see record
      */
     fun write(x: Float, y: Float, z: Float, q: Float) {
-
+        
         // Check if memory must be extended:
         if (writtenElementCounts * floatsPerElement >= floatMemory.capacity()) {
             increaseMemory()
         }
-
+        
         // Put the whole given vector into the float memory:
         floatMemory.put(writtenVectorCounts * 4 + 0, x)
         floatMemory.put(writtenVectorCounts * 4 + 1, y)
         floatMemory.put(writtenVectorCounts * 4 + 2, z)
         floatMemory.put(writtenVectorCounts * 4 + 3, q)
-
+        
         // Increment counts of written vectors:
         writtenVectorCounts++
     }
-
+    
     /**
      * Invoke [f]. Count of written vectors after the call is compared to the count of vectors
      * present before the call. If that count does not match up with vectors taken by `n` element,
@@ -143,18 +143,18 @@ class InputStreamMemory(
      * vectors consumed per element.
      */
     inline fun record(f: () -> Unit) {
-
+        
         // Remember count of written vectors before executing lambda:
         val oldVectorCounts = writtenVectorCounts
-    
+        
         f()
-
+        
         // Compute counts of excessively written vectors:
         val excessVectors = (writtenVectorCounts - oldVectorCounts) % vectorsPerElement
         if (excessVectors > 0)
             throw ExcessVectorRecordedException(excessVectors)
     }
-
+    
     /**
      * Following write operations will overwrite existing content.
      * Though this will reset the counts of written vectors to zero,
@@ -164,25 +164,25 @@ class InputStreamMemory(
     fun rewind() {
         writtenVectorCounts = 0
     }
-
+    
     /**
      * Increase the memory by [allocationGranularity] elements.
      */
     private fun increaseMemory() {
-
+        
         // Allocate memory:
         val newByteMemory = allocateNativeFloatMemory(floatMemory.capacity()
                 + allocationGranularity * floatsPerElement)
-
+        
         // Copy contents of old memory into new memory:
         newByteMemory.put(byteMemory)
         newByteMemory.position(0)
-
+        
         byteMemory = newByteMemory
         floatMemory = byteMemory.asFloatBuffer()
                 ?: throw RuntimeException("Cannot create float memory view onto byte memory")
     }
-
+    
     /**
      * Return a single float of an element.
      *
@@ -205,23 +205,23 @@ class InputStreamMemory(
     operator fun get(elementIndex: Int, vectorIndex: Int, floatIndex: Int): Double {
         if (elementIndex < 0 || elementIndex >= elementCapacity)
             throw RuntimeException("Invalid element index $elementIndex")
-
+        
         if (vectorIndex < 0 || vectorIndex >= vectorsPerElement)
             throw RuntimeException("Invalid vector index $vectorIndex")
-
+        
         if (floatIndex < 0 || floatIndex >= 4)
             throw RuntimeException("Invalid float index $floatIndex")
-
+        
         return floatMemory[elementIndex * floatsPerElement +
                 vectorIndex * 4 +
                 floatIndex].toDouble()
     }
-
+    
     /**
      * Thrown when writing excess vectors.
      */
     inner class ExcessVectorRecordedException(excessVectorCounts: Int)
         : RuntimeException("Recording $excessVectorCounts excess vectors, " +
             "$vectorsPerElement vectors consumed per element")
-
+    
 }

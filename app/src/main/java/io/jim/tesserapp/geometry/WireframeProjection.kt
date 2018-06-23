@@ -14,15 +14,15 @@ inline fun projectWireframe(
     
     geometry.forEachVertex { position, color ->
     
-            // Apply 4-dimensional model matrix to 4d point:
-            val transformedPosition = position * modelMatrix
+        // Apply 4-dimensional model matrix to 4d point:
+        val transformedPosition = position * modelMatrix
     
-            f(
-                    if (geometry.isFourDimensional)
-                        transformedPosition / transformedPosition.q
-                    else
-                        transformedPosition,
-                    color
-            )
+        f(
+                if (geometry.isFourDimensional)
+                    transformedPosition / transformedPosition.q
+                else
+                    transformedPosition,
+                color
+        )
     }
 }

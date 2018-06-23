@@ -10,7 +10,7 @@ import java.nio.Buffer
  * @property mode Transform feedback mode, e.g. [GLES30.GL_TRIANGLES].
  */
 class GlTransformFeedback(private val varying: String, val mode: Int) {
-
+    
     val buffer = GlBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_STATIC_READ)
     
     /**
@@ -33,7 +33,7 @@ class GlTransformFeedback(private val varying: String, val mode: Int) {
                 GLES30.GL_INTERLEAVED_ATTRIBS
         )
     }
-
+    
     fun allocate(vectorCapacity: Int, data: Buffer? = null) {
         buffer.allocate(vectorCapacity, data)
         allocated = true

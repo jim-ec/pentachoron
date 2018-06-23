@@ -22,7 +22,7 @@ class ControllerView : FrameLayout {
     constructor(context: Context) : super(context)
     
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-
+    
     private val controllers = ArrayList<Controller>()
     
     init {
