@@ -6,14 +6,14 @@ fun extruded(
         positions: List<Line>,
         direction: VectorN,
         keepColors: Boolean = false,
-        connectorColor: Geometry.Color = Geometry.Color.PRIMARY
+        connectorColor: SymbolicColor = SymbolicColor.PRIMARY
 ): List<Line> {
     
     val duplicate = positions.map {
         Line(
                 it.start + direction,
                 it.end + direction,
-                if (keepColors) it.color else Geometry.Color.PRIMARY
+                if (keepColors) it.color else SymbolicColor.PRIMARY
         )
     }
     

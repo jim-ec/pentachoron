@@ -5,7 +5,7 @@ import io.jim.tesserapp.math.vector.VectorN
 data class Line(
         val start: VectorN,
         val end: VectorN,
-        var color: Geometry.Color = Geometry.Color.PRIMARY
+        var color: SymbolicColor = SymbolicColor.PRIMARY
 ) {
     
     /**

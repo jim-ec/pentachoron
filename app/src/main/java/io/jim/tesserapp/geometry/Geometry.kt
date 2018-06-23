@@ -21,7 +21,7 @@ class Geometry constructor(
     /**
      * Invoke [f] for each position and the color it's associated with.
      */
-    inline fun forEachVertex(f: (position: VectorN, color: Color) -> Unit) {
+    inline fun forEachVertex(f: (position: VectorN, color: SymbolicColor) -> Unit) {
         points.forEach {
             f(it.start, it.color)
             f(it.end, it.color)
@@ -32,23 +32,5 @@ class Geometry constructor(
      * Represents this geometry in a string.
      */
     override fun toString() = name
-    
-    /**
-     * Symbolic colors.
-     *
-     * Geometries are colored indirectly using this palette.
-     * The actual color integer is not relevant to the geometry.
-     *
-     * This is used to implement dynamic coloring when switching themes, without having to
-     * rebuild the geometry just to change the color.
-     */
-    enum class Color {
-        PRIMARY,
-        ACCENT,
-        X,
-        Y,
-        Z,
-        Q
-    }
     
 }

@@ -8,7 +8,7 @@ import io.jim.tesserapp.math.vector.VectorN
  */
 inline fun collapseZ(
         geometry: Geometry,
-        crossinline f: (position: VectorN, color: Geometry.Color) -> Unit) {
+        crossinline f: (position: VectorN, color: SymbolicColor) -> Unit) {
     
     val modelMatrix = geometry.onTransformUpdate()
     

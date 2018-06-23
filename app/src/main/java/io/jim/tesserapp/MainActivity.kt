@@ -4,7 +4,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.geometry.SymbolicColor
 import io.jim.tesserapp.graphics.themedColorInt
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
@@ -29,12 +29,12 @@ class MainActivity : AppCompatActivity() {
         viewModel.synchronized {
             colorResolver = { color ->
                 when (color) {
-                    Geometry.Color.PRIMARY -> themedColorInt(R.attr.colorPrimaryGeometry)
-                    Geometry.Color.ACCENT -> themedColorInt(R.attr.colorAccent)
-                    Geometry.Color.X -> themedColorInt(R.attr.colorAxisX)
-                    Geometry.Color.Y -> themedColorInt(R.attr.colorAxisY)
-                    Geometry.Color.Z -> themedColorInt(R.attr.colorAxisZ)
-                    Geometry.Color.Q -> themedColorInt(R.attr.colorAccent)
+                    SymbolicColor.PRIMARY -> themedColorInt(R.attr.colorPrimaryGeometry)
+                    SymbolicColor.ACCENT -> themedColorInt(R.attr.colorAccent)
+                    SymbolicColor.X -> themedColorInt(R.attr.colorAxisX)
+                    SymbolicColor.Y -> themedColorInt(R.attr.colorAxisY)
+                    SymbolicColor.Z -> themedColorInt(R.attr.colorAxisZ)
+                    SymbolicColor.Q -> themedColorInt(R.attr.colorAccent)
                 }
             }
         }

@@ -45,10 +45,10 @@ class MainViewModel : ViewModel() {
                             VectorN(-2.0, 2.0, 2.0, 0.0),
                             VectorN(-2.0, -2.0, 2.0, 0.0),
                             VectorN(2.0, -2.0, 2.0, 0.0),
-                            color = Geometry.Color.ACCENT),
+                            color = SymbolicColor.ACCENT),
                     direction = VectorN(0.0, 0.0, -4.0, 0.0),
                     keepColors = true,
-                    connectorColor = Geometry.Color.ACCENT
+                    connectorColor = SymbolicColor.ACCENT
             )
     )
     
@@ -160,7 +160,7 @@ class MainViewModel : ViewModel() {
     val verticalCameraRotation =
             SmoothedLiveData(initialValue = -Math.PI / 8.0, transitionInterval = 80.0)
     
-    var colorResolver: (color: Geometry.Color) -> Int = { Color.BLACK }
+    var colorResolver: (color: SymbolicColor) -> Int = { Color.BLACK }
     
     enum class RenderMode {
         WIREFRAME_PROJECTION,

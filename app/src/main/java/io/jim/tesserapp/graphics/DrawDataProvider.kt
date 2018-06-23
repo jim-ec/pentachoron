@@ -1,6 +1,7 @@
 package io.jim.tesserapp.graphics
 
 import io.jim.tesserapp.geometry.Geometry
+import io.jim.tesserapp.geometry.SymbolicColor
 import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.util.InputStreamMemory
 
@@ -23,8 +24,8 @@ class DrawDataProvider {
      */
     fun updateVertices(
             geometries: Iterable<Geometry>,
-            interpreter: (Geometry, (position: VectorN, color: Geometry.Color) -> Unit) -> Unit,
-            colorResolver: (Geometry.Color) -> Int
+            interpreter: (Geometry, (position: VectorN, color: SymbolicColor) -> Unit) -> Unit,
+            colorResolver: (SymbolicColor) -> Int
     ) {
         
         vertexMemory.rewind()

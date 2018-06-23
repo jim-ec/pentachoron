@@ -7,7 +7,7 @@ fun quadrilateral(
         b: VectorN,
         c: VectorN,
         d: VectorN,
-        color: Geometry.Color = Geometry.Color.PRIMARY
+        color: SymbolicColor = SymbolicColor.PRIMARY
 ) = listOf(
         Line(a, b, color),
         Line(b, c, color),
