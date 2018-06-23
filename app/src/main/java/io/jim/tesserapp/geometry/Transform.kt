@@ -8,25 +8,9 @@ import io.jim.tesserapp.math.vector.VectorN
  */
 class Transform {
     
-    /**
-     * Rotation matrix.
-     */
     var rotationMatrix = Matrix(5)
     
-    /**
-     * When transforming the geometry, the transform is firstly expressed into this matrix.
-     * Afterwards, a transform applier function will merge this [newRotationMatrix] into
-     * the already existent [rotationMatrix], whose content is not discarded, resulting
-     * into a combined rotation.
-     */
-    private val newRotationMatrix = Matrix(5)
-    
-    /**
-     * Since no matrix cannot be simultaneously target and source of the same multiplication
-     * operation, the [rotationMatrix] must be copied into this [oldRotationMatrix],
-     * which is then multiplied with [newRotationMatrix] and stored again in [rotationMatrix].
-     */
-    private val oldRotationMatrix = Matrix(5)
+    val oldRotationMatrix = Matrix(5)
     
     /**
      * Absolute translation of this geometry.
@@ -52,9 +36,7 @@ class Transform {
      * @param deltaAngle Amount of rotation, in radians.
      */
     fun rotateX(deltaAngle: Double) {
-        newRotationMatrix.identity()
-        newRotationMatrix.rotation(a = 1, b = 2, radians = deltaAngle)
-        applyNewRotation()
+        applyNewRotation(Matrix(5).apply { rotation(a = 1, b = 2, radians = deltaAngle) })
     }
     
     /**
@@ -64,9 +46,7 @@ class Transform {
      * @param deltaAngle Amount of rotation, in radians.
      */
     fun rotateY(deltaAngle: Double) {
-        newRotationMatrix.identity()
-        newRotationMatrix.rotation(a = 2, b = 0, radians = deltaAngle)
-        applyNewRotation()
+        applyNewRotation(Matrix(5).apply { rotation(a = 2, b = 0, radians = deltaAngle) })
     }
     
     /**
@@ -76,9 +56,7 @@ class Transform {
      * @param deltaAngle Amount of rotation, in radians.
      */
     fun rotateZ(deltaAngle: Double) {
-        newRotationMatrix.identity()
-        newRotationMatrix.rotation(a = 0, b = 1, radians = deltaAngle)
-        applyNewRotation()
+        applyNewRotation(Matrix(5).apply { rotation(a = 0, b = 1, radians = deltaAngle) })
     }
     
     /**
@@ -88,15 +66,13 @@ class Transform {
      * @param deltaAngle Amount of rotation, in radians.
      */
     fun rotateQ(deltaAngle: Double) {
-        newRotationMatrix.identity()
-        newRotationMatrix.rotation(a = 0, b = 3, radians = deltaAngle)
-        applyNewRotation()
+        applyNewRotation(Matrix(5).apply { rotation(a = 0, b = 3, radians = deltaAngle) })
     }
     
     /**
      * Apply rotation described in [newRotationMatrix] to [rotationMatrix].
      */
-    private fun applyNewRotation() {
+    private fun applyNewRotation(newRotationMatrix: Matrix) {
         
         // Move contents of model matrix into the temporary buffer-like old-model-matrix:
         oldRotationMatrix.swap(rotationMatrix)
