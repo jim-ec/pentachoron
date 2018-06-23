@@ -170,10 +170,8 @@ class MatrixTest {
                 VectorN(2.0, 6.0, 10.0, 14.0),
                 VectorN(3.0, 7.0, 11.0, 15.0),
                 VectorN(4.0, 8.0, 12.0, 16.0))
-        
-        matrix.transpose()
-        
-        (VectorN(1.0, 2.0, 3.0) * matrix).apply {
+    
+        (VectorN(1.0, 2.0, 3.0) * matrix.transposed()).apply {
             val w = 72.0
             assertEquals(52.0 / w, x, 0.1)
             assertEquals(58.0 / w, y, 0.1)

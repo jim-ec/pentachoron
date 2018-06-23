@@ -49,7 +49,7 @@ class Matrix(
             doubles.put(rowMajorIndex(row, col), if (row == col) 1.0 else 0.0)
         }
     }
-
+    
     /**
      * Calls [f] for each coefficient.
      */
@@ -202,17 +202,7 @@ class Matrix(
     /**
      * Transpose the matrix.
      */
-    fun transpose() {
-        var swap: Double
-        forEachComponent { row, col ->
-            // Do neither swap the same coefficients twice nor the pivots at all:
-            if (row < col) {
-                swap = this[row, col]
-                this[row, col] = this[col, row]
-                this[col, row] = swap
-            }
-        }
-    }
+    fun transposed() = Matrix(cols, rows) { row, col -> this[col, row] }
     
     /**
      * Return a linear row-major index referring to the cell at [row]/[col].
@@ -255,5 +245,5 @@ class Matrix(
         sb.append(" ]")
         return sb.toString()
     }
-
+    
 }
