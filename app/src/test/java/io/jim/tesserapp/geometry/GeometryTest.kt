@@ -1,6 +1,8 @@
 package io.jim.tesserapp.geometry
 
 import io.jim.tesserapp.math.matrix.Matrix
+import io.jim.tesserapp.math.matrix.RotationPlane
+import io.jim.tesserapp.math.matrix.rotation
 import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.util.assertEquals
 import org.junit.Assert.assertEquals
@@ -17,7 +19,7 @@ class GeometryTest {
         val geometry = Geometry(
                 name = "Test geometry",
                 onTransformUpdate = {
-                    Matrix.rotation(5, 0, 1, Math.PI / 2.0) *
+                    rotation(5, RotationPlane.XY, Math.PI / 2.0) *
                             Matrix.translation(5, VectorN(1.0, 0.0, 0.0, 0.0))
                 })
         

@@ -6,7 +6,7 @@ import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.collapseZ
 import io.jim.tesserapp.geometry.projectWireframe
 import io.jim.tesserapp.math.matrix.Matrix
-import io.jim.tesserapp.math.matrix.viewMatrix
+import io.jim.tesserapp.math.matrix.view
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
 import javax.microedition.khronos.egl.EGLConfig
@@ -109,7 +109,7 @@ class Renderer(
             
             // Recompute and upload view and perspective matrices:
             viewModel.synchronized {
-                shader.uploadViewMatrix(viewMatrix(
+                shader.uploadViewMatrix(view(
                         cameraDistance.smoothed,
                         aspectRatio,
                         horizontalCameraRotation.smoothed,
