@@ -10,22 +10,22 @@ fun Geometry.grid() {
     
     for (i in -10..-1) {
         (i / 2.0).also {
-            addLine(VectorN(it, 0.0, -5.0, 0.0), VectorN(it, 0.0, 5.0, 0.0))
-            addLine(VectorN(-5.0, 0.0, it, 0.0), VectorN(5.0, 0.0, it, 0.0))
+            points += Line(VectorN(it, 0.0, -5.0, 0.0), VectorN(it, 0.0, 5.0, 0.0))
+            points += Line(VectorN(-5.0, 0.0, it, 0.0), VectorN(5.0, 0.0, it, 0.0))
         }
     }
     
     for (i in 1..10) {
         (i / 2.0).also {
-            addLine(VectorN(it, 0.0, -5.0, 0.0), VectorN(it, 0.0, 5.0, 0.0))
-            addLine(VectorN(-5.0, 0.0, it, 0.0), VectorN(5.0, 0.0, it, 0.0))
+            points += Line(VectorN(it, 0.0, -5.0, 0.0), VectorN(it, 0.0, 5.0, 0.0))
+            points += Line(VectorN(-5.0, 0.0, it, 0.0), VectorN(5.0, 0.0, it, 0.0))
         }
     }
-
-    addLine(VectorN(-5.0, 0.0, 0.0, 0.0), VectorN(0.0, 0.0, 0.0, 0.0))
-    addLine(VectorN(1.0, 0.0, 0.0, 0.0), VectorN(5.0, 0.0, 0.0, 0.0))
-
-    addLine(VectorN(0.0, 0.0, -5.0, 0.0), VectorN(0.0, 0.0, 0.0, 0.0))
-    addLine(VectorN(0.0, 0.0, 1.0, 0.0), VectorN(0.0, 0.0, 5.0, 0.0))
+    
+    points += Line(VectorN(-5.0, 0.0, 0.0, 0.0), VectorN(0.0, 0.0, 0.0, 0.0))
+    points += Line(VectorN(1.0, 0.0, 0.0, 0.0), VectorN(5.0, 0.0, 0.0, 0.0))
+    
+    points += Line(VectorN(0.0, 0.0, -5.0, 0.0), VectorN(0.0, 0.0, 0.0, 0.0))
+    points += Line(VectorN(0.0, 0.0, 1.0, 0.0), VectorN(0.0, 0.0, 5.0, 0.0))
     
 }

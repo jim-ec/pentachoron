@@ -12,11 +12,7 @@ inline fun collapseZ(
     
     val modelMatrix = geometry.onTransformUpdate()
     
-    geometry.lines.forEach { line ->
-        line.forEachPosition { position ->
-            f(with(position * modelMatrix) {
-                VectorN(x, y, q, 0.0)
-            }, line.color)
-        }
+    geometry.forEachVertex { position, color ->
+        f(with(position * modelMatrix) { VectorN(x, y, q, 0.0) }, color)
     }
 }

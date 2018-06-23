@@ -12,8 +12,7 @@ inline fun projectWireframe(
     
     val modelMatrix = geometry.onTransformUpdate()
     
-    geometry.lines.forEach { line ->
-        line.forEachPosition { position ->
+    geometry.forEachVertex { position, color ->
     
             // Apply 4-dimensional model matrix to 4d point:
             val transformedPosition = position * modelMatrix
@@ -23,8 +22,7 @@ inline fun projectWireframe(
                         transformedPosition / transformedPosition.q
                     else
                         transformedPosition,
-                    line.color
+                    color
             )
-        }
     }
 }

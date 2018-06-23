@@ -50,12 +50,12 @@ class MainViewModel : ViewModel() {
                 VectorN(2.0, -2.0, 2.0, 0.0),
                 color = Geometry.Color.ACCENT
         )
-        
-        extrude(
-                direction = VectorN(0.0, 0.0, -4.0, 0.0),
-                keepColors = true,
-                connectorColor = Geometry.Color.ACCENT
-        )
+    
+        //extrude(
+        //        direction = VectorN(0.0, 0.0, -4.0, 0.0),
+        //        keepColors = true,
+        //        connectorColor = Geometry.Color.ACCENT
+        //)
     }
     
     /**

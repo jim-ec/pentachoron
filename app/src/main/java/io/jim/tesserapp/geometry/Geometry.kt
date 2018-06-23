@@ -16,47 +16,8 @@ class Geometry(
         val onTransformUpdate: () -> Matrix = { identity(5) },
         val isFourDimensional: Boolean = false
 ) {
-
-    /**
-     * List containing all positions.
-     */
-    private val positions = ArrayList<VectorN>()
     
-    /**
-     * List containing all lines constructed from [positions] using indices.
-     */
-    val lines = ArrayList<Line>()
-
-    /**
-     * Add a series of vertices.
-     * The actual lines are drawn from indices to these vertices.
-     */
-    private fun addPosition(position: VectorN) {
-        positions += position
-    }
-    
-    /**
-     * Add a line spanning between two positions.
-     * @param a Index to the start position.
-     * @param b Index to the end position.
-     * @param color Line color.
-     */
-    private fun addLine(a: Int, b: Int, color: Color = Color.PRIMARY) {
-        lines += Line(positions, a, b, color)
-    }
-    
-    /**
-     * Add a line from position [a] to position [b].
-     * This actually creates to new positions.
-     * @param a Starting position.
-     * @param b End position.
-     * @param color Line color.
-     */
-    fun addLine(a: VectorN, b: VectorN, color: Color = Color.PRIMARY) {
-        addPosition(a)
-        addPosition(b)
-        addLine(positions.lastIndex - 1, positions.lastIndex, color)
-    }
+    val points = ArrayList<Line>()
     
     /**
      * Add a quadrilateral with four corner and an optional color.
@@ -73,24 +34,20 @@ class Geometry(
             d: VectorN,
             color: Color = Color.PRIMARY
     ) {
-        addPosition(a)
-        addPosition(b)
-        addPosition(c)
-        addPosition(d)
-        addLine(0, 1, color)
-        addLine(1, 2, color)
-        addLine(2, 3, color)
-        addLine(3, 0, color)
+        points += Line(a, b, color)
+        points += Line(b, c, color)
+        points += Line(c, d, color)
+        points += Line(d, a, color)
     }
-
-    /**
-     * Extrudes the whole geometry in the given [direction].
-     * This works by duplicating the whole geometry and then connecting all point duplicate
-     * counterparts.
-     * @param keepColors The generated copy will have matching colors to the line set it originated from.
-     * @param connectorColor Color of the lines connecting the original and generated lines.
-     */
-    fun extrude(
+    
+    ///**
+    // * Extrudes the whole geometry in the given [direction].
+    // * This works by duplicating the whole geometry and then connecting all point duplicate
+    // * counterparts.
+    // * @param keepColors The generated copy will have matching colors to the line set it originated from.
+    // * @param connectorColor Color of the lines connecting the original and generated lines.
+    // */
+    /*fun extrude(
             direction: VectorN,
             keepColors: Boolean = false,
             connectorColor: Color = Color.PRIMARY
@@ -112,13 +69,13 @@ class Geometry(
         for (i in 0 until size) {
             addLine(i, i + size, connectorColor)
         }
-    }
+    }*/
     
     /**
      * Invoke [f] for each position and the color it's associated with.
      */
     inline fun forEachVertex(f: (position: VectorN, color: Color) -> Unit) {
-        lines.forEach {
+        points.forEach {
             f(it.start, it.color)
             f(it.end, it.color)
         }
