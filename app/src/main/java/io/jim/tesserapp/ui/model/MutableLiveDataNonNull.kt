@@ -1,8 +1,6 @@
 package io.jim.tesserapp.ui.model
 
-import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
 import io.jim.tesserapp.util.synchronized
 
 /**
@@ -33,19 +31,6 @@ open class MutableLiveDataNonNull<T : Any>(initialValue: T) : MutableLiveData<T>
     override fun setValue(value: T) {
         synchronized {
             super.setValue(value)
-        }
-    }
-    
-    /**
-     * Install an observer bound to [lifecycleOwner]'s life duration.
-     *
-     * @param callback Called upon value changes.
-     */
-    fun observeNonNull(lifecycleOwner: LifecycleOwner, callback: (T) -> Unit) {
-        synchronized {
-            super.observe(lifecycleOwner, Observer {
-                callback(it!!)
-            })
         }
     }
     
