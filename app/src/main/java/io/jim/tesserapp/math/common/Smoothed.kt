@@ -1,6 +1,5 @@
 package io.jim.tesserapp.math.common
 
-import io.jim.tesserapp.math.common.Smoothed.DelegationMode
 import kotlin.reflect.KProperty
 
 /**
@@ -9,19 +8,12 @@ import kotlin.reflect.KProperty
  * @param startValue
  * The start the property should has.
  *
- * Note that if the property is delegated using [DelegationMode.RELATIVE_TO_LAST_READ], the very first
- * read will return this initial value. Subsequent read calls return 0, unless the property is changed.
- *
  * @property transitionInterval
  * The time it should take to fulfil one transition interval.
- *
- * @property delegationMode
- * Mode of delegation, see [DelegationMode].
  */
 open class Smoothed<R>(
         startValue: Double,
-        private val transitionInterval: Double,
-        private val delegationMode: DelegationMode = DelegationMode.ABSOLUTE
+        private val transitionInterval: Double
 ) {
     
     /**
@@ -57,13 +49,6 @@ open class Smoothed<R>(
      */
     private inline val transitioning: Boolean
         get() = x - lastTransitionStartX < transitionInterval
-    
-    /**
-     * Only used when delegating with [DelegationMode.RELATIVE_TO_LAST_READ].
-     * Store the value existed when the last read operation occurred,
-     * so we can return the difference.
-     */
-    private var oldValue = 0.0
     
     /**
      * The current value.
@@ -115,40 +100,6 @@ open class Smoothed<R>(
     /**
      * Get the current value.
      */
-    operator fun getValue(thisRef: R, property: KProperty<*>) =
-            currentValue.let { value ->
-                
-                // Return difference, but remember the current value as the new old value:
-                when (delegationMode) {
-                    DelegationMode.ABSOLUTE -> value
-                    DelegationMode.RELATIVE_TO_LAST_READ -> (value - oldValue).also { oldValue = value }
-                }
-            }
-    
-    /**
-     * How the value is delegated when read.
-     */
-    enum class DelegationMode {
-        
-        /**
-         * Each read will return current absolute value.
-         * This is the default behaviour you would expect.
-         */
-        ABSOLUTE,
-        
-        /**
-         * Each read operation will return the *difference* between the current value
-         * and the value hold when the last read operation occurred.
-         *
-         * This is more useful when you want to listen how the value has changed,
-         * rather than what its current absolute value is.
-         *
-         * Since every read operation affects the next read operation,
-         * you have to define explicitly who can read the property at all.
-         *
-         * I.e. to keep track of the absolute value, you'd have to accumulate all read retrievals.
-         */
-        RELATIVE_TO_LAST_READ
-    }
+    operator fun getValue(thisRef: R, property: KProperty<*>) = currentValue
     
 }

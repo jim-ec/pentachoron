@@ -91,9 +91,9 @@ class Renderer(
             // Ensure vertex data is up-to-date:
             drawDataProvider.updateVertices(
                     geometries,
-                    when (renderMode) {
-                        MainViewModel.RenderMode.WIREFRAME_PROJECTION -> ::projectWireframe
-                        MainViewModel.RenderMode.COLLAPSE_Z -> ::collapseZ
+                    when (visualizationMode) {
+                        MainViewModel.VisualizationMode.WIREFRAME_PROJECTION -> ::projectWireframe
+                        MainViewModel.VisualizationMode.COLLAPSE_Z -> ::collapseZ
                     },
                     colorResolver
             )

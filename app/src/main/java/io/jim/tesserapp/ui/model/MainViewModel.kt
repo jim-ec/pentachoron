@@ -3,7 +3,6 @@ package io.jim.tesserapp.ui.model
 import android.arch.lifecycle.ViewModel
 import android.graphics.Color
 import io.jim.tesserapp.geometry.*
-import io.jim.tesserapp.math.common.Smoothed
 import io.jim.tesserapp.math.matrix.RotationPlane
 import io.jim.tesserapp.math.matrix.rotation
 import io.jim.tesserapp.math.matrix.transformChain
@@ -62,7 +61,6 @@ class MainViewModel : ViewModel() {
      */
     var enableGrid: Boolean
         set(value) {
-            println("Toggle grid: $value")
             if (value) {
                 geometries += gridGeometry
             } else {
@@ -94,79 +92,67 @@ class MainViewModel : ViewModel() {
     /**
      * X rotation, in units of PI.
      */
-    val rotationX =
-            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.ABSOLUTE)
+    val rotationX = SmoothedLiveData()
     
     /**
      * Y rotation, in units of PI.
      */
-    val rotationY =
-            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.ABSOLUTE)
+    val rotationY = SmoothedLiveData()
     
     /**
      * Z rotation, in units of PI.
      */
-    val rotationZ =
-            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.ABSOLUTE)
+    val rotationZ = SmoothedLiveData()
     
     /**
      * Q rotation, in units of PI.
      */
-    val rotationQ =
-            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.ABSOLUTE)
+    val rotationQ = SmoothedLiveData()
     
     /**
      * X translation.
      */
-    val translationX =
-            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.ABSOLUTE)
+    val translationX = SmoothedLiveData()
     
     /**
      * Y translation.
      */
-    val translationY =
-            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.ABSOLUTE)
+    val translationY = SmoothedLiveData()
     
     /**
      * Z translation.
      */
-    val translationZ =
-            SmoothedLiveData(delegationMode = Smoothed.DelegationMode.ABSOLUTE)
+    val translationZ = SmoothedLiveData()
     
     /**
      * Q translation.
      */
-    val translationQ = SmoothedLiveData(
-            initialValue = 3.0,
-            delegationMode = Smoothed.DelegationMode.ABSOLUTE)
+    val translationQ = SmoothedLiveData(initialValue = 3.7)
     
     /**
      * Camera distance.
      */
-    val cameraDistance =
-            SmoothedLiveData(initialValue = 8.0)
+    val cameraDistance = SmoothedLiveData(initialValue = 8.0)
     
     /**
      * Rotation on the horizontal orbit.
      * This is the base rotation.
      */
-    val horizontalCameraRotation =
-            SmoothedLiveData(initialValue = Math.PI / 3.0, transitionInterval = 80.0)
+    val horizontalCameraRotation = SmoothedLiveData(initialValue = Math.PI / 3.0, transitionInterval = 80.0)
     
     /**
      * Rotation on the vertical orbit.
      * This is the secondary rotation.
      */
-    val verticalCameraRotation =
-            SmoothedLiveData(initialValue = -Math.PI / 8.0, transitionInterval = 80.0)
+    val verticalCameraRotation = SmoothedLiveData(initialValue = -Math.PI / 8.0, transitionInterval = 80.0)
     
     var colorResolver: (color: SymbolicColor) -> Int = { Color.BLACK }
     
-    enum class RenderMode {
+    enum class VisualizationMode {
         WIREFRAME_PROJECTION,
         COLLAPSE_Z
     }
     
-    var renderMode = RenderMode.WIREFRAME_PROJECTION
+    var visualizationMode = VisualizationMode.WIREFRAME_PROJECTION
     
 }
