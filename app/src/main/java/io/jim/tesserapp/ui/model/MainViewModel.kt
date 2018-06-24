@@ -54,7 +54,7 @@ class MainViewModel : ViewModel() {
     /**
      * The grid geometry representing a cartesian coordinate system unit grid.
      */
-    val gridGeometry = Geometry(name = "Grid", points = grid())
+    val gridGeometry = Geometry(name = "Grid", points = gridOmitAxisIndicator())
     
     /**
      * Enable or disable grid rendering.
@@ -132,7 +132,7 @@ class MainViewModel : ViewModel() {
     /**
      * Camera distance.
      */
-    val cameraDistance = SmoothedLiveData(initialValue = 8.0)
+    val cameraDistance = SmoothedLiveData(initialValue = 3.0)
     
     /**
      * Rotation on the horizontal orbit.
