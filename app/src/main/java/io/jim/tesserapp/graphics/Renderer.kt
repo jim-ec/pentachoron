@@ -3,8 +3,8 @@ package io.jim.tesserapp.graphics
 import android.content.res.AssetManager
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
-import io.jim.tesserapp.geometry.collapseZ
 import io.jim.tesserapp.geometry.projectWireframe
+import io.jim.tesserapp.geometry.transformed
 import io.jim.tesserapp.math.matrix.perspective
 import io.jim.tesserapp.math.matrix.view
 import io.jim.tesserapp.ui.model.MainViewModel
@@ -87,16 +87,23 @@ class Renderer(
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT or GLES30.GL_DEPTH_BUFFER_BIT)
         
         viewModel.synchronized {
-            
-            // Ensure vertex data is up-to-date:
-            drawDataProvider.updateVertices(
-                    geometries,
-                    when (visualizationMode) {
-                        MainViewModel.VisualizationMode.WIREFRAME_PROJECTION -> ::projectWireframe
-                        MainViewModel.VisualizationMode.COLLAPSE_Z -> ::collapseZ
-                    },
-                    colorResolver
-            )
+    
+            val vertices = geometries.flatMap { it.transformed() }
+                    .map { (line, isFourDimensional) ->
+                        if (isFourDimensional) {
+                            line.projectWireframe()
+                        } else {
+                            line
+                        }
+                    }
+                    .flatMap { (start, end, color) ->
+                        listOf(
+                                Pair(start, colorResolver(color)),
+                                Pair(end, colorResolver(color))
+                        )
+                    }
+    
+            drawDataProvider.updateVertices(vertices)
             
         }
         

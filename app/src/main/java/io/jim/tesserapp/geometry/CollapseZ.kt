@@ -16,3 +16,9 @@ inline fun collapseZ(
         f(with(position * modelMatrix) { VectorN(x, y, q, 0.0) }, color)
     }
 }
+
+fun collapseZ(geometry: Geometry): List<Line> {
+    val projectPoint = { pos: VectorN -> with(pos) { VectorN(x, y, q, 0.0) } }
+    
+    return geometry.points.map { Line(projectPoint(it.start), projectPoint(it.end), it.color) }
+}

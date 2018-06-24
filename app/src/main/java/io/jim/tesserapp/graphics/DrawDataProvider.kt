@@ -49,4 +49,13 @@ class DrawDataProvider {
         }
     }
     
+    fun updateVertices(vertices: List<Pair<VectorN, Int>>) {
+        vertexMemory.rewind()
+        
+        vertices.forEach { (position, color) ->
+            vertexMemory.write(position.x, position.y, position.z, 1.0)
+            vertexMemory.write(color.red, color.green, color.blue, 1f)
+        }
+    }
+    
 }

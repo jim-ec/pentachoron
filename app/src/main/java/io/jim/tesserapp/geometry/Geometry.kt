@@ -34,3 +34,8 @@ class Geometry(
     override fun toString() = name
     
 }
+
+fun Geometry.transformed() = points.map {
+    val modelMatrix = onTransformUpdate()
+    Line(it.start * modelMatrix, it.end * modelMatrix, it.color) to isFourDimensional
+}
