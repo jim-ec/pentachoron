@@ -148,11 +148,6 @@ class MainViewModel : ViewModel() {
     
     var colorResolver: (color: SymbolicColor) -> Int = { Color.BLACK }
     
-    enum class VisualizationMode {
-        WIREFRAME_PROJECTION,
-        COLLAPSE_Z
-    }
-    
     var visualizationMode = VisualizationMode.WIREFRAME_PROJECTION
     
 }

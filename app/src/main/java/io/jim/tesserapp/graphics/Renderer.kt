@@ -3,11 +3,13 @@ package io.jim.tesserapp.graphics
 import android.content.res.AssetManager
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
+import io.jim.tesserapp.geometry.collapseZ
 import io.jim.tesserapp.geometry.projectWireframe
 import io.jim.tesserapp.geometry.transformed
 import io.jim.tesserapp.math.matrix.perspective
 import io.jim.tesserapp.math.matrix.view
 import io.jim.tesserapp.ui.model.MainViewModel
+import io.jim.tesserapp.ui.model.VisualizationMode
 import io.jim.tesserapp.util.synchronized
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -91,7 +93,10 @@ class Renderer(
             val vertices = geometries.flatMap { it.transformed() }
                     .map { (line, isFourDimensional) ->
                         if (isFourDimensional) {
-                            line.projectWireframe()
+                            when (visualizationMode) {
+                                VisualizationMode.WIREFRAME_PROJECTION -> line.projectWireframe()
+                                VisualizationMode.COLLAPSE_Z -> line.collapseZ()
+                            }
                         } else {
                             line
                         }

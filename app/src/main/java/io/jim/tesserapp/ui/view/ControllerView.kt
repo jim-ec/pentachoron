@@ -92,8 +92,8 @@ class ControllerView : FrameLayout {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     viewModel.synchronized {
                         viewModel.visualizationMode = when (position) {
-                            0 -> MainViewModel.VisualizationMode.WIREFRAME_PROJECTION
-                            1 -> MainViewModel.VisualizationMode.COLLAPSE_Z
+                            0 -> VisualizationMode.WIREFRAME_PROJECTION
+                            1 -> VisualizationMode.COLLAPSE_Z
                             else -> throw RuntimeException("Unknown visualization mode $position selected")
                         }
                     }
