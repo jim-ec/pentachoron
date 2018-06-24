@@ -418,16 +418,16 @@
             app:layout_constraintTop_toTopOf="@+id/renderOptionGridSwitch" />
 
         <Spinner
-            android:id="@+id/renderModeSpinner"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:entries="@array/render_modes"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/renderOptionGridSwitch" />
+                android:id="@+id/visualizationModeSpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:entries="@array/visualization_modes"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/renderOptionGridSwitch" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

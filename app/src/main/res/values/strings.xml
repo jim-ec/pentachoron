@@ -25,8 +25,8 @@
 
     <string name="pref_dark_theme_enabled" translatable="false">io.jim.tesserapp.PREF_DARK_THEME_ENABLED</string>
 
-    <string-array name="render_modes">
-        <item>Wireframe projection</item>
+    <string-array name="visualization_modes">
+        <item>Projection</item>
         <item>Collapse Z</item>
     </string-array>
 
