@@ -388,7 +388,6 @@
             android:id="@+id/cameraDistanceWatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:fontFamily="monospace"
             android:text="@string/transform_rotation_watch_format"
@@ -400,10 +399,13 @@
             android:id="@+id/renderOptionGridSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="28dp"
             android:checked="true"
             android:text="@string/render_option_grid"
             app:layout_constraintEnd_toStartOf="@+id/darkThemeSwitch"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cameraDistanceLabel" />
 
@@ -413,21 +415,21 @@
             android:layout_height="wrap_content"
             android:text="@string/dark_theme"
             app:layout_constraintBottom_toBottomOf="@+id/renderOptionGridSwitch"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/visualizationModeSpinner"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/renderOptionGridSwitch"
             app:layout_constraintTop_toTopOf="@+id/renderOptionGridSwitch" />
 
         <Spinner
             android:id="@+id/visualizationModeSpinner"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="27dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:entries="@array/visualization_modes"
+            app:layout_constraintBottom_toBottomOf="@+id/darkThemeSwitch"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/renderOptionGridSwitch" />
+            app:layout_constraintStart_toEndOf="@+id/darkThemeSwitch"
+            app:layout_constraintTop_toTopOf="@+id/darkThemeSwitch" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
