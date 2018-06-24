@@ -4,4 +4,3 @@ enum class VisualizationMode {
     WIREFRAME_PROJECTION,
     COLLAPSE_Z
 }
-    

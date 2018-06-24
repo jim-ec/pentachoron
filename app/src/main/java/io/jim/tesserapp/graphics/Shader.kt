@@ -4,7 +4,6 @@ import android.content.res.AssetManager
 import android.opengl.GLES30
 import io.jim.tesserapp.graphics.engine.GlException
 import io.jim.tesserapp.graphics.engine.GlProgram
-import io.jim.tesserapp.graphics.engine.GlTransformFeedback
 import io.jim.tesserapp.math.matrix.Matrix
 
 /**
@@ -16,8 +15,7 @@ class Shader(assets: AssetManager) {
     val program = GlProgram(
             assets = assets,
             vertexShaderFile = "lines.vert",
-            fragmentShaderFile = "lines.frag",
-            transformFeedback = GlTransformFeedback("gl_Position", GLES30.GL_LINES))
+            fragmentShaderFile = "lines.frag")
     
     /**
      * GLSL location of position attribute.

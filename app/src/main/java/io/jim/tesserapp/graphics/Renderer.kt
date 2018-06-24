@@ -112,11 +112,6 @@ class Renderer(
             
         }
         
-        // Since that can change the vertex buffer's size, reallocate TBO as well:
-        shader.program.transformFeedback?.allocate(
-                vectorCapacity = drawDataProvider.vertexMemory.writtenElementCounts
-        )
-        
         shader.program.bound {
             
             // Recompute and upload view and perspective matrices:

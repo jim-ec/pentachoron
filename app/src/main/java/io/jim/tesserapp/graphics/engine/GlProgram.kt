@@ -10,19 +10,11 @@ import android.opengl.GLES30
  * @param assets Asset manager used to open shader source files.
  * @param vertexShaderFile File name of vertex shader source code.
  * @param fragmentShaderFile File name of fragment shader source code.
- *
- * @property transformFeedback
- * Transform feedback used with this program.
- * Its [GlTransformFeedback.setup] function is called after attaching both shaders and
- * before linking the actual program.
- * If a transform feedback object is present, drawing happens inside its
- * [GlTransformFeedback.capturingTransformFeedback] block.
  */
 class GlProgram(
         assets: AssetManager,
         vertexShaderFile: String,
-        fragmentShaderFile: String,
-        val transformFeedback: GlTransformFeedback? = null
+        fragmentShaderFile: String
 ) {
     
     /**
@@ -43,9 +35,6 @@ class GlProgram(
     init {
         GLES30.glAttachShader(handle, vertexShader.handle)
         GLES30.glAttachShader(handle, fragmentShader.handle)
-    
-        transformFeedback?.setup(handle)
-        GlException.check("Setting up transform feedback")
         
         // Link program together:
         GLES30.glLinkProgram(handle)
@@ -74,11 +63,8 @@ class GlProgram(
             throw RuntimeException("Another program is currently used.")
     
         GLES30.glUseProgram(handle)
-        
-        // If a transform feedback is attached, do drawing while capture feedback.
-        // Otherwise, just do the draw code:
-        transformFeedback?.capturingTransformFeedback { f() }
-                ?: f()
+    
+        f()
         
         GLES30.glUseProgram(0)
     }
