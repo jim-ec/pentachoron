@@ -88,49 +88,46 @@ class Renderer(
         
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT or GLES30.GL_DEPTH_BUFFER_BIT)
         
-        viewModel.synchronized {
-    
-            val vertices = geometries.flatMap { it.transformed() }
-                    .map { (line, isFourDimensional) ->
-                        if (isFourDimensional) {
-                            when (visualizationMode) {
-                                VisualizationMode.WIREFRAME_PROJECTION -> line.projectWireframe()
-                                VisualizationMode.COLLAPSE_Z -> line.collapseZ()
-                            }
-                        } else {
-                            line
-                        }
-                    }
-                    .flatMap { (start, end, color) ->
-                        listOf(
-                                Pair(start, colorResolver(color)),
-                                Pair(end, colorResolver(color))
-                        )
-                    }
-    
-            drawDataProvider.updateVertices(vertices)
-            
-        }
-        
         shader.program.bound {
             
             // Recompute and upload view and perspective matrices:
             viewModel.synchronized {
+    
                 shader.uploadViewMatrix(view(
                         cameraDistance.smoothed,
                         aspectRatio,
                         horizontalCameraRotation.smoothed,
                         verticalCameraRotation.smoothed
                 ))
+    
+                shader.uploadProjectionMatrix(projectionMatrix)
+    
+                val vertices = geometries.flatMap { it.transformed() }
+                        .map { (line, isFourDimensional) ->
+                            if (isFourDimensional) {
+                                when (visualizationMode) {
+                                    VisualizationMode.WIREFRAME_PROJECTION -> line.projectWireframe()
+                                    VisualizationMode.COLLAPSE_Z -> line.collapseZ()
+                                }
+                            } else {
+                                line
+                            }
+                        }
+                        .flatMap { (start, end, color) ->
+                            listOf(
+                                    start to colorResolver(color),
+                                    end to colorResolver(color)
+                            )
+                        }
+    
+                drawDataProvider.updateVertices(vertices)
+    
+                vertexBuffer.draw(
+                        memory = drawDataProvider.vertexMemory,
+                        elementCounts = drawDataProvider.vertexMemory.writtenElementCounts
+                )
+    
             }
-            
-            shader.uploadProjectionMatrix(projectionMatrix)
-            
-            // Draw the vertex buffer:
-            vertexBuffer.draw(
-                    memory = drawDataProvider.vertexMemory,
-                    elementCounts = drawDataProvider.vertexMemory.writtenElementCounts
-            )
             
         }
         
