@@ -24,7 +24,7 @@ class DrawDataProvider {
      */
     fun updateVertices(
             geometries: Iterable<Geometry>,
-            interpreter: (Geometry, (position: VectorN, color: SymbolicColor) -> Unit) -> Unit,
+            visualizer: (Geometry, (position: VectorN, color: SymbolicColor) -> Unit) -> Unit,
             colorResolver: (SymbolicColor) -> Int
     ) {
         
@@ -32,7 +32,7 @@ class DrawDataProvider {
         
         geometries.forEach { geometry ->
     
-            interpreter(geometry) { position, color ->
+            visualizer(geometry) { position, color ->
     
                 vertexMemory.record {
         
