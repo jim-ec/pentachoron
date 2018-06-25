@@ -1,6 +1,11 @@
 package io.jim.tesserapp.graphics.engine
 
 import android.opengl.GLES30
+import io.jim.tesserapp.geometry.ATTRIBUTE_COUNTS
+import io.jim.tesserapp.geometry.Vertex
+import io.jim.tesserapp.graphics.blue
+import io.jim.tesserapp.graphics.green
+import io.jim.tesserapp.graphics.red
 import io.jim.tesserapp.util.InputStreamMemory
 
 /**
@@ -15,42 +20,30 @@ class GlVertexBuffer(
     
     val buffer = GlBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_STATIC_DRAW)
     
-    /**
-     * Upload data from [memory] to GL.
-     */
-    fun upload(memory: InputStreamMemory) {
-        buffer.allocate(
-                memory.writtenVectorCounts,
-                memory.floatMemory
-        )
-    }
-    
-    /**
-     * Draw vertex data with [drawMode].
-     *
-     * @param elementCounts
-     * Count of element to be drawn.
-     * This count is given in units of elements, *not vertices*.
-     *
-     * @throws GlException If drawing failed.
-     */
-    fun draw(elementCounts: Int) {
-        bound {
+    fun draw(vertices: List<Vertex>) {
+        val memory = InputStreamMemory(100, ATTRIBUTE_COUNTS)
+        
+        vertices.forEach { (position, color) ->
+            memory.record {
+                memory.write(position.x, position.y, position.z, 1.0)
+                memory.write(color.red, color.green, color.blue, 1f)
+            }
+        }
+        
+        buffer.bound {
+            instructVertexAttributePointers()
+            
+            buffer.allocate(
+                    memory.writtenVectorCounts,
+                    memory.floatMemory
+            )
+        
             GLES30.glDrawArrays(
                     drawMode,
                     0,
-                    elementCounts)
+                    memory.writtenElementCounts)
+        
             GlException.check("Draw vertex memory")
-        }
-    }
-    
-    /**
-     * Call [f] while the VBO and VAO are bound.
-     */
-    inline fun bound(crossinline f: () -> Unit) {
-        buffer.bound {
-            instructVertexAttributePointers()
-            f()
         }
     }
     

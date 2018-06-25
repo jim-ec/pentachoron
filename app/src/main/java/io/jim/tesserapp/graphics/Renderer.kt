@@ -3,9 +3,10 @@ package io.jim.tesserapp.graphics
 import android.content.res.AssetManager
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
-import io.jim.tesserapp.geometry.draw
+import io.jim.tesserapp.geometry.generateVertexBuffer
 import io.jim.tesserapp.geometry.resolveToVertices
 import io.jim.tesserapp.geometry.transformed
+import io.jim.tesserapp.graphics.engine.GlVertexBuffer
 import io.jim.tesserapp.math.matrix.perspective
 import io.jim.tesserapp.math.matrix.view
 import io.jim.tesserapp.ui.model.MainViewModel
@@ -23,7 +24,7 @@ class Renderer(
         val dpi: Double) : GLSurfaceView.Renderer {
     
     private lateinit var shader: Shader
-    private lateinit var vertexBuffer: VertexBuffer
+    private lateinit var vertexBuffer: GlVertexBuffer
     
     private var aspectRatio: Double = 1.0
     
@@ -65,7 +66,7 @@ class Renderer(
         shader = Shader(assets)
         
         // Construct vertex buffer:
-        vertexBuffer = VertexBuffer(shader)
+        vertexBuffer = generateVertexBuffer(shader)
     }
     
     /**
@@ -101,7 +102,9 @@ class Renderer(
                     it.transformed(fourthDimensionVisualizer)
                 }.flatMap {
                     it.resolveToVertices(colorResolver)
-                }.draw(vertexBuffer)
+                }.also {
+                    vertexBuffer.draw(it)
+                }
                 
             }
             
