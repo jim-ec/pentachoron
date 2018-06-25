@@ -3,14 +3,11 @@ package io.jim.tesserapp.graphics
 import android.content.res.AssetManager
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
-import io.jim.tesserapp.geometry.collapseZ
-import io.jim.tesserapp.geometry.projectWireframe
 import io.jim.tesserapp.geometry.transformed
 import io.jim.tesserapp.math.matrix.perspective
 import io.jim.tesserapp.math.matrix.view
 import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.ui.model.MainViewModel
-import io.jim.tesserapp.ui.model.VisualizationMode
 import io.jim.tesserapp.util.synchronized
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -106,19 +103,12 @@ class Renderer(
                 val vertices: List<Pair<VectorN, Int>> = geometries.flatMap {
                     
                     // Apply model matrix to points:
-                    it.transformed(when (visualizationMode) {
-                        VisualizationMode.WIREFRAME_PROJECTION -> projectWireframe
-                        VisualizationMode.COLLAPSE_Z -> collapseZ
-                    })
+                    it.transformed(fourthDimensionVisualizer)
                     
                 }.flatMap { (start, end, color) ->
         
                     // Resolve to actual vertices, resolving the symbolic color:
-                    listOf(
-                            start to colorResolver(color),
-                            end to colorResolver(color)
-
-                    )
+                    listOf(start to colorResolver(color), end to colorResolver(color))
                 }
                 
                 drawDataProvider.updateVertices(vertices)

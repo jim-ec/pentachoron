@@ -8,7 +8,12 @@ import android.widget.AdapterView
 import android.widget.FrameLayout
 import io.jim.tesserapp.MainActivity
 import io.jim.tesserapp.R
-import io.jim.tesserapp.ui.model.*
+import io.jim.tesserapp.geometry.collapseZ
+import io.jim.tesserapp.geometry.projectWireframe
+import io.jim.tesserapp.ui.model.Controller
+import io.jim.tesserapp.ui.model.cameraDistanceController
+import io.jim.tesserapp.ui.model.rotationController
+import io.jim.tesserapp.ui.model.translationController
 import io.jim.tesserapp.util.synchronized
 import kotlinx.android.synthetic.main.view_controller.view.*
 
@@ -91,9 +96,9 @@ class ControllerView : FrameLayout {
         
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     viewModel.synchronized {
-                        viewModel.visualizationMode = when (position) {
-                            0 -> VisualizationMode.WIREFRAME_PROJECTION
-                            1 -> VisualizationMode.COLLAPSE_Z
+                        viewModel.fourthDimensionVisualizer = when (position) {
+                            0 -> projectWireframe
+                            1 -> collapseZ
                             else -> throw RuntimeException("Unknown visualization mode $position selected")
                         }
                     }

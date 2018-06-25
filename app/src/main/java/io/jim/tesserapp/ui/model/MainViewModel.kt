@@ -148,6 +148,6 @@ class MainViewModel : ViewModel() {
     
     var colorResolver: (color: SymbolicColor) -> Int = { Color.BLACK }
     
-    var visualizationMode = VisualizationMode.WIREFRAME_PROJECTION
+    var fourthDimensionVisualizer = projectWireframe
     
 }
