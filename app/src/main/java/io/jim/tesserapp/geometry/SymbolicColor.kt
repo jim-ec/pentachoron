@@ -17,3 +17,5 @@ enum class SymbolicColor {
     Z,
     Q
 }
+
+typealias ColorResolver = (color: SymbolicColor) -> Int

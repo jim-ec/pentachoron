@@ -3,6 +3,7 @@ package io.jim.tesserapp.graphics
 import android.content.res.AssetManager
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
+import io.jim.tesserapp.geometry.resolveToVertices
 import io.jim.tesserapp.geometry.transformed
 import io.jim.tesserapp.math.matrix.perspective
 import io.jim.tesserapp.math.matrix.view
@@ -101,14 +102,9 @@ class Renderer(
                 shader.uploadProjectionMatrix(projectionMatrix)
     
                 val vertices: List<Pair<VectorN, Int>> = geometries.flatMap {
-                    
-                    // Apply model matrix to points:
                     it.transformed(fourthDimensionVisualizer)
-                    
-                }.flatMap { (start, end, color) ->
-        
-                    // Resolve to actual vertices, resolving the symbolic color:
-                    listOf(start to colorResolver(color), end to colorResolver(color))
+                }.flatMap {
+                    it.resolveToVertices(colorResolver)
                 }
                 
                 drawDataProvider.updateVertices(vertices)

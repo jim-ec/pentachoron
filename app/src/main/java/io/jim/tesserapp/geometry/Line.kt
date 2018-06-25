@@ -7,3 +7,6 @@ data class Line(
         val end: VectorN,
         val color: SymbolicColor = SymbolicColor.PRIMARY
 )
+
+fun Line.resolveToVertices(colorResolver: ColorResolver): List<Pair<VectorN, Int>> =
+        listOf(start to colorResolver(color), end to colorResolver(color))
