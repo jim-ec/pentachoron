@@ -40,7 +40,7 @@ class GraphicsView : GLSurfaceView {
     init {
         
         // Setup renderer:
-        setEGLContextClientVersion(3)
+        setEGLContextClientVersion(2)
         setRenderer(renderer)
         debugFlags = DEBUG_CHECK_GL_ERROR
         renderMode = RENDERMODE_CONTINUOUSLY

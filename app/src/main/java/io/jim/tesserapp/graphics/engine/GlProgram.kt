@@ -2,7 +2,6 @@ package io.jim.tesserapp.graphics.engine
 
 import android.content.res.AssetManager
 import android.opengl.GLES20
-import android.opengl.GLES30
 
 /**
  * Encapsulate a GL program, containing a vertex and fragment shader.
@@ -33,21 +32,21 @@ class GlProgram(
     val handle = GLES20.glCreateProgram()
     
     init {
-        GLES30.glAttachShader(handle, vertexShader.handle)
-        GLES30.glAttachShader(handle, fragmentShader.handle)
+        GLES20.glAttachShader(handle, vertexShader.handle)
+        GLES20.glAttachShader(handle, fragmentShader.handle)
         
         // Link program together:
-        GLES30.glLinkProgram(handle)
-        GLES30.glGetProgramiv(handle, GLES30.GL_LINK_STATUS, resultCode)
-        if (GLES30.GL_TRUE != resultCode()) {
-            throw GlException("Cannot link program: ${GLES30.glGetProgramInfoLog(handle)}")
+        GLES20.glLinkProgram(handle)
+        GLES20.glGetProgramiv(handle, GLES20.GL_LINK_STATUS, resultCode)
+        if (GLES20.GL_TRUE != resultCode()) {
+            throw GlException("Cannot link program: ${GLES20.glGetProgramInfoLog(handle)}")
         }
         
         // Validate program:
-        GLES30.glValidateProgram(handle)
-        GLES30.glGetProgramiv(handle, GLES30.GL_VALIDATE_STATUS, resultCode)
-        if (GLES30.GL_TRUE != resultCode()) {
-            throw GlException("Cannot validate program: ${GLES30.glGetProgramInfoLog(handle)}")
+        GLES20.glValidateProgram(handle)
+        GLES20.glGetProgramiv(handle, GLES20.GL_VALIDATE_STATUS, resultCode)
+        if (GLES20.GL_TRUE != resultCode()) {
+            throw GlException("Cannot validate program: ${GLES20.glGetProgramInfoLog(handle)}")
         }
         
         GlException.check("Program initialization")
@@ -59,14 +58,14 @@ class GlProgram(
      * @throws RuntimeException If another program is currently in use.
      */
     inline fun bound(crossinline f: () -> Unit) {
-        if (0 != resultCode { GLES30.glGetIntegerv(GLES30.GL_CURRENT_PROGRAM, resultCode) })
+        if (0 != resultCode { GLES20.glGetIntegerv(GLES20.GL_CURRENT_PROGRAM, resultCode) })
             throw RuntimeException("Another program is currently used.")
     
-        GLES30.glUseProgram(handle)
+        GLES20.glUseProgram(handle)
     
         f()
-        
-        GLES30.glUseProgram(0)
+    
+        GLES20.glUseProgram(0)
     }
     
 }

@@ -1,6 +1,6 @@
 package io.jim.tesserapp.geometry
 
-import android.opengl.GLES30
+import android.opengl.GLES20
 import io.jim.tesserapp.graphics.Shader
 import io.jim.tesserapp.graphics.engine.GlVertexBuffer
 import io.jim.tesserapp.math.vector.VectorN
@@ -11,24 +11,24 @@ data class Vertex(
         val color: Int
 )
 
-fun generateVertexBuffer(shader: Shader) = GlVertexBuffer(GLES30.GL_LINES) {
+fun generateVertexBuffer(shader: Shader) = GlVertexBuffer(GLES20.GL_LINES) {
     // Position attribute:
-    GLES30.glEnableVertexAttribArray(shader.positionAttributeLocation)
-    GLES30.glVertexAttribPointer(
+    GLES20.glEnableVertexAttribArray(shader.positionAttributeLocation)
+    GLES20.glVertexAttribPointer(
             shader.positionAttributeLocation,
             ATTRIBUTE_FLOATS,
-            GLES30.GL_FLOAT,
+            GLES20.GL_FLOAT,
             false,
             STRIDE,
             OFFSET_POSITION
     )
     
     // Color attribute:
-    GLES30.glEnableVertexAttribArray(shader.colorAttributeLocation)
-    GLES30.glVertexAttribPointer(
+    GLES20.glEnableVertexAttribArray(shader.colorAttributeLocation)
+    GLES20.glVertexAttribPointer(
             shader.colorAttributeLocation,
             ATTRIBUTE_FLOATS,
-            GLES30.GL_FLOAT,
+            GLES20.GL_FLOAT,
             false,
             STRIDE,
             OFFSET_COLOR

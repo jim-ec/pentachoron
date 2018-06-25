@@ -1,7 +1,7 @@
 package io.jim.tesserapp.graphics
 
 import android.content.res.AssetManager
-import android.opengl.GLES30
+import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.geometry.generateVertexBuffer
 import io.jim.tesserapp.geometry.resolveToVertices
@@ -46,21 +46,21 @@ class Renderer(
      * Initialize data.
      */
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-        GLES30.glClearColor(
+        GLES20.glClearColor(
                 clearColor.red,
                 clearColor.green,
                 clearColor.blue,
                 1f
         )
-        GLES30.glDisable(GLES30.GL_CULL_FACE)
-        GLES30.glEnable(GLES30.GL_DEPTH_TEST)
-        
-        GLES30.glLineWidth((dpi / MM_PER_INCH * LINE_WIDTH_MM).toFloat())
-        
-        println("Open GLES version: ${GLES30.glGetString(GLES30.GL_VERSION)}")
-        println("GLSL version: ${GLES30.glGetString(GLES30.GL_SHADING_LANGUAGE_VERSION)}")
-        println("Renderer: ${GLES30.glGetString(GLES30.GL_RENDERER)}")
-        println("Vendor: ${GLES30.glGetString(GLES30.GL_VENDOR)}")
+        GLES20.glDisable(GLES20.GL_CULL_FACE)
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST)
+    
+        GLES20.glLineWidth((dpi / MM_PER_INCH * LINE_WIDTH_MM).toFloat())
+    
+        println("Open GLES version: ${GLES20.glGetString(GLES20.GL_VERSION)}")
+        println("GLSL version: ${GLES20.glGetString(GLES20.GL_SHADING_LANGUAGE_VERSION)}")
+        println("Renderer: ${GLES20.glGetString(GLES20.GL_RENDERER)}")
+        println("Vendor: ${GLES20.glGetString(GLES20.GL_VENDOR)}")
         
         // Construct shader:
         shader = Shader(assets)
@@ -73,7 +73,7 @@ class Renderer(
      * Construct view matrix.
      */
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-        GLES30.glViewport(0, 0, width, height)
+        GLES20.glViewport(0, 0, width, height)
         aspectRatio = width.toDouble() / height
     }
     
@@ -81,8 +81,8 @@ class Renderer(
      * Draw a single frame.
      */
     override fun onDrawFrame(gl: GL10?) {
-        
-        GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT or GLES30.GL_DEPTH_BUFFER_BIT)
+    
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
     
         viewModel.synchronized {
         

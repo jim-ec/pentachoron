@@ -1,6 +1,6 @@
 package io.jim.tesserapp.graphics.engine
 
-import android.opengl.GLES30
+import android.opengl.GLES20
 import io.jim.tesserapp.geometry.ATTRIBUTE_COUNTS
 import io.jim.tesserapp.geometry.Vertex
 import io.jim.tesserapp.graphics.blue
@@ -11,14 +11,14 @@ import io.jim.tesserapp.util.InputStreamMemory
 /**
  * GL VAO.
  *
- * @property drawMode Mode how to draw the vertices, e.g. [GLES30.GL_TRIANGLE_STRIP].
+ * @property drawMode Mode how to draw the vertices, e.g. [GLES20.GL_TRIANGLE_STRIP].
  */
 class GlVertexBuffer(
         val drawMode: Int,
         val instructVertexAttributePointers: () -> Unit
 ) {
     
-    val buffer = GlBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_STATIC_DRAW)
+    val buffer = GlBuffer(GLES20.GL_ARRAY_BUFFER, GLES20.GL_STATIC_DRAW)
     
     fun draw(vertices: List<Vertex>) {
         val memory = InputStreamMemory(100, ATTRIBUTE_COUNTS)
@@ -37,8 +37,8 @@ class GlVertexBuffer(
                     memory.writtenVectorCounts,
                     memory.floatMemory
             )
-        
-            GLES30.glDrawArrays(
+    
+            GLES20.glDrawArrays(
                     drawMode,
                     0,
                     memory.writtenElementCounts)
