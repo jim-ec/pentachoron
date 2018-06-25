@@ -3,11 +3,11 @@ package io.jim.tesserapp.graphics
 import android.content.res.AssetManager
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
+import io.jim.tesserapp.geometry.draw
 import io.jim.tesserapp.geometry.resolveToVertices
 import io.jim.tesserapp.geometry.transformed
 import io.jim.tesserapp.math.matrix.perspective
 import io.jim.tesserapp.math.matrix.view
-import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
 import javax.microedition.khronos.egl.EGLConfig
@@ -22,12 +22,8 @@ class Renderer(
         val assets: AssetManager,
         val dpi: Double) : GLSurfaceView.Renderer {
     
-    private val drawDataProvider = DrawDataProvider()
-    
     private lateinit var shader: Shader
     private lateinit var vertexBuffer: VertexBuffer
-    
-    private val projectionMatrix = perspective(near = 0.1, far = 100.0)
     
     private var aspectRatio: Double = 1.0
     
@@ -86,34 +82,27 @@ class Renderer(
     override fun onDrawFrame(gl: GL10?) {
         
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT or GLES30.GL_DEPTH_BUFFER_BIT)
-        
-        shader.program.bound {
-            
-            // Recompute and upload view and perspective matrices:
-            viewModel.synchronized {
     
+        viewModel.synchronized {
+        
+            shader.program.bound {
+                
                 shader.uploadViewMatrix(view(
                         cameraDistance.smoothed,
                         aspectRatio,
                         horizontalCameraRotation.smoothed,
                         verticalCameraRotation.smoothed
                 ))
-    
-                shader.uploadProjectionMatrix(projectionMatrix)
-    
-                val vertices: List<Pair<VectorN, Int>> = geometries.flatMap {
+            
+                shader.uploadProjectionMatrix(perspective(near = 0.1, far = 100.0))
+            
+                // Process geometries and draw the generated vertices:
+                geometries.flatMap {
                     it.transformed(fourthDimensionVisualizer)
                 }.flatMap {
                     it.resolveToVertices(colorResolver)
-                }
+                }.draw(vertexBuffer)
                 
-                drawDataProvider.updateVertices(vertices)
-    
-                vertexBuffer.draw(
-                        memory = drawDataProvider.vertexMemory,
-                        elementCounts = drawDataProvider.vertexMemory.writtenElementCounts
-                )
-    
             }
             
         }

@@ -27,8 +27,9 @@ class Shader(assets: AssetManager) {
      */
     val colorAttributeLocation = GLES30.glGetAttribLocation(program.handle, "color")
     
-    private val viewMatrixLocation = GLES30.glGetUniformLocation(program.handle, "V")
-    private val projectionMatrixLocation = GLES30.glGetUniformLocation(program.handle, "P")
+    val viewMatrixLocation = GLES30.glGetUniformLocation(program.handle, "V")
+    
+    val projectionMatrixLocation = GLES30.glGetUniformLocation(program.handle, "P")
     
     /**
      * Upload [matrix] to the view matrix uniform.
