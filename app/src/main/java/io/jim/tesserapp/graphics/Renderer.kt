@@ -8,6 +8,7 @@ import io.jim.tesserapp.geometry.projectWireframe
 import io.jim.tesserapp.geometry.transformed
 import io.jim.tesserapp.math.matrix.perspective
 import io.jim.tesserapp.math.matrix.view
+import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.ui.model.VisualizationMode
 import io.jim.tesserapp.util.synchronized
@@ -102,30 +103,21 @@ class Renderer(
     
                 shader.uploadProjectionMatrix(projectionMatrix)
     
-                val vertices = geometries.flatMap {
-        
+                val vertices: List<Pair<VectorN, Int>> = geometries.flatMap {
+                    
                     // Apply model matrix to points:
-                    it.transformed()
-        
-                }.map { (line, isFourDimensional) ->
-        
-                    // Apply visualizer to 4d lines:
-                    if (isFourDimensional) {
-                        when (visualizationMode) {
-                            VisualizationMode.WIREFRAME_PROJECTION -> line.projectWireframe()
-                            VisualizationMode.COLLAPSE_Z -> line.collapseZ()
-                        }
-                    } else {
-                        line
-                    }
-        
+                    it.transformed(when (visualizationMode) {
+                        VisualizationMode.WIREFRAME_PROJECTION -> projectWireframe
+                        VisualizationMode.COLLAPSE_Z -> collapseZ
+                    })
+                    
                 }.flatMap { (start, end, color) ->
         
                     // Resolve to actual vertices, resolving the symbolic color:
                     listOf(
                             start to colorResolver(color),
                             end to colorResolver(color)
-        
+
                     )
                 }
                 

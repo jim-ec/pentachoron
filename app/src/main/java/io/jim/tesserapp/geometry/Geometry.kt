@@ -35,7 +35,16 @@ class Geometry(
     
 }
 
-fun Geometry.transformed() = points.map {
+inline fun Geometry.transformed(crossinline visualizer: FourthDimensionVisualizer) = points.map {
     val modelMatrix = onTransformUpdate()
-    Line(it.start * modelMatrix, it.end * modelMatrix, it.color) to isFourDimensional
+    
+    val transform = { point: VectorN ->
+        (point * modelMatrix).let { if (isFourDimensional) visualizer(it) else it }
+    }
+    
+    Line(
+            transform(it.start),
+            transform(it.end),
+            it.color
+    )
 }
