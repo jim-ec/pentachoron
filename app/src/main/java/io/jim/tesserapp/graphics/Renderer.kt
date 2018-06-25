@@ -102,24 +102,33 @@ class Renderer(
     
                 shader.uploadProjectionMatrix(projectionMatrix)
     
-                val vertices = geometries.flatMap { it.transformed() }
-                        .map { (line, isFourDimensional) ->
-                            if (isFourDimensional) {
-                                when (visualizationMode) {
-                                    VisualizationMode.WIREFRAME_PROJECTION -> line.projectWireframe()
-                                    VisualizationMode.COLLAPSE_Z -> line.collapseZ()
-                                }
-                            } else {
-                                line
-                            }
+                val vertices = geometries.flatMap {
+        
+                    // Apply model matrix to points:
+                    it.transformed()
+        
+                }.map { (line, isFourDimensional) ->
+        
+                    // Apply visualizer to 4d lines:
+                    if (isFourDimensional) {
+                        when (visualizationMode) {
+                            VisualizationMode.WIREFRAME_PROJECTION -> line.projectWireframe()
+                            VisualizationMode.COLLAPSE_Z -> line.collapseZ()
                         }
-                        .flatMap { (start, end, color) ->
-                            listOf(
-                                    start to colorResolver(color),
-                                    end to colorResolver(color)
-                            )
-                        }
-    
+                    } else {
+                        line
+                    }
+        
+                }.flatMap { (start, end, color) ->
+        
+                    // Resolve to actual vertices, resolving the symbolic color:
+                    listOf(
+                            start to colorResolver(color),
+                            end to colorResolver(color)
+        
+                    )
+                }
+                
                 drawDataProvider.updateVertices(vertices)
     
                 vertexBuffer.draw(
