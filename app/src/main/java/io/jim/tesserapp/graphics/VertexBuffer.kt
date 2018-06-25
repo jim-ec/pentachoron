@@ -10,7 +10,31 @@ import io.jim.tesserapp.util.InputStreamMemory
  */
 class VertexBuffer(shader: Shader) {
     
-    val vertexBuffer = GlVertexBuffer(GLES30.GL_LINES)
+    val vertexBuffer = GlVertexBuffer(GLES30.GL_LINES) {
+        // Instruct VAO:
+        
+        // Position attribute:
+        GLES30.glEnableVertexAttribArray(shader.positionAttributeLocation)
+        GLES30.glVertexAttribPointer(
+                shader.positionAttributeLocation,
+                ATTRIBUTE_FLOATS,
+                GLES30.GL_FLOAT,
+                false,
+                STRIDE,
+                OFFSET_POSITION
+        )
+        
+        // Color attribute:
+        GLES30.glEnableVertexAttribArray(shader.colorAttributeLocation)
+        GLES30.glVertexAttribPointer(
+                shader.colorAttributeLocation,
+                ATTRIBUTE_FLOATS,
+                GLES30.GL_FLOAT,
+                false,
+                STRIDE,
+                OFFSET_COLOR
+        )
+    }
     
     companion object {
         
@@ -56,34 +80,6 @@ class VertexBuffer(shader: Shader) {
          */
         private val OFFSET_COLOR =
                 OFFSET_POSITION + ATTRIBUTE_FLOATS * Float.BYTE_LENGTH
-    }
-    
-    init {
-        // Instruct VAO:
-        vertexBuffer.bound {
-    
-            // Position attribute:
-            GLES30.glEnableVertexAttribArray(shader.positionAttributeLocation)
-            GLES30.glVertexAttribPointer(
-                    shader.positionAttributeLocation,
-                    ATTRIBUTE_FLOATS,
-                    GLES30.GL_FLOAT,
-                    false,
-                    STRIDE,
-                    OFFSET_POSITION
-            )
-    
-            // Color attribute:
-            GLES30.glEnableVertexAttribArray(shader.colorAttributeLocation)
-            GLES30.glVertexAttribPointer(
-                    shader.colorAttributeLocation,
-                    ATTRIBUTE_FLOATS,
-                    GLES30.GL_FLOAT,
-                    false,
-                    STRIDE,
-                    OFFSET_COLOR
-            )
-        }
     }
     
     fun draw(memory: InputStreamMemory, elementCounts: Int) {

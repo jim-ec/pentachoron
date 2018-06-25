@@ -8,12 +8,10 @@ import io.jim.tesserapp.util.InputStreamMemory
  *
  * @property drawMode Mode how to draw the vertices, e.g. [GLES30.GL_TRIANGLE_STRIP].
  */
-class GlVertexBuffer(private val drawMode: Int) {
-    
-    /**
-     * Store vertex attribute pointers.
-     */
-    val vertexArray = GlVertexArray()
+class GlVertexBuffer(
+        val drawMode: Int,
+        val instructVertexAttributePointers: () -> Unit
+) {
     
     val buffer = GlBuffer(GLES30.GL_ARRAY_BUFFER, GLES30.GL_STATIC_DRAW)
     
@@ -50,10 +48,9 @@ class GlVertexBuffer(private val drawMode: Int) {
      * Call [f] while the VBO and VAO are bound.
      */
     inline fun bound(crossinline f: () -> Unit) {
-        vertexArray.bound {
-            buffer.bound {
-                f()
-            }
+        buffer.bound {
+            instructVertexAttributePointers()
+            f()
         }
     }
     
