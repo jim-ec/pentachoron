@@ -1,6 +1,5 @@
-package io.jim.tesserapp.math.common
+package io.jim.tesserapp.math
 
-import io.jim.tesserapp.math.CubicPolynomial
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
