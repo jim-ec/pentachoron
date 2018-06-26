@@ -2,7 +2,6 @@ package io.jim.tesserapp.cpp.graphics
 
 import android.graphics.Color
 
-
 /**
  * Extracts the red color component.
  * @return Red in `[0,1]`

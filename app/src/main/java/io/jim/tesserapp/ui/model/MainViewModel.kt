@@ -1,8 +1,8 @@
 package io.jim.tesserapp.ui.model
 
 import android.arch.lifecycle.ViewModel
-import android.graphics.Color
 import io.jim.tesserapp.cpp.Transform
+import io.jim.tesserapp.cpp.graphics.Color
 import io.jim.tesserapp.cpp.projectWireframe
 import io.jim.tesserapp.cpp.vector.VectorN
 import io.jim.tesserapp.geometry.*

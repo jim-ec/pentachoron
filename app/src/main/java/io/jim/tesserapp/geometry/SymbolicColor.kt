@@ -1,5 +1,7 @@
 package io.jim.tesserapp.geometry
 
+import io.jim.tesserapp.cpp.graphics.Color
+
 /**
  * Symbolic colors.
  *
@@ -19,12 +21,12 @@ enum class SymbolicColor {
 }
 
 data class SymbolicColorMapping(
-        val primary: Int,
-        val accent: Int,
-        val x: Int,
-        val y: Int,
-        val z: Int,
-        val q: Int
+        val primary: Color,
+        val accent: Color,
+        val x: Color,
+        val y: Color,
+        val z: Color,
+        val q: Color
 ) {
     
     operator fun get(color: SymbolicColor) = when (color) {

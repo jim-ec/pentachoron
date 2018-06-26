@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import io.jim.tesserapp.cpp.graphics.Color
 import io.jim.tesserapp.geometry.SymbolicColorMapping
 import io.jim.tesserapp.graphics.themedColorInt
 import io.jim.tesserapp.ui.model.MainViewModel
@@ -28,12 +29,12 @@ class MainActivity : AppCompatActivity() {
         
         viewModel.synchronized {
             symbolicColorMapping = SymbolicColorMapping(
-                    primary = themedColorInt(R.attr.colorPrimaryGeometry),
-                    accent = themedColorInt(R.attr.colorAccent),
-                    x = themedColorInt(R.attr.colorAxisX),
-                    y = themedColorInt(R.attr.colorAxisY),
-                    z = themedColorInt(R.attr.colorAxisZ),
-                    q = themedColorInt(R.attr.colorAccent)
+                    primary = Color(themedColorInt(R.attr.colorPrimaryGeometry)),
+                    accent = Color(themedColorInt(R.attr.colorAccent)),
+                    x = Color(themedColorInt(R.attr.colorAxisX)),
+                    y = Color(themedColorInt(R.attr.colorAxisY)),
+                    z = Color(themedColorInt(R.attr.colorAxisZ)),
+                    q = Color(themedColorInt(R.attr.colorAccent))
             )
         }
         
