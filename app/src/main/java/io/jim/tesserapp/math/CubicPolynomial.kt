@@ -22,7 +22,7 @@ data class CubicPolynomial(
      * @param sourceY Source point, y component.
      * @param targetX Target point, x component.
      * @param targetY Target point, y component.
-     * @throws MathException If x-difference between source and target would is zero.
+     * @throws RuntimeException If x-difference between source and target would is zero.
      */
     fun span(
             sourceX: Double,
@@ -32,7 +32,7 @@ data class CubicPolynomial(
             sourceGradient: Double
     ) {
         if (sourceX == targetX)
-            throw MathException("X-range of curve cannot be zero")
+            throw RuntimeException("X-range of curve cannot be zero")
         
         val dx = targetX - sourceX
         val dy = targetY - sourceY
@@ -53,7 +53,7 @@ data class CubicPolynomial(
      * @param targetX Target point of new curve, x-component.
      * @param targetY Target point of new curve, y-component.
      * @param keepSourceGradient Whether the new curve should keep its gradient at its source.
-     * @throws MathException If x-difference between source and target would is zero.
+     * @throws RuntimeException If x-difference between source and target would is zero.
      */
     fun reSpan(
             sourceX: Double,

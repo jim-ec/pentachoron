@@ -2,10 +2,7 @@ package io.jim.tesserapp.ui.model
 
 import android.arch.lifecycle.ViewModel
 import android.graphics.Color
-import io.jim.tesserapp.cpp.matrix.RotationPlane
-import io.jim.tesserapp.cpp.matrix.rotation
-import io.jim.tesserapp.cpp.matrix.transformChain
-import io.jim.tesserapp.cpp.matrix.translation
+import io.jim.tesserapp.cpp.Transform
 import io.jim.tesserapp.cpp.projectWireframe
 import io.jim.tesserapp.cpp.vector.VectorN
 import io.jim.tesserapp.geometry.*
@@ -25,18 +22,16 @@ class MainViewModel : ViewModel() {
             isFourDimensional = true,
             onTransformUpdate = {
                 synchronized {
-                    transformChain(listOf(
-                            rotation(5, RotationPlane.AROUND_X, rotationX.smoothed * Math.PI),
-                            rotation(5, RotationPlane.AROUND_Y, rotationY.smoothed * Math.PI),
-                            rotation(5, RotationPlane.AROUND_Z, rotationZ.smoothed * Math.PI),
-                            rotation(5, RotationPlane.XQ, rotationQ.smoothed * Math.PI),
-                            translation(5, VectorN(
-                                    translationX.smoothed,
-                                    translationY.smoothed,
-                                    translationZ.smoothed,
-                                    translationQ.smoothed
-                            ))
-                    ))
+                    Transform(
+                            rotationX = rotationX.smoothed * Math.PI,
+                            rotationY = rotationY.smoothed * Math.PI,
+                            rotationZ = rotationZ.smoothed * Math.PI,
+                            rotationQ = rotationQ.smoothed * Math.PI,
+                            translationX = translationX.smoothed,
+                            translationY = translationY.smoothed,
+                            translationZ = translationZ.smoothed,
+                            translationQ = translationQ.smoothed
+                    )
                 }
             },
             lines = extruded(
@@ -55,7 +50,11 @@ class MainViewModel : ViewModel() {
     /**
      * The grid geometry representing a cartesian coordinate system unit grid.
      */
-    val gridGeometry = Geometry(name = "Grid", lines = gridOmitAxisIndicator())
+    val gridGeometry = Geometry(
+            name = "Grid",
+            lines = gridOmitAxisIndicator(),
+            onTransformUpdate = { Transform() }
+    )
     
     /**
      * Enable or disable grid rendering.
@@ -73,7 +72,11 @@ class MainViewModel : ViewModel() {
     /**
      * The axis geometry representing the origin of the cartesian coordinate system.
      */
-    val axisGeometry = Geometry(name = "Axis", lines = axis())
+    val axisGeometry = Geometry(
+            name = "Axis",
+            lines = axis(),
+            onTransformUpdate = { Transform() }
+    )
     
     /**
      * List containing all geometries.

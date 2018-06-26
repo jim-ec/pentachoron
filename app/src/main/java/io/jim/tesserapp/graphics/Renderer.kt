@@ -6,10 +6,10 @@ import android.opengl.GLSurfaceView
 import io.jim.tesserapp.cpp.generateVertexBuffer
 import io.jim.tesserapp.cpp.graphics.GlVertexBuffer
 import io.jim.tesserapp.cpp.graphics.Shader
-import io.jim.tesserapp.cpp.matrix.perspective
-import io.jim.tesserapp.cpp.matrix.view
+import io.jim.tesserapp.cpp.matrix.*
 import io.jim.tesserapp.cpp.resolveLineToVertices
 import io.jim.tesserapp.cpp.transformed
+import io.jim.tesserapp.cpp.vector.VectorN
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
 import javax.microedition.khronos.egl.EGLConfig
@@ -100,8 +100,20 @@ class Renderer(
             
                 // Process geometries and draw the generated vertices:
                 geometries.flatMap {
+                    val transform = it.onTransformUpdate()
                     transformed(
-                            it.onTransformUpdate(),
+                            transformChain(listOf(
+                                    rotation(5, RotationPlane.AROUND_X, transform.rotationX),
+                                    rotation(5, RotationPlane.AROUND_Y, transform.rotationY),
+                                    rotation(5, RotationPlane.AROUND_Z, transform.rotationZ),
+                                    rotation(5, RotationPlane.XQ, transform.rotationQ),
+                                    translation(5, VectorN(
+                                            transform.translationX,
+                                            transform.translationY,
+                                            transform.translationZ,
+                                            transform.translationQ
+                                    ))
+                            )),
                             it.isFourDimensional,
                             it.lines,
                             fourthDimensionVisualizer

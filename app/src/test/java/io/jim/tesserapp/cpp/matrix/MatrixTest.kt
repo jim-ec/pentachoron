@@ -1,7 +1,6 @@
 package io.jim.tesserapp.cpp.matrix
 
 import io.jim.tesserapp.cpp.vector.VectorN
-import io.jim.tesserapp.math.MathException
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -38,17 +37,17 @@ class MatrixTest {
         }
     }
     
-    @Test(expected = MathException::class)
+    @Test(expected = RuntimeException::class)
     fun invalidMatrixDimension() {
         Matrix(0, -3) { _, _ -> 0.0 }
     }
     
-    @Test(expected = MathException::class)
+    @Test(expected = RuntimeException::class)
     fun invalidMultiplicationLhs() {
         Matrix(1, 5) { _, _ -> 0.0 } * identity(4)
     }
     
-    @Test(expected = MathException::class)
+    @Test(expected = RuntimeException::class)
     fun translationIncompatibleDimension() {
         translation(4, VectorN(2.0, 5.0, 1.0, 1.0))
     }

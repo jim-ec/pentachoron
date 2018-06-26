@@ -1,8 +1,9 @@
 package io.jim.tesserapp.geometry
 
+import io.jim.tesserapp.cpp.Transform
 import io.jim.tesserapp.cpp.matrix.RotationPlane
 import io.jim.tesserapp.cpp.matrix.rotation
-import io.jim.tesserapp.cpp.matrix.times
+import io.jim.tesserapp.cpp.matrix.transformChain
 import io.jim.tesserapp.cpp.matrix.translation
 import io.jim.tesserapp.cpp.vector.VectorN
 import io.jim.tesserapp.util.assertEquals
@@ -20,12 +21,21 @@ class GeometryTest {
         val geometry = Geometry(
                 name = "Test geometry",
                 onTransformUpdate = {
-                    rotation(5, RotationPlane.AROUND_Z, Math.PI / 2.0) *
-                            translation(5, VectorN(1.0, 0.0, 0.0, 0.0))
+                    //rotation(5, RotationPlane.AROUND_Z, Math.PI / 2.0) *
+                    //        translation(5, VectorN(1.0, 0.0, 0.0, 0.0))
+                    Transform(
+                            rotationZ = Math.PI / 2.0,
+                            translationX = 1.0
+                    )
                 },
                 lines = listOf())
-        
-        (VectorN(1.0, 0.0, 0.0, 0.0) * geometry.onTransformUpdate()).apply {
+    
+        val matrix = transformChain(listOf(
+                rotation(5, RotationPlane.AROUND_Z, geometry.onTransformUpdate().rotationZ),
+                translation(5, VectorN(geometry.onTransformUpdate().translationX, 0.0, 0.0, 0.0))
+        ))
+    
+        (VectorN(1.0, 0.0, 0.0, 0.0) * matrix).apply {
             assertEquals(1.0, x, 0.1)
             assertEquals(1.0, y, 0.1)
             assertEquals(0.0, z, 0.1)
@@ -42,13 +52,14 @@ class GeometryTest {
     
         Geometry(
                 "Test geometry",
-                lines = quadrilateral(a, b, c, d)
+                lines = quadrilateral(a, b, c, d),
+                onTransformUpdate = { Transform() }
         ).apply {
             var invocationCount = 0
-    
+        
             lines.forEach {
                 it.points.forEach { position ->
-            
+    
                     assertEquals(when (invocationCount) {
                         0 -> a
                         1 -> b
@@ -60,9 +71,9 @@ class GeometryTest {
                         7 -> a
                         else -> throw RuntimeException()
                     }, position, 0.1)
-            
+    
                     invocationCount++
-            
+    
                 }
             }
             

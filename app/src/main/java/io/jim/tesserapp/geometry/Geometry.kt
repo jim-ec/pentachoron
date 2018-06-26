@@ -1,7 +1,6 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.cpp.matrix.Matrix
-import io.jim.tesserapp.cpp.matrix.identity
+import io.jim.tesserapp.cpp.Transform
 
 /**
  * A geometrical structure consisting of vertices.
@@ -12,7 +11,7 @@ import io.jim.tesserapp.cpp.matrix.identity
  */
 class Geometry(
         val name: String,
-        val onTransformUpdate: () -> Matrix = { identity(5) },
+        val onTransformUpdate: () -> Transform,
         val isFourDimensional: Boolean = false,
         val lines: List<Line>
 ) {
