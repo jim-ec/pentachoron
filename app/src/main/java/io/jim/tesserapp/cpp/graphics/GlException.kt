@@ -1,7 +1,6 @@
 package io.jim.tesserapp.cpp.graphics
 
 import android.opengl.GLES20
-import io.jim.tesserapp.util.whenever
 
 /**
  * Thrown upon OpenGL-calls related errors.
@@ -24,8 +23,9 @@ class GlException(msg: String, error: Int = GLES20.glGetError()) :
          * @param currentAction Short description what the caller is currently about to do.
          */
         fun check(currentAction: String) {
-            GLES20.glGetError().whenever({ it != GLES20.GL_NO_ERROR }) {
-                throw GlException("Occurred when: $currentAction", it)
+            val error = GLES20.glGetError()
+            if (error != GLES20.GL_NO_ERROR) {
+                throw GlException("Occurred when: $currentAction", error)
             }
         }
         
