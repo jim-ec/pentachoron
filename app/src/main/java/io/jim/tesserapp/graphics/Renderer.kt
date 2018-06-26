@@ -102,7 +102,7 @@ class Renderer(
                 geometries.flatMap {
                     val transform = it.onTransformUpdate()
                     transformed(
-                            transformChain(listOf(
+                            transformChain(
                                     rotation(5, RotationPlane.AROUND_X, transform.rotationX),
                                     rotation(5, RotationPlane.AROUND_Y, transform.rotationY),
                                     rotation(5, RotationPlane.AROUND_Z, transform.rotationZ),
@@ -113,7 +113,7 @@ class Renderer(
                                             transform.translationZ,
                                             transform.translationQ
                                     ))
-                            )),
+                            ),
                             it.isFourDimensional,
                             it.lines,
                             fourthDimensionVisualizer

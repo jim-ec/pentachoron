@@ -6,7 +6,7 @@ package io.jim.tesserapp.cpp.matrix
  *
  * This function is intended to be preferred over [Matrix.times] when many matrices are multiplied together.
  */
-fun transformChain(matrices: List<Matrix>) = matrices.reduce { acc, matrix -> acc * matrix }
+fun transformChain(vararg matrices: Matrix) = matrices.reduce { acc, matrix -> acc * matrix }
 
 /**
  * Multiply this and [rhs] matrix returning the resulting matrix.

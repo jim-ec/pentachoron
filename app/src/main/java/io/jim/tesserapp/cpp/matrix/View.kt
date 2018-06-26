@@ -13,11 +13,11 @@ fun view(
         aspectRatio: Double,
         horizontalRotation: Double,
         verticalRotation: Double
-) = transformChain(listOf(
+) = transformChain(
         rotation(4, RotationPlane.AROUND_Y, horizontalRotation),
         rotation(4, RotationPlane.AROUND_Z, verticalRotation),
         lookAt(distance, refUp = VectorN(0.0, 1.0, 0.0)),
-        aspectRatioCorrection(aspectRatio)))
+        aspectRatioCorrection(aspectRatio))
 
 /**
  * Corrects image distortion due to non-quadratic viewport.

@@ -30,11 +30,11 @@ class GeometryTest {
                 },
                 lines = listOf())
     
-        val matrix = transformChain(listOf(
+        val matrix = transformChain(
                 rotation(5, RotationPlane.AROUND_Z, geometry.onTransformUpdate().rotationZ),
                 translation(5, VectorN(geometry.onTransformUpdate().translationX, 0.0, 0.0, 0.0))
-        ))
-    
+        )
+        
         (VectorN(1.0, 0.0, 0.0, 0.0) * matrix).apply {
             assertEquals(1.0, x, 0.1)
             assertEquals(1.0, y, 0.1)
