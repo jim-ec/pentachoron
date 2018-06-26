@@ -4,8 +4,7 @@ import android.content.res.AssetManager
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.cpp.generateVertexBuffer
-import io.jim.tesserapp.cpp.graphics.GlVertexBuffer
-import io.jim.tesserapp.cpp.graphics.Shader
+import io.jim.tesserapp.cpp.graphics.*
 import io.jim.tesserapp.cpp.matrix.*
 import io.jim.tesserapp.cpp.resolveLineToVertices
 import io.jim.tesserapp.cpp.transformed

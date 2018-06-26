@@ -4,9 +4,6 @@ import android.opengl.GLES20
 import io.jim.tesserapp.cpp.ATTRIBUTE_COUNTS
 import io.jim.tesserapp.cpp.InputStreamMemory
 import io.jim.tesserapp.cpp.Vertex
-import io.jim.tesserapp.graphics.blue
-import io.jim.tesserapp.graphics.green
-import io.jim.tesserapp.graphics.red
 
 /**
  * GL VAO.
