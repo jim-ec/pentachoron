@@ -15,18 +15,8 @@ class Geometry(
         val name: String,
         val onTransformUpdate: () -> Matrix = { identity(5) },
         val isFourDimensional: Boolean = false,
-        val points: List<Line>
+        val lines: List<Line>
 ) {
-    
-    /**
-     * Invoke [f] for each position and the color it's associated with.
-     */
-    inline fun forEachVertex(f: (position: VectorN, color: SymbolicColor) -> Unit) {
-        points.forEach {
-            f(it.start, it.color)
-            f(it.end, it.color)
-        }
-    }
     
     /**
      * Represents this geometry in a string.
@@ -35,7 +25,7 @@ class Geometry(
     
 }
 
-inline fun Geometry.transformed(crossinline visualizer: FourthDimensionVisualizer) = points.map {
+inline fun Geometry.transformed(crossinline visualizer: FourthDimensionVisualizer) = lines.map {
     val modelMatrix = onTransformUpdate()
     
     val transform = { point: VectorN ->

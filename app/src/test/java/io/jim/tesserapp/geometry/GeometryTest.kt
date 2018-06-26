@@ -23,7 +23,7 @@ class GeometryTest {
                     rotation(5, RotationPlane.AROUND_Z, Math.PI / 2.0) *
                             translation(5, VectorN(1.0, 0.0, 0.0, 0.0))
                 },
-                points = listOf())
+                lines = listOf())
         
         (VectorN(1.0, 0.0, 0.0, 0.0) * geometry.onTransformUpdate()).apply {
             assertEquals(1.0, x, 0.1)
@@ -42,25 +42,28 @@ class GeometryTest {
     
         Geometry(
                 "Test geometry",
-                points = quadrilateral(a, b, c, d)
+                lines = quadrilateral(a, b, c, d)
         ).apply {
             var invocationCount = 0
+    
+            lines.forEach {
+                it.points.forEach { position ->
             
-            forEachVertex { position, _ ->
-                
-                assertEquals(when (invocationCount) {
-                    0 -> a
-                    1 -> b
-                    2 -> b
-                    3 -> c
-                    4 -> c
-                    5 -> d
-                    6 -> d
-                    7 -> a
-                    else -> throw RuntimeException()
-                }, position, 0.1)
-                
-                invocationCount++
+                    assertEquals(when (invocationCount) {
+                        0 -> a
+                        1 -> b
+                        2 -> b
+                        3 -> c
+                        4 -> c
+                        5 -> d
+                        6 -> d
+                        7 -> a
+                        else -> throw RuntimeException()
+                    }, position, 0.1)
+            
+                    invocationCount++
+            
+                }
             }
             
             assertEquals(8, invocationCount)

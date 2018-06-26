@@ -38,7 +38,7 @@ class MainViewModel : ViewModel() {
                     ))
                 }
             },
-            points = extruded(
+            lines = extruded(
                     quadrilateral(
                             VectorN(2.0, 2.0, 2.0, 0.0),
                             VectorN(-2.0, 2.0, 2.0, 0.0),
@@ -54,7 +54,7 @@ class MainViewModel : ViewModel() {
     /**
      * The grid geometry representing a cartesian coordinate system unit grid.
      */
-    val gridGeometry = Geometry(name = "Grid", points = gridOmitAxisIndicator())
+    val gridGeometry = Geometry(name = "Grid", lines = gridOmitAxisIndicator())
     
     /**
      * Enable or disable grid rendering.
@@ -72,7 +72,7 @@ class MainViewModel : ViewModel() {
     /**
      * The axis geometry representing the origin of the cartesian coordinate system.
      */
-    val axisGeometry = Geometry(name = "Axis", points = axis())
+    val axisGeometry = Geometry(name = "Axis", lines = axis())
     
     /**
      * List containing all geometries.
