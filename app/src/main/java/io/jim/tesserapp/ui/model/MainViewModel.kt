@@ -150,7 +150,14 @@ class MainViewModel : ViewModel() {
      */
     val verticalCameraRotation = SmoothedLiveData(initialValue = -Math.PI / 8.0, transitionInterval = 80.0)
     
-    var colorResolver: ColorResolver = { Color.BLACK }
+    var symbolicColorMapping = SymbolicColorMapping(
+            primary = Color.BLACK,
+            accent = Color.BLACK,
+            x = Color.BLACK,
+            y = Color.BLACK,
+            z = Color.BLACK,
+            q = Color.BLACK
+    )
     
     var fourthDimensionVisualizer = projectWireframe
     

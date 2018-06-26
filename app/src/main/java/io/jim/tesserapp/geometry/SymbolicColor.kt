@@ -18,4 +18,22 @@ enum class SymbolicColor {
     Q
 }
 
-typealias ColorResolver = (color: SymbolicColor) -> Int
+data class SymbolicColorMapping(
+        val primary: Int,
+        val accent: Int,
+        val x: Int,
+        val y: Int,
+        val z: Int,
+        val q: Int
+) {
+    
+    operator fun get(color: SymbolicColor) = when (color) {
+        SymbolicColor.PRIMARY -> primary
+        SymbolicColor.ACCENT -> accent
+        SymbolicColor.X -> x
+        SymbolicColor.Y -> y
+        SymbolicColor.Z -> z
+        SymbolicColor.Q -> q
+    }
+    
+}

@@ -1,7 +1,7 @@
 package io.jim.tesserapp.cpp
 
-import io.jim.tesserapp.geometry.ColorResolver
 import io.jim.tesserapp.geometry.Line
+import io.jim.tesserapp.geometry.SymbolicColorMapping
 
-fun resolveLineToVertices(line: Line, colorResolver: ColorResolver): List<Vertex> =
-        line.points.map { Vertex(it, colorResolver(line.color)) }
+fun resolveLineToVertices(line: Line, colorMapping: SymbolicColorMapping): List<Vertex> =
+        line.points.map { Vertex(it, colorMapping[line.color]) }

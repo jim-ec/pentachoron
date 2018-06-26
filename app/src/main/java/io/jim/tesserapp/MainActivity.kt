@@ -4,7 +4,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import io.jim.tesserapp.geometry.SymbolicColor
+import io.jim.tesserapp.geometry.SymbolicColorMapping
 import io.jim.tesserapp.graphics.themedColorInt
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
@@ -27,16 +27,14 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         
         viewModel.synchronized {
-            colorResolver = { color ->
-                when (color) {
-                    SymbolicColor.PRIMARY -> themedColorInt(R.attr.colorPrimaryGeometry)
-                    SymbolicColor.ACCENT -> themedColorInt(R.attr.colorAccent)
-                    SymbolicColor.X -> themedColorInt(R.attr.colorAxisX)
-                    SymbolicColor.Y -> themedColorInt(R.attr.colorAxisY)
-                    SymbolicColor.Z -> themedColorInt(R.attr.colorAxisZ)
-                    SymbolicColor.Q -> themedColorInt(R.attr.colorAccent)
-                }
-            }
+            symbolicColorMapping = SymbolicColorMapping(
+                    primary = themedColorInt(R.attr.colorPrimaryGeometry),
+                    accent = themedColorInt(R.attr.colorAccent),
+                    x = themedColorInt(R.attr.colorAxisX),
+                    y = themedColorInt(R.attr.colorAxisY),
+                    z = themedColorInt(R.attr.colorAxisZ),
+                    q = themedColorInt(R.attr.colorAccent)
+            )
         }
         
         // Set theme according to a shared preference.

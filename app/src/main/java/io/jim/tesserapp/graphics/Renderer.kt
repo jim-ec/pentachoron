@@ -119,7 +119,7 @@ class Renderer(
                             fourthDimensionVisualizer
                     )
                 }.flatMap {
-                    resolveLineToVertices(it, colorResolver)
+                    resolveLineToVertices(it, symbolicColorMapping)
                 }.also {
                     vertexBuffer.draw(it)
                 }
