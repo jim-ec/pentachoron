@@ -1,5 +1,6 @@
 package io.jim.tesserapp.util
 
+import io.jim.tesserapp.geometry.FLOAT_BYTE_LENGTH
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -20,4 +21,4 @@ fun allocateNativeMemory(bytes: Int) =
  * @param floats Size of memory to be allocated, in floats.
  */
 fun allocateNativeFloatMemory(floats: Int) =
-        allocateNativeMemory(floats * Float.BYTE_LENGTH)
+        allocateNativeMemory(floats * FLOAT_BYTE_LENGTH)

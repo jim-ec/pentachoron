@@ -4,7 +4,6 @@ import android.opengl.GLES20
 import io.jim.tesserapp.graphics.Shader
 import io.jim.tesserapp.graphics.engine.GlVertexBuffer
 import io.jim.tesserapp.math.vector.VectorN
-import io.jim.tesserapp.util.BYTE_LENGTH
 
 data class Vertex(
         val position: VectorN,
@@ -35,6 +34,8 @@ fun generateVertexBuffer(shader: Shader) = GlVertexBuffer(GLES20.GL_LINES) {
     )
 }
 
+const val FLOAT_BYTE_LENGTH = 4
+
 /**
  * Floats take by one attribute.
  * Due to alignment, each attribute has 4 float values, regardless of how many
@@ -57,23 +58,19 @@ const val VERTEX_FLOATS = ATTRIBUTE_COUNTS * ATTRIBUTE_FLOATS
 /**
  * Bytes taken by one complete vertex.
  */
-val BYTES_PER_VERTEX =
-        VERTEX_FLOATS * Float.BYTE_LENGTH
+const val BYTES_PER_VERTEX = VERTEX_FLOATS * FLOAT_BYTE_LENGTH
 
 /**
  * Vertex stride, in bytes.
  */
-val STRIDE =
-        BYTES_PER_VERTEX
+const val STRIDE = BYTES_PER_VERTEX
 
 /**
  * Position attribute offset, in bytes.
  */
-val OFFSET_POSITION =
-        0 * Float.BYTE_LENGTH
+const val OFFSET_POSITION = 0 * FLOAT_BYTE_LENGTH
 
 /**
  * Color attribute offset, in bytes.
  */
-val OFFSET_COLOR =
-        OFFSET_POSITION + ATTRIBUTE_FLOATS * Float.BYTE_LENGTH
+const val OFFSET_COLOR = OFFSET_POSITION + ATTRIBUTE_FLOATS * FLOAT_BYTE_LENGTH

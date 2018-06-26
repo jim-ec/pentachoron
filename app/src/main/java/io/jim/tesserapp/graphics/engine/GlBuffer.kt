@@ -1,7 +1,7 @@
 package io.jim.tesserapp.graphics.engine
 
 import android.opengl.GLES20
-import io.jim.tesserapp.util.BYTE_LENGTH
+import io.jim.tesserapp.geometry.FLOAT_BYTE_LENGTH
 
 /**
  * GL Buffer.
@@ -23,16 +23,6 @@ class GlBuffer(
     val handle = resultCode { GLES20.glGenBuffers(1, resultCode) }
     
     /**
-     * Buffer size in bytes.
-     */
-    inline val byteCount: Int
-        get() = resultCode {
-            bound {
-                GLES20.glGetBufferParameteriv(target, GLES20.GL_BUFFER_SIZE, resultCode)
-            }
-        }
-    
-    /**
      * Maps GL targets to their binding-query constant counterparts.
      */
     inline val binding: Int
@@ -51,7 +41,7 @@ class GlBuffer(
         bound {
             GLES20.glBufferData(
                     target,
-                    vectorCapacity * 4 * Float.BYTE_LENGTH,
+                    vectorCapacity * 4 * FLOAT_BYTE_LENGTH,
                     data,
                     usage
             )
