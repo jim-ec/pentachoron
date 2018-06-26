@@ -1,11 +1,10 @@
 package io.jim.tesserapp.cpp.matrix
 
 import io.jim.tesserapp.cpp.vector.VectorN
-import io.jim.tesserapp.math.MathException
 
 fun scale(size: Int, factors: VectorN) =
         if (factors.dimension != size - 1)
-            throw MathException("")
+            throw RuntimeException("Invalid scale-vector dimension")
         else
             quadratic(size) { row, col ->
                 if (row == size - 1 && col == size - 1) 1.0

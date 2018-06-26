@@ -1,9 +1,5 @@
 package io.jim.tesserapp.cpp.matrix
 
-import io.jim.tesserapp.math.MathException
-import io.jim.tesserapp.math.formatNumber
-import java.nio.DoubleBuffer
-
 /**
  * A row-major matrix with [rows] rows and [cols] columns.
  *
@@ -19,14 +15,14 @@ class Matrix(val rows: Int, val cols: Int, initializer: (row: Int, col: Int) -> 
     /**
      * Underlying number list.
      */
-    private val coefficients = DoubleBuffer.allocate(rows * cols)
+    private val coefficients = DoubleArray(rows * cols)
     
     init {
         if (rows <= 0 || cols <= 0)
-            throw MathException("Invalid matrix dimension $this")
+            throw RuntimeException("Invalid matrix dimension")
         
         forEachComponent { row, col ->
-            coefficients.put(rowMajorIndex(row, col), initializer(row, col))
+            coefficients[rowMajorIndex(row, col)] = initializer(row, col)
         }
     }
     
@@ -60,30 +56,5 @@ class Matrix(val rows: Int, val cols: Int, initializer: (row: Int, col: Int) -> 
      * Return a linear row-major index referring to the cell at [row]/[col].
      */
     private fun rowMajorIndex(row: Int, col: Int) = row * cols + col
-    
-    /**
-     * Shortly represents this matrix as a string.
-     */
-    override fun toString() = "[${rows}x$cols]"
-    
-    /**
-     * Prints the whole matrix into a string representation.
-     */
-    @Suppress("unused")
-    fun joinToString(): String {
-        val sb = StringBuffer()
-        sb.append("[ ")
-        for (row in 0 until rows) {
-            for (col in 0 until cols) {
-                sb.append(formatNumber(this[row, col]))
-                if (col < cols - 1)
-                    sb.append(" , ")
-                else if (row < rows - 1)
-                    sb.append(" | ")
-            }
-        }
-        sb.append(" ]")
-        return sb.toString()
-    }
     
 }

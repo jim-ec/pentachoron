@@ -1,7 +1,5 @@
 package io.jim.tesserapp.cpp.matrix
 
-import io.jim.tesserapp.math.MathException
-
 /**
  * Return a transform matrix computed by accumulating all the [matrices].
  * The first matrix is always local-aligned, the last one is always global-aligned.
@@ -13,11 +11,11 @@ fun transformChain(matrices: List<Matrix>) = matrices.reduce { acc, matrix -> ac
 /**
  * Multiply this and [rhs] matrix returning the resulting matrix.
  *
- * @throws MathException If the dimension requirement `MxP * PxN = MxN` is not met.
+ * @throws RuntimeException If the dimension requirement `MxP * PxN = MxN` is not met.
  */
 operator fun Matrix.times(rhs: Matrix) =
         if (cols != rhs.rows)
-            throw MathException("Cannot multiply $this * $rhs")
+            throw RuntimeException("Cannot multiply matrices")
         else
             Matrix(rows, rhs.cols) { row, col ->
                 (0 until cols).sumByDouble { this[row, it] * rhs[it, col] }

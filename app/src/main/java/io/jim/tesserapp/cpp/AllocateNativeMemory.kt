@@ -8,10 +8,9 @@ import java.nio.ByteOrder
  * @param bytes Size of memory to be allocated, in bytes.
  */
 fun allocateNativeMemory(bytes: Int) =
-        ByteBuffer.allocateDirect(bytes)?.apply {
+        ByteBuffer.allocateDirect(bytes)!!.apply {
             order(ByteOrder.nativeOrder())
         }
-                ?: throw RuntimeException("Cannot allocate native memory")
 
 /**
  * Returns natively allocated memory, considering the native byte endianness.

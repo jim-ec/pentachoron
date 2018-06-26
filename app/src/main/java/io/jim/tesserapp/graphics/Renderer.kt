@@ -8,7 +8,7 @@ import io.jim.tesserapp.cpp.graphics.GlVertexBuffer
 import io.jim.tesserapp.cpp.graphics.Shader
 import io.jim.tesserapp.cpp.matrix.perspective
 import io.jim.tesserapp.cpp.matrix.view
-import io.jim.tesserapp.cpp.resolveToVertices
+import io.jim.tesserapp.cpp.resolveLineToVertices
 import io.jim.tesserapp.cpp.transformed
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
@@ -100,9 +100,14 @@ class Renderer(
             
                 // Process geometries and draw the generated vertices:
                 geometries.flatMap {
-                    it.transformed(fourthDimensionVisualizer)
+                    transformed(
+                            it.onTransformUpdate(),
+                            it.isFourDimensional,
+                            it.lines,
+                            fourthDimensionVisualizer
+                    )
                 }.flatMap {
-                    it.resolveToVertices(colorResolver)
+                    resolveLineToVertices(it, colorResolver)
                 }.also {
                     vertexBuffer.draw(it)
                 }
