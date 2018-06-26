@@ -7,9 +7,9 @@ data class Color(
 ) {
     
     constructor(colorInt: Int) : this(
-            red = colorInt.red,
-            green = colorInt.green,
-            blue = colorInt.blue
+            red = (colorInt shr 16 and 0xFF).toFloat() / 255f,
+            green = (colorInt shr 8 and 0xFF).toFloat() / 255f,
+            blue = (colorInt and 0xFF).toFloat() / 255f
     )
     
     companion object {

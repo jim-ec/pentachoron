@@ -4,7 +4,9 @@ import android.content.res.AssetManager
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.cpp.generateVertexBuffer
-import io.jim.tesserapp.cpp.graphics.*
+import io.jim.tesserapp.cpp.graphics.Color
+import io.jim.tesserapp.cpp.graphics.GlVertexBuffer
+import io.jim.tesserapp.cpp.graphics.Shader
 import io.jim.tesserapp.cpp.matrix.*
 import io.jim.tesserapp.cpp.resolveLineToVertices
 import io.jim.tesserapp.cpp.transformed
@@ -18,7 +20,7 @@ import javax.microedition.khronos.opengles.GL10
  * Actually renders to OpenGL.
  */
 class Renderer(
-        val clearColor: Int,
+        val clearColor: Color,
         val viewModel: MainViewModel,
         val assets: AssetManager,
         val dpi: Double) : GLSurfaceView.Renderer {
@@ -98,6 +100,7 @@ class Renderer(
                 shader.uploadProjectionMatrix(perspective(near = 0.1, far = 100.0))
             
                 // Process geometries and draw the generated vertices:
+            
                 geometries.flatMap {
                     val transform = it.onTransformUpdate()
                     transformed(

@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.*
 import io.jim.tesserapp.MainActivity
+import io.jim.tesserapp.cpp.graphics.Color
 import io.jim.tesserapp.graphics.Renderer
 import io.jim.tesserapp.graphics.themedColorInt
 
@@ -20,9 +21,8 @@ class GraphicsView : GLSurfaceView {
     
     private val viewModel = (context as MainActivity).viewModel
     
-    @PublishedApi
-    internal val renderer = Renderer(
-            context.themedColorInt(android.R.attr.windowBackground),
+    private val renderer = Renderer(
+            Color(context.themedColorInt(android.R.attr.windowBackground)),
             viewModel,
             context.assets,
             resources.displayMetrics.xdpi.toDouble()
