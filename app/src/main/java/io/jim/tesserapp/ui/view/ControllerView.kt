@@ -8,8 +8,8 @@ import android.widget.AdapterView
 import android.widget.FrameLayout
 import io.jim.tesserapp.MainActivity
 import io.jim.tesserapp.R
-import io.jim.tesserapp.geometry.collapseZ
-import io.jim.tesserapp.geometry.projectWireframe
+import io.jim.tesserapp.cpp.collapseZ
+import io.jim.tesserapp.cpp.projectWireframe
 import io.jim.tesserapp.ui.model.Controller
 import io.jim.tesserapp.ui.model.cameraDistanceController
 import io.jim.tesserapp.ui.model.rotationController

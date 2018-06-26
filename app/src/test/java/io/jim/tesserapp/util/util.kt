@@ -1,6 +1,6 @@
 package io.jim.tesserapp.util
 
-import io.jim.tesserapp.math.vector.VectorN
+import io.jim.tesserapp.cpp.vector.VectorN
 import junit.framework.Assert.assertEquals
 
 @Suppress("unused")

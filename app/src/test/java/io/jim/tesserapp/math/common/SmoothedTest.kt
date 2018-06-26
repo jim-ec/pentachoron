@@ -1,12 +1,13 @@
 package io.jim.tesserapp.math.common
 
+import io.jim.tesserapp.math.Smoothed
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class SmoothedTest {
 
     /**
-     * Usually, a smooth value would use the [io.jim.tesserapp.math.common.Smoothed]
+     * Usually, a smooth value would use the [io.jim.tesserapp.math.Smoothed]
      * class, in order to bind the transition to time.
      * But this test must be more exact and in addition, using that class would require
      * us to use [Thread.sleep] in order to *wait* for the proper value.

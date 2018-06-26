@@ -1,6 +1,6 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.math.vector.VectorN
+import io.jim.tesserapp.cpp.vector.VectorN
 
 fun gridOmitAxisIndicator(): List<Line> {
     

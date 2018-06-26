@@ -1,6 +1,6 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.math.vector.VectorN
+import io.jim.tesserapp.cpp.vector.VectorN
 
 data class Line(
         val start: VectorN,
@@ -11,6 +11,3 @@ data class Line(
     val points = listOf(start, end)
     
 }
-
-fun Line.resolveToVertices(colorResolver: ColorResolver): List<Vertex> =
-        points.map { Vertex(it, colorResolver(color)) }

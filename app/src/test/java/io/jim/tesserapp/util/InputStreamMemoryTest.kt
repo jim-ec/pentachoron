@@ -1,5 +1,6 @@
 package io.jim.tesserapp.util
 
+import io.jim.tesserapp.cpp.InputStreamMemory
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

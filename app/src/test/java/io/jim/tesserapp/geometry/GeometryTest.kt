@@ -1,10 +1,10 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.math.matrix.RotationPlane
-import io.jim.tesserapp.math.matrix.rotation
-import io.jim.tesserapp.math.matrix.times
-import io.jim.tesserapp.math.matrix.translation
-import io.jim.tesserapp.math.vector.VectorN
+import io.jim.tesserapp.cpp.matrix.RotationPlane
+import io.jim.tesserapp.cpp.matrix.rotation
+import io.jim.tesserapp.cpp.matrix.times
+import io.jim.tesserapp.cpp.matrix.translation
+import io.jim.tesserapp.cpp.vector.VectorN
 import io.jim.tesserapp.util.assertEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test

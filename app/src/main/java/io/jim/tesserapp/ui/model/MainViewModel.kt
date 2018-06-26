@@ -2,12 +2,13 @@ package io.jim.tesserapp.ui.model
 
 import android.arch.lifecycle.ViewModel
 import android.graphics.Color
+import io.jim.tesserapp.cpp.matrix.RotationPlane
+import io.jim.tesserapp.cpp.matrix.rotation
+import io.jim.tesserapp.cpp.matrix.transformChain
+import io.jim.tesserapp.cpp.matrix.translation
+import io.jim.tesserapp.cpp.projectWireframe
+import io.jim.tesserapp.cpp.vector.VectorN
 import io.jim.tesserapp.geometry.*
-import io.jim.tesserapp.math.matrix.RotationPlane
-import io.jim.tesserapp.math.matrix.rotation
-import io.jim.tesserapp.math.matrix.transformChain
-import io.jim.tesserapp.math.matrix.translation
-import io.jim.tesserapp.math.vector.VectorN
 import io.jim.tesserapp.util.synchronized
 
 /**

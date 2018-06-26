@@ -2,8 +2,8 @@ package io.jim.tesserapp.ui.model
 
 import android.widget.SeekBar
 import android.widget.TextView
-import io.jim.tesserapp.math.common.formatNumber
-import io.jim.tesserapp.math.common.mapped
+import io.jim.tesserapp.math.formatNumber
+import io.jim.tesserapp.math.mapped
 import io.jim.tesserapp.util.synchronized
 
 /**

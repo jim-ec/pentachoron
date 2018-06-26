@@ -1,6 +1,6 @@
 package io.jim.tesserapp.ui.model
 
-import io.jim.tesserapp.math.common.Smoothed
+import io.jim.tesserapp.math.Smoothed
 
 /**
  * Live data with an additional member smoothly interpolating between data-changes.

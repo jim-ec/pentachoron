@@ -1,8 +1,7 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.math.matrix.Matrix
-import io.jim.tesserapp.math.matrix.identity
-import io.jim.tesserapp.math.vector.VectorN
+import io.jim.tesserapp.cpp.matrix.Matrix
+import io.jim.tesserapp.cpp.matrix.identity
 
 /**
  * A geometrical structure consisting of vertices.
@@ -23,18 +22,4 @@ class Geometry(
      */
     override fun toString() = name
     
-}
-
-inline fun Geometry.transformed(crossinline visualizer: FourthDimensionVisualizer) = lines.map {
-    val modelMatrix = onTransformUpdate()
-    
-    val transform = { point: VectorN ->
-        (point * modelMatrix).let { if (isFourDimensional) visualizer(it) else it }
-    }
-    
-    Line(
-            transform(it.start),
-            transform(it.end),
-            it.color
-    )
 }
