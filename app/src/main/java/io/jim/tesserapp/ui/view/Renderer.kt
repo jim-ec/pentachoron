@@ -4,13 +4,12 @@ import android.content.res.AssetManager
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.cpp.Camera
+import io.jim.tesserapp.cpp.Vertex
 import io.jim.tesserapp.cpp.generateVertexBuffer
 import io.jim.tesserapp.cpp.graphics.Color
 import io.jim.tesserapp.cpp.graphics.GlVertexBuffer
 import io.jim.tesserapp.cpp.graphics.Shader
 import io.jim.tesserapp.cpp.matrix.*
-import io.jim.tesserapp.cpp.resolveLineToVertices
-import io.jim.tesserapp.cpp.transformed
 import io.jim.tesserapp.cpp.vector.VectorN
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
@@ -100,6 +99,8 @@ class Renderer(
         
                 val transform = geometry.onTransformUpdate()
                 val color = symbolicColorMapping[geometry.color]
+                val positions = geometry.positions
+                val isFourDimensional = geometry.isFourDimensional
         
                 /*
                 C++ start
@@ -111,30 +112,46 @@ class Renderer(
                 - matrix (per geometry)
                 */
         
+                val modelMatrix = transformChain(
+                        rotation(5, RotationPlane.AROUND_X, transform.rotationX),
+                        rotation(5, RotationPlane.AROUND_Y, transform.rotationY),
+                        rotation(5, RotationPlane.AROUND_Z, transform.rotationZ),
+                        rotation(5, RotationPlane.XQ, transform.rotationQ),
+                        translation(5, VectorN(
+                                transform.translationX,
+                                transform.translationY,
+                                transform.translationZ,
+                                transform.translationQ
+                        ))
+                )
+                val visualized = { point: VectorN ->
+                    (point * modelMatrix).let {
+                        if (isFourDimensional) fourthDimensionVisualizer(it)
+                        else it
+                    }
+                }
+        
                 shader.program.bound {
             
                     shader.uploadViewMatrix(view(camera))
                     shader.uploadProjectionMatrix(perspective(near = 0.1, far = 100.0))
             
-                    // Process geometries and draw the generated vertices:
-                    transformed(
-                            transformChain(
-                                    rotation(5, RotationPlane.AROUND_X, transform.rotationX),
-                                    rotation(5, RotationPlane.AROUND_Y, transform.rotationY),
-                                    rotation(5, RotationPlane.AROUND_Z, transform.rotationZ),
-                                    rotation(5, RotationPlane.XQ, transform.rotationQ),
-                                    translation(5, VectorN(
-                                            transform.translationX,
-                                            transform.translationY,
-                                            transform.translationZ,
-                                            transform.translationQ
-                                    ))
-                            ),
-                            geometry.isFourDimensional,
-                            geometry.lines,
-                            fourthDimensionVisualizer
-                    ).flatMap {
-                        resolveLineToVertices(it, color)
+                    // Iterate over double buffer, consuming one vector (4 doubles) per step:
+                    (0 until positions.limit() step 4).map { index ->
+                
+                        visualized(VectorN(
+                                positions[index],
+                                positions[index + 1],
+                                positions[index + 2],
+                                positions[index + 3]
+                        ))
+                
+                    }.map { transformedPosition ->
+                
+                        // Bundle transformed position with geometry color,
+                        // so that a complete vertex is created:
+                        Vertex(transformedPosition, color)
+                        
                     }.also {
                         vertexBuffer.draw(it)
                     }

@@ -30,7 +30,7 @@ class Geometry(
      * - 4: Double components per position vector
      * - 8: Byte length of one double
      */
-    val positions = allocateNativeMemory(lines.size * 2 * 4 * 8).asDoubleBuffer().apply {
+    val positions = allocateNativeMemory(lines.size * 2 * 4 * 8).asDoubleBuffer()!!.apply {
         lines.forEach {
             it.points.forEach {
                 it.components.forEach {
