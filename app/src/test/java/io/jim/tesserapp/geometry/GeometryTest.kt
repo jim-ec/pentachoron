@@ -28,7 +28,8 @@ class GeometryTest {
                             translationX = 1.0
                     )
                 },
-                lines = listOf())
+                lines = listOf(),
+                color = SymbolicColor.ACCENT)
     
         val matrix = transformChain(
                 rotation(5, RotationPlane.AROUND_Z, geometry.onTransformUpdate().rotationZ),
@@ -53,7 +54,8 @@ class GeometryTest {
         Geometry(
                 "Test geometry",
                 lines = quadrilateral(a, b, c, d),
-                onTransformUpdate = { Transform() }
+                onTransformUpdate = { Transform() },
+                color = SymbolicColor.PRIMARY
         ).apply {
             var invocationCount = 0
         

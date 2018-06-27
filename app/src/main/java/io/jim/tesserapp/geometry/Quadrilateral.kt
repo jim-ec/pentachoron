@@ -6,11 +6,10 @@ fun quadrilateral(
         a: VectorN,
         b: VectorN,
         c: VectorN,
-        d: VectorN,
-        color: SymbolicColor = SymbolicColor.PRIMARY
+        d: VectorN
 ) = listOf(
-        Line(a, b, color),
-        Line(b, c, color),
-        Line(c, d, color),
-        Line(d, a, color)
+        Line(a, b),
+        Line(b, c),
+        Line(c, d),
+        Line(d, a)
 )

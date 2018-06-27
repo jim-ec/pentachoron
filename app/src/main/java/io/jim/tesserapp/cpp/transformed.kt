@@ -17,7 +17,6 @@ inline fun transformed(
     
     Line(
             transform(it.start),
-            transform(it.end),
-            it.color
+            transform(it.end)
     )
 }

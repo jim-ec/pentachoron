@@ -39,12 +39,10 @@ class MainViewModel : ViewModel() {
                             VectorN(2.0, 2.0, 2.0, 0.0),
                             VectorN(-2.0, 2.0, 2.0, 0.0),
                             VectorN(-2.0, -2.0, 2.0, 0.0),
-                            VectorN(2.0, -2.0, 2.0, 0.0),
-                            color = SymbolicColor.ACCENT),
-                    direction = VectorN(0.0, 0.0, -4.0, 0.0),
-                    keepColors = true,
-                    connectorColor = SymbolicColor.ACCENT
-            )
+                            VectorN(2.0, -2.0, 2.0, 0.0)),
+                    direction = VectorN(0.0, 0.0, -4.0, 0.0)
+            ),
+            color = SymbolicColor.ACCENT
     )
     
     /**
@@ -53,7 +51,8 @@ class MainViewModel : ViewModel() {
     val gridGeometry = Geometry(
             name = "Grid",
             lines = gridOmitAxisIndicator(),
-            onTransformUpdate = { Transform() }
+            onTransformUpdate = { Transform() },
+            color = SymbolicColor.PRIMARY
     )
     
     /**
@@ -70,15 +69,6 @@ class MainViewModel : ViewModel() {
         get() = geometries.contains(gridGeometry)
     
     /**
-     * The axis geometry representing the origin of the cartesian coordinate system.
-     */
-    val axisGeometry = Geometry(
-            name = "Axis",
-            lines = axis(),
-            onTransformUpdate = { Transform() }
-    )
-    
-    /**
      * List containing all geometries.
      *
      * The geometries are kept inside a hash-set instead of in a simply list because
@@ -90,7 +80,18 @@ class MainViewModel : ViewModel() {
      */
     val geometries = HashSet<Geometry>().also {
         it += featuredGeometry
-        it += axisGeometry
+    
+        it += Geometry("X-Axis",
+                lines = listOf(Line(VectorN(0.0, 0.0, 0.0, 0.0), VectorN(1.0, 0.0, 0.0, 0.0))),
+                color = SymbolicColor.X)
+    
+        it += Geometry("Y-Axis",
+                lines = listOf(Line(VectorN(0.0, 0.0, 0.0, 0.0), VectorN(0.0, 1.0, 0.0, 0.0))),
+                color = SymbolicColor.Y)
+    
+        it += Geometry("Z-Axis",
+                lines = listOf(Line(VectorN(0.0, 0.0, 0.0, 0.0), VectorN(0.0, 0.0, 1.0, 0.0))),
+                color = SymbolicColor.Z)
     }
     
     /**

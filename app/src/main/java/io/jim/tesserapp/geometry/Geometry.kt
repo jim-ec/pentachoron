@@ -12,9 +12,10 @@ import io.jim.tesserapp.cpp.allocateNativeMemory
  */
 class Geometry(
         val name: String,
-        val onTransformUpdate: () -> Transform,
+        val onTransformUpdate: () -> Transform = { Transform() },
         val isFourDimensional: Boolean = false,
-        val lines: List<Line>
+        val lines: List<Line>,
+        val color: SymbolicColor
 ) {
     
     /**

@@ -99,6 +99,7 @@ class Renderer(
             geometries.forEach { geometry ->
         
                 val transform = geometry.onTransformUpdate()
+                val color = symbolicColorMapping[geometry.color]
         
                 /*
                 C++ start
@@ -133,7 +134,7 @@ class Renderer(
                             geometry.lines,
                             fourthDimensionVisualizer
                     ).flatMap {
-                        resolveLineToVertices(it, symbolicColorMapping)
+                        resolveLineToVertices(it, color)
                     }.also {
                         vertexBuffer.draw(it)
                     }
