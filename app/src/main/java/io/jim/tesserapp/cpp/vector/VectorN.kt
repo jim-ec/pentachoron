@@ -3,16 +3,6 @@ package io.jim.tesserapp.cpp.vector
 import io.jim.tesserapp.cpp.matrix.Matrix
 import kotlin.math.sqrt
 
-/**
- * An n-dimensional vector.
- *
- * Most methods are designed to reduce allocations, and therefore usually operate on the
- * current vector object, rather than creating a new, modified one.
- * That enables you to provide pre-allocated vectors, while avoiding allocating mass of vectors
- * when doing the same calculations over and over again.
- *
- * @property dimension Dimension of this vector. Determines count of components [components] holds.
- */
 class VectorN(
         val dimension: Int
 ) {

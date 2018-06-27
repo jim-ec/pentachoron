@@ -3,9 +3,7 @@ package io.jim.tesserapp.ui.view
 import android.content.res.AssetManager
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
-import io.jim.tesserapp.cpp.Camera
-import io.jim.tesserapp.cpp.Vertex
-import io.jim.tesserapp.cpp.generateVertexBuffer
+import io.jim.tesserapp.cpp.*
 import io.jim.tesserapp.cpp.graphics.Color
 import io.jim.tesserapp.cpp.graphics.GlVertexBuffer
 import io.jim.tesserapp.cpp.graphics.Shader
@@ -101,6 +99,7 @@ class Renderer(
                 val color = symbolicColorMapping[geometry.color]
                 val positions = geometry.positions
                 val isFourDimensional = geometry.isFourDimensional
+                val fourthDimensionVisualizationMode = fourthDimensionVisualizationMode.id
         
                 /*
                 C++ start
@@ -126,7 +125,11 @@ class Renderer(
                 )
                 val visualized = { point: VectorN ->
                     (point * modelMatrix).let {
-                        if (isFourDimensional) fourthDimensionVisualizer(it)
+                        if (isFourDimensional) when (fourthDimensionVisualizationMode) {
+                            0 -> projectWireframe(it)
+                            1 -> collapseZ(it)
+                            else -> it
+                        }
                         else it
                     }
                 }

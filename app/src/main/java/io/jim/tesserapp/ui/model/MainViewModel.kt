@@ -3,7 +3,6 @@ package io.jim.tesserapp.ui.model
 import android.arch.lifecycle.ViewModel
 import io.jim.tesserapp.cpp.Transform
 import io.jim.tesserapp.cpp.graphics.Color
-import io.jim.tesserapp.cpp.projectWireframe
 import io.jim.tesserapp.cpp.vector.VectorN
 import io.jim.tesserapp.geometry.*
 import io.jim.tesserapp.util.synchronized
@@ -160,6 +159,6 @@ class MainViewModel : ViewModel() {
             q = Color.BLACK
     )
     
-    var fourthDimensionVisualizer = projectWireframe
+    var fourthDimensionVisualizationMode = VisualizationMode.PROJECT_WIREFRAME
     
 }
