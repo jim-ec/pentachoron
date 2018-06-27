@@ -1,4 +1,4 @@
-package io.jim.tesserapp.graphics
+package io.jim.tesserapp.ui.view
 
 import android.content.res.AssetManager
 import android.opengl.GLES20
@@ -56,9 +56,9 @@ class Renderer(
         )
         GLES20.glDisable(GLES20.GL_CULL_FACE)
         GLES20.glEnable(GLES20.GL_DEPTH_TEST)
-    
+        
         GLES20.glLineWidth((dpi / MM_PER_INCH * LINE_WIDTH_MM).toFloat())
-    
+        
         println("Open GLES version: ${GLES20.glGetString(GLES20.GL_VERSION)}")
         println("GLSL version: ${GLES20.glGetString(GLES20.GL_SHADING_LANGUAGE_VERSION)}")
         println("Renderer: ${GLES20.glGetString(GLES20.GL_RENDERER)}")
@@ -83,11 +83,11 @@ class Renderer(
      * Draw a single frame.
      */
     override fun onDrawFrame(gl: GL10?) {
-    
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
-    
-        viewModel.synchronized {
         
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
+        
+        viewModel.synchronized {
+            
             shader.program.bound {
                 
                 shader.uploadViewMatrix(view(
@@ -96,11 +96,11 @@ class Renderer(
                         horizontalCameraRotation.smoothed,
                         verticalCameraRotation.smoothed
                 ))
-            
+                
                 shader.uploadProjectionMatrix(perspective(near = 0.1, far = 100.0))
-            
+                
                 // Process geometries and draw the generated vertices:
-            
+                
                 geometries.flatMap {
                     val transform = it.onTransformUpdate()
                     transformed(
