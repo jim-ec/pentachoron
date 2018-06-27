@@ -12,8 +12,17 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++14 -fexceptions"
+            }
+        }
     }
-
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
     signingConfigs {
         release {
             keyAlias 'app_key'
@@ -22,7 +31,6 @@ android {
             storePassword 'mykeystore123'
         }
     }
-
     buildTypes {
         release {
             signingConfig signingConfigs.release
