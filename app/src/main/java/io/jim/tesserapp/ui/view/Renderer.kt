@@ -96,17 +96,26 @@ class Renderer(
                     verticalCameraRotation.smoothed
             )
     
-            // C++ start
-    
-            shader.program.bound {
+            geometries.forEach { geometry ->
         
-                shader.uploadViewMatrix(view(camera))
-                shader.uploadProjectionMatrix(perspective(near = 0.1, far = 100.0))
+                val transform = geometry.onTransformUpdate()
         
-                // Process geometries and draw the generated vertices:
+                /*
+                C++ start
+                
+                Pipeline variables:
+                - camera
+                - isFourDimensional (per geometry)
+                - line (per geometry)
+                - matrix (per geometry)
+                */
         
-                geometries.flatMap {
-                    val transform = it.onTransformUpdate()
+                shader.program.bound {
+            
+                    shader.uploadViewMatrix(view(camera))
+                    shader.uploadProjectionMatrix(perspective(near = 0.1, far = 100.0))
+            
+                    // Process geometries and draw the generated vertices:
                     transformed(
                             transformChain(
                                     rotation(5, RotationPlane.AROUND_X, transform.rotationX),
@@ -120,18 +129,20 @@ class Renderer(
                                             transform.translationQ
                                     ))
                             ),
-                            it.isFourDimensional,
-                            it.lines,
+                            geometry.isFourDimensional,
+                            geometry.lines,
                             fourthDimensionVisualizer
-                    )
-                }.flatMap {
-                    resolveLineToVertices(it, symbolicColorMapping)
-                }.also {
-                    vertexBuffer.draw(it)
+                    ).flatMap {
+                        resolveLineToVertices(it, symbolicColorMapping)
+                    }.also {
+                        vertexBuffer.draw(it)
+                    }
+            
+                    // C++ end
+            
                 }
-        
-                // C++ end
-        
+                
+                
             }
             
         }
