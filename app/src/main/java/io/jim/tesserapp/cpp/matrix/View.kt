@@ -1,23 +1,13 @@
 package io.jim.tesserapp.cpp.matrix
 
+import io.jim.tesserapp.cpp.Camera
 import io.jim.tesserapp.cpp.vector.VectorN
 
-/**
- * Return a view matrix.
- *
- * @param distance Camera distance from origin along the x-axis.
- * @param aspectRatio Aspect ratio, i.e. width over height.
- */
-fun view(
-        distance: Double,
-        aspectRatio: Double,
-        horizontalRotation: Double,
-        verticalRotation: Double
-) = transformChain(
-        rotation(4, RotationPlane.AROUND_Y, horizontalRotation),
-        rotation(4, RotationPlane.AROUND_Z, verticalRotation),
-        lookAt(distance, refUp = VectorN(0.0, 1.0, 0.0)),
-        aspectRatioCorrection(aspectRatio))
+fun view(camera: Camera) = transformChain(
+        rotation(4, RotationPlane.AROUND_Y, camera.horizontalRotation),
+        rotation(4, RotationPlane.AROUND_Z, camera.verticalRotation),
+        lookAt(camera.distance, refUp = VectorN(0.0, 1.0, 0.0)),
+        aspectRatioCorrection(camera.aspectRatio))
 
 /**
  * Corrects image distortion due to non-quadratic viewport.

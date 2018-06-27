@@ -3,6 +3,7 @@ package io.jim.tesserapp.ui.view
 import android.content.res.AssetManager
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
+import io.jim.tesserapp.cpp.Camera
 import io.jim.tesserapp.cpp.generateVertexBuffer
 import io.jim.tesserapp.cpp.graphics.Color
 import io.jim.tesserapp.cpp.graphics.GlVertexBuffer
@@ -87,20 +88,23 @@ class Renderer(
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
         
         viewModel.synchronized {
-            
+    
+            val camera = Camera(
+                    cameraDistance.smoothed,
+                    aspectRatio,
+                    horizontalCameraRotation.smoothed,
+                    verticalCameraRotation.smoothed
+            )
+    
+            // C++ start
+    
             shader.program.bound {
-                
-                shader.uploadViewMatrix(view(
-                        cameraDistance.smoothed,
-                        aspectRatio,
-                        horizontalCameraRotation.smoothed,
-                        verticalCameraRotation.smoothed
-                ))
-                
+        
+                shader.uploadViewMatrix(view(camera))
                 shader.uploadProjectionMatrix(perspective(near = 0.1, far = 100.0))
-                
+        
                 // Process geometries and draw the generated vertices:
-                
+        
                 geometries.flatMap {
                     val transform = it.onTransformUpdate()
                     transformed(
@@ -125,7 +129,9 @@ class Renderer(
                 }.also {
                     vertexBuffer.draw(it)
                 }
-                
+        
+                // C++ end
+        
             }
             
         }
