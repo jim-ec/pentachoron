@@ -9,6 +9,7 @@ import io.jim.tesserapp.cpp.graphics.GlVertexBuffer
 import io.jim.tesserapp.cpp.graphics.Shader
 import io.jim.tesserapp.cpp.matrix.*
 import io.jim.tesserapp.cpp.vector.VectorN
+import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
 import javax.microedition.khronos.egl.EGLConfig
@@ -76,6 +77,8 @@ class Renderer(
         GLES20.glViewport(0, 0, width, height)
         aspectRatio = width.toDouble() / height
     }
+    
+    external fun drawGeometry(geometry: Geometry)
     
     /**
      * Draw a single frame.

@@ -1,12 +1,9 @@
 #include <jni.h>
-#include <string>
 
-extern "C" JNIEXPORT jstring
-
-JNICALL
-Java_io_jimeckerlein_ndkexample_MainActivity_stringFromJNI(
+extern "C" JNIEXPORT void JNICALL
+Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
         JNIEnv *env,
-        jobject /* this */) {
-    std::string hello = "Hello from C++";
-    return env->NewStringUTF(hello.c_str());
+        jobject,
+        jobject geometry
+) {
 }
