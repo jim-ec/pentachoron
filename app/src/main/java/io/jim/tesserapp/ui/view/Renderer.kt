@@ -96,15 +96,15 @@ class Renderer(
                     verticalCameraRotation.smoothed
             )
             
-            geometries.forEach { geometry ->
+            shader.program.bound {
                 
-                val transform = geometry.onTransformUpdate()
-                val color = symbolicColorMapping[geometry.color]
-                val positions = geometry.positions
-                val isFourDimensional = geometry.isFourDimensional
-                val fourthDimensionVisualizationMode = fourthDimensionVisualizationMode.id
-                
-                shader.program.bound {
+                geometries.forEach { geometry ->
+                    
+                    val transform = geometry.onTransformUpdate()
+                    val color = symbolicColorMapping[geometry.color]
+                    val positions = geometry.positions
+                    val isFourDimensional = geometry.isFourDimensional
+                    val fourthDimensionVisualizationMode = fourthDimensionVisualizationMode.id
                     
                     /*
                     C++ start
@@ -115,6 +115,8 @@ class Renderer(
                     - line (per geometry)
                     - matrix (per geometry)
                     */
+                    
+                    drawGeometry(geometry)
                     
                     val modelMatrix = transformChain(
                             rotation(5, RotationPlane.AROUND_X, transform.rotationX),
