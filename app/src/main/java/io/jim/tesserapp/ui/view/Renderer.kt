@@ -41,6 +41,16 @@ class Renderer(
          */
         private const val LINE_WIDTH_MM = 0.15
         
+        init {
+            System.loadLibrary("native-lib")
+        }
+        
+    }
+    
+    external fun init()
+    
+    init {
+        init()
     }
     
     /**
@@ -78,7 +88,10 @@ class Renderer(
         aspectRatio = width.toDouble() / height
     }
     
-    external fun drawGeometry(geometry: Geometry)
+    external fun drawGeometry(
+            geometry: Geometry,
+            transform: Transform
+    )
     
     /**
      * Draw a single frame.
@@ -116,7 +129,7 @@ class Renderer(
                     - matrix (per geometry)
                     */
                     
-                    drawGeometry(geometry)
+                    drawGeometry(geometry, transform)
                     
                     val modelMatrix = transformChain(
                             rotation(5, RotationPlane.AROUND_X, transform.rotationX),
