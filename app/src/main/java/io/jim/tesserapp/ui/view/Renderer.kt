@@ -91,7 +91,7 @@ class Renderer(
     external fun drawGeometry(
             geometry: Geometry,
             transform: Transform
-    ) : RawMatrix
+    ): RawMatrix
     
     /**
      * Draw a single frame.
@@ -144,8 +144,11 @@ class Renderer(
                             ))
                     )
                     
-                    if((modelMatrix[0, 0] * 100).toInt() != (raw.i00 * 100).toInt()) {
-                        throw RuntimeException("Invalid raw matrix computed")
+                    // Verify C++ computed matrix:
+                    modelMatrix.forEachComponent { row, col ->
+                        if ((modelMatrix[row, col] * 100).toInt() != (raw.coefficients[row * 5 + col] * 100).toInt()) {
+                            throw RuntimeException("Invalid raw matrix computed")
+                        }
                     }
                     
                     val visualized = { point: VectorN ->

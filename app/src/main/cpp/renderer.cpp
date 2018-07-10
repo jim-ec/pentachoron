@@ -1,11 +1,19 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "UnusedImportStatement"
+
+#include <android/log.h>
+
+#define LOG(...) \
+    __android_log_print(ANDROID_LOG_VERBOSE, __FILE__, __VA_ARGS__)
+
+#pragma clang diagnostic pop
+
 #include <jni.h>
 
 #include <vector/Vector.h>
 #include <transform/Multiplication.h>
-#include <common/Dimension.h>
 #include <transform/Rotation.h>
 #include <transform/Translation.h>
-#include <sstream>
 
 #ifdef __cplusplus
 extern "C" {
@@ -61,7 +69,7 @@ static auto modelMatrix(
                     translationQ
             ))
     );
-};
+} ;
 
 JNIEXPORT auto JNICALL
 Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
@@ -85,12 +93,17 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
     auto const rawMatrixClass = env->FindClass("io/jim/tesserapp/cpp/RawMatrix");
     auto const rawMatrixConstructor = env->GetMethodID(rawMatrixClass, "<init>", "()V");
     auto rawMatrixObj = env->NewObject(rawMatrixClass, rawMatrixConstructor);
+    auto const field = env->GetObjectField(rawMatrixObj,
+            env->GetFieldID(rawMatrixClass, "coefficients", "[D"));
+    auto const rawMatrixCoefficients = reinterpret_cast<jdoubleArray>(field);
+    
+    auto const data = env->GetDoubleArrayElements(rawMatrixCoefficients, JNI_FALSE);
     
     matrix.forEachCoefficient([&](Row const row, Col const col) {
-        auto const fieldName = (std::stringstream{} << 'i' << row << col).str().data();
-        auto const fieldId = env->GetFieldID(rawMatrixClass, fieldName, "D");
-        env->SetDoubleField(rawMatrixObj, fieldId, matrix[{row, col}]);
+        data[row * 5 + col] = matrix[{row, col}];
     });
+    
+    env->ReleaseDoubleArrayElements(rawMatrixCoefficients, data, 0);
     
     return rawMatrixObj;
 }
