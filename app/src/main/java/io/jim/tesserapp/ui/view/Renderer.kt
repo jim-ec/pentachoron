@@ -91,7 +91,7 @@ class Renderer(
     external fun drawGeometry(
             geometry: Geometry,
             transform: Transform
-    )
+    ) : RawMatrix
     
     /**
      * Draw a single frame.
@@ -129,7 +129,7 @@ class Renderer(
                     - matrix (per geometry)
                     */
                     
-                    drawGeometry(geometry, transform)
+                    val raw = drawGeometry(geometry, transform)
                     
                     val modelMatrix = transformChain(
                             rotation(5, RotationPlane.AROUND_X, transform.rotationX),
@@ -143,6 +143,11 @@ class Renderer(
                                     transform.translationQ
                             ))
                     )
+                    
+                    if((modelMatrix[0, 0] * 100).toInt() != (raw.i00 * 100).toInt()) {
+                        throw RuntimeException("Invalid raw matrix computed")
+                    }
+                    
                     val visualized = { point: VectorN ->
                         (point * modelMatrix).let {
                             if (isFourDimensional) when (fourthDimensionVisualizationMode) {

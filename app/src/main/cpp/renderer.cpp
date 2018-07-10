@@ -5,6 +5,7 @@
 #include <common/Dimension.h>
 #include <transform/Rotation.h>
 #include <transform/Translation.h>
+#include <sstream>
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,11 +23,11 @@ namespace {
             transformFieldIdTranslationQ;
 }
 
-JNIEXPORT void JNICALL
+JNIEXPORT auto JNICALL
 Java_io_jim_tesserapp_ui_view_Renderer_init(
         JNIEnv *env,
         jobject obj
-) {
+) -> void {
     transformClass = env->FindClass("io/jim/tesserapp/cpp/Transform");
     transformFieldIdRotationX = env->GetFieldID(transformClass, "rotationX", "D");
     transformFieldIdRotationY = env->GetFieldID(transformClass, "rotationY", "D");
@@ -38,31 +39,60 @@ Java_io_jim_tesserapp_ui_view_Renderer_init(
     transformFieldIdTranslationQ = env->GetFieldID(transformClass, "translationQ", "D");
 }
 
-JNIEXPORT void JNICALL
+static auto modelMatrix(
+        double const rotationX,
+        double const rotationY,
+        double const rotationZ,
+        double const rotationQ,
+        double const translationX,
+        double const translationY,
+        double const translationZ,
+        double const translationQ
+) -> Matrix<double, 5> {
+    return transformChain<double, 5>(
+            rotation<double, 5>(RotationPlane::AROUND_X, rotationX),
+            rotation<double, 5>(RotationPlane::AROUND_Y, rotationY),
+            rotation<double, 5>(RotationPlane::AROUND_Z, rotationZ),
+            rotation<double, 5>(RotationPlane::XQ, rotationQ),
+            translation(vector4d(
+                    translationX,
+                    translationY,
+                    translationZ,
+                    translationQ
+            ))
+    );
+};
+
+JNIEXPORT auto JNICALL
 Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
         JNIEnv *env,
         jobject obj,
         jobject geometry,
         jobject transform
-) {
+) -> jobject {
     
-    auto const modelMatrix = transformChain<double, Dimension{5}>(
-            rotation<double, 5>(RotationPlane::AROUND_X,
-                    env->GetDoubleField(transform, transformFieldIdRotationX)),
-            rotation<double, 5>(RotationPlane::AROUND_Y,
-                    env->GetDoubleField(transform, transformFieldIdRotationY)),
-            rotation<double, 5>(RotationPlane::AROUND_Z,
-                    env->GetDoubleField(transform, transformFieldIdRotationZ)),
-            rotation<double, 5>(RotationPlane::XQ,
-                    env->GetDoubleField(transform, transformFieldIdRotationQ)),
-            translation(vector4d(
-                    env->GetDoubleField(transform, transformFieldIdTranslationX),
-                    env->GetDoubleField(transform, transformFieldIdTranslationY),
-                    env->GetDoubleField(transform, transformFieldIdTranslationZ),
-                    env->GetDoubleField(transform, transformFieldIdTranslationQ)
-            ))
+    auto const matrix = modelMatrix(
+            env->GetDoubleField(transform, transformFieldIdRotationX),
+            env->GetDoubleField(transform, transformFieldIdRotationY),
+            env->GetDoubleField(transform, transformFieldIdRotationZ),
+            env->GetDoubleField(transform, transformFieldIdRotationQ),
+            env->GetDoubleField(transform, transformFieldIdTranslationX),
+            env->GetDoubleField(transform, transformFieldIdTranslationY),
+            env->GetDoubleField(transform, transformFieldIdTranslationZ),
+            env->GetDoubleField(transform, transformFieldIdTranslationQ)
     );
     
+    auto const rawMatrixClass = env->FindClass("io/jim/tesserapp/cpp/RawMatrix");
+    auto const rawMatrixConstructor = env->GetMethodID(rawMatrixClass, "<init>", "()V");
+    auto rawMatrixObj = env->NewObject(rawMatrixClass, rawMatrixConstructor);
+    
+    matrix.forEachCoefficient([&](Row const row, Col const col) {
+        auto const fieldName = (std::stringstream{} << 'i' << row << col).str().data();
+        auto const fieldId = env->GetFieldID(rawMatrixClass, fieldName, "D");
+        env->SetDoubleField(rawMatrixObj, fieldId, matrix[{row, col}]);
+    });
+    
+    return rawMatrixObj;
 }
 
 #ifdef __cplusplus
