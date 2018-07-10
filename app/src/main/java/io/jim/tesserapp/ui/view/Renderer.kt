@@ -110,6 +110,9 @@ class Renderer(
             )
             
             shader.program.bound {
+    
+                shader.uploadViewMatrix(view(camera))
+                shader.uploadProjectionMatrix(perspective(near = 0.1, far = 100.0))
                 
                 geometries.forEach { geometry ->
                     
@@ -161,9 +164,6 @@ class Renderer(
                             else it
                         }
                     }
-                    
-                    shader.uploadViewMatrix(view(camera))
-                    shader.uploadProjectionMatrix(perspective(near = 0.1, far = 100.0))
                     
                     // Iterate over double buffer, consuming one vector (4 doubles) per step:
                     (0 until positions.limit() step 4).map { index ->

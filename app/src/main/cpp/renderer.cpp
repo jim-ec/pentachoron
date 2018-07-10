@@ -1,8 +1,6 @@
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "UnusedImportStatement"
 
-#include <android/log.h>
-
 #define LOG(...) \
     __android_log_print(ANDROID_LOG_VERBOSE, __FILE__, __VA_ARGS__)
 
@@ -24,11 +22,13 @@ namespace {
     jfieldID transformFieldIdRotationX,
             transformFieldIdRotationY,
             transformFieldIdRotationZ,
-            transformFieldIdRotationQ;
-    jfieldID transformFieldIdTranslationX,
+            transformFieldIdRotationQ,
+            transformFieldIdTranslationX,
             transformFieldIdTranslationY,
             transformFieldIdTranslationZ,
             transformFieldIdTranslationQ;
+    jclass geometryClass;
+    jfieldID geometryIsFourDimensional;
 }
 
 JNIEXPORT auto JNICALL
@@ -45,6 +45,9 @@ Java_io_jim_tesserapp_ui_view_Renderer_init(
     transformFieldIdTranslationY = env->GetFieldID(transformClass, "translationY", "D");
     transformFieldIdTranslationZ = env->GetFieldID(transformClass, "translationZ", "D");
     transformFieldIdTranslationQ = env->GetFieldID(transformClass, "translationQ", "D");
+    
+    geometryClass = env->FindClass("io/jim/tesserapp/geometry/Geometry");
+    geometryIsFourDimensional = env->GetFieldID(geometryClass, "isFourDimensional", "Z");
 }
 
 static auto modelMatrix(
@@ -90,6 +93,19 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
             env->GetDoubleField(transform, transformFieldIdTranslationQ)
     );
     
+    auto const visualized = [
+            isFourDimensional = env->GetBooleanField(geometry, geometryIsFourDimensional),
+            matrix
+    ](Vector4d<double> const v) {
+        auto const transformed = v * matrix;
+        if (isFourDimensional) {
+            return transformed / transformed.q();
+        } else {
+            return transformed;
+        }
+    };
+    
+    // Send matrix back to Java (to verify):
     auto const rawMatrixClass = env->FindClass("io/jim/tesserapp/cpp/RawMatrix");
     auto const rawMatrixConstructor = env->GetMethodID(rawMatrixClass, "<init>", "()V");
     auto rawMatrixObj = env->NewObject(rawMatrixClass, rawMatrixConstructor);
