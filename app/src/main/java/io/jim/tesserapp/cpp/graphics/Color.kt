@@ -14,8 +14,8 @@ data class Color(
     
     val encoded: Int
         get() {
-            return (red * 255).toInt() shl 16 or
-                    (green * 255).toInt() shl 8 or
+            return ((red * 255).toInt() shl 16) or
+                    ((green * 255).toInt() shl 8) or
                     (blue * 255).toInt()
         }
     

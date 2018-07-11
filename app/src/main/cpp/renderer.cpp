@@ -1,5 +1,7 @@
 #include <jni.h>
 
+#include <GLES2/gl2.h>
+
 #include <vector/Vector.h>
 #include <transform/Multiplication.h>
 #include <transform/Rotation.h>
@@ -21,14 +23,25 @@ namespace {
             transformFieldIdTranslationZ,
             transformFieldIdTranslationQ;
     jclass geometryClass;
-    jfieldID geometryFieldIdName,
-            geometryFieldIdIsFourDimensional,
+    jfieldID geometryFieldIdIsFourDimensional,
             geometryFieldIdPositions;
     
+    static const std::size_t VECTORS_PER_VERTEX = 2;
+    
+    /**
+     * Vertex, containing a position and a color.
+     * Memory is laid out so that the instances can be uploaded directly to GL.
+     */
     struct Vertex {
-        Vector4d<float> const position;
+        Vector3d<float> const position;
+        float const w;
         Rgb<float> const color;
         float const alpha;
+        
+        Vertex(
+                Vector3d<float> const position,
+                Rgb<float> const color
+        ) : position{position}, w{1.0f}, color{color}, alpha{1.0f} {}
     };
 }
 
@@ -50,7 +63,6 @@ Java_io_jim_tesserapp_ui_view_Renderer_init(
     
     geometryClass = reinterpret_cast<jclass>(env->NewGlobalRef(
             env->FindClass("io/jim/tesserapp/geometry/Geometry")));
-    geometryFieldIdName = env->GetFieldID(geometryClass, "name", "Ljava/lang/String;");
     geometryFieldIdIsFourDimensional = env->GetFieldID(geometryClass, "isFourDimensional", "Z");
     geometryFieldIdPositions = env->GetFieldID(geometryClass, "positions",
             "Ljava/nio/DoubleBuffer;");
@@ -98,9 +110,6 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
         jint color
 ) -> void {
     
-    auto const name = std::string{env->GetStringUTFChars(reinterpret_cast<jstring>(
-            env->GetObjectField(geometry, geometryFieldIdName)), nullptr)};
-    
     auto const matrix = modelMatrix(
             env->GetDoubleField(transform, transformFieldIdRotationX),
             env->GetDoubleField(transform, transformFieldIdRotationY),
@@ -116,12 +125,14 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
             isFourDimensional = static_cast<bool>(
                     env->GetBooleanField(geometry, geometryFieldIdIsFourDimensional)),
             matrix
-    ](Vector4d<double> const v) -> Vector4d<double> {
+    ](Vector4d<double> const v) -> Vector3d<double> {
         auto const transformed = v * matrix;
         if (isFourDimensional) {
-            return transformed / transformed.q();
+            return Vector3d<double>{[transformed](Dimension const i) {
+                return transformed[i] / transformed.q();
+            }};
         } else {
-            return transformed;
+            return vector3d(transformed.x(), transformed.y(), transformed.z());
         }
     };
     
@@ -136,16 +147,23 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
     
     for (auto const i : range(pointCounts)) {
         vertices.push_back(Vertex{
-                static_cast<Vector4d<float>>(visualized(vector4d(
+                static_cast<Vector3d<float>>(visualized(vector4d(
                         positionsData[i * 4 + 0],
                         positionsData[i * 4 + 1],
                         positionsData[i * 4 + 2],
                         positionsData[i * 4 + 3]
                 ))),
-                decodeRgb<float>(color),
-                1.0f
+                decodeRgb<float>(color)
         });
     }
+    
+    // Actual buffer has already been bound on Kotlin side.
+    glBufferData(GL_ARRAY_BUFFER,
+            vertices.size() * sizeof(Vertex),
+            vertices.data(),
+            GL_DYNAMIC_DRAW);
+    
+    glDrawArrays(GL_LINES, 0, static_cast<GLsizei>(vertices.size() * VECTORS_PER_VERTEX));
 }
 
 #ifdef __cplusplus
