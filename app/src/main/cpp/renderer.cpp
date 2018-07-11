@@ -8,6 +8,7 @@
 #include <transform/Translation.h>
 #include <color/Rgb.h>
 #include <transform/View.h>
+#include <transform/Perspective.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,7 +61,7 @@ static auto modelMatrix(
 
 JNIEXPORT auto JNICALL
 Java_io_jim_tesserapp_ui_view_Renderer_uploadViewMatrix(
-        JNIEnv *const env,
+        JNIEnv *const,
         jobject,
         jint const uniformLocation,
         jdouble const distance,
@@ -71,6 +72,17 @@ Java_io_jim_tesserapp_ui_view_Renderer_uploadViewMatrix(
     auto const matrix = view<float>(static_cast<const float>(horizontalRotation),
             static_cast<const float>(verticalRotation), static_cast<const float>(distance),
             static_cast<const float>(aspectRatio));
+    glUniformMatrix4fv(uniformLocation, 1, GL_FALSE,
+            reinterpret_cast<const GLfloat *>(matrix.coefficients.data()));
+}
+
+JNIEXPORT auto JNICALL
+Java_io_jim_tesserapp_ui_view_Renderer_uploadProjectionMatrix(
+        JNIEnv *const,
+        jobject,
+        jint const uniformLocation
+) -> void {
+    auto const matrix = perspective<float>(0.1f, 100.0f);
     glUniformMatrix4fv(uniformLocation, 1, GL_FALSE,
             reinterpret_cast<const GLfloat *>(matrix.coefficients.data()));
 }

@@ -7,7 +7,6 @@ import io.jim.tesserapp.cpp.generateVertexBuffer
 import io.jim.tesserapp.cpp.graphics.Color
 import io.jim.tesserapp.cpp.graphics.GlVertexBuffer
 import io.jim.tesserapp.cpp.graphics.Shader
-import io.jim.tesserapp.cpp.matrix.perspective
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
 import java.nio.DoubleBuffer
@@ -89,6 +88,10 @@ class Renderer(
             verticalRotation: Double
     )
     
+    external fun uploadProjectionMatrix(
+            uniformLocation: Int
+    )
+    
     external fun drawGeometry(
             positions: DoubleBuffer,
             transform: DoubleArray,
@@ -114,8 +117,8 @@ class Renderer(
                         horizontalCameraRotation.smoothed,
                         verticalCameraRotation.smoothed
                 )
-                
-                shader.uploadProjectionMatrix(perspective(near = 0.1, far = 100.0))
+        
+                uploadProjectionMatrix(shader.projectionMatrixLocation)
                 
                 geometries.forEach { geometry ->
                     
@@ -124,7 +127,7 @@ class Renderer(
     
                     vertexBuffer.buffer.bound {
                         vertexBuffer.instructVertexAttributePointers()
-    
+        
                         drawGeometry(
                                 geometry.positions,
                                 transform.data,
