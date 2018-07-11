@@ -97,7 +97,8 @@ class Renderer(
     
     external fun drawGeometry(
             geometry: Geometry,
-            transform: Transform
+            transform: Transform,
+            color: Int
     )
     
     /**
@@ -154,7 +155,7 @@ class Renderer(
                     }
                     
                     // C++:
-                    drawGeometry(geometry, transform)
+                    drawGeometry(geometry, transform, color.encoded)
                     
                     // Iterate over double buffer, consuming one vector (4 doubles) per step:
                     (0 until positions.limit() step 4).map { index ->

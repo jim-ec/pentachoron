@@ -4,6 +4,7 @@
 #include <transform/Multiplication.h>
 #include <transform/Rotation.h>
 #include <transform/Translation.h>
+#include <color/Rgb.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,6 +24,12 @@ namespace {
     jfieldID geometryFieldIdName,
             geometryFieldIdIsFourDimensional,
             geometryFieldIdPositions;
+    
+    struct Vertex {
+        Vector4d<float> const position;
+        Rgb<float> const color;
+        float const alpha;
+    };
 }
 
 JNIEXPORT auto JNICALL
@@ -87,7 +94,8 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
         JNIEnv *env,
         jobject,
         jobject geometry,
-        jobject transform
+        jobject transform,
+        jint color
 ) -> void {
     
     auto const name = std::string{env->GetStringUTFChars(reinterpret_cast<jstring>(
@@ -123,16 +131,20 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
     auto const positionsData =
             reinterpret_cast<double *>(env->GetDirectBufferAddress(positionsBuffer));
     
-    std::vector<Vector4d<double>> points;
-    points.reserve(pointCounts);
+    std::vector<Vertex> vertices;
+    vertices.reserve(pointCounts);
     
     for (auto const i : range(pointCounts)) {
-        points.push_back(visualized(vector4d(
-                positionsData[i * 4 + 0],
-                positionsData[i * 4 + 1],
-                positionsData[i * 4 + 2],
-                positionsData[i * 4 + 3]
-        )));
+        vertices.push_back(Vertex{
+                static_cast<Vector4d<float>>(visualized(vector4d(
+                        positionsData[i * 4 + 0],
+                        positionsData[i * 4 + 1],
+                        positionsData[i * 4 + 2],
+                        positionsData[i * 4 + 3]
+                ))),
+                decodeRgb<float>(color),
+                1.0f
+        });
     }
 }
 
