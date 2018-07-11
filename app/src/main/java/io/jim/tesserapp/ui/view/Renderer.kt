@@ -14,7 +14,6 @@ import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
-import kotlin.math.roundToInt
 
 /**
  * Actually renders to OpenGL.
@@ -56,6 +55,7 @@ class Renderer(
         init()
     }
     
+    @Suppress("unused")
     fun finalize() {
         deinit()
     }
@@ -98,7 +98,7 @@ class Renderer(
     external fun drawGeometry(
             geometry: Geometry,
             transform: Transform
-    ): DoubleArray
+    )
     
     /**
      * Draw a single frame.
@@ -154,29 +154,7 @@ class Renderer(
                     }
                     
                     // C++:
-                    val raw = drawGeometry(geometry, transform)
-                    
-                    // Verify C++:
-                    (0 until positions.limit() step 4).map { index ->
-                        visualized(VectorN(
-                                positions[index],
-                                positions[index + 1],
-                                positions[index + 2],
-                                positions[index + 3]
-                        ))
-                    }.forEachIndexed { iPosition, position ->
-                        try {
-                            position.components.forEachIndexed { iComponent, component ->
-                                if (component.roundToInt() != raw[iPosition * 4 + iComponent].roundToInt()) {
-                                    throw RuntimeException()
-                                }
-                            }
-                        } catch (_: RuntimeException) {
-                            throw RuntimeException("Invalid raw position #$iPosition computed: " +
-                                    "${position.x},${position.y},${position.z},${position.q} vs " +
-                                    "${raw[iPosition * 4 + 0]},${raw[iPosition * 4 + 1]},${raw[iPosition * 4 + 2]},${raw[iPosition * 4 + 3]}")
-                        }
-                    }
+                    drawGeometry(geometry, transform)
                     
                     // Iterate over double buffer, consuming one vector (4 doubles) per step:
                     (0 until positions.limit() step 4).map { index ->

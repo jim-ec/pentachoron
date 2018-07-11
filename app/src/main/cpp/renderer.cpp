@@ -1,11 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "UnusedImportStatement"
-
-#define LOG(...) \
-    __android_log_print(ANDROID_LOG_VERBOSE, __FILE__, __VA_ARGS__)
-
-#pragma clang diagnostic pop
-
 #include <jni.h>
 
 #include <vector/Vector.h>
@@ -96,7 +88,7 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
         jobject,
         jobject geometry,
         jobject transform
-) -> jarray {
+) -> void {
     
     auto const name = std::string{env->GetStringUTFChars(reinterpret_cast<jstring>(
             env->GetObjectField(geometry, geometryFieldIdName)), nullptr)};
@@ -142,13 +134,6 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
                 positionsData[i * 4 + 3]
         )));
     }
-    
-    auto const arr = env->NewDoubleArray(static_cast<jsize>(pointCounts * 4));
-    auto const data = env->GetDoubleArrayElements(arr, nullptr);
-    memcpy(data, points.data(), sizeof(double) * pointCounts * 4);
-    env->ReleaseDoubleArrayElements(arr, data, 0);
-    
-    return arr;
 }
 
 #ifdef __cplusplus

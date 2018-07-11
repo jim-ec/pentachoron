@@ -11,7 +11,7 @@ data class Vertex(
         val color: Color
 )
 
-fun generateVertexBuffer(shader: Shader) = GlVertexBuffer(GLES20.GL_LINES) {
+fun  generateVertexBuffer(shader: Shader) = GlVertexBuffer(GLES20.GL_LINES) {
     // Position attribute:
     GLES20.glEnableVertexAttribArray(shader.positionAttributeLocation)
     GLES20.glVertexAttribPointer(
