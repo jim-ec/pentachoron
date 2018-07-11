@@ -28,15 +28,18 @@ namespace {
             transformFieldIdTranslationZ,
             transformFieldIdTranslationQ;
     jclass geometryClass;
-    jfieldID geometryIsFourDimensional;
+    jfieldID geometryFieldIdName,
+            geometryFieldIdIsFourDimensional,
+            geometryFieldIdPositions;
 }
 
 JNIEXPORT auto JNICALL
 Java_io_jim_tesserapp_ui_view_Renderer_init(
         JNIEnv *env,
-        jobject obj
+        jobject
 ) -> void {
-    transformClass = env->FindClass("io/jim/tesserapp/cpp/Transform");
+    transformClass = reinterpret_cast<jclass>(env->NewGlobalRef(
+            env->FindClass("io/jim/tesserapp/cpp/Transform")));
     transformFieldIdRotationX = env->GetFieldID(transformClass, "rotationX", "D");
     transformFieldIdRotationY = env->GetFieldID(transformClass, "rotationY", "D");
     transformFieldIdRotationZ = env->GetFieldID(transformClass, "rotationZ", "D");
@@ -46,8 +49,21 @@ Java_io_jim_tesserapp_ui_view_Renderer_init(
     transformFieldIdTranslationZ = env->GetFieldID(transformClass, "translationZ", "D");
     transformFieldIdTranslationQ = env->GetFieldID(transformClass, "translationQ", "D");
     
-    geometryClass = env->FindClass("io/jim/tesserapp/geometry/Geometry");
-    geometryIsFourDimensional = env->GetFieldID(geometryClass, "isFourDimensional", "Z");
+    geometryClass = reinterpret_cast<jclass>(env->NewGlobalRef(
+            env->FindClass("io/jim/tesserapp/geometry/Geometry")));
+    geometryFieldIdName = env->GetFieldID(geometryClass, "name", "Ljava/lang/String;");
+    geometryFieldIdIsFourDimensional = env->GetFieldID(geometryClass, "isFourDimensional", "Z");
+    geometryFieldIdPositions = env->GetFieldID(geometryClass, "positions",
+            "Ljava/nio/DoubleBuffer;");
+}
+
+JNIEXPORT auto JNICALL
+Java_io_jim_tesserapp_ui_view_Renderer_deinit(
+        JNIEnv *env,
+        jobject
+) -> void {
+    env->DeleteGlobalRef(transformClass);
+    env->DeleteGlobalRef(geometryClass);
 }
 
 static auto modelMatrix(
@@ -77,10 +93,13 @@ static auto modelMatrix(
 JNIEXPORT auto JNICALL
 Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
         JNIEnv *env,
-        jobject obj,
+        jobject,
         jobject geometry,
         jobject transform
-) -> jobject {
+) -> jarray {
+    
+    auto const name = std::string{env->GetStringUTFChars(reinterpret_cast<jstring>(
+            env->GetObjectField(geometry, geometryFieldIdName)), nullptr)};
     
     auto const matrix = modelMatrix(
             env->GetDoubleField(transform, transformFieldIdRotationX),
@@ -94,9 +113,10 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
     );
     
     auto const visualized = [
-            isFourDimensional = env->GetBooleanField(geometry, geometryIsFourDimensional),
+            isFourDimensional = static_cast<bool>(
+                    env->GetBooleanField(geometry, geometryFieldIdIsFourDimensional)),
             matrix
-    ](Vector4d<double> const v) {
+    ](Vector4d<double> const v) -> Vector4d<double> {
         auto const transformed = v * matrix;
         if (isFourDimensional) {
             return transformed / transformed.q();
@@ -105,23 +125,30 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
         }
     };
     
-    // Send matrix back to Java (to verify):
-    auto const rawMatrixClass = env->FindClass("io/jim/tesserapp/cpp/RawMatrix");
-    auto const rawMatrixConstructor = env->GetMethodID(rawMatrixClass, "<init>", "()V");
-    auto rawMatrixObj = env->NewObject(rawMatrixClass, rawMatrixConstructor);
-    auto const field = env->GetObjectField(rawMatrixObj,
-            env->GetFieldID(rawMatrixClass, "coefficients", "[D"));
-    auto const rawMatrixCoefficients = reinterpret_cast<jdoubleArray>(field);
+    auto const positionsBuffer = env->GetObjectField(geometry, geometryFieldIdPositions);
+    auto const pointCounts =
+            static_cast<std::size_t>(env->GetDirectBufferCapacity(positionsBuffer)) / 4;
+    auto const positionsData =
+            reinterpret_cast<double *>(env->GetDirectBufferAddress(positionsBuffer));
     
-    auto const data = env->GetDoubleArrayElements(rawMatrixCoefficients, JNI_FALSE);
+    std::vector<Vector4d<double>> points;
+    points.reserve(pointCounts);
     
-    matrix.forEachCoefficient([&](Row const row, Col const col) {
-        data[row * 5 + col] = matrix[{row, col}];
-    });
+    for (auto const i : range(pointCounts)) {
+        points.push_back(visualized(vector4d(
+                positionsData[i * 4 + 0],
+                positionsData[i * 4 + 1],
+                positionsData[i * 4 + 2],
+                positionsData[i * 4 + 3]
+        )));
+    }
     
-    env->ReleaseDoubleArrayElements(rawMatrixCoefficients, data, 0);
+    auto const arr = env->NewDoubleArray(static_cast<jsize>(pointCounts * 4));
+    auto const data = env->GetDoubleArrayElements(arr, nullptr);
+    memcpy(data, points.data(), sizeof(double) * pointCounts * 4);
+    env->ReleaseDoubleArrayElements(arr, data, 0);
     
-    return rawMatrixObj;
+    return arr;
 }
 
 #ifdef __cplusplus

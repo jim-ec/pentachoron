@@ -14,6 +14,7 @@ import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.math.roundToInt
 
 /**
  * Actually renders to OpenGL.
@@ -49,8 +50,14 @@ class Renderer(
     
     external fun init()
     
+    external fun deinit()
+    
     init {
         init()
+    }
+    
+    fun finalize() {
+        deinit()
     }
     
     /**
@@ -91,7 +98,7 @@ class Renderer(
     external fun drawGeometry(
             geometry: Geometry,
             transform: Transform
-    ): RawMatrix
+    ): DoubleArray
     
     /**
      * Draw a single frame.
@@ -110,7 +117,7 @@ class Renderer(
             )
             
             shader.program.bound {
-    
+                
                 shader.uploadViewMatrix(view(camera))
                 shader.uploadProjectionMatrix(perspective(near = 0.1, far = 100.0))
                 
@@ -121,18 +128,6 @@ class Renderer(
                     val positions = geometry.positions
                     val isFourDimensional = geometry.isFourDimensional
                     val fourthDimensionVisualizationMode = fourthDimensionVisualizationMode.id
-                    
-                    /*
-                    C++ start
-                    
-                    Pipeline variables:
-                    - camera
-                    - isFourDimensional (per geometry)
-                    - line (per geometry)
-                    - matrix (per geometry)
-                    */
-                    
-                    val raw = drawGeometry(geometry, transform)
                     
                     val modelMatrix = transformChain(
                             rotation(5, RotationPlane.AROUND_X, transform.rotationX),
@@ -147,13 +142,6 @@ class Renderer(
                             ))
                     )
                     
-                    // Verify C++ computed matrix:
-                    modelMatrix.forEachComponent { row, col ->
-                        if ((modelMatrix[row, col] * 100).toInt() != (raw.coefficients[row * 5 + col] * 100).toInt()) {
-                            throw RuntimeException("Invalid raw matrix computed")
-                        }
-                    }
-                    
                     val visualized = { point: VectorN ->
                         (point * modelMatrix).let {
                             if (isFourDimensional) when (fourthDimensionVisualizationMode) {
@@ -162,6 +150,31 @@ class Renderer(
                                 else -> it
                             }
                             else it
+                        }
+                    }
+                    
+                    // C++:
+                    val raw = drawGeometry(geometry, transform)
+                    
+                    // Verify C++:
+                    (0 until positions.limit() step 4).map { index ->
+                        visualized(VectorN(
+                                positions[index],
+                                positions[index + 1],
+                                positions[index + 2],
+                                positions[index + 3]
+                        ))
+                    }.forEachIndexed { iPosition, position ->
+                        try {
+                            position.components.forEachIndexed { iComponent, component ->
+                                if (component.roundToInt() != raw[iPosition * 4 + iComponent].roundToInt()) {
+                                    throw RuntimeException()
+                                }
+                            }
+                        } catch (_: RuntimeException) {
+                            throw RuntimeException("Invalid raw position #$iPosition computed: " +
+                                    "${position.x},${position.y},${position.z},${position.q} vs " +
+                                    "${raw[iPosition * 4 + 0]},${raw[iPosition * 4 + 1]},${raw[iPosition * 4 + 2]},${raw[iPosition * 4 + 3]}")
                         }
                     }
                     
@@ -184,8 +197,6 @@ class Renderer(
                     }.also {
                         vertexBuffer.draw(it)
                     }
-                    
-                    // C++ end
                     
                 }
                 
