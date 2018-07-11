@@ -30,14 +30,6 @@ class Shader(assets: AssetManager) {
     val projectionMatrixLocation = GLES20.glGetUniformLocation(program.handle, "P")
     
     /**
-     * Upload [matrix] to the view matrix uniform.
-     */
-    fun uploadViewMatrix(matrix: Matrix) {
-        GLES20.glUniformMatrix4fv(viewMatrixLocation, 1, false, matrix.toFloatArray(), 0)
-        GlException.check("Uploading view matrix")
-    }
-    
-    /**
      * Upload [matrix] to the projection matrix uniform.
      */
     fun uploadProjectionMatrix(matrix: Matrix) {

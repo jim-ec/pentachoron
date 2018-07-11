@@ -3,13 +3,11 @@ package io.jim.tesserapp.ui.view
 import android.content.res.AssetManager
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
-import io.jim.tesserapp.cpp.Camera
 import io.jim.tesserapp.cpp.generateVertexBuffer
 import io.jim.tesserapp.cpp.graphics.Color
 import io.jim.tesserapp.cpp.graphics.GlVertexBuffer
 import io.jim.tesserapp.cpp.graphics.Shader
 import io.jim.tesserapp.cpp.matrix.perspective
-import io.jim.tesserapp.cpp.matrix.view
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
 import java.nio.DoubleBuffer
@@ -83,6 +81,14 @@ class Renderer(
         aspectRatio = width.toDouble() / height
     }
     
+    external fun uploadViewMatrix(
+            uniformLocation: Int,
+            distance: Double,
+            aspectRatio: Double,
+            horizontalRotation: Double,
+            verticalRotation: Double
+    )
+    
     external fun drawGeometry(
             positions: DoubleBuffer,
             transform: DoubleArray,
@@ -98,17 +104,17 @@ class Renderer(
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
         
         viewModel.synchronized {
-            
-            val camera = Camera(
-                    cameraDistance.smoothed,
-                    aspectRatio,
-                    horizontalCameraRotation.smoothed,
-                    verticalCameraRotation.smoothed
-            )
-            
+    
             shader.program.bound {
+        
+                uploadViewMatrix(
+                        shader.viewMatrixLocation,
+                        cameraDistance.smoothed,
+                        aspectRatio,
+                        horizontalCameraRotation.smoothed,
+                        verticalCameraRotation.smoothed
+                )
                 
-                shader.uploadViewMatrix(view(camera))
                 shader.uploadProjectionMatrix(perspective(near = 0.1, far = 100.0))
                 
                 geometries.forEach { geometry ->

@@ -7,6 +7,7 @@
 #include <transform/Rotation.h>
 #include <transform/Translation.h>
 #include <color/Rgb.h>
+#include <transform/View.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,13 +59,30 @@ static auto modelMatrix(
 } ;
 
 JNIEXPORT auto JNICALL
-Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
-        JNIEnv *env,
+Java_io_jim_tesserapp_ui_view_Renderer_uploadViewMatrix(
+        JNIEnv *const env,
         jobject,
-        jobject positionsBuffer,
-        jdoubleArray transformArray,
-        jint color,
-        jboolean isFourDimensional
+        jint const uniformLocation,
+        jdouble const distance,
+        jdouble const aspectRatio,
+        jdouble const horizontalRotation,
+        jdouble const verticalRotation
+) -> void {
+    auto const matrix = view<float>(static_cast<const float>(horizontalRotation),
+            static_cast<const float>(verticalRotation), static_cast<const float>(distance),
+            static_cast<const float>(aspectRatio));
+    glUniformMatrix4fv(uniformLocation, 1, GL_FALSE,
+            reinterpret_cast<const GLfloat *>(matrix.coefficients.data()));
+}
+
+JNIEXPORT auto JNICALL
+Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
+        JNIEnv *const env,
+        jobject,
+        jobject const positionsBuffer,
+        jdoubleArray const transformArray,
+        jint const color,
+        jboolean const isFourDimensional
 ) -> void {
     
     const auto transform = env->GetDoubleArrayElements(transformArray, nullptr);
