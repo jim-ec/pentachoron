@@ -1,10 +1,8 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.cpp.vector.VectorN
-
 fun extruded(
         positions: List<Line>,
-        direction: VectorN
+        direction: Position
 ): List<Line> {
     
     val duplicate = positions.map {

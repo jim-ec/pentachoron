@@ -1,9 +1,7 @@
 package io.jim.tesserapp.ui.model
 
 import android.arch.lifecycle.ViewModel
-import io.jim.tesserapp.cpp.Transform
 import io.jim.tesserapp.cpp.graphics.Color
-import io.jim.tesserapp.cpp.vector.VectorN
 import io.jim.tesserapp.geometry.*
 import io.jim.tesserapp.util.synchronized
 
@@ -35,11 +33,11 @@ class MainViewModel : ViewModel() {
             },
             lines = extruded(
                     quadrilateral(
-                            VectorN(2.0, 2.0, 2.0, 0.0),
-                            VectorN(-2.0, 2.0, 2.0, 0.0),
-                            VectorN(-2.0, -2.0, 2.0, 0.0),
-                            VectorN(2.0, -2.0, 2.0, 0.0)),
-                    direction = VectorN(0.0, 0.0, -4.0, 0.0)
+                            Position(2.0, 2.0, 2.0, 0.0),
+                            Position(-2.0, 2.0, 2.0, 0.0),
+                            Position(-2.0, -2.0, 2.0, 0.0),
+                            Position(2.0, -2.0, 2.0, 0.0)),
+                    direction = Position(0.0, 0.0, -4.0, 0.0)
             ),
             color = SymbolicColor.ACCENT
     )
@@ -81,15 +79,15 @@ class MainViewModel : ViewModel() {
         it += featuredGeometry
     
         it += Geometry("X-Axis",
-                lines = listOf(Line(VectorN(0.0, 0.0, 0.0, 0.0), VectorN(1.0, 0.0, 0.0, 0.0))),
+                lines = listOf(Line(Position(0.0, 0.0, 0.0, 0.0), Position(1.0, 0.0, 0.0, 0.0))),
                 color = SymbolicColor.X)
     
         it += Geometry("Y-Axis",
-                lines = listOf(Line(VectorN(0.0, 0.0, 0.0, 0.0), VectorN(0.0, 1.0, 0.0, 0.0))),
+                lines = listOf(Line(Position(0.0, 0.0, 0.0, 0.0), Position(0.0, 1.0, 0.0, 0.0))),
                 color = SymbolicColor.Y)
     
         it += Geometry("Z-Axis",
-                lines = listOf(Line(VectorN(0.0, 0.0, 0.0, 0.0), VectorN(0.0, 0.0, 1.0, 0.0))),
+                lines = listOf(Line(Position(0.0, 0.0, 0.0, 0.0), Position(0.0, 0.0, 1.0, 0.0))),
                 color = SymbolicColor.Z)
     }
     

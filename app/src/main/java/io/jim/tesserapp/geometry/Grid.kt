@@ -1,14 +1,12 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.cpp.vector.VectorN
-
 fun gridOmitAxisIndicator(): List<Line> {
     
     val linesPerUnit = 1
     val gridStartIndex = -5 * linesPerUnit
     val gridEndIndex = 5 * linesPerUnit
     
-    fun vector(x: Int, y: Int) = VectorN(x.toDouble() / linesPerUnit, 0.0, y.toDouble() / linesPerUnit, 0.0)
+    fun vector(x: Int, y: Int) = Position(x.toDouble() / linesPerUnit, 0.0, y.toDouble() / linesPerUnit, 0.0)
     
     val xLines = (gridStartIndex..gridEndIndex).flatMap { y ->
         (gridStartIndex until gridEndIndex).mapNotNull { x ->

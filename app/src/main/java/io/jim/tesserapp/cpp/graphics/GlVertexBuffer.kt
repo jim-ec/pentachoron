@@ -3,7 +3,7 @@ package io.jim.tesserapp.cpp.graphics
 import android.opengl.GLES20
 import io.jim.tesserapp.cpp.ATTRIBUTE_COUNTS
 import io.jim.tesserapp.cpp.Vertex
-import io.jim.tesserapp.cpp.allocateNativeFloatMemory
+import io.jim.tesserapp.util.allocateNativeFloatMemory
 
 /**
  * GL VAO.

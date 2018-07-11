@@ -1,7 +1,6 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.cpp.Transform
-import io.jim.tesserapp.cpp.allocateNativeMemory
+import io.jim.tesserapp.util.allocateNativeMemory
 
 /**
  * A geometrical structure consisting of vertices.
@@ -33,9 +32,10 @@ class Geometry(
     val positions = allocateNativeMemory(lines.size * 2 * 4 * 8).asDoubleBuffer()!!.apply {
         lines.forEach {
             it.points.forEach {
-                it.components.forEach {
-                    put(it)
-                }
+                put(it.x)
+                put(it.y)
+                put(it.z)
+                put(it.q)
             }
         }
     }

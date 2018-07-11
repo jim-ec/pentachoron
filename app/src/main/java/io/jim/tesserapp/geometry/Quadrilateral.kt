@@ -1,12 +1,10 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.cpp.vector.VectorN
-
 fun quadrilateral(
-        a: VectorN,
-        b: VectorN,
-        c: VectorN,
-        d: VectorN
+        a: Position,
+        b: Position,
+        c: Position,
+        d: Position
 ) = listOf(
         Line(a, b),
         Line(b, c),

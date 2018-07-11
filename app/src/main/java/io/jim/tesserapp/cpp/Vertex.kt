@@ -4,10 +4,10 @@ import android.opengl.GLES20
 import io.jim.tesserapp.cpp.graphics.Color
 import io.jim.tesserapp.cpp.graphics.GlVertexBuffer
 import io.jim.tesserapp.cpp.graphics.Shader
-import io.jim.tesserapp.cpp.vector.VectorN
+import io.jim.tesserapp.geometry.Position
 
 data class Vertex(
-        val position: VectorN,
+        val position: Position,
         val color: Color
 )
 
