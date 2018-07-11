@@ -9,4 +9,17 @@ data class Transform(
         val translationY: Double = 0.0,
         val translationZ: Double = 0.0,
         val translationQ: Double = 0.0
-)
+) {
+    
+    val data = doubleArrayOf(
+            rotationX,
+            rotationY,
+            rotationZ,
+            rotationQ,
+            translationX,
+            translationY,
+            translationZ,
+            translationQ
+    )
+    
+}

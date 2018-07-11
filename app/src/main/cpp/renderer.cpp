@@ -13,15 +13,6 @@ extern "C" {
 #endif
 
 namespace {
-    jclass transformClass;
-    jfieldID transformFieldIdRotationX,
-            transformFieldIdRotationY,
-            transformFieldIdRotationZ,
-            transformFieldIdRotationQ,
-            transformFieldIdTranslationX,
-            transformFieldIdTranslationY,
-            transformFieldIdTranslationZ,
-            transformFieldIdTranslationQ;
     
     static const std::size_t VECTORS_PER_VERTEX = 2;
     
@@ -40,31 +31,6 @@ namespace {
                 Rgb<float> const color
         ) : position{position}, w{1.0f}, color{color}, alpha{1.0f} {}
     };
-}
-
-JNIEXPORT auto JNICALL
-Java_io_jim_tesserapp_ui_view_Renderer_init(
-        JNIEnv *env,
-        jobject
-) -> void {
-    transformClass = reinterpret_cast<jclass>(env->NewGlobalRef(
-            env->FindClass("io/jim/tesserapp/cpp/Transform")));
-    transformFieldIdRotationX = env->GetFieldID(transformClass, "rotationX", "D");
-    transformFieldIdRotationY = env->GetFieldID(transformClass, "rotationY", "D");
-    transformFieldIdRotationZ = env->GetFieldID(transformClass, "rotationZ", "D");
-    transformFieldIdRotationQ = env->GetFieldID(transformClass, "rotationQ", "D");
-    transformFieldIdTranslationX = env->GetFieldID(transformClass, "translationX", "D");
-    transformFieldIdTranslationY = env->GetFieldID(transformClass, "translationY", "D");
-    transformFieldIdTranslationZ = env->GetFieldID(transformClass, "translationZ", "D");
-    transformFieldIdTranslationQ = env->GetFieldID(transformClass, "translationQ", "D");
-}
-
-JNIEXPORT auto JNICALL
-Java_io_jim_tesserapp_ui_view_Renderer_deinit(
-        JNIEnv *env,
-        jobject
-) -> void {
-    env->DeleteGlobalRef(transformClass);
 }
 
 static auto modelMatrix(
@@ -96,21 +62,25 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
         JNIEnv *env,
         jobject,
         jobject positionsBuffer,
-        jobject transform,
+        jdoubleArray transformArray,
         jint color,
         jboolean isFourDimensional
 ) -> void {
     
+    const auto transform = env->GetDoubleArrayElements(transformArray, nullptr);
+    
     auto const matrix = modelMatrix(
-            env->GetDoubleField(transform, transformFieldIdRotationX),
-            env->GetDoubleField(transform, transformFieldIdRotationY),
-            env->GetDoubleField(transform, transformFieldIdRotationZ),
-            env->GetDoubleField(transform, transformFieldIdRotationQ),
-            env->GetDoubleField(transform, transformFieldIdTranslationX),
-            env->GetDoubleField(transform, transformFieldIdTranslationY),
-            env->GetDoubleField(transform, transformFieldIdTranslationZ),
-            env->GetDoubleField(transform, transformFieldIdTranslationQ)
+            transform[0],
+            transform[1],
+            transform[2],
+            transform[3],
+            transform[4],
+            transform[5],
+            transform[6],
+            transform[7]
     );
+    
+    env->ReleaseDoubleArrayElements(transformArray, transform, 0);
     
     auto const visualized = [isFourDimensional, matrix](
             Vector4d<double> const v) -> Vector3d<double> {

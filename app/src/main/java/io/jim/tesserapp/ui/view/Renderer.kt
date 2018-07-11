@@ -4,7 +4,6 @@ import android.content.res.AssetManager
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import io.jim.tesserapp.cpp.Camera
-import io.jim.tesserapp.cpp.Transform
 import io.jim.tesserapp.cpp.generateVertexBuffer
 import io.jim.tesserapp.cpp.graphics.Color
 import io.jim.tesserapp.cpp.graphics.GlVertexBuffer
@@ -49,19 +48,6 @@ class Renderer(
         
     }
     
-    external fun init()
-    
-    external fun deinit()
-    
-    init {
-        init()
-    }
-    
-    @Suppress("unused")
-    fun finalize() {
-        deinit()
-    }
-    
     /**
      * Initialize data.
      */
@@ -99,7 +85,7 @@ class Renderer(
     
     external fun drawGeometry(
             positions: DoubleBuffer,
-            transform: Transform,
+            transform: DoubleArray,
             color: Int,
             isFourDimensional: Boolean
     )
@@ -135,7 +121,7 @@ class Renderer(
     
                         drawGeometry(
                                 geometry.positions,
-                                transform,
+                                transform.data,
                                 color.encoded,
                                 geometry.isFourDimensional
                         )
