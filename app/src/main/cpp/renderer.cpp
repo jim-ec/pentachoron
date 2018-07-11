@@ -22,9 +22,6 @@ namespace {
             transformFieldIdTranslationY,
             transformFieldIdTranslationZ,
             transformFieldIdTranslationQ;
-    jclass geometryClass;
-    jfieldID geometryFieldIdIsFourDimensional,
-            geometryFieldIdPositions;
     
     static const std::size_t VECTORS_PER_VERTEX = 2;
     
@@ -60,12 +57,6 @@ Java_io_jim_tesserapp_ui_view_Renderer_init(
     transformFieldIdTranslationY = env->GetFieldID(transformClass, "translationY", "D");
     transformFieldIdTranslationZ = env->GetFieldID(transformClass, "translationZ", "D");
     transformFieldIdTranslationQ = env->GetFieldID(transformClass, "translationQ", "D");
-    
-    geometryClass = reinterpret_cast<jclass>(env->NewGlobalRef(
-            env->FindClass("io/jim/tesserapp/geometry/Geometry")));
-    geometryFieldIdIsFourDimensional = env->GetFieldID(geometryClass, "isFourDimensional", "Z");
-    geometryFieldIdPositions = env->GetFieldID(geometryClass, "positions",
-            "Ljava/nio/DoubleBuffer;");
 }
 
 JNIEXPORT auto JNICALL
@@ -74,7 +65,6 @@ Java_io_jim_tesserapp_ui_view_Renderer_deinit(
         jobject
 ) -> void {
     env->DeleteGlobalRef(transformClass);
-    env->DeleteGlobalRef(geometryClass);
 }
 
 static auto modelMatrix(
@@ -105,9 +95,10 @@ JNIEXPORT auto JNICALL
 Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
         JNIEnv *env,
         jobject,
-        jobject geometry,
+        jobject positionsBuffer,
         jobject transform,
-        jint color
+        jint color,
+        jboolean isFourDimensional
 ) -> void {
     
     auto const matrix = modelMatrix(
@@ -121,11 +112,8 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
             env->GetDoubleField(transform, transformFieldIdTranslationQ)
     );
     
-    auto const visualized = [
-            isFourDimensional = static_cast<bool>(
-                    env->GetBooleanField(geometry, geometryFieldIdIsFourDimensional)),
-            matrix
-    ](Vector4d<double> const v) -> Vector3d<double> {
+    auto const visualized = [isFourDimensional, matrix](
+            Vector4d<double> const v) -> Vector3d<double> {
         auto const transformed = v * matrix;
         if (isFourDimensional) {
             return Vector3d<double>{[transformed](Dimension const i) {
@@ -136,7 +124,6 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
         }
     };
     
-    auto const positionsBuffer = env->GetObjectField(geometry, geometryFieldIdPositions);
     auto const pointCounts =
             static_cast<std::size_t>(env->GetDirectBufferCapacity(positionsBuffer)) / 4;
     auto const positionsData =

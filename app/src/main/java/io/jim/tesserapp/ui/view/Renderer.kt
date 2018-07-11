@@ -11,9 +11,9 @@ import io.jim.tesserapp.cpp.graphics.GlVertexBuffer
 import io.jim.tesserapp.cpp.graphics.Shader
 import io.jim.tesserapp.cpp.matrix.perspective
 import io.jim.tesserapp.cpp.matrix.view
-import io.jim.tesserapp.geometry.Geometry
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
+import java.nio.DoubleBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -98,9 +98,10 @@ class Renderer(
     }
     
     external fun drawGeometry(
-            geometry: Geometry,
+            positions: DoubleBuffer,
             transform: Transform,
-            color: Int
+            color: Int,
+            isFourDimensional: Boolean
     )
     
     /**
@@ -131,8 +132,13 @@ class Renderer(
     
                     vertexBuffer.buffer.bound {
                         vertexBuffer.instructVertexAttributePointers()
-        
-                        drawGeometry(geometry, transform, color.encoded)
+    
+                        drawGeometry(
+                                geometry.positions,
+                                transform,
+                                color.encoded,
+                                geometry.isFourDimensional
+                        )
                     }
                     
                 }
