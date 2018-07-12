@@ -2,7 +2,7 @@ package io.jim.tesserapp.ui.model
 
 import android.arch.lifecycle.ViewModel
 import io.jim.tesserapp.geometry.*
-import io.jim.tesserapp.graphics.Color
+import io.jim.tesserapp.gl.Color
 import io.jim.tesserapp.util.synchronized
 
 /**

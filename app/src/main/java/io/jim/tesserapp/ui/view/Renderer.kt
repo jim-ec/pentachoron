@@ -3,7 +3,10 @@ package io.jim.tesserapp.ui.view
 import android.content.res.AssetManager
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
-import io.jim.tesserapp.graphics.*
+import io.jim.tesserapp.gl.ATTRIBUTE_FLOATS
+import io.jim.tesserapp.gl.Color
+import io.jim.tesserapp.gl.Vbo
+import io.jim.tesserapp.graphics.LinesShader
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
 import java.nio.DoubleBuffer
@@ -19,8 +22,8 @@ class Renderer(
         val assets: AssetManager,
         val dpi: Double) : GLSurfaceView.Renderer {
     
-    private lateinit var shader: Shader
-    private lateinit var vertexBuffer: GlBuffer
+    private lateinit var linesShader: LinesShader
+    private lateinit var vertexVbo: Vbo
     
     private var aspectRatio: Double = 1.0
     
@@ -63,10 +66,10 @@ class Renderer(
         println("Vendor: ${GLES20.glGetString(GLES20.GL_VENDOR)}")
         
         // Construct shader:
-        shader = Shader(assets)
+        linesShader = LinesShader(assets)
         
         // Construct vertex buffer:
-        vertexBuffer = GlBuffer(GLES20.GL_ARRAY_BUFFER)
+        vertexVbo = Vbo(GLES20.GL_ARRAY_BUFFER)
     }
     
     /**
@@ -80,27 +83,27 @@ class Renderer(
     /**
      * Instruct vertex attributes
      */
-    fun instructVertexAttributePointers(shader: Shader) {
+    fun instructVertexAttributePointers(linesShader: LinesShader) {
         // Position attribute:
-        GLES20.glEnableVertexAttribArray(shader.positionAttributeLocation)
+        GLES20.glEnableVertexAttribArray(linesShader.positionAttributeLocation)
         GLES20.glVertexAttribPointer(
-                shader.positionAttributeLocation,
+                linesShader.positionAttributeLocation,
                 ATTRIBUTE_FLOATS,
                 GLES20.GL_FLOAT,
                 false,
-                VERTEX_STRIDE,
-                VERTEX_OFFSET_POSITION
+                LinesShader.VERTEX_STRIDE,
+                LinesShader.VERTEX_OFFSET_POSITION
         )
         
         // Color attribute:
-        GLES20.glEnableVertexAttribArray(shader.colorAttributeLocation)
+        GLES20.glEnableVertexAttribArray(linesShader.colorAttributeLocation)
         GLES20.glVertexAttribPointer(
-                shader.colorAttributeLocation,
+                linesShader.colorAttributeLocation,
                 ATTRIBUTE_FLOATS,
                 GLES20.GL_FLOAT,
                 false,
-                VERTEX_STRIDE,
-                VERTEX_OFFSET_COLOR
+                LinesShader.VERTEX_STRIDE,
+                LinesShader.VERTEX_OFFSET_COLOR
         )
     }
     
@@ -146,31 +149,31 @@ class Renderer(
         
         viewModel.synchronized {
     
-            shader.program.bound {
+            linesShader.program.bound {
         
                 uploadViewMatrix(
-                        shader.viewMatrixLocation,
+                        linesShader.viewMatrixLocation,
                         cameraDistance.smoothed,
                         aspectRatio,
                         horizontalCameraRotation.smoothed,
                         verticalCameraRotation.smoothed
                 )
         
-                uploadProjectionMatrix(shader.projectionMatrixLocation)
+                uploadProjectionMatrix(linesShader.projectionMatrixLocation)
                 
                 geometries.forEach { geometry ->
                     
                     val transform = geometry.onTransformUpdate()
                     val color = symbolicColorMapping[geometry.color]
     
-                    vertexBuffer.bound {
-    
-                        instructVertexAttributePointers(shader)
+                    vertexVbo.bound {
+        
+                        instructVertexAttributePointers(linesShader)
                         
                         drawGeometry(
                                 geometry.positions,
                                 transform.data,
-                                color.encoded,
+                                color.code,
                                 geometry.isFourDimensional
                         )
     

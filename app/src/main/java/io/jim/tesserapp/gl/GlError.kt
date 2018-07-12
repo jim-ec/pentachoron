@@ -1,11 +1,11 @@
-package io.jim.tesserapp.graphics
+package io.jim.tesserapp.gl
 
 import android.opengl.GLES20
 
 /**
  * Thrown upon OpenGL-calls related errors.
  */
-class GlException(msg: String, error: Int = GLES20.glGetError()) :
+class GlError(msg: String, error: Int = GLES20.glGetError()) :
         RuntimeException("OpenGL Error 0x$error (" + when (error) {
             GLES20.GL_NO_ERROR -> "no error"
             GLES20.GL_INVALID_ENUM -> "invalid enumeration"
@@ -19,13 +19,13 @@ class GlException(msg: String, error: Int = GLES20.glGetError()) :
     companion object {
         
         /**
-         * Simply checks for an error-state and throws [GlException] if so.
+         * Simply checks for an error-state and throws [GlError] if so.
          * @param currentAction Short description what the caller is currently about to do.
          */
         fun check(currentAction: String) {
             val error = GLES20.glGetError()
             if (error != GLES20.GL_NO_ERROR) {
-                throw GlException("Occurred when: $currentAction", error)
+                throw GlError("Occurred when: $currentAction", error)
             }
         }
         

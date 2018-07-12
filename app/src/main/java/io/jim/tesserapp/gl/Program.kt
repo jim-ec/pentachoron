@@ -1,4 +1,4 @@
-package io.jim.tesserapp.graphics
+package io.jim.tesserapp.gl
 
 import android.content.res.AssetManager
 import android.opengl.GLES20
@@ -10,7 +10,7 @@ import android.opengl.GLES20
  * @param vertexShaderFile File name of vertex shader source code.
  * @param fragmentShaderFile File name of fragment shader source code.
  */
-class GlProgram(
+class Program(
         assets: AssetManager,
         vertexShaderFile: String,
         fragmentShaderFile: String
@@ -19,12 +19,12 @@ class GlProgram(
     /**
      * This program's vertex shader.
      */
-    private val vertexShader = GlShader(assets, vertexShaderFile)
+    private val vertexShader = Shader(assets, vertexShaderFile)
     
     /**
      * This program's fragment shader.
      */
-    private val fragmentShader = GlShader(assets, fragmentShaderFile)
+    private val fragmentShader = Shader(assets, fragmentShaderFile)
     
     /**
      * Actual program handle retrieved from GL.
@@ -39,17 +39,17 @@ class GlProgram(
         GLES20.glLinkProgram(handle)
         GLES20.glGetProgramiv(handle, GLES20.GL_LINK_STATUS, resultCode)
         if (GLES20.GL_TRUE != resultCode()) {
-            throw GlException("Cannot link program: ${GLES20.glGetProgramInfoLog(handle)}")
+            throw GlError("Cannot link program: ${GLES20.glGetProgramInfoLog(handle)}")
         }
         
         // Validate program:
         GLES20.glValidateProgram(handle)
         GLES20.glGetProgramiv(handle, GLES20.GL_VALIDATE_STATUS, resultCode)
         if (GLES20.GL_TRUE != resultCode()) {
-            throw GlException("Cannot validate program: ${GLES20.glGetProgramInfoLog(handle)}")
+            throw GlError("Cannot validate program: ${GLES20.glGetProgramInfoLog(handle)}")
         }
         
-        GlException.check("Program initialization")
+        GlError.check("Program initialization")
     }
     
     /**

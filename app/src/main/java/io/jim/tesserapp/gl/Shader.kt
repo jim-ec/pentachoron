@@ -1,4 +1,4 @@
-package io.jim.tesserapp.graphics
+package io.jim.tesserapp.gl
 
 import android.content.res.AssetManager
 import android.opengl.GLES20
@@ -12,7 +12,7 @@ import io.jim.tesserapp.util.readStream
  * @param assets Asset manager, required to open shader source file.
  * @param fileName Name of shader source file.
  */
-class GlShader(assets: AssetManager, val fileName: String) {
+class Shader(assets: AssetManager, val fileName: String) {
     
     /**
      * Actual handle retrieved from GL.
@@ -54,11 +54,11 @@ class GlShader(assets: AssetManager, val fileName: String) {
         
         GLES20.glGetShaderiv(handle, GLES20.GL_COMPILE_STATUS, resultCode)
         if (GLES20.GL_TRUE != resultCode()) {
-            throw GlException("Cannot compile vertex shader: " +
+            throw GlError("Cannot compile vertex shader: " +
                     GLES20.glGetShaderInfoLog(handle))
         }
         
-        GlException.check("Shader initialization")
+        GlError.check("Shader initialization")
     }
     
 }
