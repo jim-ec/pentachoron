@@ -14,6 +14,8 @@
 extern "C" {
 #endif
 
+using namespace fmath;
+
 namespace {
     
     static const std::size_t VECTORS_PER_VERTEX = 2;
