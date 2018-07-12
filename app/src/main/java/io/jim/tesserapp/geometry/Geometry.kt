@@ -13,7 +13,7 @@ class Geometry(
         val name: String,
         val onTransformUpdate: () -> Transform = { Transform() },
         val isFourDimensional: Boolean = false,
-        val lines: List<Line>,
+        lines: List<Line>,
         val color: SymbolicColor
 ) {
     
@@ -38,6 +38,7 @@ class Geometry(
                 put(it.q)
             }
         }
-    }
+        rewind()
+    }.asReadOnlyBuffer()!!
     
 }

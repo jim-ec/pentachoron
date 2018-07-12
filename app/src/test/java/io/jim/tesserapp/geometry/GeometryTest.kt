@@ -21,34 +21,29 @@ class GeometryTest {
                 onTransformUpdate = { Transform() },
                 color = SymbolicColor.PRIMARY
         ).apply {
-            var invocationCount = 0
-        
-            lines.forEach {
-                it.points.forEach { (x, y, z, q) ->
-        
-                    val expected = when (invocationCount) {
-                        0 -> a
-                        1 -> b
-                        2 -> b
-                        3 -> c
-                        4 -> c
-                        5 -> d
-                        6 -> d
-                        7 -> a
-                        else -> throw RuntimeException()
-                    }
-        
-                    assertEquals(expected.x, x, 0.1)
-                    assertEquals(expected.y, y, 0.1)
-                    assertEquals(expected.z, z, 0.1)
-                    assertEquals(expected.q, q, 0.1)
     
-                    invocationCount++
+            assertEquals(8 * 4, positions.limit() - positions.position())
     
+            for (i in positions.position() until positions.limit() / 4) {
+        
+                val expected = when (i) {
+                    0 -> a
+                    1 -> b
+                    2 -> b
+                    3 -> c
+                    4 -> c
+                    5 -> d
+                    6 -> d
+                    7 -> a
+                    else -> throw RuntimeException("Impossible index: $i")
                 }
+        
+                assertEquals(expected.x, positions[i * 4 + 0], 0.1)
+                assertEquals(expected.y, positions[i * 4 + 1], 0.1)
+                assertEquals(expected.z, positions[i * 4 + 2], 0.1)
+                assertEquals(expected.q, positions[i * 4 + 3], 0.1)
+                
             }
-            
-            assertEquals(8, invocationCount)
         }
     }
     
