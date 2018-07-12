@@ -1,35 +1,12 @@
 package io.jim.tesserapp.graphics
 
-import android.opengl.GLES20
-
-fun instructVertexAttributePointers(shader: Shader) {
-    // Position attribute:
-    GLES20.glEnableVertexAttribArray(shader.positionAttributeLocation)
-    GLES20.glVertexAttribPointer(
-            shader.positionAttributeLocation,
-            ATTRIBUTE_FLOATS,
-            GLES20.GL_FLOAT,
-            false,
-            STRIDE,
-            OFFSET_POSITION
-    )
-    
-    // Color attribute:
-    GLES20.glEnableVertexAttribArray(shader.colorAttributeLocation)
-    GLES20.glVertexAttribPointer(
-            shader.colorAttributeLocation,
-            ATTRIBUTE_FLOATS,
-            GLES20.GL_FLOAT,
-            false,
-            STRIDE,
-            OFFSET_COLOR
-    )
-}
-
+/**
+ * Byte length of a single float.
+ */
 const val FLOAT_BYTE_LENGTH = 4
 
 /**
- * Floats take by one attribute.
+ * Count of floats each vertex attribute consists of.
  * Due to alignment, each attribute has 4 float values, regardless of how many
  * it actually uses.
  */
@@ -43,26 +20,21 @@ const val ATTRIBUTE_FLOATS = 4
 const val ATTRIBUTE_COUNTS = 2
 
 /**
- * Floats taken by one complete vertex.
+ * Count of floats each vertex consists of.
  */
 const val VERTEX_FLOATS = ATTRIBUTE_COUNTS * ATTRIBUTE_FLOATS
 
 /**
- * Bytes taken by one complete vertex.
+ * Count of bytes each vertex consists of.
  */
-const val BYTES_PER_VERTEX = VERTEX_FLOATS * FLOAT_BYTE_LENGTH
-
-/**
- * Vertex stride, in bytes.
- */
-const val STRIDE = BYTES_PER_VERTEX
+const val VERTEX_STRIDE = VERTEX_FLOATS * FLOAT_BYTE_LENGTH
 
 /**
  * Position attribute offset, in bytes.
  */
-const val OFFSET_POSITION = 0 * FLOAT_BYTE_LENGTH
+const val VERTEX_OFFSET_POSITION = 0
 
 /**
  * Color attribute offset, in bytes.
  */
-const val OFFSET_COLOR = OFFSET_POSITION + ATTRIBUTE_FLOATS * FLOAT_BYTE_LENGTH
+const val VERTEX_OFFSET_COLOR = VERTEX_OFFSET_POSITION + ATTRIBUTE_FLOATS * FLOAT_BYTE_LENGTH

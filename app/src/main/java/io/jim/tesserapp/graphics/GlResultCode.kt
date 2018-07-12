@@ -4,7 +4,7 @@ import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
 /**
- * Buffer providing one int for OpenGL out-params.
+ * Buffer providing int memory for OpenGL out-params.
  */
 val resultCode = IntBuffer.allocate(10)
         ?: throw RuntimeException("Cannot allocate result code")
@@ -23,7 +23,7 @@ inline fun resultCode(f: () -> Unit): Int {
 }
 
 /**
- * Buffer providing one int for OpenGL out-params.
+ * Buffer providing float memory for OpenGL out-params.
  */
 val floatResultCode = FloatBuffer.allocate(10)
         ?: throw RuntimeException("Cannot allocate float result code")

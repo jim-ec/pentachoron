@@ -1,6 +1,6 @@
 package io.jim.tesserapp.graphics
 
-data class Color(
+data class Color private constructor(
         val red: Float,
         val green: Float,
         val blue: Float

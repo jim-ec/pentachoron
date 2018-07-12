@@ -2,6 +2,7 @@ package io.jim.tesserapp.graphics
 
 import android.content.res.AssetManager
 import android.opengl.GLES20
+import io.jim.tesserapp.util.readStream
 
 /**
  * GL shader. Type (i.e. vertex or fragment) is determined through file extension:
@@ -11,33 +12,42 @@ import android.opengl.GLES20
  * @param assets Asset manager, required to open shader source file.
  * @param fileName Name of shader source file.
  */
-class GlShader(assets: AssetManager, fileName: String) {
+class GlShader(assets: AssetManager, val fileName: String) {
     
     /**
      * Actual handle retrieved from GL.
      */
     val handle: Int
     
+    /**
+     * Shader type, based on file name extension of [fileName].
+     */
+    private val shaderType = run {
+        
+        val extensionStartIndex = fileName.lastIndexOf('.').let {
+            if (it == -1)
+                throw RuntimeException("Malformed file name, no '.' found in: $fileName")
+            if (it == fileName.lastIndex)
+                throw RuntimeException("Missing file extension in: $fileName")
+            it + 1
+        }
+        
+        val extension = fileName.substring(extensionStartIndex)
+        
+        when (extension) {
+            "vert" -> GLES20.GL_VERTEX_SHADER
+            "frag" -> GLES20.GL_FRAGMENT_SHADER
+            else -> throw RuntimeException("Unsupported source file extension in $fileName")
+        }
+    }
+    
     init {
-        // Generate handle. Type is deduced from file extension.
-        handle = GLES20.glCreateShader(
-                when (fileName.substring(fileName.lastIndexOf('.').also { index ->
-                    if (index == -1)
-                        throw RuntimeException("Malformed file name, no '.' found in: $fileName")
-                    if (index == fileName.lastIndex)
-                        throw RuntimeException("Missing file extension in: $fileName")
-                } + 1)) {
-                    "vert" -> GLES20.GL_VERTEX_SHADER
-                    "frag" -> GLES20.GL_FRAGMENT_SHADER
-                    else -> throw RuntimeException("Unsupported source file extension in $fileName")
-                })
+        // Generate handle.
+        handle = GLES20.glCreateShader(shaderType)
         
         // Retrieve lines from shader file:
-        GLES20.glShaderSource(handle, (assets.open(fileName)
-                ?: throw RuntimeException("Cannot open shader file $fileName"))
-                .bufferedReader().useLines { sequence: Sequence<String> ->
-                    sequence.reduce { a, b -> "$a\n$b" }
-                })
+        GLES20.glShaderSource(handle, readStream(assets.open(fileName)
+                ?: throw RuntimeException("Cannot open shader file $fileName")))
         
         // Compile shader and check for success:
         GLES20.glCompileShader(handle)
