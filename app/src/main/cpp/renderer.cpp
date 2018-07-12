@@ -18,6 +18,7 @@ using namespace fmath;
 
 namespace {
     
+    static const std::size_t FLOATS_PER_VECTOR = 4;
     static const std::size_t VECTORS_PER_VERTEX = 2;
     
     /**
@@ -105,11 +106,33 @@ JNIEXPORT auto JNICALL
 Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
         JNIEnv *const env,
         jobject const,
+        GLuint const positionAttributeLocation,
+        GLuint const colorAttributeLocation,
         jobject const positionBuffer,
         jdoubleArray const transformArray,
         jint const color,
         jboolean const isFourDimensional
 ) -> void {
+    
+    glEnableVertexAttribArray(positionAttributeLocation);
+    glVertexAttribPointer(
+            positionAttributeLocation,
+            FLOATS_PER_VECTOR,
+            GL_FLOAT,
+            GL_FALSE,
+            sizeof(Vertex),
+            reinterpret_cast<void const *>(offsetof(Vertex, position))
+    );
+    
+    glEnableVertexAttribArray(colorAttributeLocation);
+    glVertexAttribPointer(
+            colorAttributeLocation,
+            FLOATS_PER_VECTOR,
+            GL_FLOAT,
+            GL_FALSE,
+            sizeof(Vertex),
+            reinterpret_cast<void const *>(offsetof(Vertex, color))
+    );
     
     // Get transform array, containing rotation and translation in a double-array:
     const auto transform = env->GetDoubleArrayElements(transformArray, nullptr);

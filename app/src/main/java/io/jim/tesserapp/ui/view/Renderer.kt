@@ -3,7 +3,6 @@ package io.jim.tesserapp.ui.view
 import android.content.res.AssetManager
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
-import io.jim.tesserapp.gl.ATTRIBUTE_FLOATS
 import io.jim.tesserapp.gl.Color
 import io.jim.tesserapp.gl.Vbo
 import io.jim.tesserapp.graphics.LinesShader
@@ -81,33 +80,6 @@ class Renderer(
     }
     
     /**
-     * Instruct vertex attributes
-     */
-    fun instructVertexAttributePointers(linesShader: LinesShader) {
-        // Position attribute:
-        GLES20.glEnableVertexAttribArray(linesShader.positionAttributeLocation)
-        GLES20.glVertexAttribPointer(
-                linesShader.positionAttributeLocation,
-                ATTRIBUTE_FLOATS,
-                GLES20.GL_FLOAT,
-                false,
-                LinesShader.VERTEX_STRIDE,
-                LinesShader.VERTEX_OFFSET_POSITION
-        )
-        
-        // Color attribute:
-        GLES20.glEnableVertexAttribArray(linesShader.colorAttributeLocation)
-        GLES20.glVertexAttribPointer(
-                linesShader.colorAttributeLocation,
-                ATTRIBUTE_FLOATS,
-                GLES20.GL_FLOAT,
-                false,
-                LinesShader.VERTEX_STRIDE,
-                LinesShader.VERTEX_OFFSET_COLOR
-        )
-    }
-    
-    /**
      * Uploads the view matrix.
      * Requires the GL program to be bound.
      */
@@ -134,6 +106,8 @@ class Renderer(
      * Vertex attribute pointers must be instructed before drawing anything.
      */
     external fun drawGeometry(
+            positionAttributeLocation: Int,
+            colorAttributeLocation: Int,
             positions: DoubleBuffer,
             transform: DoubleArray,
             color: Int,
@@ -167,10 +141,12 @@ class Renderer(
                     val color = symbolicColorMapping[geometry.color]
     
                     vertexVbo.bound {
-        
-                        instructVertexAttributePointers(linesShader)
+    
+                        //instructVertexAttributePointers(linesShader)
                         
                         drawGeometry(
+                                linesShader.positionAttributeLocation,
+                                linesShader.colorAttributeLocation,
                                 geometry.positions,
                                 transform.data,
                                 color.code,
