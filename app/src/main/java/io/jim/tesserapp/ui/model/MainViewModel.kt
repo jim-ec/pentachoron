@@ -134,7 +134,7 @@ class MainViewModel : ViewModel() {
     /**
      * Camera distance.
      */
-    val cameraDistance = SmoothedLiveData(initialValue = 3.0)
+    val cameraDistance = SmoothedLiveData(initialValue = 5.0)
     
     /**
      * Rotation on the horizontal orbit.
@@ -147,6 +147,8 @@ class MainViewModel : ViewModel() {
      * This is the secondary rotation.
      */
     val verticalCameraRotation = SmoothedLiveData(initialValue = -Math.PI / 8.0, transitionInterval = 80.0)
+    
+    val cameraFovX = SmoothedLiveData(initialValue = 60.0, transitionInterval = 80.0)
     
     var symbolicColorMapping = SymbolicColorMapping(
             primary = Color.BLACK,

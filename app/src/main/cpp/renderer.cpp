@@ -90,11 +90,15 @@ Java_io_jim_tesserapp_ui_view_Renderer_uploadViewMatrix(
         jdouble const distance,
         jdouble const aspectRatio,
         jdouble const horizontalRotation,
-        jdouble const verticalRotation
+        jdouble const verticalRotation,
+        jdouble const fovX
 ) -> void {
-    auto const matrix = view<float>(static_cast<const float>(horizontalRotation),
-            static_cast<const float>(verticalRotation), static_cast<const float>(distance),
-            static_cast<const float>(aspectRatio));
+    auto const matrix = view<float>(
+            static_cast<float>(horizontalRotation),
+            static_cast<float>(verticalRotation),
+            static_cast<float>(distance),
+            static_cast<float>(aspectRatio),
+            static_cast<float>(radians(fovX)));
     glUniformMatrix4fv(uniformLocation, 1, GL_FALSE,
             reinterpret_cast<const GLfloat *>(matrix.coefficients.data()));
 }

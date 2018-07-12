@@ -88,7 +88,8 @@ class Renderer(
             distance: Double,
             aspectRatio: Double,
             horizontalRotation: Double,
-            verticalRotation: Double
+            verticalRotation: Double,
+            fovX: Double
     )
     
     /**
@@ -130,7 +131,8 @@ class Renderer(
                         cameraDistance.smoothed,
                         aspectRatio,
                         horizontalCameraRotation.smoothed,
-                        verticalCameraRotation.smoothed
+                        verticalCameraRotation.smoothed,
+                        cameraFovX.smoothed
                 )
         
                 uploadProjectionMatrix(linesShader.projectionMatrixLocation)
