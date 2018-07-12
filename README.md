@@ -1,2 +1,3 @@
 # tesserapp
-Small research project how to render a 4D object
+
+Small hobby project, playing with 4D geometry.
