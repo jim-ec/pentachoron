@@ -37,6 +37,9 @@ namespace {
     };
 }
 
+/**
+ * Create a model matrix according to transform parameters.
+ */
 static auto modelMatrix(
         double const rotationX,
         double const rotationY,
@@ -61,10 +64,13 @@ static auto modelMatrix(
     );
 } ;
 
+/**
+ * Upload the view matrix.
+ */
 JNIEXPORT auto JNICALL
 Java_io_jim_tesserapp_ui_view_Renderer_uploadViewMatrix(
         JNIEnv *const,
-        jobject,
+        jobject const,
         jint const uniformLocation,
         jdouble const distance,
         jdouble const aspectRatio,
@@ -78,10 +84,13 @@ Java_io_jim_tesserapp_ui_view_Renderer_uploadViewMatrix(
             reinterpret_cast<const GLfloat *>(matrix.coefficients.data()));
 }
 
+/**
+ * Upload the projection matrix.
+ */
 JNIEXPORT auto JNICALL
 Java_io_jim_tesserapp_ui_view_Renderer_uploadProjectionMatrix(
         JNIEnv *const,
-        jobject,
+        jobject const,
         jint const uniformLocation
 ) -> void {
     auto const matrix = perspective<float>(0.1f, 100.0f);
@@ -89,18 +98,25 @@ Java_io_jim_tesserapp_ui_view_Renderer_uploadProjectionMatrix(
             reinterpret_cast<const GLfloat *>(matrix.coefficients.data()));
 }
 
+/**
+ * Draw a single geometry.
+ */
 JNIEXPORT auto JNICALL
 Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
         JNIEnv *const env,
-        jobject,
-        jobject const positionsBuffer,
+        jobject const,
+        jobject const positionBuffer,
         jdoubleArray const transformArray,
         jint const color,
         jboolean const isFourDimensional
 ) -> void {
     
+    // Get transform array, containing rotation and translation in a double-array:
     const auto transform = env->GetDoubleArrayElements(transformArray, nullptr);
     
+    // Construct geometry model matrix.
+    // Each entry of the transform array holds x/y/z/q rotation/translation.
+    // See the Kotlin implementation of 'Transform' to checkout the layout.
     auto const matrix = modelMatrix(
             transform[0],
             transform[1],
@@ -114,34 +130,33 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
     
     env->ReleaseDoubleArrayElements(transformArray, transform, 0);
     
-    auto const visualized = [isFourDimensional, matrix](
-            Vector4d<double> const v) -> Vector3d<double> {
-        auto const transformed = v * matrix;
-        if (isFourDimensional) {
-            return Vector3d<double>{[transformed](Dimension const i) {
-                return transformed[i] / transformed.q();
-            }};
-        } else {
-            return vector3d(transformed.x(), transformed.y(), transformed.z());
-        }
-    };
-    
-    auto const pointCounts =
-            static_cast<std::size_t>(env->GetDirectBufferCapacity(positionsBuffer)) / 4;
-    auto const positionsData =
-            reinterpret_cast<double *>(env->GetDirectBufferAddress(positionsBuffer));
+    // Get the double buffer containing the position data.
+    // Every 4 doubles result in a 4D position.
+    auto const positionCounts =
+            static_cast<std::size_t>(env->GetDirectBufferCapacity(positionBuffer)) / 4;
+    auto const positions =
+            reinterpret_cast<double *>(env->GetDirectBufferAddress(positionBuffer));
     
     std::vector<Vertex> vertices;
-    vertices.reserve(pointCounts);
+    vertices.reserve(positionCounts);
     
-    for (auto const i : range(pointCounts)) {
+    for (auto const i : range(positionCounts)) {
+        
+        auto const position = vector4d(
+                positions[i * 4 + 0],
+                positions[i * 4 + 1],
+                positions[i * 4 + 2],
+                positions[i * 4 + 3]
+        ) * matrix;
+        
+        auto const visualized = isFourDimensional ? Vector3d<double>{[position](Dimension const i) {
+            return position[i] / position.q();
+        }}
+                                                  : vector3d(position.x(), position.y(),
+                        position.z());
+        
         vertices.push_back(Vertex{
-                static_cast<Vector3d<float>>(visualized(vector4d(
-                        positionsData[i * 4 + 0],
-                        positionsData[i * 4 + 1],
-                        positionsData[i * 4 + 2],
-                        positionsData[i * 4 + 3]
-                ))),
+                static_cast<Vector3d<float>>(visualized),
                 decodeRgb<float>(color)
         });
     }
