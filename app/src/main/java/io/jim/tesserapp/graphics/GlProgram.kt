@@ -1,4 +1,4 @@
-package io.jim.tesserapp.cpp.graphics
+package io.jim.tesserapp.graphics
 
 import android.content.res.AssetManager
 import android.opengl.GLES20
@@ -48,7 +48,7 @@ class GlProgram(
         if (GLES20.GL_TRUE != resultCode()) {
             throw GlException("Cannot validate program: ${GLES20.glGetProgramInfoLog(handle)}")
         }
-    
+        
         GlException.check("Program initialization")
     }
     
@@ -60,11 +60,11 @@ class GlProgram(
     inline fun bound(crossinline f: () -> Unit) {
         if (0 != resultCode { GLES20.glGetIntegerv(GLES20.GL_CURRENT_PROGRAM, resultCode) })
             throw RuntimeException("Another program is currently used.")
-    
+        
         GLES20.glUseProgram(handle)
-    
+        
         f()
-    
+        
         GLES20.glUseProgram(0)
     }
     

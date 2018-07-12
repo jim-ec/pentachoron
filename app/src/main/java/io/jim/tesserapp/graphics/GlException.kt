@@ -1,4 +1,4 @@
-package io.jim.tesserapp.cpp.graphics
+package io.jim.tesserapp.graphics
 
 import android.opengl.GLES20
 

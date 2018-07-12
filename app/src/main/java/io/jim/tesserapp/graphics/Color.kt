@@ -1,4 +1,4 @@
-package io.jim.tesserapp.cpp.graphics
+package io.jim.tesserapp.graphics
 
 data class Color(
         val red: Float,

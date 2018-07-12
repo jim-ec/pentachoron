@@ -1,10 +1,8 @@
-package io.jim.tesserapp.cpp
+package io.jim.tesserapp.graphics
 
 import android.opengl.GLES20
-import io.jim.tesserapp.cpp.graphics.GlVertexBuffer
-import io.jim.tesserapp.cpp.graphics.Shader
 
-fun  generateVertexBuffer(shader: Shader) = GlVertexBuffer(GLES20.GL_LINES) {
+fun instructVertexAttributePointers(shader: Shader) {
     // Position attribute:
     GLES20.glEnableVertexAttribArray(shader.positionAttributeLocation)
     GLES20.glVertexAttribPointer(

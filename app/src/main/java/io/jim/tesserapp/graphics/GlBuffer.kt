@@ -1,7 +1,6 @@
-package io.jim.tesserapp.cpp.graphics
+package io.jim.tesserapp.graphics
 
 import android.opengl.GLES20
-import io.jim.tesserapp.cpp.FLOAT_BYTE_LENGTH
 
 /**
  * GL Buffer.

@@ -4,8 +4,8 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import io.jim.tesserapp.cpp.graphics.Color
 import io.jim.tesserapp.geometry.SymbolicColorMapping
+import io.jim.tesserapp.graphics.Color
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.ui.view.themedColorInt
 import io.jim.tesserapp.util.synchronized

@@ -3,10 +3,10 @@ package io.jim.tesserapp.ui.view
 import android.content.res.AssetManager
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
-import io.jim.tesserapp.cpp.generateVertexBuffer
-import io.jim.tesserapp.cpp.graphics.Color
-import io.jim.tesserapp.cpp.graphics.GlVertexBuffer
-import io.jim.tesserapp.cpp.graphics.Shader
+import io.jim.tesserapp.graphics.Color
+import io.jim.tesserapp.graphics.GlBuffer
+import io.jim.tesserapp.graphics.Shader
+import io.jim.tesserapp.graphics.instructVertexAttributePointers
 import io.jim.tesserapp.ui.model.MainViewModel
 import io.jim.tesserapp.util.synchronized
 import java.nio.DoubleBuffer
@@ -23,7 +23,7 @@ class Renderer(
         val dpi: Double) : GLSurfaceView.Renderer {
     
     private lateinit var shader: Shader
-    private lateinit var vertexBuffer: GlVertexBuffer
+    private lateinit var vertexBuffer: GlBuffer
     
     private var aspectRatio: Double = 1.0
     
@@ -69,7 +69,7 @@ class Renderer(
         shader = Shader(assets)
         
         // Construct vertex buffer:
-        vertexBuffer = generateVertexBuffer(shader)
+        vertexBuffer = GlBuffer(GLES20.GL_ARRAY_BUFFER, GLES20.GL_STATIC_DRAW)
     }
     
     /**
@@ -80,6 +80,10 @@ class Renderer(
         aspectRatio = width.toDouble() / height
     }
     
+    /**
+     * Uploads the view matrix.
+     * Requires the GL program to be bound.
+     */
     external fun uploadViewMatrix(
             uniformLocation: Int,
             distance: Double,
@@ -88,10 +92,20 @@ class Renderer(
             verticalRotation: Double
     )
     
+    /**
+     * Uploads the projection matrix.
+     * Requires the GL program to be bound.
+     */
     external fun uploadProjectionMatrix(
             uniformLocation: Int
     )
     
+    /**
+     * Draws a single geometry.
+     * Requires the GL program to be bound.
+     * Requires the VBO bound to GL_ARRAY_BUFFER.
+     * Vertex attribute pointers must be instructed before drawing anything.
+     */
     external fun drawGeometry(
             positions: DoubleBuffer,
             transform: DoubleArray,
@@ -125,9 +139,9 @@ class Renderer(
                     val transform = geometry.onTransformUpdate()
                     val color = symbolicColorMapping[geometry.color]
     
-                    vertexBuffer.buffer.bound {
-                        vertexBuffer.instructVertexAttributePointers()
-        
+                    vertexBuffer.bound {
+                        instructVertexAttributePointers(shader)
+                        
                         drawGeometry(
                                 geometry.positions,
                                 transform.data,

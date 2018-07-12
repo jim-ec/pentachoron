@@ -1,4 +1,4 @@
-package io.jim.tesserapp.cpp.graphics
+package io.jim.tesserapp.graphics
 
 import android.content.res.AssetManager
 import android.opengl.GLES20
@@ -41,13 +41,13 @@ class GlShader(assets: AssetManager, fileName: String) {
         
         // Compile shader and check for success:
         GLES20.glCompileShader(handle)
-    
+        
         GLES20.glGetShaderiv(handle, GLES20.GL_COMPILE_STATUS, resultCode)
         if (GLES20.GL_TRUE != resultCode()) {
             throw GlException("Cannot compile vertex shader: " +
                     GLES20.glGetShaderInfoLog(handle))
         }
-    
+        
         GlException.check("Shader initialization")
     }
     

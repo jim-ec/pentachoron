@@ -1,6 +1,6 @@
 package io.jim.tesserapp.geometry
 
-import io.jim.tesserapp.cpp.graphics.Color
+import io.jim.tesserapp.graphics.Color
 
 /**
  * Symbolic colors.

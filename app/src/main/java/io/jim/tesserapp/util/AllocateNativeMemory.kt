@@ -1,6 +1,6 @@
 package io.jim.tesserapp.util
 
-import io.jim.tesserapp.cpp.FLOAT_BYTE_LENGTH
+import io.jim.tesserapp.graphics.FLOAT_BYTE_LENGTH
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
