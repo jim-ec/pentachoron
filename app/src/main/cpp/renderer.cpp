@@ -19,7 +19,6 @@ using namespace fmath;
 namespace {
     
     static const std::size_t FLOATS_PER_VECTOR = 4;
-    static const std::size_t VECTORS_PER_VERTEX = 2;
     
     /**
      * Vertex, containing a position and a color.
@@ -37,6 +36,21 @@ namespace {
         ) : position{position}, w{1.0f}, color{color}, alpha{1.0f} {}
     };
 }
+
+/**
+ * Names array indices of the Transform data array.
+ * See the Kotlin implementation of 'Transform' to checkout the layout.
+ */
+enum class Transform {
+    ROTATION_X,
+    ROTATION_Y,
+    ROTATION_Z,
+    ROTATION_Q,
+    TRANSLATION_X,
+    TRANSLATION_Y,
+    TRANSLATION_Z,
+    TRANSLATION_Q
+};
 
 /**
  * Create a model matrix according to transform parameters.
@@ -96,7 +110,7 @@ Java_io_jim_tesserapp_ui_view_Renderer_uploadProjectionMatrix(
 ) -> void {
     auto const matrix = perspective<float>(0.1f, 100.0f);
     glUniformMatrix4fv(uniformLocation, 1, GL_FALSE,
-            reinterpret_cast<const GLfloat *>(matrix.coefficients.data()));
+            reinterpret_cast<GLfloat const *>(matrix.coefficients.data()));
 }
 
 /**
@@ -114,41 +128,20 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
         jboolean const isFourDimensional
 ) -> void {
     
-    glEnableVertexAttribArray(positionAttributeLocation);
-    glVertexAttribPointer(
-            positionAttributeLocation,
-            FLOATS_PER_VECTOR,
-            GL_FLOAT,
-            GL_FALSE,
-            sizeof(Vertex),
-            reinterpret_cast<void const *>(offsetof(Vertex, position))
-    );
-    
-    glEnableVertexAttribArray(colorAttributeLocation);
-    glVertexAttribPointer(
-            colorAttributeLocation,
-            FLOATS_PER_VECTOR,
-            GL_FLOAT,
-            GL_FALSE,
-            sizeof(Vertex),
-            reinterpret_cast<void const *>(offsetof(Vertex, color))
-    );
-    
     // Get transform array, containing rotation and translation in a double-array:
     const auto transform = env->GetDoubleArrayElements(transformArray, nullptr);
     
     // Construct geometry model matrix.
     // Each entry of the transform array holds x/y/z/q rotation/translation.
-    // See the Kotlin implementation of 'Transform' to checkout the layout.
     auto const matrix = modelMatrix(
-            transform[0],
-            transform[1],
-            transform[2],
-            transform[3],
-            transform[4],
-            transform[5],
-            transform[6],
-            transform[7]
+            transform[static_cast<int>(Transform::ROTATION_X)],
+            transform[static_cast<int>(Transform::ROTATION_Y)],
+            transform[static_cast<int>(Transform::ROTATION_Z)],
+            transform[static_cast<int>(Transform::ROTATION_Q)],
+            transform[static_cast<int>(Transform::TRANSLATION_X)],
+            transform[static_cast<int>(Transform::TRANSLATION_Y)],
+            transform[static_cast<int>(Transform::TRANSLATION_Z)],
+            transform[static_cast<int>(Transform::TRANSLATION_Q)]
     );
     
     env->ReleaseDoubleArrayElements(transformArray, transform, 0);
@@ -184,13 +177,33 @@ Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
         });
     }
     
+    glEnableVertexAttribArray(positionAttributeLocation);
+    glVertexAttribPointer(
+            positionAttributeLocation,
+            FLOATS_PER_VECTOR,
+            GL_FLOAT,
+            GL_FALSE,
+            sizeof(Vertex),
+            reinterpret_cast<void const *>(offsetof(Vertex, position))
+    );
+    
+    glEnableVertexAttribArray(colorAttributeLocation);
+    glVertexAttribPointer(
+            colorAttributeLocation,
+            FLOATS_PER_VECTOR,
+            GL_FLOAT,
+            GL_FALSE,
+            sizeof(Vertex),
+            reinterpret_cast<void const *>(offsetof(Vertex, color))
+    );
+    
     // Actual buffer has already been bound on Kotlin side.
     glBufferData(GL_ARRAY_BUFFER,
             vertices.size() * sizeof(Vertex),
             vertices.data(),
             GL_DYNAMIC_DRAW);
     
-    glDrawArrays(GL_LINES, 0, static_cast<GLsizei>(vertices.size() * VECTORS_PER_VERTEX));
+    glDrawArrays(GL_LINES, 0, static_cast<GLsizei>(vertices.size()));
 }
 
 #ifdef __cplusplus
