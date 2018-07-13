@@ -7,17 +7,11 @@
     android:orientation="vertical"
     tools:context="io.jim.tesserapp.MainActivity">
 
-    <androidx.cardview.widget.CardView
+    <io.jim.tesserapp.ui.view.GraphicsView
+        android:id="@+id/graphicsView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2">
-
-        <io.jim.tesserapp.ui.view.GraphicsView
-            android:id="@+id/graphicsView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </androidx.cardview.widget.CardView>
+        android:layout_weight="2" />
 
     <ScrollView
         android:id="@+id/controlsScroller"
@@ -33,6 +27,5 @@
         </io.jim.tesserapp.ui.view.ControllerView>
 
     </ScrollView>
-
 
 </LinearLayout>
