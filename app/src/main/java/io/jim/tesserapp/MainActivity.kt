@@ -1,9 +1,9 @@
 package io.jim.tesserapp
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
 import io.jim.tesserapp.geometry.SymbolicColorMapping
 import io.jim.tesserapp.gl.Color
 import io.jim.tesserapp.ui.model.MainViewModel

@@ -2,8 +2,8 @@ package io.jim.tesserapp.ui.view
 
 import android.content.Context
 import android.graphics.Color
-import android.support.annotation.AttrRes
-import android.support.annotation.ColorInt
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
 import io.jim.tesserapp.R
 
 /**

@@ -1,6 +1,6 @@
 package io.jim.tesserapp.ui.model
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import io.jim.tesserapp.util.synchronized
 
 /**
