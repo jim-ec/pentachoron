@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         // Set theme according to a shared preference.
         // Light theme is the default, and need not to be set explicitly therefore.
         if (getPreferences(Context.MODE_PRIVATE).getBoolean(
-                        getString(R.string.pref_dark_theme_enabled), false)
+                        getString(R.string.pref_dark_theme_key), false)
         ) {
             setTheme(R.style.DarkTheme)
         }

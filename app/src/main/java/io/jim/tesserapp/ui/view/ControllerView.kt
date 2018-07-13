@@ -31,7 +31,7 @@ class ControllerView : FrameLayout {
         // Set theme-switch-button to currently set theme:
         darkThemeSwitch.isChecked = with(context as Activity) {
             getPreferences(Context.MODE_PRIVATE)
-                    .getBoolean(getString(R.string.pref_dark_theme_enabled), false)
+                    .getBoolean(getString(R.string.pref_dark_theme_key), false)
         }
         
         // Theme-switch-button triggers the activity to be recreated, with a new theme.
@@ -42,7 +42,7 @@ class ControllerView : FrameLayout {
                 
                 // Remember selected theme choice in shared preferences.
                 with(getPreferences(Context.MODE_PRIVATE).edit()) {
-                    putBoolean(getString(R.string.pref_dark_theme_enabled), isChecked)
+                    putBoolean(getString(R.string.pref_dark_theme_key), isChecked)
                     apply()
                 }
                 
