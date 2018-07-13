@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/appbar_menu_options"
+        android:title="@string/appbar_menu_preferences"
+        android:icon="@drawable/ic_preferences"
+        app:showAsAction="always"
+        app:iconTint="?android:attr/editTextColor"
+        tools:ignore="AppCompatResource" />
+
+</menu>

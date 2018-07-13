@@ -20,6 +20,8 @@
     <string name="camera_distance">Distance</string>
     <string name="camera_distance_watch_format" translatable="false">%s</string>
 
+    <string name="appbar_menu_preferences">Preferences</string>
+
     <string name="pref_grid_title">Grid</string>
     <string name="pref_grid_key" translatable="false">io.jim.tesserapp.PREF_GRID_KEY</string>
 

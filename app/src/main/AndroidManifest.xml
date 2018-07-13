@@ -15,9 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
 
-        <activity
-            android:name=".MainActivity"
-            android:theme="@style/LightTheme">
+        <activity android:name=".MainActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -33,7 +32,10 @@
                     android:host="www.tesserapp.io"
                     android:scheme="http" />
             </intent-filter>
+
         </activity>
+
+        <activity android:name=".PreferencesActivity" />
 
     </application>
 

@@ -1,7 +1,10 @@
 package io.jim.tesserapp
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import io.jim.tesserapp.geometry.SymbolicColorMapping
@@ -17,6 +20,23 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     
     lateinit var viewModel: MainViewModel
+    
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.appbar_menu, menu)
+        return true
+    }
+    
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        item ?: return false
+        
+        when(item.itemId) {
+            R.id.appbar_menu_options -> {
+                startActivity(Intent(this, PreferencesActivity::class.java))
+            }
+        }
+        
+        return true
+    }
     
     /**
      * Initialize activity.
@@ -47,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         }
         
         setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbar)
         
         // Associate the controller with the graphics view to control:
         controllerView.targetGraphicsView = graphicsView

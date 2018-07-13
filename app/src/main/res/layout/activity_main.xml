@@ -1,31 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="io.jim.tesserapp.MainActivity">
+    android:layout_height="match_parent">
 
-    <io.jim.tesserapp.ui.view.GraphicsView
-        android:id="@+id/graphicsView"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2" />
+        android:layout_height="match_parent">
 
-    <ScrollView
-        android:id="@+id/controlsScroller"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <io.jim.tesserapp.ui.view.ControllerView
-            android:id="@+id/controllerView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context="io.jim.tesserapp.MainActivity">
 
-        </io.jim.tesserapp.ui.view.ControllerView>
+            <io.jim.tesserapp.ui.view.GraphicsView
+                android:id="@+id/graphicsView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2" />
 
-    </ScrollView>
+            <ScrollView
+                android:id="@+id/controlsScroller"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
-</LinearLayout>
+                <io.jim.tesserapp.ui.view.ControllerView
+                    android:id="@+id/controllerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </io.jim.tesserapp.ui.view.ControllerView>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:title="@string/app_name" />
+
+    </FrameLayout>
+
+</com.google.android.material.appbar.AppBarLayout>
