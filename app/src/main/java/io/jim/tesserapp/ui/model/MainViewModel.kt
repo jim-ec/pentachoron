@@ -12,60 +12,6 @@ import io.jim.tesserapp.util.synchronized
 class MainViewModel : ViewModel() {
     
     /**
-     * The featured geometry.
-     */
-    val featuredGeometry = Geometry(
-            name = "Featured Geometry",
-            isFourDimensional = true,
-            onTransformUpdate = {
-                synchronized {
-                    Transform(
-                            rotationX = rotationX.smoothed * Math.PI,
-                            rotationY = rotationY.smoothed * Math.PI,
-                            rotationZ = rotationZ.smoothed * Math.PI,
-                            rotationQ = rotationQ.smoothed * Math.PI,
-                            translationX = translationX.smoothed,
-                            translationY = translationY.smoothed,
-                            translationZ = translationZ.smoothed,
-                            translationQ = translationQ.smoothed
-                    )
-                }
-            },
-            lines = extruded(
-                    quadrilateral(
-                            Position(2.0, 2.0, 2.0, 0.0),
-                            Position(-2.0, 2.0, 2.0, 0.0),
-                            Position(-2.0, -2.0, 2.0, 0.0),
-                            Position(2.0, -2.0, 2.0, 0.0)),
-                    direction = Position(0.0, 0.0, -4.0, 0.0)
-            ),
-            color = SymbolicColor.ACCENT
-    )
-    
-    /**
-     * The grid geometry representing a cartesian coordinate system unit grid.
-     */
-    val gridGeometry = Geometry(
-            name = "Grid",
-            lines = gridOmitAxisIndicator(),
-            onTransformUpdate = { Transform() },
-            color = SymbolicColor.PRIMARY
-    )
-    
-    /**
-     * Enable or disable grid rendering.
-     */
-    var enableGrid: Boolean
-        set(value) {
-            if (value) {
-                geometries += gridGeometry
-            } else {
-                geometries -= gridGeometry
-            }
-        }
-        get() = geometries.contains(gridGeometry)
-    
-    /**
      * List containing all geometries.
      *
      * The geometries are kept inside a hash-set instead of in a simply list because
@@ -75,20 +21,66 @@ class MainViewModel : ViewModel() {
      * This happens because this set outlives the UI, and the UI may initially add
      * geometry to the set each time the UI is set up.
      */
-    val geometries = HashSet<Geometry>().also {
-        it += featuredGeometry
+    val geometries = HashSet<Geometry>()
     
-        it += Geometry("X-Axis",
+    /**
+     * Create geometry, replacing any previously existing one.
+     */
+    fun createGeometries(
+            featuredGeometryName: String,
+            enableGrid: Boolean
+    ) {
+        // Reset any previous state:
+        geometries.clear()
+        
+        geometries += Geometry(
+                name = featuredGeometryName,
+                isFourDimensional = true,
+                onTransformUpdate = {
+                    synchronized {
+                        Transform(
+                                rotationX = rotationX.smoothed * Math.PI,
+                                rotationY = rotationY.smoothed * Math.PI,
+                                rotationZ = rotationZ.smoothed * Math.PI,
+                                rotationQ = rotationQ.smoothed * Math.PI,
+                                translationX = translationX.smoothed,
+                                translationY = translationY.smoothed,
+                                translationZ = translationZ.smoothed,
+                                translationQ = translationQ.smoothed
+                        )
+                    }
+                },
+                lines = extruded(
+                        quadrilateral(
+                                Position(2.0, 2.0, 2.0, 0.0),
+                                Position(-2.0, 2.0, 2.0, 0.0),
+                                Position(-2.0, -2.0, 2.0, 0.0),
+                                Position(2.0, -2.0, 2.0, 0.0)),
+                        direction = Position(0.0, 0.0, -4.0, 0.0)
+                ),
+                color = SymbolicColor.ACCENT
+        )
+        
+        geometries += Geometry("X-Axis",
                 lines = listOf(Line(Position(0.0, 0.0, 0.0, 0.0), Position(1.0, 0.0, 0.0, 0.0))),
                 color = SymbolicColor.X)
-    
-        it += Geometry("Y-Axis",
+        
+        geometries += Geometry("Y-Axis",
                 lines = listOf(Line(Position(0.0, 0.0, 0.0, 0.0), Position(0.0, 1.0, 0.0, 0.0))),
                 color = SymbolicColor.Y)
-    
-        it += Geometry("Z-Axis",
+        
+        geometries += Geometry("Z-Axis",
                 lines = listOf(Line(Position(0.0, 0.0, 0.0, 0.0), Position(0.0, 0.0, 1.0, 0.0))),
                 color = SymbolicColor.Z)
+        
+        if (enableGrid) {
+            geometries += Geometry(
+                    name = "Grid",
+                    lines = gridOmitAxisIndicator(),
+                    onTransformUpdate = { Transform() },
+                    color = SymbolicColor.PRIMARY
+            )
+        }
     }
     
     /**
@@ -140,13 +132,19 @@ class MainViewModel : ViewModel() {
      * Rotation on the horizontal orbit.
      * This is the base rotation.
      */
-    val horizontalCameraRotation = SmoothedLiveData(initialValue = Math.PI / 3.0, transitionInterval = 80.0)
+    val horizontalCameraRotation = SmoothedLiveData(
+            initialValue = Math.PI / 3.0,
+            transitionInterval = 80.0
+    )
     
     /**
      * Rotation on the vertical orbit.
      * This is the secondary rotation.
      */
-    val verticalCameraRotation = SmoothedLiveData(initialValue = -Math.PI / 8.0, transitionInterval = 80.0)
+    val verticalCameraRotation = SmoothedLiveData(
+            initialValue = -Math.PI / 8.0,
+            transitionInterval = 80.0
+    )
     
     val cameraFovX = SmoothedLiveData(initialValue = 60.0, transitionInterval = 80.0)
     
@@ -158,7 +156,5 @@ class MainViewModel : ViewModel() {
             z = Color.BLACK,
             q = Color.BLACK
     )
-    
-    var fourthDimensionVisualizationMode = VisualizationMode.PROJECT_WIREFRAME
     
 }
