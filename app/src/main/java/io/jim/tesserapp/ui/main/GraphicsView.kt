@@ -7,6 +7,8 @@ import android.view.MotionEvent
 import android.view.MotionEvent.*
 import io.jim.tesserapp.graphics.Renderer
 import io.jim.tesserapp.graphics.gl.Color
+import io.jim.tesserapp.util.CONSUMED
+import io.jim.tesserapp.util.NOT_CONSUMED
 import io.jim.tesserapp.util.themedColorInt
 
 /**
@@ -55,7 +57,7 @@ class GraphicsView : GLSurfaceView {
                     touchStartPositionX = event.x
                     touchStartPositionY = event.y
                     touchStartTime = System.currentTimeMillis()
-                    true
+                    CONSUMED
                 }
                 event.action == ACTION_MOVE -> {
                     val dx = event.x - touchStartPositionX
@@ -66,22 +68,19 @@ class GraphicsView : GLSurfaceView {
     
                     touchStartPositionX = event.x
                     touchStartPositionY = event.y
-                    true
+                    CONSUMED
                 }
                 event.action == ACTION_UP
                         && System.currentTimeMillis() - touchStartTime < CLICK_TIME_MS -> {
                     performClick()
-                    true
+                    CONSUMED
                 }
-                else -> false
+                else -> NOT_CONSUMED
             }
     
-    /**
-     * Clicks rewind camera position to default.
-     */
     override fun performClick(): Boolean {
         super.performClick()
-        return true
+        return CONSUMED
     }
     
 }
