@@ -6,10 +6,6 @@ data class Position(
         val z: Double,
         val q: Double
 ) {
-    /**
-     * Copy constructor, cloning [rhs].
-     */
-    constructor(rhs: Position) : this(rhs.x, rhs.y, rhs.z, rhs.q)
     
     /**
      * Return this vector component-wise added to [rhs].
