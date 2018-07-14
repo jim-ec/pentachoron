@@ -1,4 +1,4 @@
-package io.jim.tesserapp
+package io.jim.tesserapp.util
 
 /**
  * Can be used when indicated an event was consumed by a function.

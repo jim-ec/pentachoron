@@ -83,7 +83,7 @@ static auto modelMatrix(
  * Upload the view matrix.
  */
 JNIEXPORT auto JNICALL
-Java_io_jim_tesserapp_ui_view_Renderer_uploadViewMatrix(
+Java_io_jim_tesserapp_graphics_Renderer_uploadViewMatrix(
         JNIEnv *const,
         jobject const,
         jint const uniformLocation,
@@ -107,7 +107,7 @@ Java_io_jim_tesserapp_ui_view_Renderer_uploadViewMatrix(
  * Upload the projection matrix.
  */
 JNIEXPORT auto JNICALL
-Java_io_jim_tesserapp_ui_view_Renderer_uploadProjectionMatrix(
+Java_io_jim_tesserapp_graphics_Renderer_uploadProjectionMatrix(
         JNIEnv *const,
         jobject const,
         jint const uniformLocation
@@ -121,7 +121,7 @@ Java_io_jim_tesserapp_ui_view_Renderer_uploadProjectionMatrix(
  * Draw a single geometry.
  */
 JNIEXPORT auto JNICALL
-Java_io_jim_tesserapp_ui_view_Renderer_drawGeometry(
+Java_io_jim_tesserapp_graphics_Renderer_drawGeometry(
         JNIEnv *const env,
         jobject const,
         GLuint const positionAttributeLocation,

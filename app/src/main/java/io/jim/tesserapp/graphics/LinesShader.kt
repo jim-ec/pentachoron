@@ -2,7 +2,7 @@ package io.jim.tesserapp.graphics
 
 import android.content.res.AssetManager
 import android.opengl.GLES20
-import io.jim.tesserapp.gl.Program
+import io.jim.tesserapp.graphics.gl.Program
 
 /**
  * Shader responsible for drawing lines.

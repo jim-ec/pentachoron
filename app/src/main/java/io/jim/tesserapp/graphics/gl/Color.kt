@@ -1,4 +1,4 @@
-package io.jim.tesserapp.gl
+package io.jim.tesserapp.graphics.gl
 
 /**
  * A RGB color.

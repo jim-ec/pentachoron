@@ -1,8 +1,9 @@
-package io.jim.tesserapp
+package io.jim.tesserapp.ui.preferences
 
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.preference.CheckBoxPreference
+import io.jim.tesserapp.R
+import io.jim.tesserapp.util.CONSUMED
 
 class PreferencesFragment : androidx.preference.PreferenceFragmentCompat() {
     

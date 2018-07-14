@@ -1,4 +1,4 @@
-package io.jim.tesserapp.ui.model
+package io.jim.tesserapp.ui.main
 
 import androidx.lifecycle.ViewModel
 import io.jim.tesserapp.geometry.*

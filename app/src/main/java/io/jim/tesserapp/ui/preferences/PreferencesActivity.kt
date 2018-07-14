@@ -1,4 +1,4 @@
-package io.jim.tesserapp
+package io.jim.tesserapp.ui.preferences
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

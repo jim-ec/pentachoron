@@ -1,4 +1,4 @@
-package io.jim.tesserapp.ui.view
+package io.jim.tesserapp.util
 
 import android.content.Context
 import android.graphics.Color

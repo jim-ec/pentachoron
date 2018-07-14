@@ -1,12 +1,13 @@
-package io.jim.tesserapp.ui.view
+package io.jim.tesserapp.ui.main
 
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.*
-import io.jim.tesserapp.MainActivity
-import io.jim.tesserapp.gl.Color
+import io.jim.tesserapp.graphics.Renderer
+import io.jim.tesserapp.graphics.gl.Color
+import io.jim.tesserapp.util.themedColorInt
 
 /**
  * A view capable of rendering 3D geometry.

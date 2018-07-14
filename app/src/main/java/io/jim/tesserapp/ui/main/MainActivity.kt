@@ -1,4 +1,4 @@
-package io.jim.tesserapp
+package io.jim.tesserapp.ui.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,13 +6,11 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
+import io.jim.tesserapp.R
 import io.jim.tesserapp.geometry.SymbolicColorMapping
-import io.jim.tesserapp.gl.Color
-import io.jim.tesserapp.ui.model.MainViewModel
-import io.jim.tesserapp.ui.view.themedColorInt
-import io.jim.tesserapp.util.gridPreference
-import io.jim.tesserapp.util.preferenceThemeId
-import io.jim.tesserapp.util.synchronized
+import io.jim.tesserapp.graphics.gl.Color
+import io.jim.tesserapp.ui.preferences.PreferencesActivity
+import io.jim.tesserapp.util.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**

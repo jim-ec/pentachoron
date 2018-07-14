@@ -1,15 +1,10 @@
-package io.jim.tesserapp.ui.view
+package io.jim.tesserapp.ui.main
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
-import io.jim.tesserapp.MainActivity
 import io.jim.tesserapp.R
-import io.jim.tesserapp.ui.model.Controller
-import io.jim.tesserapp.ui.model.cameraDistanceController
-import io.jim.tesserapp.ui.model.rotationController
-import io.jim.tesserapp.ui.model.translationController
 import kotlinx.android.synthetic.main.view_controller.view.*
 
 

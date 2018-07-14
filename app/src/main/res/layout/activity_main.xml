@@ -14,9 +14,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            tools:context="io.jim.tesserapp.MainActivity">
+            tools:context="io.jim.tesserapp.ui.main.MainActivity">
 
-            <io.jim.tesserapp.ui.view.GraphicsView
+            <io.jim.tesserapp.ui.main.GraphicsView
                 android:id="@+id/graphicsView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -28,12 +28,12 @@
                 android:layout_height="0dp"
                 android:layout_weight="1">
 
-                <io.jim.tesserapp.ui.view.ControllerView
+                <io.jim.tesserapp.ui.main.ControllerView
                     android:id="@+id/controllerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                </io.jim.tesserapp.ui.view.ControllerView>
+                </io.jim.tesserapp.ui.main.ControllerView>
 
             </ScrollView>
 

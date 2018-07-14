@@ -1,12 +1,11 @@
-package io.jim.tesserapp.ui.view
+package io.jim.tesserapp.graphics
 
 import android.content.res.AssetManager
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
-import io.jim.tesserapp.gl.Color
-import io.jim.tesserapp.gl.Vbo
-import io.jim.tesserapp.graphics.LinesShader
-import io.jim.tesserapp.ui.model.MainViewModel
+import io.jim.tesserapp.graphics.gl.Color
+import io.jim.tesserapp.graphics.gl.Vbo
+import io.jim.tesserapp.ui.main.MainViewModel
 import io.jim.tesserapp.util.synchronized
 import java.nio.DoubleBuffer
 import javax.microedition.khronos.egl.EGLConfig

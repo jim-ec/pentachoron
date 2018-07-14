@@ -1,4 +1,4 @@
-package io.jim.tesserapp.ui.model
+package io.jim.tesserapp.ui.main
 
 import android.content.Context
 import android.widget.SeekBar
@@ -6,10 +6,10 @@ import android.widget.TextView
 import io.jim.tesserapp.R
 
 /**
- * Controller targeting the camera distance.
+ * Controller targeting the translation.
  *
  * @receiver
- * The view model containing the [MainViewModel.cameraDistance].
+ * The view model containing the targeting live data.
  * Need not to be externally synchronized, as that's done internally.
  *
  * @param context
@@ -21,16 +21,20 @@ import io.jim.tesserapp.R
  * @param watch
  * Text view representing the current camera distance.
  *
+ * @param liveData
+ * Runs on the receiving view model.
+ * Returns the live data to be controlled.
  */
-fun MainViewModel.cameraDistanceController(
+fun MainViewModel.translationController(
         context: Context,
         seekBar: SeekBar,
-        watch: TextView
+        watch: TextView,
+        liveData: MainViewModel.() -> MutableLiveDataNonNull<Double>
 ) = Controller(
         viewModel = this,
-        liveData = { cameraDistance },
+        liveData = liveData,
         seekBar = seekBar,
         watch = watch,
-        watchFormatString = context.getString(R.string.camera_distance_watch_format),
-        valueRange = 3.0..15.0
+        watchFormatString = context.getString(R.string.transform_translation_watch_format),
+        valueRange = -5.0..5.0
 )

@@ -1,4 +1,4 @@
-package io.jim.tesserapp.ui.model
+package io.jim.tesserapp.ui.main
 
 import android.content.Context
 import android.widget.SeekBar
@@ -6,10 +6,10 @@ import android.widget.TextView
 import io.jim.tesserapp.R
 
 /**
- * Controller targeting the rotation, in units of Pi.
+ * Controller targeting the camera distance.
  *
  * @receiver
- * The view model containing the targeting live data.
+ * The view model containing the [MainViewModel.cameraDistance].
  * Need not to be externally synchronized, as that's done internally.
  *
  * @param context
@@ -21,20 +21,16 @@ import io.jim.tesserapp.R
  * @param watch
  * Text view representing the current camera distance.
  *
- * @param liveData
- * Runs on the receiving view model.
- * Returns the live data to be controlled.
  */
-fun MainViewModel.rotationController(
+fun MainViewModel.cameraDistanceController(
         context: Context,
         seekBar: SeekBar,
-        watch: TextView,
-        liveData: MainViewModel.() -> MutableLiveDataNonNull<Double>
+        watch: TextView
 ) = Controller(
         viewModel = this,
-        liveData = liveData,
+        liveData = { cameraDistance },
         seekBar = seekBar,
         watch = watch,
-        watchFormatString = context.getString(R.string.transform_rotation_watch_format),
-        valueRange = 0.0..2.0
+        watchFormatString = context.getString(R.string.camera_distance_watch_format),
+        valueRange = 3.0..15.0
 )
