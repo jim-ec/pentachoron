@@ -139,7 +139,6 @@ class Renderer(
                 geometries.forEach { geometry ->
                     
                     val transform = geometry.onTransformUpdate()
-                    val color = symbolicColorMapping[geometry.color]
     
                     vertexVbo.bound {
     
@@ -150,7 +149,7 @@ class Renderer(
                                 linesShader.colorAttributeLocation,
                                 geometry.positions,
                                 transform.data,
-                                color.code,
+                                geometry.color.code,
                                 geometry.isFourDimensional
                         )
     

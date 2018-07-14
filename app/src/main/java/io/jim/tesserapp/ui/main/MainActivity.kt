@@ -7,7 +7,6 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import io.jim.tesserapp.R
-import io.jim.tesserapp.geometry.SymbolicColorMapping
 import io.jim.tesserapp.graphics.gl.Color
 import io.jim.tesserapp.ui.preferences.PreferencesActivity
 import io.jim.tesserapp.util.*
@@ -71,17 +70,6 @@ class MainActivity : AppCompatActivity() {
         // Fetch view model:
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         
-        viewModel.synchronized {
-            symbolicColorMapping = SymbolicColorMapping(
-                    primary = Color(themedColorInt(R.attr.colorPrimaryGeometry)),
-                    accent = Color(themedColorInt(R.attr.colorAccent)),
-                    x = Color(themedColorInt(R.attr.colorAxisX)),
-                    y = Color(themedColorInt(R.attr.colorAxisY)),
-                    z = Color(themedColorInt(R.attr.colorAxisZ)),
-                    q = Color(themedColorInt(R.attr.colorAccent))
-            )
-        }
-        
         // Set theme, which is only possible during this callback:
         setTheme(preferenceThemeId())
         setContentView(R.layout.activity_main)
@@ -90,7 +78,12 @@ class MainActivity : AppCompatActivity() {
         // Generate geometry:
         viewModel.createGeometries(
                 featuredGeometryName = getString(R.string.tesseract),
-                enableGrid = gridPreference()
+                enableGrid = gridPreference(),
+                primaryColor = Color(themedColorInt(R.attr.colorPrimaryGeometry)),
+                accentColor = Color(themedColorInt(R.attr.colorAccent)),
+                xColor = Color(themedColorInt(R.attr.colorAxisX)),
+                yColor = Color(themedColorInt(R.attr.colorAxisY)),
+                zColor = Color(themedColorInt(R.attr.colorAxisZ))
         )
         
         // Associate the controller with the graphics view to control:

@@ -1,5 +1,6 @@
 package io.jim.tesserapp.geometry
 
+import io.jim.tesserapp.graphics.gl.Color
 import io.jim.tesserapp.util.allocateNativeMemory
 
 /**
@@ -14,7 +15,7 @@ class Geometry(
         val onTransformUpdate: () -> Transform = { Transform() },
         val isFourDimensional: Boolean = false,
         lines: List<Line>,
-        val color: SymbolicColor
+        val color: Color
 ) {
     
     /**

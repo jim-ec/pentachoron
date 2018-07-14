@@ -1,5 +1,6 @@
 package io.jim.tesserapp.geometry
 
+import io.jim.tesserapp.graphics.gl.Color
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -19,7 +20,7 @@ class GeometryTest {
                 "Test geometry",
                 lines = quadrilateral(a, b, c, d),
                 onTransformUpdate = { Transform() },
-                color = SymbolicColor.PRIMARY
+                color = Color.BLACK
         ).apply {
     
             assertEquals(8 * 4, positions.limit() - positions.position())

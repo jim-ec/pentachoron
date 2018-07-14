@@ -28,7 +28,12 @@ class MainViewModel : ViewModel() {
      */
     fun createGeometries(
             featuredGeometryName: String,
-            enableGrid: Boolean
+            enableGrid: Boolean,
+            primaryColor: Color,
+            accentColor: Color,
+            xColor: Color,
+            yColor: Color,
+            zColor: Color
     ) {
         // Reset any previous state:
         geometries.clear()
@@ -61,27 +66,27 @@ class MainViewModel : ViewModel() {
                         ),
                         direction = Position(0.0, 0.0, 0.0, 2.0)
                 ),
-                color = SymbolicColor.ACCENT
+                color = accentColor
         )
         
         geometries += Geometry("X-Axis",
                 lines = listOf(Line(Position(0.0, 0.0, 0.0, 0.0), Position(1.0, 0.0, 0.0, 0.0))),
-                color = SymbolicColor.X)
+                color = xColor)
         
         geometries += Geometry("Y-Axis",
                 lines = listOf(Line(Position(0.0, 0.0, 0.0, 0.0), Position(0.0, 1.0, 0.0, 0.0))),
-                color = SymbolicColor.Y)
+                color = yColor)
         
         geometries += Geometry("Z-Axis",
                 lines = listOf(Line(Position(0.0, 0.0, 0.0, 0.0), Position(0.0, 0.0, 1.0, 0.0))),
-                color = SymbolicColor.Z)
+                color = zColor)
         
         if (enableGrid) {
             geometries += Geometry(
                     name = "Grid",
                     lines = gridOmitAxisIndicator(),
                     onTransformUpdate = { Transform() },
-                    color = SymbolicColor.PRIMARY
+                    color = primaryColor
             )
         }
     }
@@ -150,14 +155,5 @@ class MainViewModel : ViewModel() {
     )
     
     val cameraFovX = SmoothedLiveData(initialValue = 60.0, transitionInterval = 80.0)
-    
-    var symbolicColorMapping = SymbolicColorMapping(
-            primary = Color.BLACK,
-            accent = Color.BLACK,
-            x = Color.BLACK,
-            y = Color.BLACK,
-            z = Color.BLACK,
-            q = Color.BLACK
-    )
     
 }
