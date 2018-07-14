@@ -2,7 +2,7 @@ package io.jim.tesserapp.ui.model
 
 import androidx.lifecycle.ViewModel
 import io.jim.tesserapp.geometry.*
-import io.jim.tesserapp.gl.Color
+import io.jim.tesserapp.graphics.gl.Color
 import io.jim.tesserapp.util.synchronized
 
 /**
@@ -51,12 +51,15 @@ class MainViewModel : ViewModel() {
                     }
                 },
                 lines = extruded(
-                        quadrilateral(
-                                Position(2.0, 2.0, 2.0, 0.0),
-                                Position(-2.0, 2.0, 2.0, 0.0),
-                                Position(-2.0, -2.0, 2.0, 0.0),
-                                Position(2.0, -2.0, 2.0, 0.0)),
-                        direction = Position(0.0, 0.0, -4.0, 0.0)
+                        positions = extruded(
+                                quadrilateral(
+                                        Position(2.0, 2.0, 2.0, 0.0),
+                                        Position(-2.0, 2.0, 2.0, 0.0),
+                                        Position(-2.0, -2.0, 2.0, 0.0),
+                                        Position(2.0, -2.0, 2.0, 0.0)),
+                                direction = Position(0.0, 0.0, -4.0, 0.0)
+                        ),
+                        direction = Position(0.0, 0.0, 0.0, 2.0)
                 ),
                 color = SymbolicColor.ACCENT
         )

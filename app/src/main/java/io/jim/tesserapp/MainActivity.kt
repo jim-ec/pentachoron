@@ -87,11 +87,11 @@ class MainActivity : AppCompatActivity() {
         // Set theme, which is only possible during this callback:
         setTheme(preferenceThemeId())
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar.apply { title = "Cube" })
+        setSupportActionBar(toolbar.apply { setTitle(R.string.tesseract) })
         
         // Generate geometry:
         viewModel.createGeometries(
-                featuredGeometryName = "Cube",
+                featuredGeometryName = getString(R.string.tesseract),
                 enableGrid = gridPreference()
         )
         

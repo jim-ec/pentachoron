@@ -2,6 +2,8 @@
 
     <string name="app_name" translatable="false">Tesserapp</string>
 
+    <string name="tesseract">Tesseract</string>
+
     <string name="transform_rotation">Rotation</string>
     <string name="transform_rotation_x" translatable="false">X</string>
     <string name="transform_rotation_y" translatable="false">Y</string>
