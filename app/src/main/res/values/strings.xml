@@ -1,0 +1,44 @@
+<!--
+  ~  Created by Jim Eckerlein on 7/15/18 4:04 PM
+  ~  Copyright (c) 2018 . All rights reserved.
+  ~  Last modified 7/15/18 4:03 PM
+  -->
+
+<resources>
+
+    <string name="app_name" translatable="false">Tesserapp</string>
+
+    <string name="tesseract">Tesseract</string>
+
+    <string name="transform_rotation">Rotation</string>
+    <string name="transform_rotation_x" translatable="false">X</string>
+    <string name="transform_rotation_y" translatable="false">Y</string>
+    <string name="transform_rotation_z" translatable="false">Z</string>
+    <string name="transform_rotation_q" translatable="false">Q</string>
+    <string name="transform_rotation_watch_format" translatable="false">%sπ</string>
+
+    <string name="transform_translation">Translation</string>
+    <string name="transform_translation_x" translatable="false">X</string>
+    <string name="transform_translation_y" translatable="false">Y</string>
+    <string name="transform_translation_z" translatable="false">Z</string>
+    <string name="transform_translation_q" translatable="false">Q</string>
+    <string name="transform_translation_watch_format" translatable="false">%s</string>
+
+    <string name="camera">Camera</string>
+    <string name="camera_distance">Distance</string>
+    <string name="camera_distance_watch_format" translatable="false">%s</string>
+
+    <string name="appbar_menu_preferences">Preferences</string>
+
+    <string name="pref_grid_title">Grid</string>
+    <string name="pref_grid_key" translatable="false">io.jim.tesserapp.PREF_GRID_KEY</string>
+
+    <string name="pref_dark_theme_title">Dark Theme</string>
+    <string name="pref_dark_theme_key" translatable="false">io.jim.tesserapp.PREF_DARK_THEME</string>
+
+    <string-array name="visualization_modes">
+        <item>Projection</item>
+        <item>Collapse Z</item>
+    </string-array>
+
+</resources>

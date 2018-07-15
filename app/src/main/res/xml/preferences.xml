@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Created by Jim Eckerlein on 7/15/18 4:04 PM
+  ~  Copyright (c) 2018 . All rights reserved.
+  ~  Last modified 7/15/18 4:03 PM
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/pref_dark_theme_key"
+        android:title="@string/pref_dark_theme_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="@string/pref_grid_key"
+        android:title="@string/pref_grid_title" />
+
+</PreferenceScreen>

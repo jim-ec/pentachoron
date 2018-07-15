@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Created by Jim Eckerlein on 7/15/18 4:04 PM
+  ~  Copyright (c) 2018 . All rights reserved.
+  ~  Last modified 7/15/18 4:03 PM
+  -->
+
+<resources>
+    <attr name="colorPrimaryGeometry" format="color" />
+    <attr name="colorAxisX" format="color" />
+    <attr name="colorAxisY" format="color" />
+    <attr name="colorAxisZ" format="color" />
+</resources>

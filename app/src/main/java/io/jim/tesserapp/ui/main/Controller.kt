@@ -1,0 +1,101 @@
+/*
+ *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Copyright (c) 2018 . All rights reserved.
+ *  Last modified 7/15/18 4:03 PM
+ */
+
+package io.jim.tesserapp.ui.main
+
+import android.widget.SeekBar
+import android.widget.TextView
+import io.jim.tesserapp.math.formatNumber
+import io.jim.tesserapp.math.mapped
+import io.jim.tesserapp.util.synchronized
+
+/**
+ * Controller targeting a specific live data.
+ *
+ * @param viewModel
+ * The targeting view model.
+ *
+ * @param seekBar
+ * Seek bar to control the camera distance.
+ *
+ * @param watch
+ * Text view representing the current camera distance.
+ *
+ * @param watchFormatString
+ * String to format the watch.
+ *
+ * @param valueRange
+ * Range to which the seek-bar progress is mapped.
+ *
+ * @param liveData
+ * Returns the live data to be controlled.
+ * When ran, the hosting view model is passed to it.
+ *
+ */
+class Controller(
+        val viewModel: MainViewModel,
+        val liveData: MainViewModel.() -> MutableLiveDataNonNull<Double>,
+        val seekBar: SeekBar,
+        val watch: TextView,
+        val valueRange: ClosedRange<Double>,
+        val watchFormatString: String
+) {
+    
+    /**
+     * Range of possible seek-bar results.
+     * The range is chosen in such a manner that you can chose values with a precision
+     * of one tenth.
+     */
+    private val seekBarRange = 0.0..(valueRange.endInclusive - valueRange.start) * 10.0
+    
+    init {
+        viewModel.synchronized {
+            val startValue = liveData().value
+            
+            if (valueRange.isEmpty())
+                throw RuntimeException("Controller value-range cannot be empty")
+            if (!valueRange.contains(startValue))
+                throw RuntimeException("Start value must be located in $valueRange")
+            
+            seekBar.progress = mapped(startValue, valueRange, seekBarRange).toInt()
+            seekBar.max = seekBarRange.endInclusive.toInt()
+        }
+        
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                update()
+            }
+            
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+        
+        // Initially format the value label, using the start value:
+        update()
+    }
+    
+    /**
+     * Called when seek-bar progress changes.
+     * Updates the watch text and passes the new value to the live data.
+     */
+    private fun update() {
+        val value = mapped(seekBar.progress.toDouble(), seekBarRange, valueRange)
+        watch.text = String.format(watchFormatString, formatNumber(value))
+        viewModel.synchronized {
+            liveData().value = value
+        }
+    }
+    
+    /**
+     * Unlink this controller from the seek-bar.
+     *
+     * You **must** call this function in order to disable a controller.
+     */
+    fun unlink() {
+        seekBar.setOnSeekBarChangeListener(null)
+    }
+    
+}

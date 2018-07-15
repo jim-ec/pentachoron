@@ -1,0 +1,80 @@
+/*
+ *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Copyright (c) 2018 . All rights reserved.
+ *  Last modified 7/15/18 4:03 PM
+ */
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'org.jetbrains.dokka-android'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion '28.0.1'
+    defaultConfig {
+        applicationId "io.jim.tesserapp"
+        minSdkVersion 18
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++14 -fexceptions"
+            }
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+    signingConfigs {
+        release {
+            keyAlias 'app_key'
+            keyPassword 'mykey123'
+            storeFile file('keystore.jks')
+            storePassword 'mykeystore123'
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled false
+        }
+        debug {
+            debuggable true
+            applicationIdSuffix '.debug'
+        }
+    }
+}
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
+    includeNonPublic = true
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.0-alpha3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha3'
+
+    implementation 'androidx.core:core-ktx:1.0.0-beta01'
+    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+    implementation 'androidx.cardview:cardview:1.0.0-beta01'
+    implementation 'androidx.fragment:fragment-ktx:1.0.0-beta01'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-beta01'
+    implementation 'androidx.preference:preference:1.0.0-beta01'
+
+    implementation 'com.google.android.material:material:1.0.0-beta01'
+}
