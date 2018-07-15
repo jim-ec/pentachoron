@@ -1,7 +1,7 @@
 <!--
-  ~  Created by Jim Eckerlein on 7/15/18 10:27 PM
+  ~  Created by Jim Eckerlein on 7/15/18 10:28 PM
   ~  Copyright (c) 2018 . All rights reserved.
-  ~  Last modified 7/15/18 10:13 PM
+  ~  Last modified 7/15/18 10:28 PM
   -->
 
 <resources>
@@ -30,8 +30,12 @@
 
     <string name="appbar_menu_preferences">Preferences</string>
 
-    <string name="pref_grid_title">Grid</string>
-    <string name="pref_grid_key" translatable="false">io.jim.tesserapp.PREF_GRID_KEY</string>
+    <string name="pref_grid_title">
+        Grid
+    </string>
+    <string name="pref_grid_key" translatable="false">
+        io.jim.tesserapp.PREF_GRID_KEY
+    </string>
 
     <string name="pref_theme_title">
         Theme
