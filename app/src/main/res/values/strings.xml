@@ -1,5 +1,5 @@
 <!--
-  ~  Created by Jim Eckerlein on 7/15/18 10:28 PM
+  ~  Created by Jim Eckerlein on 7/15/18 10:29 PM
   ~  Copyright (c) 2018 . All rights reserved.
   ~  Last modified 7/15/18 10:28 PM
   -->
@@ -58,11 +58,6 @@
         <item>@string/theme_light</item>
         <item>@string/theme_dark</item>
         <item>@string/theme_dark_at_night</item>
-    </string-array>
-
-    <string-array name="visualization_modes">
-        <item>Projection</item>
-        <item>Collapse Z</item>
     </string-array>
 
 </resources>
