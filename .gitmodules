@@ -1,3 +1,0 @@
-[submodule "app/src/main/cpp/fmath"]
-	path = app/src/main/cpp/fmath
-	url = https://github.com/jim-eckerlein/fmath
