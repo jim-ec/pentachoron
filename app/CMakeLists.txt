@@ -6,7 +6,8 @@ cmake_minimum_required(VERSION 3.4.1)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
-include_directories(src/main/cpp/fmath/src)
+set(FMATH_VERSION 1.0.1)
+include_directories(src/main/cpp/fmath-${FMATH_VERSION})
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
