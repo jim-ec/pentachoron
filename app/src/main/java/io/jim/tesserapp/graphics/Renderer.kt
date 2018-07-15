@@ -1,3 +1,9 @@
+/*
+ *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Copyright (c) 2018 . All rights reserved.
+ *  Last modified 7/15/18 4:03 PM
+ */
+
 package io.jim.tesserapp.graphics
 
 import android.content.res.AssetManager
@@ -122,9 +128,9 @@ class Renderer(
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
         
         viewModel.synchronized {
-    
+            
             linesShader.program.bound {
-        
+                
                 uploadViewMatrix(
                         linesShader.viewMatrixLocation,
                         cameraDistance.smoothed,
@@ -133,15 +139,15 @@ class Renderer(
                         verticalCameraRotation.smoothed,
                         cameraFovX.smoothed
                 )
-        
+                
                 uploadProjectionMatrix(linesShader.projectionMatrixLocation)
                 
                 geometries.forEach { geometry ->
                     
                     val transform = geometry.onTransformUpdate()
-    
+                    
                     vertexVbo.bound {
-    
+                        
                         //instructVertexAttributePointers(linesShader)
                         
                         drawGeometry(
@@ -152,7 +158,7 @@ class Renderer(
                                 geometry.color.code,
                                 geometry.isFourDimensional
                         )
-    
+                        
                     }
                     
                 }

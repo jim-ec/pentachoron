@@ -1,0 +1,7 @@
+<component name="CopyrightManager">
+  <settings default="My Copyright">
+    <module2copyright>
+      <element module="Tesserapp" copyright="My Copyright" />
+    </module2copyright>
+  </settings>
+</component>

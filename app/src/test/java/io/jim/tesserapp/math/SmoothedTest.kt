@@ -1,10 +1,16 @@
+/*
+ *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Copyright (c) 2018 . All rights reserved.
+ *  Last modified 7/15/18 4:03 PM
+ */
+
 package io.jim.tesserapp.math
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class SmoothedTest {
-
+    
     /**
      * Usually, a smooth value would use the [io.jim.tesserapp.math.Smoothed]
      * class, in order to bind the transition to time.
@@ -18,88 +24,88 @@ class SmoothedTest {
     private inner class NonTimedSmoothed<R>(
             startValue: Double
     ) : Smoothed<R>(startValue, INTERVAL) {
-
+        
         override val x0 = 0.0
-
+        
         override val x: Double
             get() {
                 return smoothValueStep * STEP_INTERVAL
             }
-
+        
     }
-
+    
     private var smoothValueStep = 0L
-
+    
     private companion object {
         private const val INTERVAL = 1000.0
         private const val STEP_INTERVAL = 250.0
     }
-
+    
     private var value by NonTimedSmoothed(2.0)
-
+    
     @Test
     fun initialValueIsStartValue() {
         assertEquals(2.0, value, 0.1)
     }
-
+    
     @Test
     fun transition() {
         value = 5.0
-
+        
         // Value starts rising over time:
-
+        
         smoothValueStep++
         assertEquals(2.4, value, 0.1)
-
+        
         smoothValueStep++
         assertEquals(3.5, value, 0.1)
-
+        
         smoothValueStep++
         assertEquals(4.5, value, 0.1)
-
+        
         smoothValueStep++
         assertEquals(5.0, value, 0.1)
-
+        
         // After the interval, value should stay and not further follow the internal curve:
         smoothValueStep++
         assertEquals(5.0, value, 0.1)
     }
-
+    
     @Test
     fun transitionWithInterruption() {
         value = 5.0
-
+        
         // Value starts rising over time:
-
+        
         smoothValueStep++
         assertEquals(2.4, value, 0.1)
-
+        
         smoothValueStep++
         assertEquals(3.5, value, 0.1)
-
+        
         // After half of the interval passed, we set a new value.
         // It should now take another interval to reach that value.
         // Though the current transition is discarded, the value change-velocity is kept.
-
+        
         value = 0.0
-
+        
         assertEquals(3.5, value, 0.1)
-
+        
         smoothValueStep++
         assertEquals(3.5, value, 0.1)
-
+        
         smoothValueStep++
         assertEquals(2.3, value, 0.1)
-
+        
         smoothValueStep++
         assertEquals(0.75, value, 0.1)
-
+        
         smoothValueStep++
         assertEquals(0.0, value, 0.1)
-
+        
         // After the interval, value should stay and not further follow the internal curve:
         smoothValueStep++
         assertEquals(0.0, value, 0.1)
     }
-
+    
 }

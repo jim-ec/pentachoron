@@ -1,3 +1,9 @@
+/*
+ *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Copyright (c) 2018 . All rights reserved.
+ *  Last modified 7/15/18 4:03 PM
+ */
+
 package io.jim.tesserapp.ui.main
 
 import android.content.Context
@@ -65,7 +71,7 @@ class GraphicsView : GLSurfaceView {
                     
                     viewModel.horizontalCameraRotation.value += dx * TOUCH_ROTATION_SENSITIVITY
                     viewModel.verticalCameraRotation.value -= dy * TOUCH_ROTATION_SENSITIVITY
-    
+                    
                     touchStartPositionX = event.x
                     touchStartPositionY = event.y
                     CONSUMED

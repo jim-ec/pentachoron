@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!--
+  ~  Created by Jim Eckerlein on 7/15/18 4:04 PM
+  ~  Copyright (c) 2018 . All rights reserved.
+  ~  Last modified 7/15/18 4:03 PM
+  -->
+
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"

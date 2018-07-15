@@ -1,10 +1,16 @@
+/*
+ *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Copyright (c) 2018 . All rights reserved.
+ *  Last modified 7/15/18 4:03 PM
+ */
+
 package io.jim.tesserapp.math
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class CubicPolynomialTest {
-
+    
     private val curve = CubicPolynomial().apply {
         span(
                 sourceX = -2.0,
@@ -14,7 +20,7 @@ class CubicPolynomialTest {
                 sourceGradient = 1.5
         )
     }
-
+    
     @Test
     fun function() {
         assertEquals(-1.0, curve(-2.0), 0.1)
@@ -33,7 +39,7 @@ class CubicPolynomialTest {
         assertEquals(1.0, curve(4.5), 0.1)
         assertEquals(1.0, curve(5.0), 0.1)
     }
-
+    
     @Test
     fun derivation() {
         assertEquals(1.5, curve.derivation(-2.0), 0.1)
@@ -52,7 +58,7 @@ class CubicPolynomialTest {
         assertEquals(0.0, curve.derivation(4.5), 0.1)
         assertEquals(0.0, curve.derivation(5.0), 0.1)
     }
-
+    
     @Test
     fun extentWithSameResult() {
         curve.reSpan(sourceX = 0.0, targetX = 5.0, targetY = 1.0, keepSourceGradient = true)
@@ -72,7 +78,7 @@ class CubicPolynomialTest {
         assertEquals(1.0, curve(4.5), 0.1)
         assertEquals(1.0, curve(5.0), 0.1)
     }
-
+    
     @Test
     fun extentResultingInDifferentCurve() {
         curve.reSpan(sourceX = 0.0, targetX = 3.0, targetY = 0.0, keepSourceGradient = true)

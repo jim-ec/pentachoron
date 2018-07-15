@@ -1,4 +1,10 @@
 
+/*
+ *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Copyright (c) 2018 . All rights reserved.
+ *  Last modified 7/15/18 4:03 PM
+ */
+
 buildscript {
     ext.kotlin_version = '1.2.51'
     ext.dokka_version = '0.9.16'
