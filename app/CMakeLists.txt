@@ -1,40 +1,17 @@
-# For more information about using CMake with Android Studio, read the
-# documentation: https://d.android.com/studio/projects/add-native-code.html
-# Sets the minimum version of CMake required to build the native library.
-
 cmake_minimum_required(VERSION 3.4.1)
 
+# Compile with C++17:
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
+# Add fmath include directy.
+# Since fmath is header-only, no library is necessary to be built.
 set(FMATH_VERSION 1.0.1)
 include_directories(src/main/cpp/fmath-${FMATH_VERSION})
 
-# Creates and names a library, sets it as either STATIC
-# or SHARED, and provides the relative paths to its source code.
-# You can define multiple libraries, and CMake builds them for you.
-# Gradle automatically packages shared libraries with your APK.
+# Add Android libraries:
+find_library(LOG_LIB log)
+find_library(GL_LIB GLESv2)
+
+# Build library:
 add_library(native-lib SHARED src/main/cpp/renderer.cpp)
-
-# Searches for a specified prebuilt library and stores the path as a
-# variable. Because CMake includes system libraries in the search path by
-# default, you only need to specify the name of the public NDK library
-# you want to add. CMake verifies that the library exists before
-# completing its build.
-find_library( # Sets the name of the path variable.
-              log-lib
-
-              # Specifies the name of the NDK library that
-              # you want CMake to locate.
-              log )
-
-# Specifies libraries CMake should link to your target library. You
-# can link multiple libraries, such as libraries you define in this
-# build script, prebuilt third-party libraries, or system libraries.
-target_link_libraries( # Specifies the target library.
-                       native-lib
-
-                       GLESv2
-
-                       # Links the target library to the log library
-                       # included in the NDK.
-                       ${log-lib} )
+target_link_libraries(native-lib ${GL_LIB} ${LOG_LIB})
