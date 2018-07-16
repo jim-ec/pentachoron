@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/15/18 10:27 PM
+ *  Created by Jim Eckerlein on 7/16/18 11:17 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/15/18 9:49 PM
+ *  Last modified 7/16/18 11:11 AM
  */
 
 package io.jim.tesserapp.util
@@ -25,7 +25,7 @@ fun <T : Context> T.gridPreference() =
 fun <T : Context> T.darkThemePreference() =
         PreferenceManager.getDefaultSharedPreferences(this).getString(
                 getString(R.string.pref_theme_key),
-                getString(R.string.theme_dark_at_night))!!
+                getString(R.string.pref_theme_value_dark_at_night))!!
 
 /**
  * Return the current theme id based on [darkThemePreference].
@@ -38,9 +38,9 @@ fun <T : Context> T.darkThemePreference() =
 @StyleRes
 fun <T : Context> T.preferenceThemeId(): Int =
         when (darkThemePreference()) {
-            getString(R.string.theme_light) -> R.style.LightTheme
-            getString(R.string.theme_dark) -> R.style.DarkTheme
-            getString(R.string.theme_dark_at_night) ->
+            getString(R.string.pref_theme_value_light) -> R.style.LightTheme
+            getString(R.string.pref_theme_value_dark) -> R.style.DarkTheme
+            getString(R.string.pref_theme_value_dark_at_night) ->
                 // Check if it's currently 7pm (19th hour of day):
                 if (LocalTime.now().hourOfDay < 19) R.style.LightTheme
                 else R.style.DarkTheme

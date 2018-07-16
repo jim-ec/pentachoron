@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~  Created by Jim Eckerlein on 7/15/18 10:27 PM
+  ~  Created by Jim Eckerlein on 7/16/18 11:17 AM
   ~  Copyright (c) 2018 . All rights reserved.
-  ~  Last modified 7/15/18 10:27 PM
+  ~  Last modified 7/16/18 11:11 AM
   -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
+        android:defaultValue="@string/pref_theme_value_dark_at_night"
         android:entries="@array/pref_theme_entries"
-        android:entryValues="@array/pref_theme_entry_values"
+        android:entryValues="@array/pref_theme_values"
         android:key="@string/pref_theme_key"
+        android:summary="@string/pref_theme_summary"
         android:title="@string/pref_theme_title" />
 
 
