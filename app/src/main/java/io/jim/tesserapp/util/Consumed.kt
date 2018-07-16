@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Created by Jim Eckerlein on 7/16/18 12:06 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/15/18 4:03 PM
+ *  Last modified 7/16/18 12:06 PM
  */
 
 package io.jim.tesserapp.util
@@ -19,3 +19,13 @@ const val CONSUMED = true
  * using this constant instead of a plain `false` may improve readability.
  */
 const val NOT_CONSUMED = true
+
+/**
+ * Calls [f], while always returning [CONSUMED].
+ * This is practical if you know that [f] is definitively consuming an event
+ * and don't write boiler-plate code (explicit return type and return statement).
+ */
+inline fun consume(f: () -> Unit): Boolean {
+    f()
+    return CONSUMED
+}
