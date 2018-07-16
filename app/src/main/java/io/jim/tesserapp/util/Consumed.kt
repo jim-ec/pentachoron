@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/16/18 12:06 PM
+ *  Created by Jim Eckerlein on 7/16/18 1:56 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/16/18 12:06 PM
+ *  Last modified 7/16/18 1:54 PM
  */
 
 package io.jim.tesserapp.util
@@ -18,6 +18,7 @@ const val CONSUMED = true
  * Traditionally, a boolean as the function return value is used to communicate so,
  * using this constant instead of a plain `false` may improve readability.
  */
+@Suppress("unused")
 const val NOT_CONSUMED = true
 
 /**

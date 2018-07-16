@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/16/18 12:39 PM
+ *  Created by Jim Eckerlein on 7/16/18 1:56 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/16/18 12:39 PM
+ *  Last modified 7/16/18 1:56 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -44,10 +44,13 @@ class GraphicsView : GLSurfaceView {
         renderMode = RENDERMODE_CONTINUOUSLY
     
         setOnTouchListener { _, event ->
-            if (detector.onTouchEvent(event))
+            if (detector.onTouchEvent(event)) {
+                // Gesture detector consumed the event, so does the listener:
                 CONSUMED
-            else
+            } else {
+                // Gesture detector was unable to consume the event, forward it:
                 super.onTouchEvent(event)
+            }
         }
     }
     

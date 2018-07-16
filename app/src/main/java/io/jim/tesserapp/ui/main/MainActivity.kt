@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Created by Jim Eckerlein on 7/16/18 1:56 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/15/18 4:03 PM
+ *  Last modified 7/16/18 1:56 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -15,7 +15,10 @@ import androidx.lifecycle.ViewModelProviders
 import io.jim.tesserapp.R
 import io.jim.tesserapp.graphics.gl.Color
 import io.jim.tesserapp.ui.preferences.PreferencesActivity
-import io.jim.tesserapp.util.*
+import io.jim.tesserapp.util.consume
+import io.jim.tesserapp.util.gridPreference
+import io.jim.tesserapp.util.preferenceThemeId
+import io.jim.tesserapp.util.themedColorInt
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -39,14 +42,11 @@ class MainActivity : AppCompatActivity() {
         const val PREFERENCES_REQUEST = 1
     }
     
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu?) = consume {
         menuInflater.inflate(R.menu.appbar_menu, menu)
-        return CONSUMED
     }
     
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        item ?: return NOT_CONSUMED
-        
+    override fun onOptionsItemSelected(item: MenuItem) = consume {
         when (item.itemId) {
             R.id.appbar_menu_options -> {
                 startActivityForResult(
@@ -54,8 +54,6 @@ class MainActivity : AppCompatActivity() {
                         PREFERENCES_REQUEST)
             }
         }
-        
-        return CONSUMED
     }
     
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
