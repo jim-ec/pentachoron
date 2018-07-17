@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/16/18 1:56 PM
+ *  Created by Jim Eckerlein on 7/17/18 1:24 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/16/18 1:56 PM
+ *  Last modified 7/17/18 12:43 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -9,7 +9,7 @@ package io.jim.tesserapp.ui.main
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.AttributeSet
-import android.view.GestureDetector
+import com.almeros.android.multitouch.MoveGestureDetector
 import io.jim.tesserapp.graphics.Renderer
 import io.jim.tesserapp.graphics.gl.Color
 import io.jim.tesserapp.util.CONSUMED
@@ -26,7 +26,7 @@ class GraphicsView : GLSurfaceView {
     
     private val viewModel = (context as MainActivity).viewModel
     
-    val detector = GestureDetector(context, MainGestureListener(viewModel))
+    val detector = MoveGestureDetector(context, MainGestureListener(viewModel))
     
     private val renderer = Renderer(
             Color(context.themedColorInt(android.R.attr.windowBackground)),

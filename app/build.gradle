@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Created by Jim Eckerlein on 7/17/18 1:24 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/15/18 4:03 PM
+ *  Last modified 7/17/18 12:39 PM
  */
 
 apply plugin: 'com.android.application'
@@ -79,5 +79,5 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0-beta01'
 
     implementation 'joda-time:joda-time:2.10'
-
+    implementation 'com.github.Almeros:android-gesture-detectors:v1.0'
 }
