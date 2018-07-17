@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Created by Jim Eckerlein on 7/17/18 5:20 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/15/18 4:03 PM
+ *  Last modified 7/17/18 5:18 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -50,13 +50,6 @@ class ControllerView : FrameLayout {
             graphicsView ?: return
             
             // Link individual controllers to view-model entries:
-            
-            // Camera distance:
-            controllers += viewModel.cameraDistanceController(
-                    context = context,
-                    seekBar = cameraDistanceSeekBar,
-                    watch = cameraDistanceWatch
-            )
             
             // X rotation:
             controllers += viewModel.rotationController(
