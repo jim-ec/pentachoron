@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Created by Jim Eckerlein on 7/17/18 4:04 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/15/18 4:03 PM
+ *  Last modified 7/17/18 3:55 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -140,7 +140,7 @@ class MainViewModel : ViewModel() {
     /**
      * Camera distance.
      */
-    val cameraDistance = SmoothedLiveData(initialValue = 5.0)
+    val cameraDistance = MutableLiveDataNonNull(initialValue = 5.0)
     
     /**
      * Rotation on the horizontal orbit.
