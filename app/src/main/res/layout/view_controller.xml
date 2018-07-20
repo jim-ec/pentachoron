@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~  Created by Jim Eckerlein on 7/15/18 4:04 PM
+  ~  Created by Jim Eckerlein on 7/17/18 5:20 PM
   ~  Copyright (c) 2018 . All rights reserved.
-  ~  Last modified 7/15/18 4:03 PM
+  ~  Last modified 7/17/18 5:17 PM
   -->
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -20,8 +20,7 @@
         app:barrierDirection="end"
         app:constraint_referenced_ids="
                 xRotationLabel, yRotationLabel, zRotationLabel, qRotationLabel,
-                xTranslationLabel, yTranslationLabel, zTranslationLabel, qTranslationLabel,
-                cameraDistanceLabel" />
+                xTranslationLabel, yTranslationLabel, zTranslationLabel, qTranslationLabel" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/watchesBarrier"
@@ -31,8 +30,7 @@
         app:barrierDirection="start"
         app:constraint_referenced_ids="
                 xRotationWatch, yRotationWatch, zRotationWatch, qRotationWatch,
-                xTranslationWatch, yTranslationWatch, zTranslationWatch, qTranslationWatch,
-                cameraDistanceWatch" />
+                xTranslationWatch, yTranslationWatch, zTranslationWatch, qTranslationWatch" />
 
     <TextView
         android:id="@+id/rotationHeading"
@@ -55,17 +53,6 @@
         android:textAppearance="@android:style/TextAppearance"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/qRotationLabel" />
-
-    <TextView
-        android:id="@+id/cameraHeading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/camera"
-        android:textAppearance="@android:style/TextAppearance"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qTranslationLabel" />
 
     <TextView
         android:id="@+id/yRotationLabel"
@@ -116,16 +103,6 @@
         android:text="@string/transform_translation_q"
         app:layout_constraintStart_toStartOf="@+id/translationHeading"
         app:layout_constraintTop_toBottomOf="@+id/zTranslationLabel" />
-
-    <TextView
-        android:id="@+id/cameraDistanceLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/camera_distance"
-        app:layout_constraintStart_toStartOf="@+id/cameraHeading"
-        app:layout_constraintTop_toBottomOf="@+id/cameraHeading" />
 
     <SeekBar
         android:id="@+id/yRotationSeekBar"
@@ -300,21 +277,6 @@
         app:layout_constraintStart_toEndOf="@+id/labelsBarrier"
         app:layout_constraintTop_toTopOf="@+id/qTranslationLabel" />
 
-    <SeekBar
-        android:id="@+id/cameraDistanceSeekBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/cameraDistanceLabel"
-        app:layout_constraintEnd_toEndOf="@+id/watchesBarrier"
-        app:layout_constraintStart_toEndOf="@+id/labelsBarrier"
-        app:layout_constraintTop_toTopOf="@+id/cameraDistanceLabel" />
-
     <TextView
         android:id="@+id/zRotationWatch"
         android:layout_width="wrap_content"
@@ -384,16 +346,5 @@
         app:layout_constraintBottom_toBottomOf="@+id/qTranslationSeekBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/qTranslationSeekBar" />
-
-    <TextView
-        android:id="@+id/cameraDistanceWatch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:fontFamily="monospace"
-        android:text="@string/transform_rotation_watch_format"
-        app:layout_constraintBottom_toBottomOf="@+id/cameraDistanceSeekBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/cameraDistanceSeekBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

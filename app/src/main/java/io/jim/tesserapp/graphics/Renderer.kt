@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Created by Jim Eckerlein on 7/17/18 4:04 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/15/18 4:03 PM
+ *  Last modified 7/17/18 3:58 PM
  */
 
 package io.jim.tesserapp.graphics
@@ -133,7 +133,7 @@ class Renderer(
                 
                 uploadViewMatrix(
                         linesShader.viewMatrixLocation,
-                        cameraDistance.smoothed,
+                        cameraDistance.value,
                         aspectRatio,
                         horizontalCameraRotation.smoothed,
                         verticalCameraRotation.smoothed,
