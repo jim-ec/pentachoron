@@ -1,32 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~  Created by Jim Eckerlein on 7/20/18 6:49 PM
+  ~  Created by Jim Eckerlein on 7/20/18 9:03 PM
   ~  Copyright (c) 2018 . All rights reserved.
-  ~  Last modified 7/20/18 6:47 PM
+  ~  Last modified 7/20/18 9:03 PM
   -->
 
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <io.jim.tesserapp.ui.main.GraphicsView
+            android:id="@+id/graphicsView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            tools:context="io.jim.tesserapp.ui.main.MainActivity">
+            android:layout_height="match_parent" />
 
-            <io.jim.tesserapp.ui.main.GraphicsView
-                android:id="@+id/graphicsView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+        <LinearLayout
+            android:id="@+id/axisButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp">
+
+            <ToggleButton
+                android:id="@+id/axisButtonX"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:textOff="@string/transform_x"
+                android:textOn="@string/transform_x" />
+
+            <ToggleButton
+                android:id="@+id/axisButtonY"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textOff="@string/transform_y"
+                android:textOn="@string/transform_y" />
+
+            <ToggleButton
+                android:id="@+id/axisButtonZ"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textOff="@string/transform_z"
+                android:textOn="@string/transform_z" />
+
+            <ToggleButton
+                android:id="@+id/axisButtonQ"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textOff="@string/transform_q"
+                android:textOn="@string/transform_q" />
 
         </LinearLayout>
 
@@ -34,8 +68,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Button"
-            android:title="@string/app_name" />
+            android:title="@string/app_name"
+            app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Button" />
 
     </FrameLayout>
 

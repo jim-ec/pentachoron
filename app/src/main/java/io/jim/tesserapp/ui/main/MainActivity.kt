@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/20/18 6:49 PM
+ *  Created by Jim Eckerlein on 7/20/18 9:03 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/20/18 6:47 PM
+ *  Last modified 7/20/18 9:03 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -89,6 +89,26 @@ class MainActivity : AppCompatActivity() {
                 yColor = Color(themedColorInt(R.attr.colorAxisY)),
                 zColor = Color(themedColorInt(R.attr.colorAxisZ))
         )
+    
+        val axisButtonList = listOf(axisButtonX, axisButtonY, axisButtonZ, axisButtonQ)
+        axisButtonList.forEach { axisButton ->
+            axisButton.setOnCheckedChangeListener { _, checked ->
+                if (checked) {
+                    // Uncheck all the other buttons:
+                    axisButtonList.forEach {
+                        it.isChecked = it.id == axisButton.id
+                    }
+                } else {
+                    // Prevent the case that no button is checked by
+                    // checking back this button:
+                    if (axisButtonList.none { it.isChecked }) {
+                        axisButton.isChecked = true
+                    }
+                }
+            }
+        }
+        
+        
     }
     
     /**
