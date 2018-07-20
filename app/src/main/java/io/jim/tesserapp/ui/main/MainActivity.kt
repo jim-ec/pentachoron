@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/20/18 10:37 PM
+ *  Created by Jim Eckerlein on 7/20/18 10:46 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/20/18 10:37 PM
+ *  Last modified 7/20/18 10:46 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.view.GestureDetector
 import android.view.Menu
 import android.view.MenuItem
-import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import io.jim.tesserapp.R
@@ -26,14 +25,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     
     lateinit var viewModel: MainViewModel
-    
-    enum class Axis {
-        X, Y, Z, Q
-    }
-    
-    enum class TransformMode {
-        ROTATE, TRANSLATE
-    }
     
     companion object {
         
@@ -96,9 +87,6 @@ class MainActivity : AppCompatActivity() {
                 yColor = Color(themedColorInt(R.attr.colorAxisY)),
                 zColor = Color(themedColorInt(R.attr.colorAxisZ))
         )
-    
-        var selectedAxis = Axis.X
-        var transformMode = TransformMode.ROTATE
         
         val axisButtonList = listOf(axisButtonX, axisButtonY, axisButtonZ, axisButtonQ)
         axisButtonList.forEach { axisButton ->
@@ -109,12 +97,14 @@ class MainActivity : AppCompatActivity() {
                         it.isChecked = it.id == axisButton.id
                     }
                     // Remember selected axis:
-                    selectedAxis = when (axisButton.id) {
-                        R.id.axisButtonX -> Axis.X
-                        R.id.axisButtonY -> Axis.Y
-                        R.id.axisButtonZ -> Axis.Z
-                        R.id.axisButtonQ -> Axis.Q
-                        else -> throw Exception("Unknown axis button")
+                    viewModel.synchronized {
+                        selectedAxis = when (axisButton.id) {
+                            R.id.axisButtonX -> SelectedAxis.X
+                            R.id.axisButtonY -> SelectedAxis.Y
+                            R.id.axisButtonZ -> SelectedAxis.Z
+                            R.id.axisButtonQ -> SelectedAxis.Q
+                            else -> throw Exception("Unknown axis button")
+                        }
                     }
                 } else {
                     // Prevent the case that no button is checked by
@@ -128,51 +118,7 @@ class MainActivity : AppCompatActivity() {
     
         pushArea.apply {
         
-            val detector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-            
-                var previousEventTime = 0L
-            
-                override fun onDown(e: MotionEvent?) = CONSUMED
-            
-                override fun onScroll(
-                        startEvent: MotionEvent?,
-                        endEvent: MotionEvent?,
-                        distanceX: Float,
-                        distanceY: Float
-                ) = consume {
-                    endEvent ?: return NOT_CONSUMED
-                    val timeDelta = endEvent.eventTime - previousEventTime
-                    previousEventTime = endEvent.eventTime
-                    if (timeDelta <= 0) return NOT_CONSUMED
-                
-                    if (transformMode == TransformMode.ROTATE) {
-                    
-                        when (selectedAxis) {
-                            Axis.X -> viewModel.rotationX
-                            Axis.Y -> viewModel.rotationY
-                            Axis.Z -> viewModel.rotationZ
-                            Axis.Q -> viewModel.rotationQ
-                        }.value += 0.1 * (distanceX / (5 * timeDelta))
-                    
-                    } else if (transformMode == TransformMode.TRANSLATE) {
-                    
-                        when (selectedAxis) {
-                            Axis.X -> viewModel.translationX
-                            Axis.Y -> viewModel.translationY
-                            Axis.Z -> viewModel.translationZ
-                            Axis.Q -> viewModel.translationQ
-                        }.value += 0.4 * (distanceX / timeDelta)
-                    
-                    }
-                }
-            
-                override fun onSingleTapUp(e: MotionEvent?) = consume {
-                    transformMode = when (transformMode) {
-                        TransformMode.ROTATE -> TransformMode.TRANSLATE
-                        TransformMode.TRANSLATE -> TransformMode.ROTATE
-                    }
-                }
-            })
+            val detector = GestureDetector(context, PushAreaGestureListener(viewModel))
             
             setOnTouchListener { _, motionEvent ->
                 detector.onTouchEvent(motionEvent)
