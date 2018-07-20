@@ -1,18 +1,19 @@
 /*
- *  Created by Jim Eckerlein on 7/20/18 9:50 PM
+ *  Created by Jim Eckerlein on 7/20/18 10:37 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/20/18 9:50 PM
+ *  Last modified 7/20/18 10:37 PM
  */
 
 package io.jim.tesserapp.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
-import com.almeros.android.multitouch.MoveGestureDetector
 import io.jim.tesserapp.R
 import io.jim.tesserapp.graphics.gl.Color
 import io.jim.tesserapp.ui.preferences.PreferencesActivity
@@ -28,6 +29,10 @@ class MainActivity : AppCompatActivity() {
     
     enum class Axis {
         X, Y, Z, Q
+    }
+    
+    enum class TransformMode {
+        ROTATE, TRANSLATE
     }
     
     companion object {
@@ -93,6 +98,7 @@ class MainActivity : AppCompatActivity() {
         )
     
         var selectedAxis = Axis.X
+        var transformMode = TransformMode.ROTATE
         
         val axisButtonList = listOf(axisButtonX, axisButtonY, axisButtonZ, axisButtonQ)
         axisButtonList.forEach { axisButton ->
@@ -121,26 +127,53 @@ class MainActivity : AppCompatActivity() {
         }
     
         pushArea.apply {
-            val detector = MoveGestureDetector(context,
-                    object : MoveGestureDetector.SimpleOnMoveGestureListener() {
-                        override fun onMove(detector: MoveGestureDetector?) = consume {
-                            detector ?: return NOT_CONSUMED
-                            if (detector.timeDelta == 0L) return NOT_CONSUMED
-                        
-                            val target = when (selectedAxis) {
-                                MainActivity.Axis.X -> viewModel.rotationX
-                                MainActivity.Axis.Y -> viewModel.rotationY
-                                MainActivity.Axis.Z -> viewModel.rotationZ
-                                MainActivity.Axis.Q -> viewModel.rotationQ
-                            }
-                        
-                            // Used sensitivity for translation:
-                            //target.value += 0.4 * (detector.focusDelta.x / detector.timeDelta)
-                        
-                            target.value += 0.1 * (detector.focusDelta.x / (5 * detector.timeDelta))
-                        }
-                    })
         
+            val detector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+            
+                var previousEventTime = 0L
+            
+                override fun onDown(e: MotionEvent?) = CONSUMED
+            
+                override fun onScroll(
+                        startEvent: MotionEvent?,
+                        endEvent: MotionEvent?,
+                        distanceX: Float,
+                        distanceY: Float
+                ) = consume {
+                    endEvent ?: return NOT_CONSUMED
+                    val timeDelta = endEvent.eventTime - previousEventTime
+                    previousEventTime = endEvent.eventTime
+                    if (timeDelta <= 0) return NOT_CONSUMED
+                
+                    if (transformMode == TransformMode.ROTATE) {
+                    
+                        when (selectedAxis) {
+                            Axis.X -> viewModel.rotationX
+                            Axis.Y -> viewModel.rotationY
+                            Axis.Z -> viewModel.rotationZ
+                            Axis.Q -> viewModel.rotationQ
+                        }.value += 0.1 * (distanceX / (5 * timeDelta))
+                    
+                    } else if (transformMode == TransformMode.TRANSLATE) {
+                    
+                        when (selectedAxis) {
+                            Axis.X -> viewModel.translationX
+                            Axis.Y -> viewModel.translationY
+                            Axis.Z -> viewModel.translationZ
+                            Axis.Q -> viewModel.translationQ
+                        }.value += 0.4 * (distanceX / timeDelta)
+                    
+                    }
+                }
+            
+                override fun onSingleTapUp(e: MotionEvent?) = consume {
+                    transformMode = when (transformMode) {
+                        TransformMode.ROTATE -> TransformMode.TRANSLATE
+                        TransformMode.TRANSLATE -> TransformMode.ROTATE
+                    }
+                }
+            })
+            
             setOnTouchListener { _, motionEvent ->
                 detector.onTouchEvent(motionEvent)
             }
