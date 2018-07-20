@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~  Created by Jim Eckerlein on 7/15/18 4:04 PM
+  ~  Created by Jim Eckerlein on 7/20/18 6:49 PM
   ~  Copyright (c) 2018 . All rights reserved.
-  ~  Last modified 7/15/18 4:03 PM
+  ~  Last modified 7/20/18 6:47 PM
   -->
 
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -26,22 +26,7 @@
                 android:id="@+id/graphicsView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="2" />
-
-            <ScrollView
-                android:id="@+id/controlsScroller"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <io.jim.tesserapp.ui.main.ControllerView
-                    android:id="@+id/controllerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                </io.jim.tesserapp.ui.main.ControllerView>
-
-            </ScrollView>
+                android:layout_weight="1" />
 
         </LinearLayout>
 

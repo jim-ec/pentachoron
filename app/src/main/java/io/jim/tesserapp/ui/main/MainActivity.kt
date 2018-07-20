@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/16/18 1:56 PM
+ *  Created by Jim Eckerlein on 7/20/18 6:49 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/16/18 1:56 PM
+ *  Last modified 7/20/18 6:47 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -89,9 +89,6 @@ class MainActivity : AppCompatActivity() {
                 yColor = Color(themedColorInt(R.attr.colorAxisY)),
                 zColor = Color(themedColorInt(R.attr.colorAxisZ))
         )
-        
-        // Associate the controller with the graphics view to control:
-        controllerView.targetGraphicsView = graphicsView
     }
     
     /**
