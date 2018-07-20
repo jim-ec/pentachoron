@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~  Created by Jim Eckerlein on 7/20/18 9:14 PM
+  ~  Created by Jim Eckerlein on 7/20/18 9:22 PM
   ~  Copyright (c) 2018 . All rights reserved.
-  ~  Last modified 7/20/18 9:14 PM
+  ~  Last modified 7/20/18 9:20 PM
   -->
 
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -34,7 +34,7 @@
             android:checked="true"
             android:textOff="@string/transform_x"
             android:textOn="@string/transform_x"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/pushArea"
             app:layout_constraintEnd_toStartOf="@+id/axisButtonY"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -48,7 +48,7 @@
             android:layout_weight="1"
             android:textOff="@string/transform_y"
             android:textOn="@string/transform_y"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/pushArea"
             app:layout_constraintEnd_toStartOf="@+id/axisButtonZ"
             app:layout_constraintStart_toEndOf="@+id/axisButtonX" />
 
@@ -61,7 +61,7 @@
             android:layout_weight="1"
             android:textOff="@string/transform_z"
             android:textOn="@string/transform_z"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/pushArea"
             app:layout_constraintEnd_toStartOf="@+id/axisButtonQ"
             app:layout_constraintStart_toEndOf="@+id/axisButtonY" />
 
@@ -74,9 +74,18 @@
             android:layout_weight="1"
             android:textOff="@string/transform_q"
             android:textOn="@string/transform_q"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/pushArea"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/axisButtonZ" />
+
+        <View
+            android:id="@+id/pushArea"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:background="#82000000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
