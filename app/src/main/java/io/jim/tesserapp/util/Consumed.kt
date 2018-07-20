@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/16/18 1:56 PM
+ *  Created by Jim Eckerlein on 7/20/18 6:38 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/16/18 1:54 PM
+ *  Last modified 7/20/18 6:37 PM
  */
 
 package io.jim.tesserapp.util
@@ -23,8 +23,14 @@ const val NOT_CONSUMED = true
 
 /**
  * Calls [f], while always returning [CONSUMED].
+ *
  * This is practical if you know that [f] is definitively consuming an event
  * and don't write boiler-plate code (explicit return type and return statement).
+ *
+ * Note however, while [consume] will always return [CONSUMED],
+ * [f] can still return anything else as it is not cross-inlined.
+ * Therefore, the return value of [consume] ([CONSUMED]) can be more seen as a default,
+ * since you're free to choose to return something else explicitly e.g. [NOT_CONSUMED].
  */
 inline fun consume(f: () -> Unit): Boolean {
     f()
