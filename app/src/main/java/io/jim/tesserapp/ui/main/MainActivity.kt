@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/20/18 9:03 PM
+ *  Created by Jim Eckerlein on 7/20/18 9:50 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/20/18 9:03 PM
+ *  Last modified 7/20/18 9:50 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -12,13 +12,11 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
+import com.almeros.android.multitouch.MoveGestureDetector
 import io.jim.tesserapp.R
 import io.jim.tesserapp.graphics.gl.Color
 import io.jim.tesserapp.ui.preferences.PreferencesActivity
-import io.jim.tesserapp.util.consume
-import io.jim.tesserapp.util.gridPreference
-import io.jim.tesserapp.util.preferenceThemeId
-import io.jim.tesserapp.util.themedColorInt
+import io.jim.tesserapp.util.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -27,6 +25,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     
     lateinit var viewModel: MainViewModel
+    
+    enum class Axis {
+        X, Y, Z, Q
+    }
     
     companion object {
         
@@ -90,6 +92,8 @@ class MainActivity : AppCompatActivity() {
                 zColor = Color(themedColorInt(R.attr.colorAxisZ))
         )
     
+        var selectedAxis = Axis.X
+        
         val axisButtonList = listOf(axisButtonX, axisButtonY, axisButtonZ, axisButtonQ)
         axisButtonList.forEach { axisButton ->
             axisButton.setOnCheckedChangeListener { _, checked ->
@@ -97,6 +101,14 @@ class MainActivity : AppCompatActivity() {
                     // Uncheck all the other buttons:
                     axisButtonList.forEach {
                         it.isChecked = it.id == axisButton.id
+                    }
+                    // Remember selected axis:
+                    selectedAxis = when (axisButton.id) {
+                        R.id.axisButtonX -> Axis.X
+                        R.id.axisButtonY -> Axis.Y
+                        R.id.axisButtonZ -> Axis.Z
+                        R.id.axisButtonQ -> Axis.Q
+                        else -> throw Exception("Unknown axis button")
                     }
                 } else {
                     // Prevent the case that no button is checked by
@@ -107,8 +119,32 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    
+        pushArea.apply {
+            val detector = MoveGestureDetector(context,
+                    object : MoveGestureDetector.SimpleOnMoveGestureListener() {
+                        override fun onMove(detector: MoveGestureDetector?) = consume {
+                            detector ?: return NOT_CONSUMED
+                            if (detector.timeDelta == 0L) return NOT_CONSUMED
+                        
+                            val target = when (selectedAxis) {
+                                MainActivity.Axis.X -> viewModel.rotationX
+                                MainActivity.Axis.Y -> viewModel.rotationY
+                                MainActivity.Axis.Z -> viewModel.rotationZ
+                                MainActivity.Axis.Q -> viewModel.rotationQ
+                            }
+                        
+                            // Used sensitivity for translation:
+                            //target.value += 0.4 * (detector.focusDelta.x / detector.timeDelta)
+                        
+                            target.value += 0.1 * (detector.focusDelta.x / (5 * detector.timeDelta))
+                        }
+                    })
         
-        
+            setOnTouchListener { _, motionEvent ->
+                detector.onTouchEvent(motionEvent)
+            }
+        }
     }
     
     /**
