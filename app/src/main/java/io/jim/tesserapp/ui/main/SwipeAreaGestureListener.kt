@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/22/18 4:27 PM
+ *  Created by Jim Eckerlein on 7/22/18 4:35 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/22/18 4:27 PM
+ *  Last modified 7/22/18 4:33 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -13,7 +13,7 @@ import io.jim.tesserapp.util.NOT_CONSUMED
 import io.jim.tesserapp.util.consume
 import io.jim.tesserapp.util.synchronized
 
-class PushAreaGestureListener(val viewModel: MainViewModel) :
+class SwipeAreaGestureListener(val viewModel: MainViewModel) :
         GestureDetector.SimpleOnGestureListener() {
     
     private var previousEventTime = 0L

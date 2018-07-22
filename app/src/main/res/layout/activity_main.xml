@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~  Created by Jim Eckerlein on 7/22/18 1:23 PM
+  ~  Created by Jim Eckerlein on 7/22/18 4:35 PM
   ~  Copyright (c) 2018 . All rights reserved.
-  ~  Last modified 7/22/18 1:19 PM
+  ~  Last modified 7/22/18 4:33 PM
   -->
 
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -35,7 +35,7 @@
             android:checked="true"
             android:textOff="@string/transform_x"
             android:textOn="@string/transform_x"
-            app:layout_constraintBottom_toTopOf="@+id/pushArea"
+            app:layout_constraintBottom_toTopOf="@+id/swipeArea"
             app:layout_constraintEnd_toStartOf="@+id/axisButtonY"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -49,7 +49,7 @@
             android:layout_weight="1"
             android:textOff="@string/transform_y"
             android:textOn="@string/transform_y"
-            app:layout_constraintBottom_toTopOf="@+id/pushArea"
+            app:layout_constraintBottom_toTopOf="@+id/swipeArea"
             app:layout_constraintEnd_toStartOf="@+id/axisButtonZ"
             app:layout_constraintStart_toEndOf="@+id/axisButtonX" />
 
@@ -62,7 +62,7 @@
             android:layout_weight="1"
             android:textOff="@string/transform_z"
             android:textOn="@string/transform_z"
-            app:layout_constraintBottom_toTopOf="@+id/pushArea"
+            app:layout_constraintBottom_toTopOf="@+id/swipeArea"
             app:layout_constraintEnd_toStartOf="@+id/axisButtonQ"
             app:layout_constraintStart_toEndOf="@+id/axisButtonY" />
 
@@ -75,15 +75,15 @@
             android:layout_weight="1"
             android:textOff="@string/transform_q"
             android:textOn="@string/transform_q"
-            app:layout_constraintBottom_toTopOf="@+id/pushArea"
+            app:layout_constraintBottom_toTopOf="@+id/swipeArea"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/axisButtonZ" />
 
         <TextView
-            android:id="@+id/pushArea"
+            android:id="@+id/swipeArea"
             android:layout_width="0dp"
             android:layout_height="64dp"
-            android:background="#82000000"
+            android:background="?attr/colorSwipeArea"
             android:fontFamily="monospace"
             android:gravity="center"
             android:textIsSelectable="false"

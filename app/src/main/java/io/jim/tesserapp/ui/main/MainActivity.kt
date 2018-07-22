@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/22/18 4:27 PM
+ *  Created by Jim Eckerlein on 7/22/18 4:35 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/22/18 4:26 PM
+ *  Last modified 7/22/18 4:33 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -130,9 +130,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
     
-        pushArea.apply {
+        swipeArea.apply {
         
-            val detector = GestureDetector(context, PushAreaGestureListener(viewModel))
+            val detector = GestureDetector(context, SwipeAreaGestureListener(viewModel))
         
             viewModel.transformMode.observe(this@MainActivity, Observer<TransformMode> { mode ->
                 text = getString(R.string.swipe_to_transform).format(when (mode!!) {
