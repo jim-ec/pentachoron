@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~  Created by Jim Eckerlein on 7/22/18 5:34 PM
+  ~  Created by Jim Eckerlein on 7/22/18 6:00 PM
   ~  Copyright (c) 2018 . All rights reserved.
-  ~  Last modified 7/22/18 5:33 PM
+  ~  Last modified 7/22/18 6:00 PM
   -->
 
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -86,7 +86,7 @@
         <TextView
             android:id="@+id/swipeArea"
             android:layout_width="0dp"
-            android:layout_height="64dp"
+            android:layout_height="@dimen/swipeAreaHeight"
             android:background="?attr/colorSwipeArea"
             android:fontFamily="monospace"
             android:gravity="center"
