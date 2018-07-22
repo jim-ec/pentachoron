@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/22/18 1:23 PM
+ *  Created by Jim Eckerlein on 7/22/18 4:27 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/22/18 1:22 PM
+ *  Last modified 7/22/18 4:25 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -17,7 +17,7 @@ import io.jim.tesserapp.util.synchronized
  */
 class MainViewModel : ViewModel() {
     
-    var selectedAxis = SelectedAxis.X
+    var selectedAxis = MutableLiveDataNonNull(SelectedAxis.X)
     
     var transformMode = MutableLiveDataNonNull(TransformMode.ROTATE)
     

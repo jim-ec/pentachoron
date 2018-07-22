@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/22/18 1:23 PM
+ *  Created by Jim Eckerlein on 7/22/18 4:27 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/22/18 1:23 PM
+ *  Last modified 7/22/18 4:26 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -112,7 +112,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     // Remember selected axis:
                     viewModel.synchronized {
-                        selectedAxis = when (axisButton.id) {
+                        selectedAxis.value = when (axisButton.id) {
                             R.id.axisButtonX -> SelectedAxis.X
                             R.id.axisButtonY -> SelectedAxis.Y
                             R.id.axisButtonZ -> SelectedAxis.Z

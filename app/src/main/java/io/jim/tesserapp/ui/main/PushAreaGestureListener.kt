@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/22/18 1:23 PM
+ *  Created by Jim Eckerlein on 7/22/18 4:27 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/22/18 1:23 PM
+ *  Last modified 7/22/18 4:27 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -35,8 +35,8 @@ class PushAreaGestureListener(val viewModel: MainViewModel) :
             when (transformMode.value) {
         
                 TransformMode.ROTATE ->
-            
-                    when (selectedAxis) {
+    
+                    when (selectedAxis.value) {
                         SelectedAxis.X -> rotationX
                         SelectedAxis.Y -> rotationY
                         SelectedAxis.Z -> rotationZ
@@ -44,8 +44,8 @@ class PushAreaGestureListener(val viewModel: MainViewModel) :
                     }.value += 0.1 * (distanceX / (5 * timeDelta))
         
                 TransformMode.TRANSLATE ->
-            
-                    when (selectedAxis) {
+    
+                    when (selectedAxis.value) {
                         SelectedAxis.X -> translationX
                         SelectedAxis.Y -> translationY
                         SelectedAxis.Z -> translationZ
