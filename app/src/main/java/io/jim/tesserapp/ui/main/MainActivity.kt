@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/22/18 6:19 PM
+ *  Created by Jim Eckerlein on 7/22/18 11:16 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/22/18 6:19 PM
+ *  Last modified 7/22/18 11:16 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -11,10 +11,13 @@ import android.os.Bundle
 import android.view.GestureDetector
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ScaleGestureDetector
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.almeros.android.multitouch.MoveGestureDetector
 import io.jim.tesserapp.R
+import io.jim.tesserapp.graphics.Renderer
 import io.jim.tesserapp.graphics.gl.Color
 import io.jim.tesserapp.math.formatNumber
 import io.jim.tesserapp.ui.preferences.PreferencesActivity
@@ -156,6 +159,28 @@ class MainActivity : AppCompatActivity() {
         viewModel.rotationY.observe(this, Observer { transformInfo.text = buildText(viewModel) })
         viewModel.rotationZ.observe(this, Observer { transformInfo.text = buildText(viewModel) })
         viewModel.rotationQ.observe(this, Observer { transformInfo.text = buildText(viewModel) })
+    
+        // Setup OpenGL surface view:
+        glSurfaceView.apply {
+        
+            // Renderer uses OpenGL 2:
+            setEGLContextClientVersion(2)
+            setRenderer(Renderer(
+                    Color(context.themedColorInt(android.R.attr.windowBackground)),
+                    viewModel,
+                    context.assets,
+                    resources.displayMetrics.xdpi.toDouble()))
+        
+            val orbitDetector = MoveGestureDetector(context, OrbitGestureListener(viewModel))
+            val zoomDetector = ScaleGestureDetector(context, ZoomGestureListener(viewModel))
+        
+            setOnTouchListener { _, event ->
+                consume {
+                    zoomDetector.onTouchEvent(event)
+                    orbitDetector.onTouchEvent(event)
+                }
+            }
+        }
     }
     
     /**
@@ -163,7 +188,7 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onStop() {
         super.onStop()
-        graphicsView.onPause()
+        glSurfaceView.onPause()
     }
     
     /**
@@ -171,7 +196,7 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onResume() {
         super.onResume()
-        graphicsView.onResume()
+        glSurfaceView.onResume()
     }
     
 }

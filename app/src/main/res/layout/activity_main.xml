@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~  Created by Jim Eckerlein on 7/22/18 6:19 PM
+  ~  Created by Jim Eckerlein on 7/22/18 11:16 PM
   ~  Copyright (c) 2018 . All rights reserved.
-  ~  Last modified 7/22/18 6:06 PM
+  ~  Last modified 7/22/18 11:10 PM
   -->
 
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -16,8 +16,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <io.jim.tesserapp.ui.main.GraphicsView
-            android:id="@+id/graphicsView"
+        <android.opengl.GLSurfaceView
+            android:id="@+id/glSurfaceView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
