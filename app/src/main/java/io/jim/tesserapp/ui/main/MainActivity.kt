@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/20/18 10:46 PM
+ *  Created by Jim Eckerlein on 7/22/18 12:28 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/20/18 10:46 PM
+ *  Last modified 7/22/18 12:27 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -44,12 +44,25 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.appbar_menu, menu)
     }
     
-    override fun onOptionsItemSelected(item: MenuItem) = consume {
+    override fun onOptionsItemSelected(item: MenuItem?) = consume {
+        item ?: return NOT_CONSUMED
         when (item.itemId) {
-            R.id.appbar_menu_options -> {
+    
+            R.id.appbar_menu_preferences -> {
+                // Open preference activity:
                 startActivityForResult(
                         Intent(this, PreferencesActivity::class.java),
                         PREFERENCES_REQUEST)
+            }
+    
+            R.id.appbar_menu_reset_transform -> {
+                // Reset all transform:
+                viewModel.synchronized {
+                    listOf(rotationX, rotationY, rotationZ, rotationQ,
+                            translationX, translationY, translationZ, translationQ).forEach {
+                        it.value = it.initialValue
+                    }
+                }
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/20/18 10:46 PM
+ *  Created by Jim Eckerlein on 7/22/18 12:28 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/20/18 10:45 PM
+ *  Last modified 7/22/18 11:29 AM
  */
 
 package io.jim.tesserapp.ui.main
@@ -137,7 +137,7 @@ class MainViewModel : ViewModel() {
     /**
      * Q translation.
      */
-    val translationQ = SmoothedLiveData(initialValue = 3.7)
+    val translationQ = SmoothedLiveData(initialValue = 4.0)
     
     /**
      * Camera distance.

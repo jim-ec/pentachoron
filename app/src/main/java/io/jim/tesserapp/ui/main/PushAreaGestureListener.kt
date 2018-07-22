@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/20/18 10:46 PM
+ *  Created by Jim Eckerlein on 7/22/18 12:28 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/20/18 10:46 PM
+ *  Last modified 7/22/18 12:10 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -55,10 +55,11 @@ class PushAreaGestureListener(val viewModel: MainViewModel) :
         }
     }
     
-    override fun onSingleTapUp(e: MotionEvent?) = consume {
+    override fun onDoubleTap(e: MotionEvent?) = consume {
         transformMode = when (transformMode) {
             TransformMode.ROTATE -> TransformMode.TRANSLATE
             TransformMode.TRANSLATE -> TransformMode.ROTATE
         }
     }
+    
 }
