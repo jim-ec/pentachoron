@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/22/18 4:35 PM
+ *  Created by Jim Eckerlein on 7/22/18 5:34 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/22/18 4:33 PM
+ *  Last modified 7/22/18 5:34 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -101,39 +101,30 @@ class MainActivity : AppCompatActivity() {
                 yColor = Color(themedColorInt(R.attr.colorAxisY)),
                 zColor = Color(themedColorInt(R.attr.colorAxisZ))
         )
+    
+        listOf(axisButtonX to SelectedAxis.X,
+                axisButtonY to SelectedAxis.Y,
+                axisButtonZ to SelectedAxis.Z,
+                axisButtonQ to SelectedAxis.Q).forEach { (button, axis) ->
         
-        val axisButtonList = listOf(axisButtonX, axisButtonY, axisButtonZ, axisButtonQ)
-        axisButtonList.forEach { axisButton ->
-            axisButton.setOnCheckedChangeListener { _, checked ->
-                if (checked) {
-                    // Uncheck all the other buttons:
-                    axisButtonList.forEach {
-                        it.isChecked = it.id == axisButton.id
-                    }
-                    // Remember selected axis:
-                    viewModel.synchronized {
-                        selectedAxis.value = when (axisButton.id) {
-                            R.id.axisButtonX -> SelectedAxis.X
-                            R.id.axisButtonY -> SelectedAxis.Y
-                            R.id.axisButtonZ -> SelectedAxis.Z
-                            R.id.axisButtonQ -> SelectedAxis.Q
-                            else -> throw Exception("Unknown axis button")
-                        }
-                    }
-                } else {
-                    // Prevent the case that no button is checked by
-                    // checking back this button:
-                    if (axisButtonList.none { it.isChecked }) {
-                        axisButton.isChecked = true
-                    }
-                }
+            // When clicked, select the proper axis:
+            button.setOnClickListener {
+                viewModel.synchronized { selectedAxis.value = axis }
             }
+        
+            // When selected axis changed, button selection state changes accordingly:
+            viewModel.selectedAxis.observe(this, Observer { selectedAxis ->
+                button.isSelected = axis == selectedAxis
+            })
+        
         }
     
+        axisButtonX.isSelected = true
+        
         swipeArea.apply {
-        
+    
             val detector = GestureDetector(context, SwipeAreaGestureListener(viewModel))
-        
+    
             viewModel.transformMode.observe(this@MainActivity, Observer<TransformMode> { mode ->
                 text = getString(R.string.swipe_to_transform).format(when (mode!!) {
                     TransformMode.ROTATE -> getString(R.string.rotate)

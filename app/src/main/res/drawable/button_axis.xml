@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Created by Jim Eckerlein on 7/22/18 5:34 PM
+  ~  Copyright (c) 2018 . All rights reserved.
+  ~  Last modified 7/22/18 5:34 PM
+  -->
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/button_axis_selected" android:state_selected="true" />
+    <item android:drawable="@drawable/button_axis_default" />
+</selector>
