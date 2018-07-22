@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/22/18 12:28 PM
+ *  Created by Jim Eckerlein on 7/22/18 1:23 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/22/18 12:10 PM
+ *  Last modified 7/22/18 1:23 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -17,7 +17,6 @@ class PushAreaGestureListener(val viewModel: MainViewModel) :
         GestureDetector.SimpleOnGestureListener() {
     
     private var previousEventTime = 0L
-    private var transformMode = TransformMode.ROTATE
     
     override fun onDown(e: MotionEvent?) = CONSUMED
     
@@ -33,32 +32,36 @@ class PushAreaGestureListener(val viewModel: MainViewModel) :
         if (timeDelta <= 0) return NOT_CONSUMED
         
         viewModel.synchronized {
-            if (transformMode == TransformMode.ROTATE) {
-                
-                when (selectedAxis) {
-                    SelectedAxis.X -> rotationX
-                    SelectedAxis.Y -> rotationY
-                    SelectedAxis.Z -> rotationZ
-                    SelectedAxis.Q -> rotationQ
-                }.value += 0.1 * (distanceX / (5 * timeDelta))
-                
-            } else if (transformMode == TransformMode.TRANSLATE) {
-                
-                when (selectedAxis) {
-                    SelectedAxis.X -> translationX
-                    SelectedAxis.Y -> translationY
-                    SelectedAxis.Z -> translationZ
-                    SelectedAxis.Q -> translationQ
-                }.value += 0.4 * (distanceX / timeDelta)
-                
+            when (transformMode.value) {
+        
+                TransformMode.ROTATE ->
+            
+                    when (selectedAxis) {
+                        SelectedAxis.X -> rotationX
+                        SelectedAxis.Y -> rotationY
+                        SelectedAxis.Z -> rotationZ
+                        SelectedAxis.Q -> rotationQ
+                    }.value += 0.1 * (distanceX / (5 * timeDelta))
+        
+                TransformMode.TRANSLATE ->
+            
+                    when (selectedAxis) {
+                        SelectedAxis.X -> translationX
+                        SelectedAxis.Y -> translationY
+                        SelectedAxis.Z -> translationZ
+                        SelectedAxis.Q -> translationQ
+                    }.value += 0.4 * (distanceX / timeDelta)
             }
         }
     }
     
     override fun onDoubleTap(e: MotionEvent?) = consume {
-        transformMode = when (transformMode) {
-            TransformMode.ROTATE -> TransformMode.TRANSLATE
-            TransformMode.TRANSLATE -> TransformMode.ROTATE
+        viewModel.synchronized {
+            // Toggle between translate and rotate:
+            transformMode.value = when (transformMode.value) {
+                TransformMode.ROTATE -> TransformMode.TRANSLATE
+                TransformMode.TRANSLATE -> TransformMode.ROTATE
+            }
         }
     }
     

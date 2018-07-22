@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~  Created by Jim Eckerlein on 7/20/18 9:22 PM
+  ~  Created by Jim Eckerlein on 7/22/18 1:23 PM
   ~  Copyright (c) 2018 . All rights reserved.
-  ~  Last modified 7/20/18 9:20 PM
+  ~  Last modified 7/22/18 1:19 PM
   -->
 
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -78,14 +79,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/axisButtonZ" />
 
-        <View
+        <TextView
             android:id="@+id/pushArea"
             android:layout_width="0dp"
             android:layout_height="64dp"
             android:background="#82000000"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:textIsSelectable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="@string/translate"
+            tools:textColor="@android:color/white" />
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"

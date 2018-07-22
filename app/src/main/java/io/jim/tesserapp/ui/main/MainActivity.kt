@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/22/18 12:28 PM
+ *  Created by Jim Eckerlein on 7/22/18 1:23 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/22/18 12:27 PM
+ *  Last modified 7/22/18 1:23 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -12,6 +12,7 @@ import android.view.GestureDetector
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import io.jim.tesserapp.R
 import io.jim.tesserapp.graphics.gl.Color
@@ -132,6 +133,13 @@ class MainActivity : AppCompatActivity() {
         pushArea.apply {
         
             val detector = GestureDetector(context, PushAreaGestureListener(viewModel))
+        
+            viewModel.transformMode.observe(this@MainActivity, Observer<TransformMode> { mode ->
+                text = getString(R.string.swipe_to_transform).format(when (mode!!) {
+                    TransformMode.ROTATE -> getString(R.string.rotate)
+                    TransformMode.TRANSLATE -> getString(R.string.translate)
+                })
+            })
             
             setOnTouchListener { _, motionEvent ->
                 detector.onTouchEvent(motionEvent)

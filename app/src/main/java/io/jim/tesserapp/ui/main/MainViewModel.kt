@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/22/18 12:28 PM
+ *  Created by Jim Eckerlein on 7/22/18 1:23 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/22/18 11:29 AM
+ *  Last modified 7/22/18 1:22 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -18,6 +18,8 @@ import io.jim.tesserapp.util.synchronized
 class MainViewModel : ViewModel() {
     
     var selectedAxis = SelectedAxis.X
+    
+    var transformMode = MutableLiveDataNonNull(TransformMode.ROTATE)
     
     /**
      * List containing all geometries.

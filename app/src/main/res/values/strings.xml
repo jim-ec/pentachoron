@@ -1,7 +1,7 @@
 <!--
-  ~  Created by Jim Eckerlein on 7/20/18 9:03 PM
+  ~  Created by Jim Eckerlein on 7/22/18 1:23 PM
   ~  Copyright (c) 2018 . All rights reserved.
-  ~  Last modified 7/20/18 6:51 PM
+  ~  Last modified 7/22/18 1:15 PM
   -->
 
 <resources>
@@ -14,6 +14,10 @@
     <string name="transform_y" translatable="false">Y</string>
     <string name="transform_z" translatable="false">Z</string>
     <string name="transform_q" translatable="false">Q</string>
+
+    <string name="swipe_to_transform">← %s →</string>
+    <string name="rotate">rotate</string>
+    <string name="translate">translate</string>
 
     <string name="transform_rotation">Rotation</string>
     <string name="transform_rotation_watch_format" translatable="false">%sπ</string>
