@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/17/18 4:04 PM
+ *  Created by Jim Eckerlein on 7/22/18 4:27 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/17/18 3:55 PM
+ *  Last modified 7/22/18 4:25 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -16,6 +16,10 @@ import io.jim.tesserapp.util.synchronized
  * inter alia transform of the featured geometry.
  */
 class MainViewModel : ViewModel() {
+    
+    var selectedAxis = MutableLiveDataNonNull(SelectedAxis.X)
+    
+    var transformMode = MutableLiveDataNonNull(TransformMode.ROTATE)
     
     /**
      * List containing all geometries.
@@ -135,7 +139,7 @@ class MainViewModel : ViewModel() {
     /**
      * Q translation.
      */
-    val translationQ = SmoothedLiveData(initialValue = 3.7)
+    val translationQ = SmoothedLiveData(initialValue = 4.0)
     
     /**
      * Camera distance.

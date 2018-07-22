@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Created by Jim Eckerlein on 7/22/18 6:00 PM
+  ~  Copyright (c) 2018 . All rights reserved.
+  ~  Last modified 7/22/18 6:00 PM
+  -->
+
+<resources>
+    <dimen name="swipeAreaHeight">64dp</dimen>
+</resources>

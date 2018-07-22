@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Created by Jim Eckerlein on 7/22/18 12:28 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/15/18 4:03 PM
+ *  Last modified 7/22/18 11:29 AM
  */
 
 package io.jim.tesserapp.ui.main
@@ -14,7 +14,7 @@ import io.jim.tesserapp.math.Smoothed
  * @param transitionInterval The time it should take to fulfil one transition interval.
  */
 class SmoothedLiveData(
-        initialValue: Double = 0.0,
+        val initialValue: Double = 0.0,
         transitionInterval: Double = 200.0
 ) : MutableLiveDataNonNull<Double>(initialValue) {
     
