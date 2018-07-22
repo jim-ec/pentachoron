@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/22/18 5:34 PM
+ *  Created by Jim Eckerlein on 7/22/18 6:19 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/22/18 5:34 PM
+ *  Last modified 7/22/18 6:19 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import io.jim.tesserapp.R
 import io.jim.tesserapp.graphics.gl.Color
+import io.jim.tesserapp.math.formatNumber
 import io.jim.tesserapp.ui.preferences.PreferencesActivity
 import io.jim.tesserapp.util.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -136,6 +137,25 @@ class MainActivity : AppCompatActivity() {
                 detector.onTouchEvent(motionEvent)
             }
         }
+    
+        fun buildText(model: MainViewModel) = model.synchronized {
+            "trans=(${formatNumber(translationX.value)}| " +
+                    "${formatNumber(translationY.value)}| " +
+                    "${formatNumber(translationZ.value)}| " +
+                    "${formatNumber(translationQ.value)})\n" +
+                    "rot=(${formatNumber(rotationX.value)}${getString(R.string.pi)}| " +
+                    "${formatNumber(rotationY.value)}${getString(R.string.pi)}| " +
+                    "${formatNumber(rotationZ.value)}${getString(R.string.pi)}| " +
+                    "${formatNumber(rotationQ.value)}${getString(R.string.pi)})"
+        }
+        viewModel.translationX.observe(this, Observer { transformInfo.text = buildText(viewModel) })
+        viewModel.translationY.observe(this, Observer { transformInfo.text = buildText(viewModel) })
+        viewModel.translationZ.observe(this, Observer { transformInfo.text = buildText(viewModel) })
+        viewModel.translationQ.observe(this, Observer { transformInfo.text = buildText(viewModel) })
+        viewModel.rotationX.observe(this, Observer { transformInfo.text = buildText(viewModel) })
+        viewModel.rotationY.observe(this, Observer { transformInfo.text = buildText(viewModel) })
+        viewModel.rotationZ.observe(this, Observer { transformInfo.text = buildText(viewModel) })
+        viewModel.rotationQ.observe(this, Observer { transformInfo.text = buildText(viewModel) })
     }
     
     /**
