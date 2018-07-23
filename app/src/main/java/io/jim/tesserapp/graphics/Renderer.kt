@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/17/18 4:04 PM
+ *  Created by Jim Eckerlein on 7/23/18 9:34 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/17/18 3:58 PM
+ *  Last modified 7/23/18 9:34 AM
  */
 
 package io.jim.tesserapp.graphics
@@ -12,7 +12,6 @@ import android.opengl.GLSurfaceView
 import io.jim.tesserapp.graphics.gl.Color
 import io.jim.tesserapp.graphics.gl.Vbo
 import io.jim.tesserapp.ui.main.MainViewModel
-import io.jim.tesserapp.util.synchronized
 import java.nio.DoubleBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -126,23 +125,23 @@ class Renderer(
     override fun onDrawFrame(gl: GL10?) {
         
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
-        
-        viewModel.synchronized {
+    
+        synchronized(viewModel) {
             
             linesShader.program.bound {
                 
                 uploadViewMatrix(
                         linesShader.viewMatrixLocation,
-                        cameraDistance.value,
+                        viewModel.cameraDistance.value,
                         aspectRatio,
-                        horizontalCameraRotation.smoothed,
-                        verticalCameraRotation.smoothed,
-                        cameraFovX.smoothed
+                        viewModel.horizontalCameraRotation.smoothed,
+                        viewModel.verticalCameraRotation.smoothed,
+                        viewModel.cameraFovX.smoothed
                 )
                 
                 uploadProjectionMatrix(linesShader.projectionMatrixLocation)
-                
-                geometries.forEach { geometry ->
+    
+                viewModel.geometries.forEach { geometry ->
                     
                     val transform = geometry.onTransformUpdate()
                     

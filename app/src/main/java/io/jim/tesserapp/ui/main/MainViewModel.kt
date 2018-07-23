@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/22/18 4:27 PM
+ *  Created by Jim Eckerlein on 7/23/18 9:34 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/22/18 4:25 PM
+ *  Last modified 7/23/18 9:28 AM
  */
 
 package io.jim.tesserapp.ui.main
@@ -9,7 +9,6 @@ package io.jim.tesserapp.ui.main
 import androidx.lifecycle.ViewModel
 import io.jim.tesserapp.geometry.*
 import io.jim.tesserapp.graphics.gl.Color
-import io.jim.tesserapp.util.synchronized
 
 /**
  * Stores persistent data related to the main activity,
@@ -52,7 +51,7 @@ class MainViewModel : ViewModel() {
                 name = featuredGeometryName,
                 isFourDimensional = true,
                 onTransformUpdate = {
-                    synchronized {
+                    synchronized(this) {
                         Transform(
                                 rotationX = rotationX.smoothed * Math.PI,
                                 rotationY = rotationY.smoothed * Math.PI,

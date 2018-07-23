@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/17/18 5:16 PM
+ *  Created by Jim Eckerlein on 7/23/18 9:34 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/17/18 5:14 PM
+ *  Last modified 7/23/18 9:28 AM
  */
 
 package io.jim.tesserapp.ui.main
@@ -10,7 +10,6 @@ import com.almeros.android.multitouch.MoveGestureDetector
 import io.jim.tesserapp.util.CONSUMED
 import io.jim.tesserapp.util.NOT_CONSUMED
 import io.jim.tesserapp.util.consume
-import io.jim.tesserapp.util.synchronized
 
 class OrbitGestureListener(val viewModel: MainViewModel) : MoveGestureDetector.OnMoveGestureListener {
     
@@ -25,9 +24,9 @@ class OrbitGestureListener(val viewModel: MainViewModel) : MoveGestureDetector.O
      */
     override fun onMove(detector: MoveGestureDetector?) = consume {
         detector ?: return NOT_CONSUMED
-        viewModel.synchronized {
-            horizontalCameraRotation.value += detector.focusDelta.x * ROTATION_SENSITIVITY
-            verticalCameraRotation.value -= detector.focusDelta.y * ROTATION_SENSITIVITY
+        synchronized(viewModel) {
+            viewModel.horizontalCameraRotation.value += detector.focusDelta.x * ROTATION_SENSITIVITY
+            viewModel.verticalCameraRotation.value -= detector.focusDelta.y * ROTATION_SENSITIVITY
         }
     }
     

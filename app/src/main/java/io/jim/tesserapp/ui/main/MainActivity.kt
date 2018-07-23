@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/22/18 11:16 PM
+ *  Created by Jim Eckerlein on 7/23/18 9:34 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/22/18 11:16 PM
+ *  Last modified 7/23/18 9:34 AM
  */
 
 package io.jim.tesserapp.ui.main
@@ -62,9 +62,11 @@ class MainActivity : AppCompatActivity() {
     
             R.id.appbar_menu_reset_transform -> {
                 // Reset all transform:
-                viewModel.synchronized {
-                    listOf(rotationX, rotationY, rotationZ, rotationQ,
-                            translationX, translationY, translationZ, translationQ).forEach {
+                synchronized(viewModel) {
+                    with(viewModel) {
+                        listOf(rotationX, rotationY, rotationZ, rotationQ,
+                                translationX, translationY, translationZ, translationQ)
+                    }.forEach {
                         it.value = it.initialValue
                     }
                 }
@@ -113,7 +115,9 @@ class MainActivity : AppCompatActivity() {
         
             // When clicked, select the proper axis:
             button.setOnClickListener {
-                viewModel.synchronized { selectedAxis.value = axis }
+                synchronized(viewModel) {
+                    viewModel.selectedAxis.value = axis
+                }
             }
         
             // When selected axis changed, button selection state changes accordingly:
@@ -141,15 +145,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
     
-        fun buildText(model: MainViewModel) = model.synchronized {
-            "trans=(${formatNumber(translationX.value)}| " +
-                    "${formatNumber(translationY.value)}| " +
-                    "${formatNumber(translationZ.value)}| " +
-                    "${formatNumber(translationQ.value)})\n" +
-                    "rot=(${formatNumber(rotationX.value)}${getString(R.string.pi)}| " +
-                    "${formatNumber(rotationY.value)}${getString(R.string.pi)}| " +
-                    "${formatNumber(rotationZ.value)}${getString(R.string.pi)}| " +
-                    "${formatNumber(rotationQ.value)}${getString(R.string.pi)})"
+        fun buildText(model: MainViewModel) = synchronized(model) {
+            with(model) {
+                "trans=(${formatNumber(translationX.value)}| " +
+                        "${formatNumber(translationY.value)}| " +
+                        "${formatNumber(translationZ.value)}| " +
+                        "${formatNumber(translationQ.value)})\n" +
+                        "rot=(${formatNumber(rotationX.value)}${getString(R.string.pi)}| " +
+                        "${formatNumber(rotationY.value)}${getString(R.string.pi)}| " +
+                        "${formatNumber(rotationZ.value)}${getString(R.string.pi)}| " +
+                        "${formatNumber(rotationQ.value)}${getString(R.string.pi)})"
+            }
         }
         viewModel.translationX.observe(this, Observer { transformInfo.text = buildText(viewModel) })
         viewModel.translationY.observe(this, Observer { transformInfo.text = buildText(viewModel) })
@@ -162,7 +168,7 @@ class MainActivity : AppCompatActivity() {
     
         // Setup OpenGL surface view:
         glSurfaceView.apply {
-        
+    
             // Renderer uses OpenGL 2:
             setEGLContextClientVersion(2)
             setRenderer(Renderer(
@@ -170,10 +176,10 @@ class MainActivity : AppCompatActivity() {
                     viewModel,
                     context.assets,
                     resources.displayMetrics.xdpi.toDouble()))
-        
+    
             val orbitDetector = MoveGestureDetector(context, OrbitGestureListener(viewModel))
             val zoomDetector = ScaleGestureDetector(context, ZoomGestureListener(viewModel))
-        
+    
             setOnTouchListener { _, event ->
                 consume {
                     zoomDetector.onTouchEvent(event)
