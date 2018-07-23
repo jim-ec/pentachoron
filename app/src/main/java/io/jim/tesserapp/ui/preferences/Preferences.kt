@@ -1,10 +1,10 @@
 /*
- *  Created by Jim Eckerlein on 7/16/18 11:17 AM
+ *  Created by Jim Eckerlein on 7/23/18 9:35 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/16/18 11:11 AM
+ *  Last modified 7/23/18 9:35 AM
  */
 
-package io.jim.tesserapp.util
+package io.jim.tesserapp.ui.preferences
 
 import android.content.Context
 import android.preference.PreferenceManager

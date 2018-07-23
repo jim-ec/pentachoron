@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/23/18 9:34 AM
+ *  Created by Jim Eckerlein on 7/23/18 9:35 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/23/18 9:34 AM
+ *  Last modified 7/23/18 9:35 AM
  */
 
 package io.jim.tesserapp.ui.main
@@ -21,7 +21,11 @@ import io.jim.tesserapp.graphics.Renderer
 import io.jim.tesserapp.graphics.gl.Color
 import io.jim.tesserapp.math.formatNumber
 import io.jim.tesserapp.ui.preferences.PreferencesActivity
-import io.jim.tesserapp.util.*
+import io.jim.tesserapp.ui.preferences.gridPreference
+import io.jim.tesserapp.ui.preferences.preferenceThemeId
+import io.jim.tesserapp.util.NOT_CONSUMED
+import io.jim.tesserapp.util.consume
+import io.jim.tesserapp.util.themedColorInt
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
