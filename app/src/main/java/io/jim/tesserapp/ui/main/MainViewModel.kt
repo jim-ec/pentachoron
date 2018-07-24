@@ -53,14 +53,14 @@ class MainViewModel : ViewModel() {
                 onTransformUpdate = {
                     synchronized(this) {
                         Transform(
-                                rotationX = rotationX.smoothed * Math.PI,
-                                rotationY = rotationY.smoothed * Math.PI,
-                                rotationZ = rotationZ.smoothed * Math.PI,
-                                rotationQ = rotationQ.smoothed * Math.PI,
-                                translationX = translationX.smoothed,
-                                translationY = translationY.smoothed,
-                                translationZ = translationZ.smoothed,
-                                translationQ = translationQ.smoothed
+                                rotationX = rotationX.value * Math.PI,
+                                rotationY = rotationY.value * Math.PI,
+                                rotationZ = rotationZ.value * Math.PI,
+                                rotationQ = rotationQ.value * Math.PI,
+                                translationX = translationX.value,
+                                translationY = translationY.value,
+                                translationZ = translationZ.value,
+                                translationQ = translationQ.value
                         )
                     }
                 },
@@ -103,66 +103,60 @@ class MainViewModel : ViewModel() {
     /**
      * X rotation, in units of PI.
      */
-    val rotationX = SmoothedLiveData()
+    val rotationX = MutableLiveDataNonNull(0.0)
     
     /**
      * Y rotation, in units of PI.
      */
-    val rotationY = SmoothedLiveData()
+    val rotationY = MutableLiveDataNonNull(0.0)
     
     /**
      * Z rotation, in units of PI.
      */
-    val rotationZ = SmoothedLiveData()
+    val rotationZ = MutableLiveDataNonNull(0.0)
     
     /**
      * Q rotation, in units of PI.
      */
-    val rotationQ = SmoothedLiveData()
+    val rotationQ = MutableLiveDataNonNull(0.0)
     
     /**
      * X translation.
      */
-    val translationX = SmoothedLiveData()
+    val translationX = MutableLiveDataNonNull(0.0)
     
     /**
      * Y translation.
      */
-    val translationY = SmoothedLiveData()
+    val translationY = MutableLiveDataNonNull(0.0)
     
     /**
      * Z translation.
      */
-    val translationZ = SmoothedLiveData()
+    val translationZ = MutableLiveDataNonNull(0.0)
     
     /**
      * Q translation.
      */
-    val translationQ = SmoothedLiveData(initialValue = 4.0)
+    val translationQ = MutableLiveDataNonNull(4.0)
     
     /**
      * Camera distance.
      */
-    val cameraDistance = MutableLiveDataNonNull(initialValue = 5.0)
+    val cameraDistance = MutableLiveDataNonNull(5.0)
     
     /**
      * Rotation on the horizontal orbit.
      * This is the base rotation.
      */
-    val horizontalCameraRotation = SmoothedLiveData(
-            initialValue = Math.PI / 3.0,
-            transitionInterval = 80.0
-    )
+    val horizontalCameraRotation = MutableLiveDataNonNull(Math.PI / 3.0)
     
     /**
      * Rotation on the vertical orbit.
      * This is the secondary rotation.
      */
-    val verticalCameraRotation = SmoothedLiveData(
-            initialValue = -Math.PI / 8.0,
-            transitionInterval = 80.0
-    )
+    val verticalCameraRotation = MutableLiveDataNonNull(-Math.PI / 8.0)
     
-    val cameraFovX = SmoothedLiveData(initialValue = 60.0, transitionInterval = 80.0)
+    val cameraFovX = MutableLiveDataNonNull(60.0)
     
 }

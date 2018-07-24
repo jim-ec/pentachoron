@@ -134,9 +134,9 @@ class Renderer(
                         linesShader.viewMatrixLocation,
                         viewModel.cameraDistance.value,
                         aspectRatio,
-                        viewModel.horizontalCameraRotation.smoothed,
-                        viewModel.verticalCameraRotation.smoothed,
-                        viewModel.cameraFovX.smoothed
+                        viewModel.horizontalCameraRotation.value,
+                        viewModel.verticalCameraRotation.value,
+                        viewModel.cameraFovX.value
                 )
                 
                 uploadProjectionMatrix(linesShader.projectionMatrixLocation)
