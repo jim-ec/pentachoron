@@ -19,6 +19,7 @@ import com.almeros.android.multitouch.MoveGestureDetector
 import io.jim.tesserapp.R
 import io.jim.tesserapp.graphics.Renderer
 import io.jim.tesserapp.graphics.gl.Color
+import io.jim.tesserapp.math.AttractionGestureListener
 import io.jim.tesserapp.math.formatNumber
 import io.jim.tesserapp.ui.preferences.PreferencesActivity
 import io.jim.tesserapp.ui.preferences.gridPreference
@@ -56,14 +57,14 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?) = consume {
         item ?: return NOT_CONSUMED
         when (item.itemId) {
-    
+            
             R.id.appbar_menu_preferences -> {
                 // Open preference activity:
                 startActivityForResult(
                         Intent(this, PreferencesActivity::class.java),
                         PREFERENCES_REQUEST)
             }
-    
+            
             R.id.appbar_menu_reset_transform -> {
                 // Reset all transform:
                 synchronized(viewModel) {
@@ -111,32 +112,32 @@ class MainActivity : AppCompatActivity() {
                 yColor = Color(themedColorInt(R.attr.colorAxisY)),
                 zColor = Color(themedColorInt(R.attr.colorAxisZ))
         )
-    
+        
         listOf(axisButtonX to SelectedAxis.X,
                 axisButtonY to SelectedAxis.Y,
                 axisButtonZ to SelectedAxis.Z,
                 axisButtonQ to SelectedAxis.Q).forEach { (button, axis) ->
-        
+            
             // When clicked, select the proper axis:
             button.setOnClickListener {
                 synchronized(viewModel) {
                     viewModel.selectedAxis.value = axis
                 }
             }
-        
+            
             // When selected axis changed, button selection state changes accordingly:
             viewModel.selectedAxis.observe(this, Observer { selectedAxis ->
                 button.isSelected = axis == selectedAxis
             })
-        
+            
         }
-    
+        
         axisButtonX.isSelected = true
         
         swipeArea.apply {
-    
+            
             val detector = GestureDetector(context, SwipeAreaGestureListener(viewModel))
-    
+            
             viewModel.transformMode.observe(this@MainActivity, Observer<TransformMode> { mode ->
                 text = getString(R.string.swipe_to_transform).format(when (mode!!) {
                     TransformMode.ROTATE -> getString(R.string.rotate)
@@ -148,7 +149,7 @@ class MainActivity : AppCompatActivity() {
                 detector.onTouchEvent(motionEvent)
             }
         }
-    
+        
         fun buildText(model: MainViewModel) = synchronized(model) {
             with(model) {
                 "trans=(${formatNumber(translationX.value)}| " +
@@ -169,10 +170,10 @@ class MainActivity : AppCompatActivity() {
         viewModel.rotationY.observe(this, Observer { transformInfo.text = buildText(viewModel) })
         viewModel.rotationZ.observe(this, Observer { transformInfo.text = buildText(viewModel) })
         viewModel.rotationQ.observe(this, Observer { transformInfo.text = buildText(viewModel) })
-    
+        
         // Setup OpenGL surface view:
         glSurfaceView.apply {
-    
+            
             // Renderer uses OpenGL 2:
             setEGLContextClientVersion(2)
             setRenderer(Renderer(
@@ -180,10 +181,19 @@ class MainActivity : AppCompatActivity() {
                     viewModel,
                     context.assets,
                     resources.displayMetrics.xdpi.toDouble()))
-    
-            val orbitDetector = MoveGestureDetector(context, OrbitGestureListener(viewModel))
+            
+            val orbitDetector = MoveGestureDetector(context,
+                    AttractionGestureListener(0.5f) { deltaApproximation ->
+                        runOnUiThread {
+                            synchronized(viewModel) {
+                                viewModel.horizontalCameraRotation.value += deltaApproximation.x / 300
+                                viewModel.verticalCameraRotation.value -= deltaApproximation.y / 300
+                            }
+                        }
+                    }
+            )
             val zoomDetector = ScaleGestureDetector(context, ZoomGestureListener(viewModel))
-    
+            
             setOnTouchListener { _, event ->
                 consume {
                     zoomDetector.onTouchEvent(event)
