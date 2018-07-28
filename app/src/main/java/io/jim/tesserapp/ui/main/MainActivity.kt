@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/28/18 7:39 PM
+ *  Created by Jim Eckerlein on 7/29/18 8:57 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/28/18 7:39 PM
+ *  Last modified 7/29/18 8:57 AM
  */
 
 package io.jim.tesserapp.ui.main
@@ -9,6 +9,7 @@ package io.jim.tesserapp.ui.main
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.Scroller
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -21,6 +22,7 @@ import io.jim.tesserapp.math.formatNumber
 import io.jim.tesserapp.ui.preferences.PreferencesActivity
 import io.jim.tesserapp.ui.preferences.gridPreference
 import io.jim.tesserapp.ui.preferences.preferenceThemeId
+import io.jim.tesserapp.util.CONSUMED
 import io.jim.tesserapp.util.NOT_CONSUMED
 import io.jim.tesserapp.util.consume
 import io.jim.tesserapp.util.themedColorInt
@@ -133,60 +135,115 @@ class MainActivity : AppCompatActivity() {
         
         swipeArea.apply {
     
-            val gestureListener = GestureDetector(context,
-                    object : GestureDetector.SimpleOnGestureListener() {
+            val scroller = Scroller(context)
+            var scrollerPreviousX = 0
     
-                        val scrollAttractor = ScrollAttractor(0.3f) { deltaApproximation ->
-                            synchronized(viewModel) {
+            viewTreeObserver.addOnPreDrawListener {
+        
+                scroller.computeScrollOffset()
+        
+                synchronized(viewModel) {
+            
+                    when (viewModel.transformMode.value) {
+                
+                        TransformMode.ROTATE ->
+                    
+                            when (viewModel.selectedAxis.value) {
+                                SelectedAxis.X -> viewModel.rotationX
+                                SelectedAxis.Y -> viewModel.rotationY
+                                SelectedAxis.Z -> viewModel.rotationZ
+                                SelectedAxis.Q -> viewModel.rotationQ
+                            }.value += 0.001 * (scroller.currX - scrollerPreviousX)
+                        
+                        TransformMode.TRANSLATE ->
+                    
+                            when (viewModel.selectedAxis.value) {
+                                SelectedAxis.X -> viewModel.translationX
+                                SelectedAxis.Y -> viewModel.translationY
+                                SelectedAxis.Z -> viewModel.translationZ
+                                SelectedAxis.Q -> viewModel.translationQ
+                            }.value += 0.02 * (scroller.currX - scrollerPreviousX)
+                    }
+                }
+        
+                scrollerPreviousX = scroller.currX
+        
+                CONSUMED
+            }
+    
+            val gestureListener = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+        
+                val scrollAttractor = ScrollAttractor(0.3f) { deltaApproximation ->
+                    synchronized(viewModel) {
+                        when (viewModel.transformMode.value) {
+                    
+                            TransformMode.ROTATE ->
+                        
+                                when (viewModel.selectedAxis.value) {
+                                    SelectedAxis.X -> viewModel.rotationX
+                                    SelectedAxis.Y -> viewModel.rotationY
+                                    SelectedAxis.Z -> viewModel.rotationZ
+                                    SelectedAxis.Q -> viewModel.rotationQ
+                                }.value += 0.001 * deltaApproximation.x
+                    
+                            TransformMode.TRANSLATE ->
+                        
+                                when (viewModel.selectedAxis.value) {
+                                    SelectedAxis.X -> viewModel.translationX
+                                    SelectedAxis.Y -> viewModel.translationY
+                                    SelectedAxis.Z -> viewModel.translationZ
+                                    SelectedAxis.Q -> viewModel.translationQ
+                                }.value += 0.02 * deltaApproximation.x
+                        }
+                    }
+                }
+        
+                override fun onDoubleTap(e: MotionEvent?) = consume {
+                    scroller.forceFinished(true)
+                    synchronized(viewModel) {
+                        // Toggle between translate and rotate:
+                        viewModel.transformMode.value =
                                 when (viewModel.transformMode.value) {
-                
-                                    TransformMode.ROTATE ->
-                    
-                                        when (viewModel.selectedAxis.value) {
-                                            SelectedAxis.X -> viewModel.rotationX
-                                            SelectedAxis.Y -> viewModel.rotationY
-                                            SelectedAxis.Z -> viewModel.rotationZ
-                                            SelectedAxis.Q -> viewModel.rotationQ
-                                        }.value += 0.001 * deltaApproximation.x
-                
-                                    TransformMode.TRANSLATE ->
-                    
-                                        when (viewModel.selectedAxis.value) {
-                                            SelectedAxis.X -> viewModel.translationX
-                                            SelectedAxis.Y -> viewModel.translationY
-                                            SelectedAxis.Z -> viewModel.translationZ
-                                            SelectedAxis.Q -> viewModel.translationQ
-                                        }.value += 0.02 * deltaApproximation.x
+                                    TransformMode.ROTATE -> TransformMode.TRANSLATE
+                                    TransformMode.TRANSLATE -> TransformMode.ROTATE
                                 }
-                            }
-                        }
+                    }
+                }
+        
+                override fun onDown(event: MotionEvent?) = consume {
+                    event ?: return NOT_CONSUMED
+                    scrollAttractor.resetScrollTo(event.x, event.y)
+                }
+        
+                override fun onScroll(
+                        startEvent: MotionEvent?,
+                        endEvent: MotionEvent?,
+                        distanceX: Float,
+                        distanceY: Float
+                ) = consume {
+                    endEvent ?: return NOT_CONSUMED
+                    scrollAttractor.scrollTo(endEvent.x, endEvent.y)
+                }
+        
+                override fun onFling(
+                        startEvent: MotionEvent?,
+                        endEvent: MotionEvent?,
+                        velocityX: Float,
+                        velocityY: Float
+                ) = consume {
+                    startEvent ?: return NOT_CONSUMED
     
-                        override fun onDoubleTap(e: MotionEvent?) = consume {
-                            synchronized(viewModel) {
-                                // Toggle between translate and rotate:
-                                viewModel.transformMode.value =
-                                        when (viewModel.transformMode.value) {
-                                            TransformMode.ROTATE -> TransformMode.TRANSLATE
-                                            TransformMode.TRANSLATE -> TransformMode.ROTATE
-                                        }
-                            }
-                        }
-    
-                        override fun onDown(event: MotionEvent?) = consume {
-                            event ?: return NOT_CONSUMED
-                            scrollAttractor.resetScrollTo(event.x, event.y)
-                        }
-    
-                        override fun onScroll(
-                                startEvent: MotionEvent?,
-                                endEvent: MotionEvent?,
-                                distanceX: Float,
-                                distanceY: Float
-                        ) = consume {
-                            endEvent ?: return NOT_CONSUMED
-                            scrollAttractor.scrollTo(endEvent.x, endEvent.y)
-                        }
-                    })
+                    scrollerPreviousX = 0
+                    scroller.fling(
+                            0,
+                            0,
+                            velocityX.toInt() / 2,
+                            velocityY.toInt() / 2,
+                            Int.MIN_VALUE,
+                            Int.MAX_VALUE,
+                            0, 0)
+                }
+            })
             
             viewModel.transformMode.observe(this@MainActivity, Observer<TransformMode> { mode ->
                 text = getString(R.string.swipe_to_transform).format(when (mode!!) {
@@ -240,12 +297,12 @@ class MainActivity : AppCompatActivity() {
                                 viewModel.verticalCameraRotation.value -= delta.y / 300
                             }
                         }
-            
+    
                         override fun onMoveBegin(detector: MoveGestureDetector?) = consume {
                             detector ?: return NOT_CONSUMED
                             scrollAttractor.resetScrollTo(detector.focusX, detector.focusY)
                         }
-            
+    
                         override fun onMove(detector: MoveGestureDetector?) = consume {
                             detector ?: return NOT_CONSUMED
                             scrollAttractor.scrollTo(detector.focusX, detector.focusY)
