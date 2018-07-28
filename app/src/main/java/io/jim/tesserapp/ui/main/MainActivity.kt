@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/28/18 10:42 AM
+ *  Created by Jim Eckerlein on 7/28/18 7:39 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/28/18 10:42 AM
+ *  Last modified 7/28/18 7:39 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -16,7 +16,7 @@ import com.almeros.android.multitouch.MoveGestureDetector
 import io.jim.tesserapp.R
 import io.jim.tesserapp.graphics.Renderer
 import io.jim.tesserapp.graphics.gl.Color
-import io.jim.tesserapp.math.AttractionGestureListener
+import io.jim.tesserapp.math.ScrollAttractor
 import io.jim.tesserapp.math.formatNumber
 import io.jim.tesserapp.ui.preferences.PreferencesActivity
 import io.jim.tesserapp.ui.preferences.gridPreference
@@ -133,8 +133,34 @@ class MainActivity : AppCompatActivity() {
         
         swipeArea.apply {
     
-            val transformToggle = GestureDetector(context,
+            val gestureListener = GestureDetector(context,
                     object : GestureDetector.SimpleOnGestureListener() {
+    
+                        val scrollAttractor = ScrollAttractor(0.3f) { deltaApproximation ->
+                            synchronized(viewModel) {
+                                when (viewModel.transformMode.value) {
+                
+                                    TransformMode.ROTATE ->
+                    
+                                        when (viewModel.selectedAxis.value) {
+                                            SelectedAxis.X -> viewModel.rotationX
+                                            SelectedAxis.Y -> viewModel.rotationY
+                                            SelectedAxis.Z -> viewModel.rotationZ
+                                            SelectedAxis.Q -> viewModel.rotationQ
+                                        }.value += 0.001 * deltaApproximation.x
+                
+                                    TransformMode.TRANSLATE ->
+                    
+                                        when (viewModel.selectedAxis.value) {
+                                            SelectedAxis.X -> viewModel.translationX
+                                            SelectedAxis.Y -> viewModel.translationY
+                                            SelectedAxis.Z -> viewModel.translationZ
+                                            SelectedAxis.Q -> viewModel.translationQ
+                                        }.value += 0.02 * deltaApproximation.x
+                                }
+                            }
+                        }
+    
                         override fun onDoubleTap(e: MotionEvent?) = consume {
                             synchronized(viewModel) {
                                 // Toggle between translate and rotate:
@@ -145,31 +171,20 @@ class MainActivity : AppCompatActivity() {
                                         }
                             }
                         }
-                    })
     
-            val swipeListener = MoveGestureDetector(context,
-                    AttractionGestureListener(0.3f) { deltaApproximation ->
-                        synchronized(viewModel) {
-                            when (viewModel.transformMode.value) {
-                        
-                                TransformMode.ROTATE ->
-                            
-                                    when (viewModel.selectedAxis.value) {
-                                        SelectedAxis.X -> viewModel.rotationX
-                                        SelectedAxis.Y -> viewModel.rotationY
-                                        SelectedAxis.Z -> viewModel.rotationZ
-                                        SelectedAxis.Q -> viewModel.rotationQ
-                                    }.value += 0.001 * deltaApproximation.x
-                        
-                                TransformMode.TRANSLATE ->
-                            
-                                    when (viewModel.selectedAxis.value) {
-                                        SelectedAxis.X -> viewModel.translationX
-                                        SelectedAxis.Y -> viewModel.translationY
-                                        SelectedAxis.Z -> viewModel.translationZ
-                                        SelectedAxis.Q -> viewModel.translationQ
-                                    }.value += 0.02 * deltaApproximation.x
-                            }
+                        override fun onDown(event: MotionEvent?) = consume {
+                            event ?: return NOT_CONSUMED
+                            scrollAttractor.resetScrollTo(event.x, event.y)
+                        }
+    
+                        override fun onScroll(
+                                startEvent: MotionEvent?,
+                                endEvent: MotionEvent?,
+                                distanceX: Float,
+                                distanceY: Float
+                        ) = consume {
+                            endEvent ?: return NOT_CONSUMED
+                            scrollAttractor.scrollTo(endEvent.x, endEvent.y)
                         }
                     })
             
@@ -181,8 +196,7 @@ class MainActivity : AppCompatActivity() {
             })
             
             setOnTouchListener { _, motionEvent ->
-                transformToggle.onTouchEvent(motionEvent)
-                swipeListener.onTouchEvent(motionEvent)
+                gestureListener.onTouchEvent(motionEvent)
             }
         }
         
@@ -219,13 +233,25 @@ class MainActivity : AppCompatActivity() {
                     resources.displayMetrics.xdpi.toDouble()))
             
             val orbitDetector = MoveGestureDetector(context,
-                    AttractionGestureListener(0.3f) { deltaApproximation ->
-                        synchronized(viewModel) {
-                            viewModel.horizontalCameraRotation.value += deltaApproximation.x / 300
-                            viewModel.verticalCameraRotation.value -= deltaApproximation.y / 300
+                    object : MoveGestureDetector.SimpleOnMoveGestureListener() {
+                        val scrollAttractor = ScrollAttractor(0.3f) { delta ->
+                            synchronized(viewModel) {
+                                viewModel.horizontalCameraRotation.value += delta.x / 300
+                                viewModel.verticalCameraRotation.value -= delta.y / 300
+                            }
                         }
-                    }
-            )
+            
+                        override fun onMoveBegin(detector: MoveGestureDetector?) = consume {
+                            detector ?: return NOT_CONSUMED
+                            scrollAttractor.resetScrollTo(detector.focusX, detector.focusY)
+                        }
+            
+                        override fun onMove(detector: MoveGestureDetector?) = consume {
+                            detector ?: return NOT_CONSUMED
+                            scrollAttractor.scrollTo(detector.focusX, detector.focusY)
+                        }
+                    })
+            
             val zoomDetector = ScaleGestureDetector(context, ZoomGestureListener(viewModel))
             
             setOnTouchListener { _, event ->
