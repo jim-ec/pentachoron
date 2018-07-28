@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/28/18 9:46 AM
+ *  Created by Jim Eckerlein on 7/28/18 9:51 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/28/18 9:39 AM
+ *  Last modified 7/28/18 9:47 AM
  */
 
 apply plugin: "com.android.application"
@@ -62,6 +62,7 @@ dependencies {
     implementation fileTree(include: ["*.jar"], dir: "libs")
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.24.0"
 
     testImplementation "junit:junit:4.12"
     androidTestImplementation "androidx.test:runner:1.1.0-alpha4"
@@ -79,4 +80,10 @@ dependencies {
 
     implementation "joda-time:joda-time:2.10"
     implementation "com.github.Almeros:android-gesture-detectors:v1.0"
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
 }
