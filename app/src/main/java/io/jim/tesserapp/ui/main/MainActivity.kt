@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/23/18 9:35 AM
+ *  Created by Jim Eckerlein on 7/28/18 10:25 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/23/18 9:35 AM
+ *  Last modified 7/28/18 10:23 AM
  */
 
 package io.jim.tesserapp.ui.main
@@ -183,12 +183,10 @@ class MainActivity : AppCompatActivity() {
                     resources.displayMetrics.xdpi.toDouble()))
             
             val orbitDetector = MoveGestureDetector(context,
-                    AttractionGestureListener(0.5f) { deltaApproximation ->
-                        runOnUiThread {
-                            synchronized(viewModel) {
-                                viewModel.horizontalCameraRotation.value += deltaApproximation.x / 300
-                                viewModel.verticalCameraRotation.value -= deltaApproximation.y / 300
-                            }
+                    AttractionGestureListener(0.3f) { deltaApproximation ->
+                        synchronized(viewModel) {
+                            viewModel.horizontalCameraRotation.value += deltaApproximation.x / 300
+                            viewModel.verticalCameraRotation.value -= deltaApproximation.y / 300
                         }
                     }
             )

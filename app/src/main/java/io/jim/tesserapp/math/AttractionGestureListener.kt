@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/24/18 4:48 PM
+ *  Created by Jim Eckerlein on 7/28/18 10:25 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/24/18 4:48 PM
+ *  Last modified 7/28/18 10:25 AM
  */
 
 package io.jim.tesserapp.math
@@ -10,14 +10,15 @@ import android.graphics.PointF
 import androidx.core.graphics.minus
 import com.almeros.android.multitouch.MoveGestureDetector
 import io.jim.tesserapp.util.NOT_CONSUMED
+import io.jim.tesserapp.util.UiCoroutineContext
 import io.jim.tesserapp.util.consume
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
 import java.security.InvalidParameterException
-import java.util.*
-import kotlin.concurrent.schedule
 
 class AttractionGestureListener(
         val approximationCoefficient: Float,
-        val callback: (approximator: PointF) -> Unit
+        val onApproximated: (deltaApproximation: PointF) -> Unit
 ) : MoveGestureDetector.SimpleOnMoveGestureListener() {
     
     val attractor = PointF()
@@ -29,42 +30,36 @@ class AttractionGestureListener(
             throw InvalidParameterException("Invalid approximation coefficient " +
                     "$approximationCoefficient, must be in ]0;1]")
         }
-        
-        Timer().schedule(delay = 0L, period = 17L) {
-            synchronized(this@AttractionGestureListener) {
+    
+        launch(UiCoroutineContext) {
+            while (true) {
                 approximator.x += (attractor.x - approximator.x) * approximationCoefficient
                 approximator.y += (attractor.y - approximator.y) * approximationCoefficient
-                
-                callback(approximator - previousApproximator)
+            
+                onApproximated(approximator - previousApproximator)
                 
                 previousApproximator.x = approximator.x
                 previousApproximator.y = approximator.y
+            
+                delay(17)
             }
         }
     }
     
     override fun onMoveBegin(detector: MoveGestureDetector?) = consume {
         detector ?: return NOT_CONSUMED
-        
-        synchronized(this) {
-            attractor.x = detector.focusX
-            attractor.y = detector.focusY
-            approximator.x = detector.focusX
-            approximator.y = detector.focusY
-            previousApproximator.x = detector.focusX
-            previousApproximator.y = detector.focusY
-        }
+        attractor.x = detector.focusX
+        attractor.y = detector.focusY
+        approximator.x = detector.focusX
+        approximator.y = detector.focusY
+        previousApproximator.x = detector.focusX
+        previousApproximator.y = detector.focusY
     }
     
     override fun onMove(detector: MoveGestureDetector?) = consume {
         detector ?: return NOT_CONSUMED
-        
-        synchronized(this) {
-            attractor.x = detector.focusX
-            attractor.y = detector.focusY
-        }
-        
-        
+        attractor.x = detector.focusX
+        attractor.y = detector.focusY
     }
     
 }
