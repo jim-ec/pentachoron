@@ -1,17 +1,14 @@
 /*
- *  Created by Jim Eckerlein on 7/28/18 10:25 AM
+ *  Created by Jim Eckerlein on 7/28/18 10:42 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/28/18 10:23 AM
+ *  Last modified 7/28/18 10:42 AM
  */
 
 package io.jim.tesserapp.ui.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.GestureDetector
-import android.view.Menu
-import android.view.MenuItem
-import android.view.ScaleGestureDetector
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -135,8 +132,46 @@ class MainActivity : AppCompatActivity() {
         axisButtonX.isSelected = true
         
         swipeArea.apply {
-            
-            val detector = GestureDetector(context, SwipeAreaGestureListener(viewModel))
+    
+            val transformToggle = GestureDetector(context,
+                    object : GestureDetector.SimpleOnGestureListener() {
+                        override fun onDoubleTap(e: MotionEvent?) = consume {
+                            synchronized(viewModel) {
+                                // Toggle between translate and rotate:
+                                viewModel.transformMode.value =
+                                        when (viewModel.transformMode.value) {
+                                            TransformMode.ROTATE -> TransformMode.TRANSLATE
+                                            TransformMode.TRANSLATE -> TransformMode.ROTATE
+                                        }
+                            }
+                        }
+                    })
+    
+            val swipeListener = MoveGestureDetector(context,
+                    AttractionGestureListener(0.3f) { deltaApproximation ->
+                        synchronized(viewModel) {
+                            when (viewModel.transformMode.value) {
+                        
+                                TransformMode.ROTATE ->
+                            
+                                    when (viewModel.selectedAxis.value) {
+                                        SelectedAxis.X -> viewModel.rotationX
+                                        SelectedAxis.Y -> viewModel.rotationY
+                                        SelectedAxis.Z -> viewModel.rotationZ
+                                        SelectedAxis.Q -> viewModel.rotationQ
+                                    }.value += 0.001 * deltaApproximation.x
+                        
+                                TransformMode.TRANSLATE ->
+                            
+                                    when (viewModel.selectedAxis.value) {
+                                        SelectedAxis.X -> viewModel.translationX
+                                        SelectedAxis.Y -> viewModel.translationY
+                                        SelectedAxis.Z -> viewModel.translationZ
+                                        SelectedAxis.Q -> viewModel.translationQ
+                                    }.value += 0.02 * deltaApproximation.x
+                            }
+                        }
+                    })
             
             viewModel.transformMode.observe(this@MainActivity, Observer<TransformMode> { mode ->
                 text = getString(R.string.swipe_to_transform).format(when (mode!!) {
@@ -146,7 +181,8 @@ class MainActivity : AppCompatActivity() {
             })
             
             setOnTouchListener { _, motionEvent ->
-                detector.onTouchEvent(motionEvent)
+                transformToggle.onTouchEvent(motionEvent)
+                swipeListener.onTouchEvent(motionEvent)
             }
         }
         
