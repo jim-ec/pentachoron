@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/30/18 8:58 PM
+ *  Created by Jim Eckerlein on 7/30/18 9:05 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/30/18 8:58 PM
+ *  Last modified 7/30/18 9:04 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -237,8 +237,8 @@ class MainActivity : AppCompatActivity() {
                     scroller.fling(
                             0,
                             0,
-                            velocityX.toInt() / 2,
-                            velocityY.toInt() / 2,
+                            velocityX.toInt() / 4,
+                            velocityY.toInt() / 4,
                             Int.MIN_VALUE,
                             Int.MAX_VALUE,
                             0, 0)
