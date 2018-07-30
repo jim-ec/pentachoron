@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/30/18 9:05 PM
+ *  Created by Jim Eckerlein on 7/30/18 9:07 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/30/18 9:04 PM
+ *  Last modified 7/30/18 9:07 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -197,8 +197,8 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-        
-                override fun onDoubleTap(e: MotionEvent?) = consume {
+    
+                override fun onLongPress(e: MotionEvent?) {
                     scroller.forceFinished(true)
                     synchronized(viewModel) {
                         // Toggle between translate and rotate:
