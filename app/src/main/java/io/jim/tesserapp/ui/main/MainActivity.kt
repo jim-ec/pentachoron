@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/29/18 8:57 AM
+ *  Created by Jim Eckerlein on 7/30/18 8:58 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/29/18 8:57 AM
+ *  Last modified 7/30/18 8:58 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -172,8 +172,8 @@ class MainActivity : AppCompatActivity() {
             }
     
             val gestureListener = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-        
-                val scrollAttractor = ScrollAttractor(0.3f) { deltaApproximation ->
+    
+                val scrollAttractor = ScrollAttractor(50L) { deltaApproximation ->
                     synchronized(viewModel) {
                         when (viewModel.transformMode.value) {
                     
@@ -291,7 +291,7 @@ class MainActivity : AppCompatActivity() {
             
             val orbitDetector = MoveGestureDetector(context,
                     object : MoveGestureDetector.SimpleOnMoveGestureListener() {
-                        val scrollAttractor = ScrollAttractor(0.3f) { delta ->
+                        val scrollAttractor = ScrollAttractor(40L) { delta ->
                             synchronized(viewModel) {
                                 viewModel.horizontalCameraRotation.value += delta.x / 300
                                 viewModel.verticalCameraRotation.value -= delta.y / 300

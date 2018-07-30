@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/28/18 7:39 PM
+ *  Created by Jim Eckerlein on 7/30/18 9:04 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/28/18 7:39 PM
+ *  Last modified 7/30/18 9:03 PM
  */
 
 package io.jim.tesserapp.math
@@ -16,26 +16,43 @@ import java.security.InvalidParameterException
 
 /**
  * Consumes scroll events, while spitting out an approximating point at a fixed time rate.
+ *
+ * @property halfLife
+ * The time it takes the approximator to reach half of the distance to the target point.
+ * E.g. if set to `50`, the approximator will cover half of its *current* distance
+ * to the target point every 50 milliseconds. To be clear, the approximator will *never*
+ * completely reach the target, since the distance is always halved at a fixed time rate.
+ *
+ * Caution must be taken when choosing a very small half-life.
+ * If the half-life is smaller than the time rate at which the approximator position is
+ * requested, the approximator will begin to oscillate around the target point.
  */
 class ScrollAttractor(
-        val approximationCoefficient: Float,
+        val halfLife: Long,
         val onApproximated: (deltaApproximation: PointF) -> Unit
 ) {
     
     val attractor = PointF()
     val approximator = PointF()
     val previousApproximator = PointF()
+    var t0 = 0L
     
     init {
-        if (approximationCoefficient <= 0f || approximationCoefficient > 1f) {
-            throw InvalidParameterException("Invalid approximation coefficient " +
-                    "$approximationCoefficient, must be in ]0;1]")
+        if (halfLife <= 0L) {
+            throw InvalidParameterException("Invalid half-life " +
+                    "$halfLife, must be a non-zero, positive value")
         }
     
         launch(UiCoroutineContext) {
             while (true) {
-                approximator.x += (attractor.x - approximator.x) * approximationCoefficient
-                approximator.y += (attractor.y - approximator.y) * approximationCoefficient
+    
+                val t = System.currentTimeMillis()
+    
+                val factor = 0.5 * (t - t0).toDouble() / halfLife
+                approximator.x += (attractor.x - approximator.x) * factor.toFloat()
+                approximator.y += (attractor.y - approximator.y) * factor.toFloat()
+    
+                t0 = t
             
                 onApproximated(approximator - previousApproximator)
                 
