@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/30/18 9:07 PM
+ *  Created by Jim Eckerlein on 8/4/18 10:03 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/30/18 9:07 PM
+ *  Last modified 8/4/18 10:03 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -111,97 +111,101 @@ class MainActivity : AppCompatActivity() {
                 yColor = Color(themedColorInt(R.attr.colorAxisY)),
                 zColor = Color(themedColorInt(R.attr.colorAxisZ))
         )
-        
-        listOf(axisButtonX to SelectedAxis.X,
-                axisButtonY to SelectedAxis.Y,
-                axisButtonZ to SelectedAxis.Z,
-                axisButtonQ to SelectedAxis.Q).forEach { (button, axis) ->
-            
-            // When clicked, select the proper axis:
-            button.setOnClickListener {
-                synchronized(viewModel) {
-                    viewModel.selectedAxis.value = axis
-                }
-            }
-            
-            // When selected axis changed, button selection state changes accordingly:
-            viewModel.selectedAxis.observe(this, Observer { selectedAxis ->
-                button.isSelected = axis == selectedAxis
-            })
-            
-        }
-        
-        axisButtonX.isSelected = true
-        
+    
         swipeArea.apply {
-    
-            val scroller = Scroller(context)
-            var scrollerPreviousX = 0
-    
-            viewTreeObserver.addOnPreDrawListener {
         
-                scroller.computeScrollOffset()
+            val flingScroller = Scroller(context)
+            var flingScrollerPreviousX = 0
         
-                synchronized(viewModel) {
+            val scrollAttractor = ScrollAttractor(50L)
+            var lastScrollAttractorApproximationX = 0f
+        
+            listOf(axisButtonX to SelectedAxis.X,
+                    axisButtonY to SelectedAxis.Y,
+                    axisButtonZ to SelectedAxis.Z,
+                    axisButtonQ to SelectedAxis.Q).forEach { (button, axis) ->
             
-                    when (viewModel.transformMode.value) {
+                // When clicked, select the proper axis:
+                button.setOnClickListener {
+                    synchronized(viewModel) {
+                        viewModel.selectedAxis.value = axis
+                    }
                 
-                        TransformMode.ROTATE ->
+                    // Immediately reset any scroll effect:
+                    flingScroller.forceFinished(true)
+                    scrollAttractor.haltApproximation()
+                }
+            
+                // When selected axis changed, button selection state changes accordingly:
+                viewModel.selectedAxis.observe(this@MainActivity, Observer { selectedAxis ->
+                    button.isSelected = axis == selectedAxis
+                })
+            
+            }
+        
+            val transformGestureDetector = GestureDetector(context,
+                    object : GestureDetector.SimpleOnGestureListener() {
+                        override fun onDown(event: MotionEvent?) = consume {
+                            event ?: return NOT_CONSUMED
+                            scrollAttractor.resetScrollTo(event.x, event.y)
+                            lastScrollAttractorApproximationX = event.x
+                        }
                     
+                        override fun onScroll(
+                                startEvent: MotionEvent?,
+                                currentEvent: MotionEvent?,
+                                distanceX: Float,
+                                distanceY: Float
+                        ) = consume {
+                            currentEvent ?: return NOT_CONSUMED
+                            scrollAttractor.scrollTo(currentEvent.x, currentEvent.y)
+                        }
+                    })
+        
+            axisButtonX.isSelected = true
+            
+            viewTreeObserver.addOnPreDrawListener {
+    
+                flingScroller.computeScrollOffset()
+                val currentScrollApproximation = scrollAttractor.computeNextApproximation()
+                
+                synchronized(viewModel) {
+    
+                    when (viewModel.transformMode.value) {
+        
+                        TransformMode.ROTATE ->
+            
                             when (viewModel.selectedAxis.value) {
                                 SelectedAxis.X -> viewModel.rotationX
                                 SelectedAxis.Y -> viewModel.rotationY
                                 SelectedAxis.Z -> viewModel.rotationZ
                                 SelectedAxis.Q -> viewModel.rotationQ
-                            }.value += 0.001 * (scroller.currX - scrollerPreviousX)
+                            }.value += 0.001 * (flingScroller.currX - flingScrollerPreviousX +
+                                    currentScrollApproximation.x - lastScrollAttractorApproximationX)
                         
                         TransformMode.TRANSLATE ->
-                    
+    
                             when (viewModel.selectedAxis.value) {
                                 SelectedAxis.X -> viewModel.translationX
                                 SelectedAxis.Y -> viewModel.translationY
                                 SelectedAxis.Z -> viewModel.translationZ
                                 SelectedAxis.Q -> viewModel.translationQ
-                            }.value += 0.02 * (scroller.currX - scrollerPreviousX)
+                            }.value += 0.02 * (flingScroller.currX - flingScrollerPreviousX +
+                                    currentScrollApproximation.x - lastScrollAttractorApproximationX)
                     }
                 }
-        
-                scrollerPreviousX = scroller.currX
-        
+    
+                flingScrollerPreviousX = flingScroller.currX
+                lastScrollAttractorApproximationX = currentScrollApproximation.x
+                
                 CONSUMED
             }
-    
-            val gestureListener = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-    
-                val scrollAttractor = ScrollAttractor(50L) { deltaApproximation ->
-                    synchronized(viewModel) {
-                        when (viewModel.transformMode.value) {
-                    
-                            TransformMode.ROTATE ->
-                        
-                                when (viewModel.selectedAxis.value) {
-                                    SelectedAxis.X -> viewModel.rotationX
-                                    SelectedAxis.Y -> viewModel.rotationY
-                                    SelectedAxis.Z -> viewModel.rotationZ
-                                    SelectedAxis.Q -> viewModel.rotationQ
-                                }.value += 0.001 * deltaApproximation.x
-                    
-                            TransformMode.TRANSLATE ->
-                        
-                                when (viewModel.selectedAxis.value) {
-                                    SelectedAxis.X -> viewModel.translationX
-                                    SelectedAxis.Y -> viewModel.translationY
-                                    SelectedAxis.Z -> viewModel.translationZ
-                                    SelectedAxis.Q -> viewModel.translationQ
-                                }.value += 0.02 * deltaApproximation.x
-                        }
-                    }
-                }
-    
+        
+            // Toggle between translate and rotate:
+            val toggleTransformGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
                 override fun onLongPress(e: MotionEvent?) {
-                    scroller.forceFinished(true)
+                    flingScroller.forceFinished(true)
                     synchronized(viewModel) {
-                        // Toggle between translate and rotate:
                         viewModel.transformMode.value =
                                 when (viewModel.transformMode.value) {
                                     TransformMode.ROTATE -> TransformMode.TRANSLATE
@@ -209,22 +213,9 @@ class MainActivity : AppCompatActivity() {
                                 }
                     }
                 }
+            })
         
-                override fun onDown(event: MotionEvent?) = consume {
-                    event ?: return NOT_CONSUMED
-                    scrollAttractor.resetScrollTo(event.x, event.y)
-                }
-        
-                override fun onScroll(
-                        startEvent: MotionEvent?,
-                        endEvent: MotionEvent?,
-                        distanceX: Float,
-                        distanceY: Float
-                ) = consume {
-                    endEvent ?: return NOT_CONSUMED
-                    scrollAttractor.scrollTo(endEvent.x, endEvent.y)
-                }
-        
+            val flingGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
                 override fun onFling(
                         startEvent: MotionEvent?,
                         endEvent: MotionEvent?,
@@ -232,9 +223,8 @@ class MainActivity : AppCompatActivity() {
                         velocityY: Float
                 ) = consume {
                     startEvent ?: return NOT_CONSUMED
-    
-                    scrollerPreviousX = 0
-                    scroller.fling(
+                    flingScrollerPreviousX = 0
+                    flingScroller.fling(
                             0,
                             0,
                             velocityX.toInt() / 4,
@@ -251,9 +241,13 @@ class MainActivity : AppCompatActivity() {
                     TransformMode.TRANSLATE -> getString(R.string.translate)
                 })
             })
-            
-            setOnTouchListener { _, motionEvent ->
-                gestureListener.onTouchEvent(motionEvent)
+        
+            setOnTouchListener { _, event ->
+                consume {
+                    transformGestureDetector.onTouchEvent(event)
+                    toggleTransformGestureDetector.onTouchEvent(event)
+                    flingGestureDetector.onTouchEvent(event)
+                }
             }
         }
         
@@ -288,24 +282,14 @@ class MainActivity : AppCompatActivity() {
                     viewModel,
                     context.assets,
                     resources.displayMetrics.xdpi.toDouble()))
+    
+            val graphicsViewScrollAttractor = ScrollAttractor(40L)
             
             val orbitDetector = MoveGestureDetector(context,
                     object : MoveGestureDetector.SimpleOnMoveGestureListener() {
-                        val scrollAttractor = ScrollAttractor(40L) { delta ->
-                            synchronized(viewModel) {
-                                viewModel.horizontalCameraRotation.value += delta.x / 300
-                                viewModel.verticalCameraRotation.value -= delta.y / 300
-                            }
-                        }
-    
-                        override fun onMoveBegin(detector: MoveGestureDetector?) = consume {
-                            detector ?: return NOT_CONSUMED
-                            scrollAttractor.resetScrollTo(detector.focusX, detector.focusY)
-                        }
-    
                         override fun onMove(detector: MoveGestureDetector?) = consume {
                             detector ?: return NOT_CONSUMED
-                            scrollAttractor.scrollTo(detector.focusX, detector.focusY)
+                            graphicsViewScrollAttractor.scrollTo(detector.focusX, detector.focusY)
                         }
                     })
             
@@ -315,6 +299,22 @@ class MainActivity : AppCompatActivity() {
                 consume {
                     zoomDetector.onTouchEvent(event)
                     orbitDetector.onTouchEvent(event)
+                }
+            }
+    
+            var lastScrollAttractorApproximationX = 0f
+            var lastScrollAttractorApproximationY = 0f
+    
+            viewTreeObserver.addOnPreDrawListener {
+                consume {
+                    synchronized(viewModel)
+                    {
+                        val approx = graphicsViewScrollAttractor.computeNextApproximation()
+                        viewModel.horizontalCameraRotation.value += (approx.x - lastScrollAttractorApproximationX) / 300.0
+                        viewModel.verticalCameraRotation.value -= (approx.y - lastScrollAttractorApproximationY) / 300.0
+                        lastScrollAttractorApproximationX = approx.x
+                        lastScrollAttractorApproximationY = approx.y
+                    }
                 }
             }
         }
