@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 8/4/18 10:03 PM
+ *  Created by Jim Eckerlein on 8/4/18 10:37 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 8/4/18 10:03 PM
+ *  Last modified 8/4/18 10:36 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -22,10 +22,7 @@ import io.jim.tesserapp.math.formatNumber
 import io.jim.tesserapp.ui.preferences.PreferencesActivity
 import io.jim.tesserapp.ui.preferences.gridPreference
 import io.jim.tesserapp.ui.preferences.preferenceThemeId
-import io.jim.tesserapp.util.CONSUMED
-import io.jim.tesserapp.util.NOT_CONSUMED
-import io.jim.tesserapp.util.consume
-import io.jim.tesserapp.util.themedColorInt
+import io.jim.tesserapp.util.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -118,7 +115,7 @@ class MainActivity : AppCompatActivity() {
             var flingScrollerPreviousX = 0
         
             val scrollAttractor = ScrollAttractor(50L)
-            var lastScrollAttractorApproximationX = 0f
+            var scrollAttractorDeltanizer = FloatDeltanizer(0f)
         
             listOf(axisButtonX to SelectedAxis.X,
                     axisButtonY to SelectedAxis.Y,
@@ -148,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                         override fun onDown(event: MotionEvent?) = consume {
                             event ?: return NOT_CONSUMED
                             scrollAttractor.resetScrollTo(event.x, event.y)
-                            lastScrollAttractorApproximationX = event.x
+                            scrollAttractorDeltanizer = FloatDeltanizer(event.x)
                         }
                     
                         override fun onScroll(
@@ -181,7 +178,7 @@ class MainActivity : AppCompatActivity() {
                                 SelectedAxis.Z -> viewModel.rotationZ
                                 SelectedAxis.Q -> viewModel.rotationQ
                             }.value += 0.001 * (flingScroller.currX - flingScrollerPreviousX +
-                                    currentScrollApproximation.x - lastScrollAttractorApproximationX)
+                                    scrollAttractorDeltanizer.delta)
                         
                         TransformMode.TRANSLATE ->
     
@@ -191,12 +188,12 @@ class MainActivity : AppCompatActivity() {
                                 SelectedAxis.Z -> viewModel.translationZ
                                 SelectedAxis.Q -> viewModel.translationQ
                             }.value += 0.02 * (flingScroller.currX - flingScrollerPreviousX +
-                                    currentScrollApproximation.x - lastScrollAttractorApproximationX)
+                                    scrollAttractorDeltanizer.delta)
                     }
                 }
     
                 flingScrollerPreviousX = flingScroller.currX
-                lastScrollAttractorApproximationX = currentScrollApproximation.x
+                scrollAttractorDeltanizer.new = currentScrollApproximation.x
                 
                 CONSUMED
             }
