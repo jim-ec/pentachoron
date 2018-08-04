@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 8/4/18 10:37 PM
+ *  Created by Jim Eckerlein on 8/4/18 10:56 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 8/4/18 10:36 PM
+ *  Last modified 8/4/18 10:56 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -108,46 +108,47 @@ class MainActivity : AppCompatActivity() {
                 yColor = Color(themedColorInt(R.attr.colorAxisY)),
                 zColor = Color(themedColorInt(R.attr.colorAxisZ))
         )
-    
+        
         swipeArea.apply {
-        
+            
             val flingScroller = Scroller(context)
-            var flingScrollerPreviousX = 0
-        
+            var flingScrollerDeltanizer = FloatDeltanizer(0f)
+            
             val scrollAttractor = ScrollAttractor(50L)
             var scrollAttractorDeltanizer = FloatDeltanizer(0f)
-        
+            
             listOf(axisButtonX to SelectedAxis.X,
                     axisButtonY to SelectedAxis.Y,
                     axisButtonZ to SelectedAxis.Z,
                     axisButtonQ to SelectedAxis.Q).forEach { (button, axis) ->
-            
+                
                 // When clicked, select the proper axis:
                 button.setOnClickListener {
                     synchronized(viewModel) {
                         viewModel.selectedAxis.value = axis
                     }
-                
+                    
                     // Immediately reset any scroll effect:
                     flingScroller.forceFinished(true)
                     scrollAttractor.haltApproximation()
                 }
-            
+                
                 // When selected axis changed, button selection state changes accordingly:
                 viewModel.selectedAxis.observe(this@MainActivity, Observer { selectedAxis ->
                     button.isSelected = axis == selectedAxis
                 })
-            
+                
             }
-        
+            
             val transformGestureDetector = GestureDetector(context,
                     object : GestureDetector.SimpleOnGestureListener() {
                         override fun onDown(event: MotionEvent?) = consume {
                             event ?: return NOT_CONSUMED
                             scrollAttractor.resetScrollTo(event.x, event.y)
                             scrollAttractorDeltanizer = FloatDeltanizer(event.x)
+                            flingScroller.forceFinished(true)
                         }
-                    
+                        
                         override fun onScroll(
                                 startEvent: MotionEvent?,
                                 currentEvent: MotionEvent?,
@@ -158,46 +159,46 @@ class MainActivity : AppCompatActivity() {
                             scrollAttractor.scrollTo(currentEvent.x, currentEvent.y)
                         }
                     })
-        
+            
             axisButtonX.isSelected = true
             
             viewTreeObserver.addOnPreDrawListener {
-    
+                
                 flingScroller.computeScrollOffset()
                 val currentScrollApproximation = scrollAttractor.computeNextApproximation()
                 
                 synchronized(viewModel) {
-    
+                    
                     when (viewModel.transformMode.value) {
-        
+                        
                         TransformMode.ROTATE ->
-            
+                            
                             when (viewModel.selectedAxis.value) {
                                 SelectedAxis.X -> viewModel.rotationX
                                 SelectedAxis.Y -> viewModel.rotationY
                                 SelectedAxis.Z -> viewModel.rotationZ
                                 SelectedAxis.Q -> viewModel.rotationQ
-                            }.value += 0.001 * (flingScroller.currX - flingScrollerPreviousX +
+                            }.value += 0.001 * (flingScrollerDeltanizer.delta +
                                     scrollAttractorDeltanizer.delta)
                         
                         TransformMode.TRANSLATE ->
-    
+                            
                             when (viewModel.selectedAxis.value) {
                                 SelectedAxis.X -> viewModel.translationX
                                 SelectedAxis.Y -> viewModel.translationY
                                 SelectedAxis.Z -> viewModel.translationZ
                                 SelectedAxis.Q -> viewModel.translationQ
-                            }.value += 0.02 * (flingScroller.currX - flingScrollerPreviousX +
+                            }.value += 0.02 * (flingScrollerDeltanizer.delta +
                                     scrollAttractorDeltanizer.delta)
                     }
                 }
-    
-                flingScrollerPreviousX = flingScroller.currX
+                
+                flingScrollerDeltanizer.new = flingScroller.currX.toFloat()
                 scrollAttractorDeltanizer.new = currentScrollApproximation.x
                 
                 CONSUMED
             }
-        
+            
             // Toggle between translate and rotate:
             val toggleTransformGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
                 override fun onLongPress(e: MotionEvent?) {
@@ -211,7 +212,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             })
-        
+            
             val flingGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
                 override fun onFling(
                         startEvent: MotionEvent?,
@@ -220,7 +221,7 @@ class MainActivity : AppCompatActivity() {
                         velocityY: Float
                 ) = consume {
                     startEvent ?: return NOT_CONSUMED
-                    flingScrollerPreviousX = 0
+                    flingScrollerDeltanizer = FloatDeltanizer(0f)
                     flingScroller.fling(
                             0,
                             0,
@@ -238,7 +239,7 @@ class MainActivity : AppCompatActivity() {
                     TransformMode.TRANSLATE -> getString(R.string.translate)
                 })
             })
-        
+            
             setOnTouchListener { _, event ->
                 consume {
                     transformGestureDetector.onTouchEvent(event)
@@ -279,14 +280,16 @@ class MainActivity : AppCompatActivity() {
                     viewModel,
                     context.assets,
                     resources.displayMetrics.xdpi.toDouble()))
-    
-            val graphicsViewScrollAttractor = ScrollAttractor(40L)
+            
+            val orbitScrollAttractor = ScrollAttractor(40L)
+            val orbitScrollAttractorDeltanizerX = FloatDeltanizer(0f)
+            val orbitScrollAttractorDeltanizerY = FloatDeltanizer(0f)
             
             val orbitDetector = MoveGestureDetector(context,
                     object : MoveGestureDetector.SimpleOnMoveGestureListener() {
                         override fun onMove(detector: MoveGestureDetector?) = consume {
                             detector ?: return NOT_CONSUMED
-                            graphicsViewScrollAttractor.scrollTo(detector.focusX, detector.focusY)
+                            orbitScrollAttractor.scrollTo(detector.focusX, detector.focusY)
                         }
                     })
             
@@ -298,19 +301,17 @@ class MainActivity : AppCompatActivity() {
                     orbitDetector.onTouchEvent(event)
                 }
             }
-    
-            var lastScrollAttractorApproximationX = 0f
-            var lastScrollAttractorApproximationY = 0f
-    
+            
             viewTreeObserver.addOnPreDrawListener {
                 consume {
-                    synchronized(viewModel)
-                    {
-                        val approx = graphicsViewScrollAttractor.computeNextApproximation()
-                        viewModel.horizontalCameraRotation.value += (approx.x - lastScrollAttractorApproximationX) / 300.0
-                        viewModel.verticalCameraRotation.value -= (approx.y - lastScrollAttractorApproximationY) / 300.0
-                        lastScrollAttractorApproximationX = approx.x
-                        lastScrollAttractorApproximationY = approx.y
+                    synchronized(viewModel) {
+                        viewModel.horizontalCameraRotation.value += orbitScrollAttractorDeltanizerX.delta / 300.0
+                        viewModel.verticalCameraRotation.value -= orbitScrollAttractorDeltanizerY.delta / 300.0
+                        
+                        orbitScrollAttractor.computeNextApproximation().also {
+                            orbitScrollAttractorDeltanizerX.new = it.x
+                            orbitScrollAttractorDeltanizerY.new = it.y
+                        }
                     }
                 }
             }
