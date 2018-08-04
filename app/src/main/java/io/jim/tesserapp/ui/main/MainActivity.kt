@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 8/4/18 10:56 PM
+ *  Created by Jim Eckerlein on 8/4/18 11:44 PM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 8/4/18 10:56 PM
+ *  Last modified 8/4/18 11:44 PM
  */
 
 package io.jim.tesserapp.ui.main
@@ -108,130 +108,132 @@ class MainActivity : AppCompatActivity() {
                 yColor = Color(themedColorInt(R.attr.colorAxisY)),
                 zColor = Color(themedColorInt(R.attr.colorAxisZ))
         )
+    
+        val transformFlingScroller = Scroller(this)
+        var transformFlingScrollerDeltanizer = FloatDeltanizer(0f)
+    
+        val transformScrollAttractor = ScrollAttractor(50L)
+        var transformScrollAttractorDeltanizer = FloatDeltanizer(0f)
+    
+        listOf(
+                axisButtonX to SelectedAxis.X,
+                axisButtonY to SelectedAxis.Y,
+                axisButtonZ to SelectedAxis.Z,
+                axisButtonQ to SelectedAxis.Q
+        ).forEach { (button, axis) ->
         
-        swipeArea.apply {
-            
-            val flingScroller = Scroller(context)
-            var flingScrollerDeltanizer = FloatDeltanizer(0f)
-            
-            val scrollAttractor = ScrollAttractor(50L)
-            var scrollAttractorDeltanizer = FloatDeltanizer(0f)
-            
-            listOf(axisButtonX to SelectedAxis.X,
-                    axisButtonY to SelectedAxis.Y,
-                    axisButtonZ to SelectedAxis.Z,
-                    axisButtonQ to SelectedAxis.Q).forEach { (button, axis) ->
-                
-                // When clicked, select the proper axis:
-                button.setOnClickListener {
-                    synchronized(viewModel) {
-                        viewModel.selectedAxis.value = axis
-                    }
-                    
-                    // Immediately reset any scroll effect:
-                    flingScroller.forceFinished(true)
-                    scrollAttractor.haltApproximation()
-                }
-                
-                // When selected axis changed, button selection state changes accordingly:
-                viewModel.selectedAxis.observe(this@MainActivity, Observer { selectedAxis ->
-                    button.isSelected = axis == selectedAxis
-                })
-                
-            }
-            
-            val transformGestureDetector = GestureDetector(context,
-                    object : GestureDetector.SimpleOnGestureListener() {
-                        override fun onDown(event: MotionEvent?) = consume {
-                            event ?: return NOT_CONSUMED
-                            scrollAttractor.resetScrollTo(event.x, event.y)
-                            scrollAttractorDeltanizer = FloatDeltanizer(event.x)
-                            flingScroller.forceFinished(true)
-                        }
-                        
-                        override fun onScroll(
-                                startEvent: MotionEvent?,
-                                currentEvent: MotionEvent?,
-                                distanceX: Float,
-                                distanceY: Float
-                        ) = consume {
-                            currentEvent ?: return NOT_CONSUMED
-                            scrollAttractor.scrollTo(currentEvent.x, currentEvent.y)
-                        }
-                    })
-            
-            axisButtonX.isSelected = true
-            
-            viewTreeObserver.addOnPreDrawListener {
-                
-                flingScroller.computeScrollOffset()
-                val currentScrollApproximation = scrollAttractor.computeNextApproximation()
-                
+            // When clicked, select the proper axis:
+            button.setOnClickListener {
                 synchronized(viewModel) {
-                    
+                    viewModel.selectedAxis.value = axis
+                }
+            
+                // Immediately reset any scroll effect:
+                transformFlingScroller.forceFinished(true)
+                transformScrollAttractor.haltApproximation()
+            }
+        
+            // When selected axis changed, button selection state changes accordingly:
+            viewModel.selectedAxis.observe(this, Observer { selectedAxis ->
+                button.isSelected = axis == selectedAxis
+            })
+        
+        }
+    
+        val transformScrollGestureDetector = GestureDetector(this,
+                object : GestureDetector.SimpleOnGestureListener() {
+                    override fun onDown(event: MotionEvent?) = consume {
+                        event ?: return NOT_CONSUMED
+                        transformScrollAttractor.resetScrollTo(event.x, event.y)
+                        transformScrollAttractorDeltanizer = FloatDeltanizer(event.x)
+                        transformFlingScroller.forceFinished(true)
+                    }
+                
+                    override fun onScroll(
+                            startEvent: MotionEvent?,
+                            currentEvent: MotionEvent?,
+                            distanceX: Float,
+                            distanceY: Float
+                    ) = consume {
+                        currentEvent ?: return NOT_CONSUMED
+                        transformScrollAttractor.scrollTo(currentEvent.x, currentEvent.y)
+                    }
+                })
+    
+        // Toggle between translate and rotate:
+        val toggleTransformGestureDetector = GestureDetector(this,
+                object : GestureDetector.SimpleOnGestureListener() {
+                    override fun onLongPress(e: MotionEvent?) {
+                        transformFlingScroller.forceFinished(true)
+                        synchronized(viewModel) {
+                            viewModel.transformMode.value =
+                                    when (viewModel.transformMode.value) {
+                                        TransformMode.ROTATE -> TransformMode.TRANSLATE
+                                        TransformMode.TRANSLATE -> TransformMode.ROTATE
+                                    }
+                        }
+                    }
+                })
+    
+        val transformFlingGestureDetector = GestureDetector(this,
+                object : GestureDetector.SimpleOnGestureListener() {
+                    override fun onFling(
+                            startEvent: MotionEvent?,
+                            endEvent: MotionEvent?,
+                            velocityX: Float,
+                            velocityY: Float
+                    ) = consume {
+                        startEvent ?: return NOT_CONSUMED
+                        transformFlingScrollerDeltanizer = FloatDeltanizer(0f)
+                        transformFlingScroller.fling(
+                                0,
+                                0,
+                                velocityX.toInt() / 4,
+                                velocityY.toInt() / 4,
+                                Int.MIN_VALUE,
+                                Int.MAX_VALUE,
+                                0, 0)
+                    }
+                })
+    
+        swipeArea.apply {
+        
+            viewTreeObserver.addOnPreDrawListener {
+            
+                transformFlingScroller.computeScrollOffset()
+                val currentScrollApproximation = transformScrollAttractor.computeNextApproximation()
+            
+                synchronized(viewModel) {
+                
                     when (viewModel.transformMode.value) {
-                        
+                    
                         TransformMode.ROTATE ->
-                            
+                        
                             when (viewModel.selectedAxis.value) {
                                 SelectedAxis.X -> viewModel.rotationX
                                 SelectedAxis.Y -> viewModel.rotationY
                                 SelectedAxis.Z -> viewModel.rotationZ
                                 SelectedAxis.Q -> viewModel.rotationQ
-                            }.value += 0.001 * (flingScrollerDeltanizer.delta +
-                                    scrollAttractorDeltanizer.delta)
-                        
+                            }.value += 0.001 * (transformFlingScrollerDeltanizer.delta +
+                                    transformScrollAttractorDeltanizer.delta)
+                    
                         TransformMode.TRANSLATE ->
-                            
+                        
                             when (viewModel.selectedAxis.value) {
                                 SelectedAxis.X -> viewModel.translationX
                                 SelectedAxis.Y -> viewModel.translationY
                                 SelectedAxis.Z -> viewModel.translationZ
                                 SelectedAxis.Q -> viewModel.translationQ
-                            }.value += 0.02 * (flingScrollerDeltanizer.delta +
-                                    scrollAttractorDeltanizer.delta)
+                            }.value += 0.02 * (transformFlingScrollerDeltanizer.delta +
+                                    transformScrollAttractorDeltanizer.delta)
                     }
                 }
-                
-                flingScrollerDeltanizer.new = flingScroller.currX.toFloat()
-                scrollAttractorDeltanizer.new = currentScrollApproximation.x
-                
+            
+                transformFlingScrollerDeltanizer.new = transformFlingScroller.currX.toFloat()
+                transformScrollAttractorDeltanizer.new = currentScrollApproximation.x
+            
                 CONSUMED
             }
-            
-            // Toggle between translate and rotate:
-            val toggleTransformGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-                override fun onLongPress(e: MotionEvent?) {
-                    flingScroller.forceFinished(true)
-                    synchronized(viewModel) {
-                        viewModel.transformMode.value =
-                                when (viewModel.transformMode.value) {
-                                    TransformMode.ROTATE -> TransformMode.TRANSLATE
-                                    TransformMode.TRANSLATE -> TransformMode.ROTATE
-                                }
-                    }
-                }
-            })
-            
-            val flingGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-                override fun onFling(
-                        startEvent: MotionEvent?,
-                        endEvent: MotionEvent?,
-                        velocityX: Float,
-                        velocityY: Float
-                ) = consume {
-                    startEvent ?: return NOT_CONSUMED
-                    flingScrollerDeltanizer = FloatDeltanizer(0f)
-                    flingScroller.fling(
-                            0,
-                            0,
-                            velocityX.toInt() / 4,
-                            velocityY.toInt() / 4,
-                            Int.MIN_VALUE,
-                            Int.MAX_VALUE,
-                            0, 0)
-                }
-            })
             
             viewModel.transformMode.observe(this@MainActivity, Observer<TransformMode> { mode ->
                 text = getString(R.string.swipe_to_transform).format(when (mode!!) {
@@ -242,58 +244,63 @@ class MainActivity : AppCompatActivity() {
             
             setOnTouchListener { _, event ->
                 consume {
-                    transformGestureDetector.onTouchEvent(event)
+                    transformScrollGestureDetector.onTouchEvent(event)
                     toggleTransformGestureDetector.onTouchEvent(event)
-                    flingGestureDetector.onTouchEvent(event)
+                    transformFlingGestureDetector.onTouchEvent(event)
                 }
             }
-        }
         
-        fun buildText(model: MainViewModel) = synchronized(model) {
-            with(model) {
-                "trans=(${formatNumber(translationX.value)}| " +
-                        "${formatNumber(translationY.value)}| " +
-                        "${formatNumber(translationZ.value)}| " +
-                        "${formatNumber(translationQ.value)})\n" +
-                        "rot=(${formatNumber(rotationX.value)}${getString(R.string.pi)}| " +
-                        "${formatNumber(rotationY.value)}${getString(R.string.pi)}| " +
-                        "${formatNumber(rotationZ.value)}${getString(R.string.pi)}| " +
-                        "${formatNumber(rotationQ.value)}${getString(R.string.pi)})"
-            }
         }
-        viewModel.translationX.observe(this, Observer { transformInfo.text = buildText(viewModel) })
-        viewModel.translationY.observe(this, Observer { transformInfo.text = buildText(viewModel) })
-        viewModel.translationZ.observe(this, Observer { transformInfo.text = buildText(viewModel) })
-        viewModel.translationQ.observe(this, Observer { transformInfo.text = buildText(viewModel) })
-        viewModel.rotationX.observe(this, Observer { transformInfo.text = buildText(viewModel) })
-        viewModel.rotationY.observe(this, Observer { transformInfo.text = buildText(viewModel) })
-        viewModel.rotationZ.observe(this, Observer { transformInfo.text = buildText(viewModel) })
-        viewModel.rotationQ.observe(this, Observer { transformInfo.text = buildText(viewModel) })
-        
-        // Setup OpenGL surface view:
+    
+        with(viewModel) {
+            listOf(
+                    translationX,
+                    translationY,
+                    translationZ,
+                    translationQ,
+                    rotationX,
+                    rotationY,
+                    rotationZ,
+                    rotationQ
+            )
+        }.forEach {
+            it.observe(this, Observer {
+                transformInfo.text = synchronized(viewModel) {
+                    with(viewModel) {
+                        "trans=(${formatNumber(translationX.value)}| " +
+                                "${formatNumber(translationY.value)}| " +
+                                "${formatNumber(translationZ.value)}| " +
+                                "${formatNumber(translationQ.value)})\n" +
+                                "rot=(${formatNumber(rotationX.value)}${getString(R.string.pi)}| " +
+                                "${formatNumber(rotationY.value)}${getString(R.string.pi)}| " +
+                                "${formatNumber(rotationZ.value)}${getString(R.string.pi)}| " +
+                                "${formatNumber(rotationQ.value)}${getString(R.string.pi)})"
+                    }
+                }
+            })
+        }
+    
+        val orbitScrollAttractor = ScrollAttractor(40L)
+        val orbitScrollAttractorDeltanizerX = FloatDeltanizer(0f)
+        val orbitScrollAttractorDeltanizerY = FloatDeltanizer(0f)
+    
+        val orbitDetector = MoveGestureDetector(glSurfaceView.context,
+                object : MoveGestureDetector.SimpleOnMoveGestureListener() {
+                    override fun onMove(detector: MoveGestureDetector?) = consume {
+                        detector ?: return NOT_CONSUMED
+                        orbitScrollAttractor.scrollTo(detector.focusX, detector.focusY)
+                    }
+                })
+    
+        val zoomDetector = ScaleGestureDetector(glSurfaceView.context, ZoomGestureListener(viewModel))
+    
         glSurfaceView.apply {
-            
-            // Renderer uses OpenGL 2:
             setEGLContextClientVersion(2)
             setRenderer(Renderer(
                     Color(context.themedColorInt(android.R.attr.windowBackground)),
                     viewModel,
                     context.assets,
                     resources.displayMetrics.xdpi.toDouble()))
-            
-            val orbitScrollAttractor = ScrollAttractor(40L)
-            val orbitScrollAttractorDeltanizerX = FloatDeltanizer(0f)
-            val orbitScrollAttractorDeltanizerY = FloatDeltanizer(0f)
-            
-            val orbitDetector = MoveGestureDetector(context,
-                    object : MoveGestureDetector.SimpleOnMoveGestureListener() {
-                        override fun onMove(detector: MoveGestureDetector?) = consume {
-                            detector ?: return NOT_CONSUMED
-                            orbitScrollAttractor.scrollTo(detector.focusX, detector.focusY)
-                        }
-                    })
-            
-            val zoomDetector = ScaleGestureDetector(context, ZoomGestureListener(viewModel))
             
             setOnTouchListener { _, event ->
                 consume {
