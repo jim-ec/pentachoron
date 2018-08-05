@@ -108,38 +108,38 @@ class MainActivity : AppCompatActivity() {
                 yColor = Color(themedColorInt(R.attr.colorAxisY)),
                 zColor = Color(themedColorInt(R.attr.colorAxisZ))
         )
-    
+        
         val transformFlingScroller = Scroller(this)
         val transformFlingScrollerDeltanizer = FloatDeltanizer(0f)
-    
+        
         val transformScrollAttractor = ScrollAttractor(50L)
         val transformScrollAttractorDeltanizer = FloatDeltanizer(0f)
-    
+        
         listOf(
                 axisButtonX to SelectedAxis.X,
                 axisButtonY to SelectedAxis.Y,
                 axisButtonZ to SelectedAxis.Z,
                 axisButtonQ to SelectedAxis.Q
         ).forEach { (button, axis) ->
-        
+            
             // When clicked, select the proper axis:
             button.setOnClickListener {
                 synchronized(viewModel) {
                     viewModel.selectedAxis.value = axis
                 }
-            
+                
                 // Immediately reset any scroll effect:
                 transformFlingScroller.forceFinished(true)
                 transformScrollAttractor.haltApproximation()
             }
-        
+            
             // When selected axis changed, button selection state changes accordingly:
             viewModel.selectedAxis.observe(this, Observer { selectedAxis ->
                 button.isSelected = axis == selectedAxis
             })
-        
+            
         }
-    
+        
         val transformScrollGestureDetector = GestureDetector(this,
                 object : GestureDetector.SimpleOnGestureListener() {
                     override fun onDown(event: MotionEvent?) = consume {
@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity() {
                         transformScrollAttractorDeltanizer.reset(event.x)
                         transformFlingScroller.forceFinished(true)
                     }
-                
+                    
                     override fun onScroll(
                             startEvent: MotionEvent?,
                             currentEvent: MotionEvent?,
@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity() {
                         transformScrollAttractor.scrollTo(currentEvent.x, currentEvent.y)
                     }
                 })
-    
+        
         val transformFlingGestureDetector = GestureDetector(this,
                 object : GestureDetector.SimpleOnGestureListener() {
                     override fun onFling(
@@ -180,7 +180,7 @@ class MainActivity : AppCompatActivity() {
                                 0, 0)
                     }
                 })
-    
+        
         // Toggle between translation and rotation mode:
         val toggleTransformGestureDetector = GestureDetector(this,
                 object : GestureDetector.SimpleOnGestureListener() {
@@ -195,20 +195,20 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 })
-    
-        swipeArea.apply {
         
-            viewTreeObserver.addOnPreDrawListener {
+        swipeArea.apply {
             
+            viewTreeObserver.addOnPreDrawListener {
+                
                 transformFlingScroller.computeScrollOffset()
                 val currentScrollApproximation = transformScrollAttractor.computeNextApproximation()
-            
-                synchronized(viewModel) {
                 
-                    when (viewModel.transformMode.value) {
+                synchronized(viewModel) {
                     
-                        TransformMode.ROTATE ->
+                    when (viewModel.transformMode.value) {
                         
+                        TransformMode.ROTATE ->
+                            
                             when (viewModel.selectedAxis.value) {
                                 SelectedAxis.X -> viewModel.rotationX
                                 SelectedAxis.Y -> viewModel.rotationY
@@ -216,9 +216,9 @@ class MainActivity : AppCompatActivity() {
                                 SelectedAxis.Q -> viewModel.rotationQ
                             }.value += 0.001 * (transformFlingScrollerDeltanizer.delta +
                                     transformScrollAttractorDeltanizer.delta)
-                    
-                        TransformMode.TRANSLATE ->
                         
+                        TransformMode.TRANSLATE ->
+                            
                             when (viewModel.selectedAxis.value) {
                                 SelectedAxis.X -> viewModel.translationX
                                 SelectedAxis.Y -> viewModel.translationY
@@ -228,10 +228,10 @@ class MainActivity : AppCompatActivity() {
                                     transformScrollAttractorDeltanizer.delta)
                     }
                 }
-            
+                
                 transformFlingScrollerDeltanizer.new = transformFlingScroller.currX.toFloat()
                 transformScrollAttractorDeltanizer.new = currentScrollApproximation.x
-            
+                
                 CONSUMED
             }
             
@@ -249,9 +249,9 @@ class MainActivity : AppCompatActivity() {
                     transformFlingGestureDetector.onTouchEvent(event)
                 }
             }
-        
+            
         }
-    
+        
         with(viewModel) {
             listOf(
                     translationX,
@@ -279,11 +279,11 @@ class MainActivity : AppCompatActivity() {
                 }
             })
         }
-    
+        
         val orbitScrollAttractor = ScrollAttractor(40L)
         val orbitScrollAttractorDeltanizerX = FloatDeltanizer(0f)
         val orbitScrollAttractorDeltanizerY = FloatDeltanizer(0f)
-    
+        
         val orbitGestureDetector = MoveGestureDetector(this,
                 object : MoveGestureDetector.SimpleOnMoveGestureListener() {
                     override fun onMove(detector: MoveGestureDetector?) = consume {
@@ -291,20 +291,20 @@ class MainActivity : AppCompatActivity() {
                         orbitScrollAttractor.scrollTo(detector.focusX, detector.focusY)
                     }
                 })
-    
+        
         val zoomGestureDetector = ScaleGestureDetector(this,
                 object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
                     override fun onScale(detector: ScaleGestureDetector?) = consume {
                         detector ?: return NOT_CONSUMED
-                    
+                        
                         // A scale factor > 1 means that the pointer distance increased, i.e. zooming out:
                         viewModel.cameraDistance.value /= detector.scaleFactor
-                    
+                        
                         // Constrain camera distance to a certain minimum:
                         viewModel.cameraDistance.value = Math.max(viewModel.cameraDistance.value, 2.0)
                     }
                 })
-    
+        
         glSurfaceView.apply {
             setEGLContextClientVersion(2)
             setRenderer(Renderer(

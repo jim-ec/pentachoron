@@ -15,7 +15,7 @@ class PreferencesFragment : androidx.preference.PreferenceFragmentCompat() {
     
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
-    
+        
         (findPreference(getString(R.string.pref_theme_key)) as ListPreference)
                 .setOnPreferenceChangeListener { _, _ ->
                     consume {
