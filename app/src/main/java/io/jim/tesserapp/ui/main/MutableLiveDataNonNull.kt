@@ -15,7 +15,7 @@ import androidx.lifecycle.MutableLiveData
  *
  * @constructor Creates a live-data with an initial value.
  */
-open class MutableLiveDataNonNull<T : Any>(initialValue: T) : MutableLiveData<T>() {
+open class MutableLiveDataNonNull<T : Any>(val initialValue: T) : MutableLiveData<T>() {
     
     init {
         value = initialValue

@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Created by Jim Eckerlein on 8/5/18 10:03 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/15/18 4:03 PM
+ *  Last modified 8/5/18 10:03 AM
  */
 
 package io.jim.tesserapp.geometry
@@ -37,8 +37,8 @@ class Geometry(
      * - 8: Byte length of one double
      */
     val positions = allocateNativeMemory(lines.size * 2 * 4 * 8).asDoubleBuffer()!!.apply {
-        lines.forEach {
-            it.points.forEach {
+        lines.forEach { line ->
+            line.points.forEach {
                 put(it.x)
                 put(it.y)
                 put(it.z)
