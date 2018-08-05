@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 8/5/18 10:03 AM
+ *  Created by Jim Eckerlein on 8/5/18 10:32 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 8/5/18 9:43 AM
+ *  Last modified 8/5/18 10:32 AM
  */
 
 package io.jim.tesserapp.ui.main
@@ -160,21 +160,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 })
     
-        // Toggle between translate and rotate:
-        val toggleTransformGestureDetector = GestureDetector(this,
-                object : GestureDetector.SimpleOnGestureListener() {
-                    override fun onLongPress(e: MotionEvent?) {
-                        transformFlingScroller.forceFinished(true)
-                        synchronized(viewModel) {
-                            viewModel.transformMode.value =
-                                    when (viewModel.transformMode.value) {
-                                        TransformMode.ROTATE -> TransformMode.TRANSLATE
-                                        TransformMode.TRANSLATE -> TransformMode.ROTATE
-                                    }
-                        }
-                    }
-                })
-    
         val transformFlingGestureDetector = GestureDetector(this,
                 object : GestureDetector.SimpleOnGestureListener() {
                     override fun onFling(
@@ -193,6 +178,21 @@ class MainActivity : AppCompatActivity() {
                                 Int.MIN_VALUE,
                                 Int.MAX_VALUE,
                                 0, 0)
+                    }
+                })
+    
+        // Toggle between translation and rotation mode:
+        val toggleTransformGestureDetector = GestureDetector(this,
+                object : GestureDetector.SimpleOnGestureListener() {
+                    override fun onLongPress(e: MotionEvent?) {
+                        transformFlingScroller.forceFinished(true)
+                        synchronized(viewModel) {
+                            viewModel.transformMode.value =
+                                    when (viewModel.transformMode.value) {
+                                        TransformMode.ROTATE -> TransformMode.TRANSLATE
+                                        TransformMode.TRANSLATE -> TransformMode.ROTATE
+                                    }
+                        }
                     }
                 })
     
@@ -284,7 +284,7 @@ class MainActivity : AppCompatActivity() {
         val orbitScrollAttractorDeltanizerX = FloatDeltanizer(0f)
         val orbitScrollAttractorDeltanizerY = FloatDeltanizer(0f)
     
-        val orbitDetector = MoveGestureDetector(glSurfaceView.context,
+        val orbitGestureDetector = MoveGestureDetector(this,
                 object : MoveGestureDetector.SimpleOnMoveGestureListener() {
                     override fun onMove(detector: MoveGestureDetector?) = consume {
                         detector ?: return NOT_CONSUMED
@@ -292,7 +292,18 @@ class MainActivity : AppCompatActivity() {
                     }
                 })
     
-        val zoomDetector = ScaleGestureDetector(glSurfaceView.context, ZoomGestureListener(viewModel))
+        val zoomGestureDetector = ScaleGestureDetector(this,
+                object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                    override fun onScale(detector: ScaleGestureDetector?) = consume {
+                        detector ?: return NOT_CONSUMED
+                    
+                        // A scale factor > 1 means that the pointer distance increased, i.e. zooming out:
+                        viewModel.cameraDistance.value /= detector.scaleFactor
+                    
+                        // Constrain camera distance to a certain minimum:
+                        viewModel.cameraDistance.value = Math.max(viewModel.cameraDistance.value, 2.0)
+                    }
+                })
     
         glSurfaceView.apply {
             setEGLContextClientVersion(2)
@@ -304,8 +315,8 @@ class MainActivity : AppCompatActivity() {
             
             setOnTouchListener { _, event ->
                 consume {
-                    zoomDetector.onTouchEvent(event)
-                    orbitDetector.onTouchEvent(event)
+                    zoomGestureDetector.onTouchEvent(event)
+                    orbitGestureDetector.onTouchEvent(event)
                 }
             }
             
