@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 8/4/18 11:44 PM
+ *  Created by Jim Eckerlein on 8/5/18 10:03 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 8/4/18 11:44 PM
+ *  Last modified 8/5/18 9:43 AM
  */
 
 package io.jim.tesserapp.ui.main
@@ -263,8 +263,8 @@ class MainActivity : AppCompatActivity() {
                     rotationZ,
                     rotationQ
             )
-        }.forEach {
-            it.observe(this, Observer {
+        }.forEach { transformLiveData ->
+            transformLiveData.observe(this, Observer {
                 transformInfo.text = synchronized(viewModel) {
                     with(viewModel) {
                         "trans=(${formatNumber(translationX.value)}| " +
