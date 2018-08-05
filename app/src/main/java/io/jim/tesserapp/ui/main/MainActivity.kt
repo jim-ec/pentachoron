@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 8/5/18 10:32 AM
+ *  Created by Jim Eckerlein on 8/5/18 10:51 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 8/5/18 10:32 AM
+ *  Last modified 8/5/18 10:49 AM
  */
 
 package io.jim.tesserapp.ui.main
@@ -110,10 +110,10 @@ class MainActivity : AppCompatActivity() {
         )
     
         val transformFlingScroller = Scroller(this)
-        var transformFlingScrollerDeltanizer = FloatDeltanizer(0f)
+        val transformFlingScrollerDeltanizer = FloatDeltanizer(0f)
     
         val transformScrollAttractor = ScrollAttractor(50L)
-        var transformScrollAttractorDeltanizer = FloatDeltanizer(0f)
+        val transformScrollAttractorDeltanizer = FloatDeltanizer(0f)
     
         listOf(
                 axisButtonX to SelectedAxis.X,
@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                     override fun onDown(event: MotionEvent?) = consume {
                         event ?: return NOT_CONSUMED
                         transformScrollAttractor.resetScrollTo(event.x, event.y)
-                        transformScrollAttractorDeltanizer = FloatDeltanizer(event.x)
+                        transformScrollAttractorDeltanizer.reset(event.x)
                         transformFlingScroller.forceFinished(true)
                     }
                 
@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity() {
                             velocityY: Float
                     ) = consume {
                         startEvent ?: return NOT_CONSUMED
-                        transformFlingScrollerDeltanizer = FloatDeltanizer(0f)
+                        transformFlingScrollerDeltanizer.reset(0f)
                         transformFlingScroller.fling(
                                 0,
                                 0,

@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 8/4/18 10:56 PM
+ *  Created by Jim Eckerlein on 8/5/18 10:51 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 8/4/18 10:56 PM
+ *  Last modified 8/5/18 10:47 AM
  */
 
 package io.jim.tesserapp.util
@@ -35,5 +35,15 @@ class FloatDeltanizer(initializer: Float) {
      */
     val delta: Float
         get() = new - old
+    
+    /**
+     * Resets both states to the same value.
+     * [delta] will return zero when called immediately after resetting.
+     */
+    @Suppress("NOTHING_TO_INLINE")
+    inline fun reset(value: Float) {
+        new = value
+        new = value
+    }
     
 }
