@@ -5,5 +5,5 @@
   -->
 
 <resources>
-    <dimen name="swipeAreaHeight">64dp</dimen>
+    <dimen name="swipeAreaHeight">100dp</dimen>
 </resources>

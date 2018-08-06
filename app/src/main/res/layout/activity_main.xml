@@ -25,6 +25,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/swipeArea"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/swipeAreaHeight"
+            android:background="?attr/colorSwipeArea"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:textIsSelectable="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="@string/translate"
+            tools:textColor="@android:color/white" />
+
         <Button
             android:id="@+id/axisButtonX"
             android:layout_width="0dp"
@@ -38,7 +52,8 @@
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/axisButtonY"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/swipeArea" />
 
         <Button
             android:id="@+id/axisButtonY"
@@ -53,7 +68,8 @@
             app:layout_constraintBottom_toTopOf="@+id/swipeArea"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/axisButtonZ"
-            app:layout_constraintStart_toEndOf="@+id/axisButtonX" />
+            app:layout_constraintStart_toEndOf="@+id/axisButtonX"
+            app:layout_constraintTop_toTopOf="@+id/swipeArea" />
 
         <Button
             android:id="@+id/axisButtonZ"
@@ -67,7 +83,8 @@
             app:layout_constraintBottom_toTopOf="@+id/swipeArea"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/axisButtonQ"
-            app:layout_constraintStart_toEndOf="@+id/axisButtonY" />
+            app:layout_constraintStart_toEndOf="@+id/axisButtonY"
+            app:layout_constraintTop_toTopOf="@+id/swipeArea" />
 
         <Button
             android:id="@+id/axisButtonQ"
@@ -81,21 +98,8 @@
             app:layout_constraintBottom_toTopOf="@+id/swipeArea"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/axisButtonZ" />
-
-        <TextView
-            android:id="@+id/swipeArea"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/swipeAreaHeight"
-            android:background="?attr/colorSwipeArea"
-            android:fontFamily="monospace"
-            android:gravity="center"
-            android:textIsSelectable="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="@string/translate"
-            tools:textColor="@android:color/white" />
+            app:layout_constraintStart_toEndOf="@+id/axisButtonZ"
+            app:layout_constraintTop_toTopOf="@+id/swipeArea" />
 
         <TextView
             android:id="@+id/transformInfo"
