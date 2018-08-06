@@ -14,7 +14,7 @@ android {
     buildToolsVersion "28.0.1"
     defaultConfig {
         applicationId "io.jim.tesserapp"
-        minSdkVersion 18
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
