@@ -5,7 +5,7 @@
   -->
 
 <resources>
-    <dimen name="swipe_area_height">100dp</dimen>
+    <dimen name="swipe_area_height">80dp</dimen>
 
     <dimen name="axis_button_elevation_on_unselected">2dp</dimen>
     <dimen name="axis_button_elevation_on_selected">8dp</dimen>
