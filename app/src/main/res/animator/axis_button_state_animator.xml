@@ -11,7 +11,7 @@
                 android:duration="@android:integer/config_shortAnimTime"
                 android:interpolator="@android:interpolator/decelerate_cubic"
                 android:propertyName="elevation"
-                android:valueTo="@dimen/axis_buttons_elevation_on_selected"
+                android:valueTo="@dimen/axis_button_elevation_on_selected"
                 android:valueType="floatType" />
             <objectAnimator
                 android:duration="@android:integer/config_shortAnimTime"
@@ -33,7 +33,7 @@
                 android:duration="@android:integer/config_shortAnimTime"
                 android:interpolator="@android:interpolator/decelerate_cubic"
                 android:propertyName="elevation"
-                android:valueTo="@dimen/axis_buttons_elevation_on_unselected"
+                android:valueTo="@dimen/axis_button_elevation_on_unselected"
                 android:valueType="floatType" />
             <objectAnimator
                 android:duration="@android:integer/config_shortAnimTime"
