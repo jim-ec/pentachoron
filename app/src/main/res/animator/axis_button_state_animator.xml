@@ -5,13 +5,15 @@
   -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Selected state -->
     <item android:state_selected="true">
         <set>
             <objectAnimator
                 android:duration="@android:integer/config_shortAnimTime"
                 android:interpolator="@android:interpolator/decelerate_cubic"
-                android:propertyName="elevation"
-                android:valueTo="@dimen/axis_button_elevation_on_selected"
+                android:propertyName="translationZ"
+                android:valueTo="@dimen/axis_button_translation_z_on_selected"
                 android:valueType="floatType" />
             <objectAnimator
                 android:duration="@android:integer/config_shortAnimTime"
@@ -27,13 +29,15 @@
                 android:valueType="floatType" />
         </set>
     </item>
+
+    <!-- Unselected state -->
     <item>
         <set>
             <objectAnimator
                 android:duration="@android:integer/config_shortAnimTime"
                 android:interpolator="@android:interpolator/decelerate_cubic"
-                android:propertyName="elevation"
-                android:valueTo="@dimen/axis_button_elevation_on_unselected"
+                android:propertyName="translationZ"
+                android:valueTo="@dimen/axis_button_translation_z_on_unselected"
                 android:valueType="floatType" />
             <objectAnimator
                 android:duration="@android:integer/config_shortAnimTime"

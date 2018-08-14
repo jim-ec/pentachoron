@@ -9,5 +9,4 @@
     <attr name="colorAxisX" format="color" />
     <attr name="colorAxisY" format="color" />
     <attr name="colorAxisZ" format="color" />
-    <attr name="colorSwipeArea" format="color" />
 </resources>
