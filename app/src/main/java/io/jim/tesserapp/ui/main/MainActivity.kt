@@ -308,7 +308,7 @@ class MainActivity : AppCompatActivity() {
         glSurfaceView.apply {
             setEGLContextClientVersion(2)
             setRenderer(Renderer(
-                    Color(context.themedColorInt(android.R.attr.windowBackground)),
+                    Color(context.themedColorInt(R.attr.colorPrimary)),
                     viewModel,
                     context.assets,
                     resources.displayMetrics.xdpi.toDouble()))

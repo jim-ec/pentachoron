@@ -7,8 +7,6 @@
 <resources>
 
     <style name="LightTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">#ffffff</item>
-        <item name="colorPrimaryDark">#e0e0e0</item>
         <item name="colorAccent">#00BFA5</item>
         <item name="colorSwipeArea">#22000000</item>
 
@@ -19,8 +17,6 @@
     </style>
 
     <style name="DarkTheme" parent="@style/Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">#616161</item>
-        <item name="colorPrimaryDark">#424242</item>
         <item name="colorAccent">#1DE9B6</item>
         <item name="colorSwipeArea">#88000000</item>
 
