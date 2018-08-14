@@ -12,7 +12,7 @@
         android:id="@+id/appbar_menu_reset_transform"
         android:icon="@drawable/ic_reset_transform"
         android:title="@string/appbar_menu_preferences"
-        app:iconTint="?android:attr/editTextColor"
+        app:iconTint="?editTextColor"
         app:showAsAction="ifRoom"
         tools:ignore="AppCompatResource" />
 

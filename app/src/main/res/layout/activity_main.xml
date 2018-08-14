@@ -29,7 +29,7 @@
             android:id="@+id/swipeArea"
             android:layout_width="0dp"
             android:layout_height="@dimen/swipe_area_height"
-            android:background="?attr/colorSwipeArea"
+            android:background="?colorSwipeArea"
             android:fontFamily="monospace"
             android:gravity="center"
             android:textIsSelectable="false"
