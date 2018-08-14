@@ -10,5 +10,5 @@
     <dimen name="axis_button_elevation_on_unselected">2dp</dimen>
     <dimen name="axis_button_elevation_on_selected">8dp</dimen>
     <item type="dimen" format="float" name="axis_buttons_scale_on_unselected">1.0</item>
-    <item type="dimen" format="float" name="axis_buttons_scale_on_selected">1.1</item>
+    <item type="dimen" format="float" name="axis_buttons_scale_on_selected">1.2</item>
 </resources>
