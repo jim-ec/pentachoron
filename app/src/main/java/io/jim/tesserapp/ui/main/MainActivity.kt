@@ -60,18 +60,7 @@ class MainActivity : AppCompatActivity() {
                         Intent(this, PreferencesActivity::class.java),
                         PREFERENCES_REQUEST)
             }
-            
-            R.id.appbar_menu_reset_transform -> {
-                // Reset all transform:
-                synchronized(viewModel) {
-                    with(viewModel) {
-                        listOf(rotationX, rotationY, rotationZ, rotationQ,
-                                translationX, translationY, translationZ, translationQ)
-                    }.forEach {
-                        it.value = it.initialValue
-                    }
-                }
-            }
+        
         }
     }
     
