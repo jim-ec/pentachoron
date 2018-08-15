@@ -6,9 +6,10 @@
 
 package io.jim.tesserapp.ui.main
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.widget.Scroller
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -19,7 +20,6 @@ import io.jim.tesserapp.graphics.Renderer
 import io.jim.tesserapp.graphics.gl.Color
 import io.jim.tesserapp.math.ScrollAttractor
 import io.jim.tesserapp.math.formatNumber
-import io.jim.tesserapp.ui.preferences.PreferencesActivity
 import io.jim.tesserapp.ui.preferences.gridPreference
 import io.jim.tesserapp.ui.preferences.preferenceThemeId
 import io.jim.tesserapp.util.*
@@ -31,47 +31,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     
     lateinit var viewModel: MainViewModel
-    
-    companion object {
-        
-        /**
-         * The preference activity is started with this identifying request code,
-         * so that the callback [onActivityResult] can check whether is was called
-         * because the user exited the preference activity.
-         *
-         * This will cause the activity to be recreated, as changing preferences affects
-         * immutable state as the theme (which can be dark or light) or geometry like
-         * the grid.
-         */
-        const val PREFERENCES_REQUEST = 1
-    }
-    
-    override fun onCreateOptionsMenu(menu: Menu?) = consume {
-        menuInflater.inflate(R.menu.appbar_menu, menu)
-    }
-    
-    override fun onOptionsItemSelected(item: MenuItem?) = consume {
-        item ?: return NOT_CONSUMED
-        when (item.itemId) {
-            
-            R.id.appbar_menu_preferences -> {
-                // Open preference activity:
-                startActivityForResult(
-                        Intent(this, PreferencesActivity::class.java),
-                        PREFERENCES_REQUEST)
-            }
-        
-        }
-    }
-    
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == PREFERENCES_REQUEST) {
-            // Since preference changes affects immutable activity state like theme,
-            // I just recreate the activity every times the user returned from
-            // the preference screen:
-            recreate()
-        }
-    }
     
     /**
      * Initialize activity.
@@ -85,7 +44,6 @@ class MainActivity : AppCompatActivity() {
         // Set theme, which is only possible during this callback:
         setTheme(preferenceThemeId())
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar.apply { setTitle(R.string.tesseract) })
         
         // Generate geometry:
         viewModel.createGeometries(
