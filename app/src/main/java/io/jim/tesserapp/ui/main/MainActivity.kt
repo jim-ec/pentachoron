@@ -19,7 +19,6 @@ import io.jim.tesserapp.R
 import io.jim.tesserapp.graphics.Renderer
 import io.jim.tesserapp.graphics.gl.Color
 import io.jim.tesserapp.math.ScrollAttractor
-import io.jim.tesserapp.math.formatNumber
 import io.jim.tesserapp.ui.preferences.gridPreference
 import io.jim.tesserapp.ui.preferences.preferenceThemeId
 import io.jim.tesserapp.util.*
@@ -212,18 +211,7 @@ class MainActivity : AppCompatActivity() {
             )
         }.forEach { transformLiveData ->
             transformLiveData.observe(this, Observer {
-                transformInfo.text = synchronized(viewModel) {
-                    with(viewModel) {
-                        "trans=(${formatNumber(translationX.value)}| " +
-                                "${formatNumber(translationY.value)}| " +
-                                "${formatNumber(translationZ.value)}| " +
-                                "${formatNumber(translationQ.value)})\n" +
-                                "rot=(${formatNumber(rotationX.value)}${getString(R.string.pi)}| " +
-                                "${formatNumber(rotationY.value)}${getString(R.string.pi)}| " +
-                                "${formatNumber(rotationZ.value)}${getString(R.string.pi)}| " +
-                                "${formatNumber(rotationQ.value)}${getString(R.string.pi)})"
-                    }
-                }
+                glSurfaceView.invalidate()
             })
         }
         
