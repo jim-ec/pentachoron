@@ -62,10 +62,10 @@ class MainActivity : AppCompatActivity() {
         val transformScrollAttractorDeltanizer = FloatDeltanizer(0f)
         
         listOf(
-                axisButtonX to SelectedAxis.X,
-                axisButtonY to SelectedAxis.Y,
-                axisButtonZ to SelectedAxis.Z,
-                axisButtonQ to SelectedAxis.Q
+                axisButtonX to MainViewModel.SelectedAxis.X,
+                axisButtonY to MainViewModel.SelectedAxis.Y,
+                axisButtonZ to MainViewModel.SelectedAxis.Z,
+                axisButtonQ to MainViewModel.SelectedAxis.Q
         ).forEach { (button, axis) ->
             
             // When clicked, select the proper axis:
@@ -135,8 +135,8 @@ class MainActivity : AppCompatActivity() {
                         synchronized(viewModel) {
                             viewModel.transformMode.value =
                                     when (viewModel.transformMode.value) {
-                                        TransformMode.ROTATE -> TransformMode.TRANSLATE
-                                        TransformMode.TRANSLATE -> TransformMode.ROTATE
+                                        MainViewModel.TransformMode.ROTATE -> MainViewModel.TransformMode.TRANSLATE
+                                        MainViewModel.TransformMode.TRANSLATE -> MainViewModel.TransformMode.ROTATE
                                     }
                         }
                     }
@@ -152,24 +152,24 @@ class MainActivity : AppCompatActivity() {
                 synchronized(viewModel) {
                     
                     when (viewModel.transformMode.value) {
-                        
-                        TransformMode.ROTATE ->
+    
+                        MainViewModel.TransformMode.ROTATE ->
                             
                             when (viewModel.selectedAxis.value) {
-                                SelectedAxis.X -> viewModel.rotationX
-                                SelectedAxis.Y -> viewModel.rotationY
-                                SelectedAxis.Z -> viewModel.rotationZ
-                                SelectedAxis.Q -> viewModel.rotationQ
+                                MainViewModel.SelectedAxis.X -> viewModel.rotationX
+                                MainViewModel.SelectedAxis.Y -> viewModel.rotationY
+                                MainViewModel.SelectedAxis.Z -> viewModel.rotationZ
+                                MainViewModel.SelectedAxis.Q -> viewModel.rotationQ
                             }.value += 0.001 * (transformFlingScrollerDeltanizer.delta +
                                     transformScrollAttractorDeltanizer.delta)
-                        
-                        TransformMode.TRANSLATE ->
+    
+                        MainViewModel.TransformMode.TRANSLATE ->
                             
                             when (viewModel.selectedAxis.value) {
-                                SelectedAxis.X -> viewModel.translationX
-                                SelectedAxis.Y -> viewModel.translationY
-                                SelectedAxis.Z -> viewModel.translationZ
-                                SelectedAxis.Q -> viewModel.translationQ
+                                MainViewModel.SelectedAxis.X -> viewModel.translationX
+                                MainViewModel.SelectedAxis.Y -> viewModel.translationY
+                                MainViewModel.SelectedAxis.Z -> viewModel.translationZ
+                                MainViewModel.SelectedAxis.Q -> viewModel.translationQ
                             }.value += 0.02 * (transformFlingScrollerDeltanizer.delta +
                                     transformScrollAttractorDeltanizer.delta)
                     }
@@ -181,10 +181,10 @@ class MainActivity : AppCompatActivity() {
                 CONSUMED
             }
             
-            viewModel.transformMode.observe(this@MainActivity, Observer<TransformMode> { mode ->
+            viewModel.transformMode.observe(this@MainActivity, Observer<MainViewModel.TransformMode> { mode ->
                 text = getString(R.string.swipe_to_transform).format(when (mode!!) {
-                    TransformMode.ROTATE -> getString(R.string.rotate)
-                    TransformMode.TRANSLATE -> getString(R.string.translate)
+                    MainViewModel.TransformMode.ROTATE -> getString(R.string.rotate)
+                    MainViewModel.TransformMode.TRANSLATE -> getString(R.string.translate)
                 })
             })
             
