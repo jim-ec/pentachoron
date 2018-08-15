@@ -40,8 +40,6 @@
 
         </activity>
 
-        <activity android:name=".ui.preferences.PreferencesActivity" />
-
     </application>
 
 </manifest>
