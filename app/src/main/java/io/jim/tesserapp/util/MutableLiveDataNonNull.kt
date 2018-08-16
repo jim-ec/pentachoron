@@ -1,10 +1,10 @@
 /*
- *  Created by Jim Eckerlein on 7/23/18 9:34 AM
+ *  Created by Jim Eckerlein on 15.08.18 16:14
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/23/18 9:26 AM
+ *  Last modified 15.08.18 16:12
  */
 
-package io.jim.tesserapp.ui.main
+package io.jim.tesserapp.util
 
 import androidx.lifecycle.MutableLiveData
 
@@ -15,7 +15,7 @@ import androidx.lifecycle.MutableLiveData
  *
  * @constructor Creates a live-data with an initial value.
  */
-open class MutableLiveDataNonNull<T : Any>(val initialValue: T) : MutableLiveData<T>() {
+open class MutableLiveDataNonNull<T : Any>(initialValue: T) : MutableLiveData<T>() {
     
     init {
         value = initialValue

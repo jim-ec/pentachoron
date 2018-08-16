@@ -9,6 +9,7 @@ package io.jim.tesserapp.ui.main
 import androidx.lifecycle.ViewModel
 import io.jim.tesserapp.geometry.*
 import io.jim.tesserapp.graphics.gl.Color
+import io.jim.tesserapp.util.MutableLiveDataNonNull
 
 /**
  * Stores persistent data related to the main activity,
@@ -158,5 +159,13 @@ class MainViewModel : ViewModel() {
     val verticalCameraRotation = MutableLiveDataNonNull(-Math.PI / 8.0)
     
     val cameraFovX = MutableLiveDataNonNull(60.0)
+    
+    enum class SelectedAxis {
+        X, Y, Z, Q
+    }
+    
+    enum class TransformMode {
+        ROTATE, TRANSLATE
+    }
     
 }
