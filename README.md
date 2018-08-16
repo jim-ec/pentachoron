@@ -18,3 +18,10 @@ The vector, matrix and transform math is implemented in C++.
 For two reasons, that module has moved to its very [own repository](https://github.com/Jim-Eckerlein/fmath):
 Firstly, to be modular, so I can reuse the heavily templated math code.
 Secondly, Android Studio is not suitable to work on "advanced" C++ code.
+
+## Build Signed APK
+
+- Keystore is located at: `app/keystore.jks`
+- Keystore password: `mykeystore123`
+- Key alias: `app_key`
+- Key password: `mykey123`
