@@ -23,11 +23,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Set theme, which is only possible during this callback:
+        // Set theme. Specifying that is only possible during this callback:
         setTheme(preferenceThemeId())
+        
         setContentView(R.layout.activity_main)
         
-        // Generate geometry:
+        // Regenerate geometry:
         ViewModelProviders.of(this).get(MainViewModel::class.java).createGeometries(
                 featuredGeometryName = getString(R.string.tesseract),
                 enableGrid = gridPreference(),
