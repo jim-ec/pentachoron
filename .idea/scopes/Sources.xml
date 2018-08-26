@@ -1,3 +1,0 @@
-<component name="DependencyValidationManager">
-  <scope name="Sources" pattern="file[app]:src//*&amp;&amp;!file[app]:src/main/cpp/fmath//*" />
-</component>
