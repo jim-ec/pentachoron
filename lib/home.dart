@@ -5,7 +5,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: Row(
-            children: <Widget>[Text("ATesserapp")],
+            children: <Widget>[Text("TESSERAPP")],
           ),
           elevation: 0.0,
         ),

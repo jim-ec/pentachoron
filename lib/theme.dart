@@ -8,6 +8,7 @@ ThemeData tesserTheme() => ThemeData(
         title: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 24.0,
+          letterSpacing: 1.2,
         ),
       ),
     );
