@@ -5,8 +5,8 @@ Row row(final List<Widget> widgets) => Row(
     );
 
 Column column(final List<Widget> widgets) => Column(
-      children: widgets,
-    );
+  children: widgets,
+);
 
 Stack stack(final List<Widget> widgets) => Stack(
       children: widgets,
@@ -18,5 +18,10 @@ Expanded expanded(final Widget widget) => Expanded(
 );
 
 Center center(final Widget widget) => Center(
+  child: widget,
+);
+
+Padding padding(final EdgeInsetsGeometry padding, final Widget widget) => Padding(
+  padding: padding,
   child: widget,
 );
