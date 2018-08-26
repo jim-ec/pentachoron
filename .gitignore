@@ -1,0 +1,14 @@
+
+.dart_tool/
+.packages
+.pub/
+pubspec.lock
+
+build/
+out/
+
+doc/api/
+
+.idea/workspace.xml
+.idea/misc.xml
+.idea/libraries
