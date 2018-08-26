@@ -1,16 +1,13 @@
 <!--
-  ~  Created by Jim Eckerlein on 7/15/18 4:04 PM
+  ~  Created by Jim Eckerlein on 7/22/18 4:35 PM
   ~  Copyright (c) 2018 . All rights reserved.
-  ~  Last modified 7/15/18 4:03 PM
+  ~  Last modified 7/22/18 4:32 PM
   -->
 
 <resources>
 
     <style name="LightTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">#ffffff</item>
-        <item name="colorPrimaryDark">#e0e0e0</item>
         <item name="colorAccent">#00BFA5</item>
-
         <item name="colorPrimaryGeometry">#bdbdbd</item>
         <item name="colorAxisX">#f44336</item>
         <item name="colorAxisY">#8BC34A</item>
@@ -18,10 +15,7 @@
     </style>
 
     <style name="DarkTheme" parent="@style/Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">#616161</item>
-        <item name="colorPrimaryDark">#424242</item>
         <item name="colorAccent">#1DE9B6</item>
-
         <item name="colorPrimaryGeometry">#bdbdbd</item>
         <item name="colorAxisX">#e57373</item>
         <item name="colorAxisY">#DCE775</item>

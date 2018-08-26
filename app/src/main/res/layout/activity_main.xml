@@ -1,57 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~  Created by Jim Eckerlein on 7/15/18 4:04 PM
+  ~  Created by Jim Eckerlein on 7/22/18 11:16 PM
   ~  Copyright (c) 2018 . All rights reserved.
-  ~  Last modified 7/15/18 4:03 PM
+  ~  Last modified 7/22/18 11:10 PM
   -->
 
-<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:clipChildren="false">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <fragment
+        android:id="@+id/graphicsFragment"
+        android:name="io.jim.tesserapp.ui.GraphicsFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            tools:context="io.jim.tesserapp.ui.main.MainActivity">
+    <fragment
+        android:id="@+id/preferencesFragment"
+        android:name="io.jim.tesserapp.ui.preferences.PreferencesFragment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <io.jim.tesserapp.ui.main.GraphicsView
-                android:id="@+id/graphicsView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2" />
+    <fragment
+        android:id="@+id/controllerFragment"
+        android:name="io.jim.tesserapp.ui.ControllerFragment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-            <ScrollView
-                android:id="@+id/controlsScroller"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <io.jim.tesserapp.ui.main.ControllerView
-                    android:id="@+id/controllerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                </io.jim.tesserapp.ui.main.ControllerView>
-
-            </ScrollView>
-
-        </LinearLayout>
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Button"
-            android:title="@string/app_name" />
-
-    </FrameLayout>
-
-</com.google.android.material.appbar.AppBarLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

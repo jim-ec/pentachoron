@@ -1,7 +1,7 @@
 /*
- *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Created by Jim Eckerlein on 7/23/18 9:34 AM
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/15/18 4:03 PM
+ *  Last modified 7/23/18 9:28 AM
  */
 
 package io.jim.tesserapp.ui.main
@@ -9,13 +9,17 @@ package io.jim.tesserapp.ui.main
 import androidx.lifecycle.ViewModel
 import io.jim.tesserapp.geometry.*
 import io.jim.tesserapp.graphics.gl.Color
-import io.jim.tesserapp.util.synchronized
+import io.jim.tesserapp.util.MutableLiveDataNonNull
 
 /**
  * Stores persistent data related to the main activity,
  * inter alia transform of the featured geometry.
  */
 class MainViewModel : ViewModel() {
+    
+    var selectedAxis = MutableLiveDataNonNull(SelectedAxis.X)
+    
+    var transformMode = MutableLiveDataNonNull(TransformMode.ROTATE)
     
     /**
      * List containing all geometries.
@@ -48,16 +52,16 @@ class MainViewModel : ViewModel() {
                 name = featuredGeometryName,
                 isFourDimensional = true,
                 onTransformUpdate = {
-                    synchronized {
+                    synchronized(this) {
                         Transform(
-                                rotationX = rotationX.smoothed * Math.PI,
-                                rotationY = rotationY.smoothed * Math.PI,
-                                rotationZ = rotationZ.smoothed * Math.PI,
-                                rotationQ = rotationQ.smoothed * Math.PI,
-                                translationX = translationX.smoothed,
-                                translationY = translationY.smoothed,
-                                translationZ = translationZ.smoothed,
-                                translationQ = translationQ.smoothed
+                                rotationX = rotationX.value * Math.PI,
+                                rotationY = rotationY.value * Math.PI,
+                                rotationZ = rotationZ.value * Math.PI,
+                                rotationQ = rotationQ.value * Math.PI,
+                                translationX = translationX.value,
+                                translationY = translationY.value,
+                                translationZ = translationZ.value,
+                                translationQ = translationQ.value
                         )
                     }
                 },
@@ -100,66 +104,68 @@ class MainViewModel : ViewModel() {
     /**
      * X rotation, in units of PI.
      */
-    val rotationX = SmoothedLiveData()
+    val rotationX = MutableLiveDataNonNull(0.0)
     
     /**
      * Y rotation, in units of PI.
      */
-    val rotationY = SmoothedLiveData()
+    val rotationY = MutableLiveDataNonNull(0.0)
     
     /**
      * Z rotation, in units of PI.
      */
-    val rotationZ = SmoothedLiveData()
+    val rotationZ = MutableLiveDataNonNull(0.0)
     
     /**
      * Q rotation, in units of PI.
      */
-    val rotationQ = SmoothedLiveData()
+    val rotationQ = MutableLiveDataNonNull(0.0)
     
     /**
      * X translation.
      */
-    val translationX = SmoothedLiveData()
+    val translationX = MutableLiveDataNonNull(0.0)
     
     /**
      * Y translation.
      */
-    val translationY = SmoothedLiveData()
+    val translationY = MutableLiveDataNonNull(0.0)
     
     /**
      * Z translation.
      */
-    val translationZ = SmoothedLiveData()
+    val translationZ = MutableLiveDataNonNull(0.0)
     
     /**
      * Q translation.
      */
-    val translationQ = SmoothedLiveData(initialValue = 3.7)
+    val translationQ = MutableLiveDataNonNull(4.0)
     
     /**
      * Camera distance.
      */
-    val cameraDistance = SmoothedLiveData(initialValue = 5.0)
+    val cameraDistance = MutableLiveDataNonNull(5.0)
     
     /**
      * Rotation on the horizontal orbit.
      * This is the base rotation.
      */
-    val horizontalCameraRotation = SmoothedLiveData(
-            initialValue = Math.PI / 3.0,
-            transitionInterval = 80.0
-    )
+    val horizontalCameraRotation = MutableLiveDataNonNull(Math.PI / 3.0)
     
     /**
      * Rotation on the vertical orbit.
      * This is the secondary rotation.
      */
-    val verticalCameraRotation = SmoothedLiveData(
-            initialValue = -Math.PI / 8.0,
-            transitionInterval = 80.0
-    )
+    val verticalCameraRotation = MutableLiveDataNonNull(-Math.PI / 8.0)
     
-    val cameraFovX = SmoothedLiveData(initialValue = 60.0, transitionInterval = 80.0)
+    val cameraFovX = MutableLiveDataNonNull(60.0)
+    
+    enum class SelectedAxis {
+        X, Y, Z, Q
+    }
+    
+    enum class TransformMode {
+        ROTATE, TRANSLATE
+    }
     
 }

@@ -1,13 +1,12 @@
 /*
- *  Created by Jim Eckerlein on 7/15/18 4:04 PM
+ *  Created by Jim Eckerlein on 15.08.18 16:14
  *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 7/15/18 4:03 PM
+ *  Last modified 15.08.18 16:12
  */
 
-package io.jim.tesserapp.ui.main
+package io.jim.tesserapp.util
 
 import androidx.lifecycle.MutableLiveData
-import io.jim.tesserapp.util.synchronized
 
 /**
  * A wrapper for [MutableLiveData] whose value can never be `null`.
@@ -26,7 +25,7 @@ open class MutableLiveDataNonNull<T : Any>(initialValue: T) : MutableLiveData<T>
      * Return the current *non-null* value.
      */
     override fun getValue(): T {
-        return synchronized {
+        return synchronized(this) {
             super.getValue()!!
         }
     }
@@ -35,7 +34,7 @@ open class MutableLiveDataNonNull<T : Any>(initialValue: T) : MutableLiveData<T>
      * Set the *non-null* value to this live data.
      */
     override fun setValue(value: T) {
-        synchronized {
+        synchronized(this) {
             super.setValue(value)
         }
     }
@@ -46,7 +45,7 @@ open class MutableLiveDataNonNull<T : Any>(initialValue: T) : MutableLiveData<T>
      * @param callback Called upon value changes.
      */
     fun observeForeverNonNull(callback: (T) -> Unit) {
-        synchronized {
+        synchronized(this) {
             super.observeForever {
                 callback(it!!)
             }
