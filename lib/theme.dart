@@ -10,6 +10,9 @@ ThemeData tesserTheme() => ThemeData(
           fontWeight: FontWeight.bold,
           letterSpacing: 1.0,
         ),
+        body2: TextStyle(
+          letterSpacing: 0.9,
+        ),
         button: TextStyle(
           fontWeight: FontWeight.w900,
           letterSpacing: 1.2,
@@ -17,7 +20,6 @@ ThemeData tesserTheme() => ThemeData(
       ),
       primaryTextTheme: TextTheme(
         title: TextStyle(
-          fontWeight: FontWeight.bold,
           fontSize: 24.0,
           letterSpacing: 1.2,
         ),

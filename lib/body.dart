@@ -10,6 +10,7 @@ class Body extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Text("Hello world"),
+            Text("Hello world", style: Theme.of(context).textTheme.subhead),
             FlatButton(
               child: Text("Flat Button".toUpperCase()),
               onPressed: () {},
