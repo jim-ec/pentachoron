@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:tesserapp/appbar.dart';
 
 class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Row(
-            children: <Widget>[Text("TESSERAPP")],
-          ),
-          elevation: 0.0,
-        ),
+        appBar: appBar(),
       );
 }
