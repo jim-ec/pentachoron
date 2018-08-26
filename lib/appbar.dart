@@ -10,8 +10,8 @@ AppBar appBar() => AppBar(
           ),
         ),
         Positioned.fill(
-          child: Icon(Icons.menu),
-          right: null,
+          child: Icon(Icons.keyboard_arrow_down),
+          left: null,
         )
       ]),
     );
