@@ -99,9 +99,8 @@ class _DarkThemeCheckboxState extends State<_DarkThemeCheckbox> {
 
   @override
   Widget build(BuildContext context) {
-    final themes = Theme.of(context);
     return Material(
-      color: themes.primaryColor,
+      type: MaterialType.transparency,
       child: InkWell(
         onTap: () {
           setState(() {
