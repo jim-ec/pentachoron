@@ -27,84 +27,86 @@ class BackdropContent extends StatelessWidget {
       width: double.infinity,
       child: ScrollConfiguration(
         behavior: BackdropScrollBehavior(),
-        child: ListView(
-          physics: ClampingScrollPhysics(),
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Geometry",
-                style: themes.textTheme.caption,
-              ),
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text("16 Vertices"),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text("32 Edges"),
-                    ),
-                  ],
+        child: Scrollbar(
+          child: ListView(
+            physics: ClampingScrollPhysics(),
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Geometry",
+                  style: themes.textTheme.caption,
                 ),
-                Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text("24 Faces"),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text("8 Cells"),
-                    ),
-                  ],
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text("16 Vertices"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text("32 Edges"),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text("24 Faces"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text("8 Cells"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Divider(
+                height: 5.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Options",
+                  style: themes.textTheme.caption,
                 ),
-              ],
-            ),
-            Divider(
-              height: 5.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Options",
-                style: themes.textTheme.caption,
               ),
-            ),
-            OptionsSection(
-              onOptionsChanged: onOptionsChanged,
-            ),
-            Divider(
-              height: 5.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Credits",
-                style: themes.textTheme.caption,
+              OptionsSection(
+                onOptionsChanged: onOptionsChanged,
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                  "My hobby project to play with four dimensional spatials.\n"
-                  "The app is written with Flutter.\n\n"
-                  "The source code is freely available at my GitHub repository."),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: FlatButton(
-                child: Text("Source code".toUpperCase()),
-                onPressed: _launchUrl,
+              Divider(
+                height: 5.0,
               ),
-            )
-          ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Credits",
+                  style: themes.textTheme.caption,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                    "My hobby project to play with four dimensional spatials.\n"
+                    "The app is written with Flutter.\n\n"
+                    "The source code is freely available at my GitHub repository."),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: FlatButton(
+                  child: Text("Source code".toUpperCase()),
+                  onPressed: _launchUrl,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
