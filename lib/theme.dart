@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-ThemeData tesserTheme() => ThemeData(
+ThemeData tesserTheme(bool darkThemeEnabled) => ThemeData(
       primarySwatch: Colors.deepOrange,
       accentColor: Colors.deepOrangeAccent,
       fontFamily: "GeoNMS",
-      brightness: Brightness.dark,
+      brightness: darkThemeEnabled ? Brightness.dark : Brightness.light,
       textTheme: TextTheme(
         body1: TextStyle(
           letterSpacing: 0.5,

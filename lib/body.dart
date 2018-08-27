@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Body extends StatelessWidget {
+  final ValueChanged<bool> onDarkThemeSelected;
+
+  const Body({Key key, @required this.onDarkThemeSelected}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final themes = Theme.of(context);
@@ -57,7 +61,7 @@ class Body extends StatelessWidget {
               style: themes.textTheme.caption,
             ),
           ),
-          _DarkThemeCheckbox(),
+          DarkThemeCheckbox(onDarkThemeSelected: onDarkThemeSelected),
           Divider(
             height: 5.0,
           ),
@@ -88,14 +92,26 @@ class Body extends StatelessWidget {
   }
 }
 
-class _DarkThemeCheckbox extends StatefulWidget {
+class DarkThemeCheckbox extends StatefulWidget {
+  final ValueChanged<bool> onDarkThemeSelected;
+
+  DarkThemeCheckbox({Key key, this.onDarkThemeSelected}) : super(key: key);
+
   @override
-  _DarkThemeCheckboxState createState() => _DarkThemeCheckboxState();
+  _DarkThemeCheckboxState createState() =>
+      _DarkThemeCheckboxState(onDarkThemeSelected);
 }
 
-class _DarkThemeCheckboxState extends State<_DarkThemeCheckbox> {
-  
-  bool enabled = true;
+class _DarkThemeCheckboxState extends State<DarkThemeCheckbox> {
+  final ValueChanged<bool> onDarkThemeSelected;
+  var enabled = ValueNotifier<bool>(true);
+
+  _DarkThemeCheckboxState(this.onDarkThemeSelected) {
+    enabled.addListener(() {
+      onDarkThemeSelected(enabled.value);
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +120,7 @@ class _DarkThemeCheckboxState extends State<_DarkThemeCheckbox> {
       child: InkWell(
         onTap: () {
           setState(() {
-            enabled = !enabled;
+            enabled.value = !enabled.value;
           });
         },
         child: Container(
@@ -114,10 +130,10 @@ class _DarkThemeCheckboxState extends State<_DarkThemeCheckbox> {
             children: <Widget>[
               Text("Dark Theme"),
               Checkbox(
-                value: enabled,
+                value: enabled.value,
                 onChanged: (checked) {
                   setState(() {
-                    enabled = checked;
+                    enabled.value = checked;
                   });
                 },
               ),
