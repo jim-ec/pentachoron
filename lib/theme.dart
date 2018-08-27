@@ -7,10 +7,7 @@ ThemeData tesserTheme() => ThemeData(
       brightness: Brightness.dark,
       textTheme: TextTheme(
         body1: TextStyle(
-          letterSpacing: 1.2,
-        ),
-        body2: TextStyle(
-          letterSpacing: 0.9,
+          letterSpacing: 0.5,
         ),
         button: TextStyle(
           fontWeight: FontWeight.w900,
