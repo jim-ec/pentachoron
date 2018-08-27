@@ -3,8 +3,13 @@ import 'package:url_launcher/url_launcher.dart';
 
 class Body extends StatelessWidget {
   final ValueChanged<bool> onDarkThemeSelected;
+  final ValueChanged<bool> onDebugPaintSizeSelected;
 
-  const Body({Key key, @required this.onDarkThemeSelected}) : super(key: key);
+  const Body(
+      {Key key,
+      @required this.onDarkThemeSelected,
+      @required this.onDebugPaintSizeSelected})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +66,8 @@ class Body extends StatelessWidget {
               style: themes.textTheme.caption,
             ),
           ),
-          DarkThemeCheckbox(onDarkThemeSelected: onDarkThemeSelected),
+          DarkThemeCheckbox(onChanged: onDarkThemeSelected),
+          DebugPaintSizeOption(onChanged: onDebugPaintSizeSelected),
           Divider(
             height: 5.0,
           ),
@@ -93,22 +99,21 @@ class Body extends StatelessWidget {
 }
 
 class DarkThemeCheckbox extends StatefulWidget {
-  final ValueChanged<bool> onDarkThemeSelected;
+  final ValueChanged<bool> onChanged;
 
-  DarkThemeCheckbox({Key key, this.onDarkThemeSelected}) : super(key: key);
+  DarkThemeCheckbox({Key key, this.onChanged}) : super(key: key);
 
   @override
-  _DarkThemeCheckboxState createState() =>
-      _DarkThemeCheckboxState(onDarkThemeSelected);
+  _DarkThemeCheckboxState createState() => _DarkThemeCheckboxState(onChanged);
 }
 
 class _DarkThemeCheckboxState extends State<DarkThemeCheckbox> {
-  final ValueChanged<bool> onDarkThemeSelected;
+  final ValueChanged<bool> onChanged;
   var enabled = ValueNotifier<bool>(true);
 
-  _DarkThemeCheckboxState(this.onDarkThemeSelected) {
+  _DarkThemeCheckboxState(this.onChanged) {
     enabled.addListener(() {
-      onDarkThemeSelected(enabled.value);
+      onChanged(enabled.value);
       setState(() {});
     });
   }
@@ -129,6 +134,59 @@ class _DarkThemeCheckboxState extends State<DarkThemeCheckbox> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Text("Dark Theme"),
+              Checkbox(
+                value: enabled.value,
+                onChanged: (checked) {
+                  setState(() {
+                    enabled.value = checked;
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class DebugPaintSizeOption extends StatefulWidget {
+  final ValueChanged<bool> onChanged;
+
+  DebugPaintSizeOption({Key key, this.onChanged}) : super(key: key);
+
+  @override
+  _DebugPaintSizeOptionState createState() =>
+      _DebugPaintSizeOptionState(onChanged);
+}
+
+class _DebugPaintSizeOptionState extends State<DebugPaintSizeOption> {
+  final ValueChanged<bool> onChanged;
+  var enabled = ValueNotifier<bool>(false);
+
+  _DebugPaintSizeOptionState(this.onChanged) {
+    enabled.addListener(() {
+      onChanged(enabled.value);
+      setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            enabled.value = !enabled.value;
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Text("Debug Paint Size"),
               Checkbox(
                 value: enabled.value,
                 onChanged: (checked) {

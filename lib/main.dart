@@ -15,10 +15,11 @@ class TesserApp extends StatefulWidget {
 class _TesserAppState extends State<TesserApp> {
   
   bool darkThemeEnabled = true;
+  bool enableDebugPaintSize = false;
   
   @override
   Widget build(BuildContext context) {
-    debugPaintSizeEnabled = false;
+    debugPaintSizeEnabled = enableDebugPaintSize;
     return MaterialApp(
       title: "Tesserapp",
       debugShowCheckedModeBanner: false,
@@ -29,6 +30,11 @@ class _TesserAppState extends State<TesserApp> {
           onDarkThemeSelected: (darkThemeSelected) {
             setState(() {
               darkThemeEnabled = darkThemeSelected;
+            });
+          },
+          onDebugPaintSizeSelected: (debugPaintSizeSelected) {
+            setState(() {
+              enableDebugPaintSize = debugPaintSizeSelected;
             });
           },
         ),
