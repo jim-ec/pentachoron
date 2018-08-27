@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Body extends StatelessWidget {
-  final ValueChanged<bool> onDarkThemeSelected;
-  final ValueChanged<bool> onDebugPaintSizeSelected;
+  final ValueChanged<Options> onOptionsChanged;
 
-  const Body(
-      {Key key,
-      @required this.onDarkThemeSelected,
-      @required this.onDebugPaintSizeSelected})
-      : super(key: key);
+  const Body({
+    Key key,
+    @required this.onOptionsChanged,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +64,9 @@ class Body extends StatelessWidget {
               style: themes.textTheme.caption,
             ),
           ),
-          DarkThemeCheckbox(onChanged: onDarkThemeSelected),
-          DebugPaintSizeOption(onChanged: onDebugPaintSizeSelected),
+          OptionsSection(
+            onOptionsChanged: onOptionsChanged,
+          ),
           Divider(
             height: 5.0,
           ),
@@ -98,107 +97,89 @@ class Body extends StatelessWidget {
   }
 }
 
-class DarkThemeCheckbox extends StatefulWidget {
-  final ValueChanged<bool> onChanged;
-
-  DarkThemeCheckbox({Key key, this.onChanged}) : super(key: key);
-
-  @override
-  _DarkThemeCheckboxState createState() => _DarkThemeCheckboxState(onChanged);
+class Options {
+  bool darkThemeEnabled = true;
+  bool debugPaintSizeEnabled = false;
 }
 
-class _DarkThemeCheckboxState extends State<DarkThemeCheckbox> {
-  final ValueChanged<bool> onChanged;
-  var enabled = ValueNotifier<bool>(true);
+class OptionsSection extends StatefulWidget {
+  final ValueChanged<Options> onOptionsChanged;
 
-  _DarkThemeCheckboxState(this.onChanged) {
-    enabled.addListener(() {
-      onChanged(enabled.value);
-      setState(() {});
+  const OptionsSection({Key key, this.onOptionsChanged}) : super(key: key);
+
+  @override
+  _OptionsSectionState createState() => _OptionsSectionState(onOptionsChanged);
+}
+
+class _OptionsSectionState extends State<OptionsSection> {
+  final ValueChanged<Options> onOptionsChanged;
+  final options = Options();
+
+  _OptionsSectionState(this.onOptionsChanged);
+
+  _updateState() {
+    setState(() {
+      onOptionsChanged(options);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      type: MaterialType.transparency,
-      child: InkWell(
-        onTap: () {
-          setState(() {
-            enabled.value = !enabled.value;
-          });
-        },
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Text("Dark Theme"),
-              Checkbox(
-                value: enabled.value,
-                onChanged: (checked) {
-                  setState(() {
-                    enabled.value = checked;
-                  });
-                },
+    return Column(
+      children: <Widget>[
+        Material(
+          type: MaterialType.transparency,
+          child: InkWell(
+            onTap: () {
+              options.darkThemeEnabled = !options.darkThemeEnabled;
+              _updateState();
+            },
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 64.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text("Dark Theme"),
+                  Checkbox(
+                    value: options.darkThemeEnabled,
+                    onChanged: (checked) {
+                      options.darkThemeEnabled = checked;
+                      _updateState();
+                    },
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class DebugPaintSizeOption extends StatefulWidget {
-  final ValueChanged<bool> onChanged;
-
-  DebugPaintSizeOption({Key key, this.onChanged}) : super(key: key);
-
-  @override
-  _DebugPaintSizeOptionState createState() =>
-      _DebugPaintSizeOptionState(onChanged);
-}
-
-class _DebugPaintSizeOptionState extends State<DebugPaintSizeOption> {
-  final ValueChanged<bool> onChanged;
-  var enabled = ValueNotifier<bool>(false);
-
-  _DebugPaintSizeOptionState(this.onChanged) {
-    enabled.addListener(() {
-      onChanged(enabled.value);
-      setState(() {});
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      type: MaterialType.transparency,
-      child: InkWell(
-        onTap: () {
-          setState(() {
-            enabled.value = !enabled.value;
-          });
-        },
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Text("Debug Paint Size"),
-              Checkbox(
-                value: enabled.value,
-                onChanged: (checked) {
-                  setState(() {
-                    enabled.value = checked;
-                  });
-                },
+        Material(
+          type: MaterialType.transparency,
+          child: InkWell(
+            onTap: () {
+              options.debugPaintSizeEnabled = !options.debugPaintSizeEnabled;
+              _updateState();
+            },
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 64.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text("Debug Paint Size"),
+                  Checkbox(
+                    value: options.debugPaintSizeEnabled,
+                    onChanged: (checked) {
+                      options.debugPaintSizeEnabled = checked;
+                      _updateState();
+                    },
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        )
+      ],
     );
   }
 }

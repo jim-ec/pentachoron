@@ -27,14 +27,10 @@ class _TesserAppState extends State<TesserApp> {
       home: Scaffold(
         appBar: appBar(),
         body: Body(
-          onDarkThemeSelected: (darkThemeSelected) {
+          onOptionsChanged: (options) {
             setState(() {
-              darkThemeEnabled = darkThemeSelected;
-            });
-          },
-          onDebugPaintSizeSelected: (debugPaintSizeSelected) {
-            setState(() {
-              enableDebugPaintSize = debugPaintSizeSelected;
+              darkThemeEnabled = options.darkThemeEnabled;
+              enableDebugPaintSize = options.debugPaintSizeEnabled;
             });
           },
         ),
