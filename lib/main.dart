@@ -26,7 +26,7 @@ class _TesserAppState extends State<TesserApp> {
       theme: tesserTheme(darkThemeEnabled),
       home: Scaffold(
         appBar: appBar(),
-        body: Body(
+        body: BackdropContent(
           onOptionsChanged: (options) {
             setState(() {
               darkThemeEnabled = options.darkThemeEnabled;
