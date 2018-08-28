@@ -33,9 +33,11 @@ class BackdropContent extends StatelessWidget {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Geometry",
-                  style: themes.textTheme.caption,
+                child: Center(
+                  child: Text(
+                    "Geometry",
+                    style: themes.textTheme.caption,
+                  ),
                 ),
               ),
               Row(
@@ -73,9 +75,11 @@ class BackdropContent extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Options",
-                  style: themes.textTheme.caption,
+                child: Center(
+                  child: Text(
+                    "Options",
+                    style: themes.textTheme.caption,
+                  ),
                 ),
               ),
               OptionsSection(
@@ -86,9 +90,11 @@ class BackdropContent extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Credits",
-                  style: themes.textTheme.caption,
+                child: Center(
+                  child: Text(
+                    "Credits",
+                    style: themes.textTheme.caption,
+                  ),
                 ),
               ),
               Padding(
