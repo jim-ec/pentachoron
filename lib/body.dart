@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Body extends StatelessWidget {
+/// A scroll behavior disabling the over-scroll glow effect,
+/// as that is not desirable in the backdrop's back panel.
+class BackdropScrollBehavior extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
+  }
+}
+
+/// Houses the backdrop's back panel content.
+class BackdropContent extends StatelessWidget {
   final ValueChanged<Options> onOptionsChanged;
 
-  const Body({
+  const BackdropContent({
     Key key,
     @required this.onOptionsChanged,
   }) : super(key: key);
@@ -15,83 +25,95 @@ class Body extends StatelessWidget {
     return Container(
       color: themes.primaryColor,
       width: double.infinity,
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Geometry",
-              style: themes.textTheme.caption,
-            ),
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      child: ScrollConfiguration(
+        behavior: BackdropScrollBehavior(),
+        child: Scrollbar(
+          child: ListView(
+            physics: ClampingScrollPhysics(),
             children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text("16 Vertices"),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: Text(
+                    "Geometry",
+                    style: themes.textTheme.caption,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text("32 Edges"),
+                ),
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text("16 Vertices"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text("32 Edges"),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text("24 Faces"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text("8 Cells"),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text("24 Faces"),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text("8 Cells"),
-                  ),
-                ],
+              Divider(
+                height: 5.0,
               ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: Text(
+                    "Options",
+                    style: themes.textTheme.caption,
+                  ),
+                ),
+              ),
+              OptionsSection(
+                onOptionsChanged: onOptionsChanged,
+              ),
+              Divider(
+                height: 5.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: Text(
+                    "Credits",
+                    style: themes.textTheme.caption,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                    "My hobby project to play with four dimensional spatials.\n"
+                    "The app is written with Flutter.\n\n"
+                    "The source code is freely available at my GitHub repository."),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: FlatButton(
+                  child: Text("Source code".toUpperCase()),
+                  onPressed: _launchUrl,
+                ),
+              )
             ],
           ),
-          Divider(
-            height: 5.0,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Options",
-              style: themes.textTheme.caption,
-            ),
-          ),
-          OptionsSection(
-            onOptionsChanged: onOptionsChanged,
-          ),
-          Divider(
-            height: 5.0,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Credits",
-              style: themes.textTheme.caption,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-                "My hobby project to play with four dimensional spatials.\n"
-                "The app is written with Flutter.\n\n"
-                "The source code is freely available at my GitHub repository."),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: FlatButton(
-              child: Text("Source code".toUpperCase()),
-              onPressed: _launchUrl,
-            ),
-          )
-        ],
+        ),
       ),
     );
   }
