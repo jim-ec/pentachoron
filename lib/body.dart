@@ -99,16 +99,20 @@ class BackdropContent extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text(
-                    "My hobby project to play with four dimensional spatials.\n"
-                    "The app is written with Flutter.\n\n"
-                    "The source code is freely available at my GitHub repository."),
+                child: Center(
+                  child: Text(
+                      "My hobby project to play with four dimensional spatials.\n"
+                      "The app is written with Flutter.\n\n"
+                      "The source code is freely available at my GitHub repository."),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: FlatButton(
-                  child: Text("Source code".toUpperCase()),
-                  onPressed: _launchUrl,
+                child: Center(
+                  child: FlatButton(
+                    child: Text("Source code".toUpperCase()),
+                    onPressed: _launchUrl,
+                  ),
                 ),
               )
             ],
