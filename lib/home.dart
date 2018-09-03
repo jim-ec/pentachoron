@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tesserapp/back_bar.dart';
 import 'package:tesserapp/backdrop.dart';
 import 'package:tesserapp/back_layer.dart';
 import 'package:tesserapp/front_layer.dart';
@@ -11,7 +10,6 @@ class Home extends StatelessWidget {
           color: Theme.of(context).primaryColor,
           child: SafeArea(
             child: Backdrop(
-              backBar: BackBar(),
               backLayer: BackLayer(),
               frontLayer: FrontLayer(),
             ),

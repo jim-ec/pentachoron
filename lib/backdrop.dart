@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 
 class Backdrop extends StatefulWidget {
-  final Widget backBar;
   final Widget backLayer;
   final Widget frontLayer;
 
   const Backdrop({
     Key key,
-    @required this.backBar,
     @required this.backLayer,
     @required this.frontLayer,
   }) : super(key: key);
 
   @override
   _BackdropState createState() =>
-      _BackdropState(backBar, backLayer, frontLayer);
+      _BackdropState(backLayer, frontLayer);
 }
 
 class _BackdropState extends State<Backdrop>
@@ -28,7 +26,6 @@ class _BackdropState extends State<Backdrop>
   /// The remaining visible height of the front layer, when completely hidden.
   static const hiddenFrontLayerHeight = 64.0;
 
-  final Widget backBar;
   final Widget backLayer;
   final Widget frontLayer;
   AnimationController controller;
@@ -43,7 +40,7 @@ class _BackdropState extends State<Backdrop>
       });
   }
 
-  _BackdropState(this.backBar, this.backLayer, this.frontLayer);
+  _BackdropState(this.backLayer, this.frontLayer);
 
   wrapInGestureDetectorIfClosed(
       final BoxConstraints constraints, final Widget child) {
@@ -122,7 +119,22 @@ class _BackdropState extends State<Backdrop>
                     type: MaterialType.transparency,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: backBar,
+                      child: Stack(
+                        children: <Widget>[
+                          Positioned.fill(
+                            child: Center(
+                              child: Text(
+                                "TESSERAPP",
+                                style: Theme.of(context).primaryTextTheme.title,
+                              ),
+                            ),
+                          ),
+                          Positioned.fill(
+                            child: Icon(Icons.keyboard_arrow_down),
+                            left: null,
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
