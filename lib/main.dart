@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tesserapp/appbar.dart';
 import 'package:tesserapp/body.dart';
@@ -15,11 +14,9 @@ class TesserApp extends StatefulWidget {
 class _TesserAppState extends State<TesserApp> {
   
   bool darkThemeEnabled = true;
-  bool enableDebugPaintSize = false;
   
   @override
   Widget build(BuildContext context) {
-    debugPaintSizeEnabled = enableDebugPaintSize;
     return MaterialApp(
       title: "Tesserapp",
       debugShowCheckedModeBanner: false,
@@ -30,7 +27,6 @@ class _TesserAppState extends State<TesserApp> {
           onOptionsChanged: (options) {
             setState(() {
               darkThemeEnabled = options.darkThemeEnabled;
-              enableDebugPaintSize = options.debugPaintSizeEnabled;
             });
           },
         ),

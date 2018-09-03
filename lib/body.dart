@@ -125,7 +125,6 @@ class BackdropContent extends StatelessWidget {
 
 class Options {
   bool darkThemeEnabled = true;
-  bool debugPaintSizeEnabled = false;
 }
 
 class OptionsSection extends StatefulWidget {
@@ -179,32 +178,6 @@ class _OptionsSectionState extends State<OptionsSection> {
             ),
           ),
         ),
-        Material(
-          type: MaterialType.transparency,
-          child: InkWell(
-            onTap: () {
-              options.debugPaintSizeEnabled = !options.debugPaintSizeEnabled;
-              _updateState();
-            },
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 64.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("Debug Paint Size"),
-                  Checkbox(
-                    value: options.debugPaintSizeEnabled,
-                    onChanged: (checked) {
-                      options.debugPaintSizeEnabled = checked;
-                      _updateState();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        )
       ],
     );
   }
