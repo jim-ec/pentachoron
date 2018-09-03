@@ -1,30 +1,34 @@
 import 'package:flutter/material.dart';
 
 class Backdrop extends StatefulWidget {
-  final Widget backPanel;
-  final Widget frontPanel;
   final Widget backBar;
+  final Widget backLayer;
+  final Widget frontLayer;
 
   const Backdrop({
     Key key,
-    @required this.backPanel,
-    @required this.frontPanel,
     @required this.backBar,
+    @required this.backLayer,
+    @required this.frontLayer,
   }) : super(key: key);
 
   @override
   _BackdropState createState() =>
-      _BackdropState(frontPanel, backPanel, backBar);
+      _BackdropState(backBar, backLayer, frontLayer);
 }
 
 class _BackdropState extends State<Backdrop> {
-  final Widget backPanel;
-  final Widget frontPanel;
-  final Widget backBar;
-  
+  /// The height of the back bar, matching the height of the app bar
+  /// as per Material design specifications.
+  ///
+  /// https://material.io/design/components/app-bars-top.html#specs
   static const backBarHeight = 56.0;
 
-  _BackdropState(this.frontPanel, this.backPanel, this.backBar);
+  final Widget backBar;
+  final Widget backLayer;
+  final Widget frontLayer;
+
+  _BackdropState(this.backBar, this.backLayer, this.frontLayer);
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
@@ -52,14 +56,14 @@ class _BackdropState extends State<Backdrop> {
                 height: backPanelHeight,
                 left: 0.0,
                 right: 0.0,
-                child: backPanel,
+                child: backLayer,
               ),
               Positioned.fill(
                 top: frontPanelTop,
                 bottom: -frontPanelTop,
                 left: 0.0,
                 right: 0.0,
-                child: frontPanel,
+                child: frontLayer,
               ),
             ],
           );

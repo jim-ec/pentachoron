@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 
-/// Houses the backdrop's back panel content.
-class BackPanel extends StatelessWidget {
-  const BackPanel({
+class BackLayer extends StatelessWidget {
+  const BackLayer({
     Key key,
   }) : super(key: key);
 

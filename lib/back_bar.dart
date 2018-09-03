@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TopBar extends StatelessWidget {
+class BackBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Stack(
         children: <Widget>[
