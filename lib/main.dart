@@ -3,34 +3,23 @@ import 'package:flutter/widgets.dart';
 import 'package:tesserapp/appbar.dart';
 import 'package:tesserapp/body.dart';
 import 'package:tesserapp/theme.dart';
+import 'package:dynamic_theme/dynamic_theme.dart';
 
 void main() => runApp(TesserApp());
 
-class TesserApp extends StatefulWidget {
+class TesserApp extends StatelessWidget {
   @override
-  _TesserAppState createState() => _TesserAppState();
-}
-
-class _TesserAppState extends State<TesserApp> {
-  
-  bool darkThemeEnabled = true;
-  
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Tesserapp",
-      debugShowCheckedModeBanner: false,
-      theme: tesserTheme(darkThemeEnabled),
-      home: Scaffold(
-        appBar: appBar(),
-        body: BackdropContent(
-          onOptionsChanged: (options) {
-            setState(() {
-              darkThemeEnabled = options.darkThemeEnabled;
-            });
-          },
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => DynamicTheme(
+        defaultBrightness: Brightness.dark,
+        data: (brightness) => tesserTheme(brightness),
+        themedWidgetBuilder: (context, theme) => MaterialApp(
+              title: "Tesserapp",
+              debugShowCheckedModeBanner: false,
+              theme: theme,
+              home: Scaffold(
+                appBar: appBar(),
+                body: BackdropContent(),
+              ),
+            ),
+      );
 }

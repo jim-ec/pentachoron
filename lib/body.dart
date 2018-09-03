@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:dynamic_theme/dynamic_theme.dart';
 
 /// A scroll behavior disabling the over-scroll glow effect,
 /// as that is not desirable in the backdrop's back panel.
@@ -12,11 +13,9 @@ class BackdropScrollBehavior extends ScrollBehavior {
 
 /// Houses the backdrop's back panel content.
 class BackdropContent extends StatelessWidget {
-  final ValueChanged<Options> onOptionsChanged;
 
   const BackdropContent({
     Key key,
-    @required this.onOptionsChanged,
   }) : super(key: key);
 
   @override
@@ -82,9 +81,7 @@ class BackdropContent extends StatelessWidget {
                   ),
                 ),
               ),
-              OptionsSection(
-                onOptionsChanged: onOptionsChanged,
-              ),
+              OptionsSection(),
               Divider(
                 height: 5.0,
               ),
@@ -123,29 +120,19 @@ class BackdropContent extends StatelessWidget {
   }
 }
 
-class Options {
-  bool darkThemeEnabled = true;
-}
-
 class OptionsSection extends StatefulWidget {
-  final ValueChanged<Options> onOptionsChanged;
 
-  const OptionsSection({Key key, this.onOptionsChanged}) : super(key: key);
+  const OptionsSection({Key key,}) : super(key: key);
 
   @override
-  _OptionsSectionState createState() => _OptionsSectionState(onOptionsChanged);
+  _OptionsSectionState createState() => _OptionsSectionState();
 }
 
 class _OptionsSectionState extends State<OptionsSection> {
-  final ValueChanged<Options> onOptionsChanged;
-  final options = Options();
-
-  _OptionsSectionState(this.onOptionsChanged);
-
-  _updateState() {
-    setState(() {
-      onOptionsChanged(options);
-    });
+  var _darkThemeEnabled = true;
+  
+  _updateBrightness(final BuildContext context) {
+    DynamicTheme.of(context).setBrightness(_darkThemeEnabled ? Brightness.dark : Brightness.light);
   }
 
   @override
@@ -156,8 +143,8 @@ class _OptionsSectionState extends State<OptionsSection> {
           type: MaterialType.transparency,
           child: InkWell(
             onTap: () {
-              options.darkThemeEnabled = !options.darkThemeEnabled;
-              _updateState();
+              _darkThemeEnabled = !_darkThemeEnabled;
+              _updateBrightness(context);
             },
             child: Container(
               padding:
@@ -167,10 +154,10 @@ class _OptionsSectionState extends State<OptionsSection> {
                 children: <Widget>[
                   Text("Dark Theme"),
                   Checkbox(
-                    value: options.darkThemeEnabled,
+                    value: _darkThemeEnabled,
                     onChanged: (checked) {
-                      options.darkThemeEnabled = checked;
-                      _updateState();
+                      _darkThemeEnabled = checked;
+                      _updateBrightness(context);
                     },
                   ),
                 ],
