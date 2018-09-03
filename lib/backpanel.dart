@@ -2,19 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 
-/// A scroll behavior disabling the over-scroll glow effect,
-/// as that is not desirable in the backdrop's back panel.
-class BackdropScrollBehavior extends ScrollBehavior {
-  @override
-  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
-    return child;
-  }
-}
-
 /// Houses the backdrop's back panel content.
-class BackdropContent extends StatelessWidget {
+class BackPanel extends StatelessWidget {
 
-  const BackdropContent({
+  const BackPanel({
     Key key,
   }) : super(key: key);
 
@@ -25,7 +16,7 @@ class BackdropContent extends StatelessWidget {
       color: themes.primaryColor,
       width: double.infinity,
       child: ScrollConfiguration(
-        behavior: BackdropScrollBehavior(),
+        behavior: NoGlowScrollBehaviour(),
         child: Scrollbar(
           child: ListView(
             physics: ClampingScrollPhysics(),
@@ -176,5 +167,14 @@ _launchUrl() async {
     await launch(url);
   } else {
     print("Cannot launch url");
+  }
+}
+
+/// A scroll behavior disabling the over-scroll glow effect,
+/// as that is not desirable in the backdrop's back panel.
+class NoGlowScrollBehaviour extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
   }
 }

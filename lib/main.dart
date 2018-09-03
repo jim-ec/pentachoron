@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tesserapp/appbar.dart';
-import 'package:tesserapp/body.dart';
+import 'package:tesserapp/backdrop.dart';
+import 'package:tesserapp/backpanel.dart';
+import 'package:tesserapp/frontpanel.dart';
 import 'package:tesserapp/theme.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 
@@ -18,7 +20,10 @@ class TesserApp extends StatelessWidget {
               theme: theme,
               home: Scaffold(
                 appBar: appBar(),
-                body: BackdropContent(),
+                body: Backdrop(
+                  backPanel: BackPanel(),
+                  frontPanel: FrontPanel(),
+                ),
               ),
             ),
       );
