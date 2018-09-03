@@ -103,14 +103,17 @@ class _BackdropState extends State<Backdrop>
                 left: 0.0,
                 right: 0.0,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Stack(
                     children: <Widget>[
                       Positioned.fill(
-                        child: Center(
-                          child: Text(
-                            "TESSERAPP",
-                            style: Theme.of(context).primaryTextTheme.title,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Center(
+                            child: Text(
+                              "TESSERAPP",
+                              style: Theme.of(context).primaryTextTheme.title,
+                            ),
                           ),
                         ),
                       ),
@@ -131,15 +134,18 @@ class _BackdropState extends State<Backdrop>
                                 break;
                             }
                           },
-                          child: AspectRatio(
-                            aspectRatio: 1.0,
-                            child: MorphingArrow(
-                              color: Theme
-                                  .of(context)
-                                  .primaryTextTheme
-                                  .title
-                                  .color,
-                              advance: controller.value,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            child: AspectRatio(
+                              aspectRatio: 1.0,
+                              child: MorphingArrow(
+                                color: Theme
+                                    .of(context)
+                                    .primaryTextTheme
+                                    .title
+                                    .color,
+                                advance: controller.value,
+                              ),
                             ),
                           ),
                         ),
