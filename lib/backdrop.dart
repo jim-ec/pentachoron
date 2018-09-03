@@ -47,18 +47,17 @@ class _BackdropState extends State<Backdrop>
     if (controller.status != AnimationStatus.dismissed) {
       return GestureDetector(
         onVerticalDragUpdate: (dragDetails) {
-          controller.value +=
-              dragDetails.primaryDelta / (constraints.biggest.height - 100);
-          setState(() {});
+          setState(() {
+            controller.value +=
+                dragDetails.primaryDelta / (constraints.biggest.height - 100);
+          });
         },
         onVerticalDragEnd: (dragDetails) {
           final flingVelocity = dragDetails.velocity.pixelsPerSecond.dy /
               constraints.biggest.height;
-          print(flingVelocity);
-
           if (flingVelocity < 0.2 &&
               flingVelocity >= 0.0 &&
-              controller.value < 0.2) {
+              controller.value < 0.8) {
             controller.fling(velocity: -1.0);
           } else {
             controller.fling(velocity: flingVelocity);
@@ -86,7 +85,7 @@ class _BackdropState extends State<Backdrop>
               fit: StackFit.expand,
               children: <Widget>[
                 // Background:
-                Container(
+                Material(
                   color: Theme.of(context).primaryColor,
                 ),
                 // Back Bar:
@@ -166,7 +165,15 @@ class _BackdropState extends State<Backdrop>
                   height: constraints.biggest.height,
                   left: 0.0,
                   right: 0.0,
-                  child: wrapInGestureDetectorIfClosed(constraints, frontLayer),
+                  child: wrapInGestureDetectorIfClosed(
+                      constraints,
+                      Material(
+                        type: MaterialType.card,
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(32.0)),
+                        elevation: 4.0,
+                        child: frontLayer,
+                      )),
                 ),
               ],
             ),
