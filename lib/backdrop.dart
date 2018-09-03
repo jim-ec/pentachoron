@@ -21,13 +21,19 @@ class _BackdropState extends State<Backdrop> {
   _BackdropState(this.frontPanel, this.backPanel);
 
   @override
-  Widget build(BuildContext context) => Stack(
-        children: <Widget>[
-          backPanel,
-          Positioned.fill(
-            top: 500.0,
-            child: frontPanel,
-          ),
-        ],
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (context, constraints) {
+          final topOffset = constraints.biggest.height - 64.0;
+          return Stack(
+              children: <Widget>[
+                backPanel,
+                Positioned.fill(
+                  top: topOffset,
+                  bottom: -topOffset,
+                  child: frontPanel,
+                ),
+              ],
+            );
+        },
       );
 }
