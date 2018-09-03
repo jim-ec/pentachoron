@@ -4,15 +4,12 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 
 /// Houses the backdrop's back panel content.
 class BackPanel extends StatelessWidget {
-
   const BackPanel({
     Key key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final themes = Theme.of(context);
-    return ScrollConfiguration(
+  Widget build(BuildContext context) => ScrollConfiguration(
         behavior: NoGlowScrollBehaviour(),
         child: Scrollbar(
           child: ListView(
@@ -23,7 +20,7 @@ class BackPanel extends StatelessWidget {
                 child: Center(
                   child: Text(
                     "Geometry",
-                    style: themes.textTheme.caption,
+                    style: Theme.of(context).textTheme.caption,
                   ),
                 ),
               ),
@@ -65,7 +62,7 @@ class BackPanel extends StatelessWidget {
                 child: Center(
                   child: Text(
                     "Options",
-                    style: themes.textTheme.caption,
+                    style: Theme.of(context).textTheme.caption,
                   ),
                 ),
               ),
@@ -78,7 +75,7 @@ class BackPanel extends StatelessWidget {
                 child: Center(
                   child: Text(
                     "Credits",
-                    style: themes.textTheme.caption,
+                    style: Theme.of(context).textTheme.caption,
                   ),
                 ),
               ),
@@ -104,57 +101,43 @@ class BackPanel extends StatelessWidget {
           ),
         ),
       );
-  }
 }
 
-class OptionsSection extends StatefulWidget {
-
-  const OptionsSection({Key key,}) : super(key: key);
-
+class OptionsSection extends StatelessWidget {
   @override
-  _OptionsSectionState createState() => _OptionsSectionState();
-}
-
-class _OptionsSectionState extends State<OptionsSection> {
-  var _darkThemeEnabled = true;
-  
-  _updateBrightness(final BuildContext context) {
-    DynamicTheme.of(context).setBrightness(_darkThemeEnabled ? Brightness.dark : Brightness.light);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Material(
-          type: MaterialType.transparency,
-          child: InkWell(
-            onTap: () {
-              _darkThemeEnabled = !_darkThemeEnabled;
-              _updateBrightness(context);
-            },
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 64.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("Dark Theme"),
-                  Checkbox(
-                    value: _darkThemeEnabled,
-                    onChanged: (checked) {
-                      _darkThemeEnabled = checked;
-                      _updateBrightness(context);
-                    },
-                  ),
-                ],
+  Widget build(BuildContext context) => Column(
+        children: <Widget>[
+          Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              onTap: () {
+                DynamicTheme.of(context).setBrightness(
+                    DynamicTheme.of(context).brightness == Brightness.light
+                        ? Brightness.dark
+                        : Brightness.light);
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 16.0, horizontal: 64.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Dark Theme"),
+                    Checkbox(
+                      value: DynamicTheme.of(context).brightness ==
+                          Brightness.dark,
+                      onChanged: (checked) {
+                        DynamicTheme.of(context).setBrightness(
+                            checked ? Brightness.dark : Brightness.light);
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
-    );
-  }
+        ],
+      );
 }
 
 _launchUrl() async {
@@ -170,7 +153,8 @@ _launchUrl() async {
 /// as that is not desirable in the backdrop's back panel.
 class NoGlowScrollBehaviour extends ScrollBehavior {
   @override
-  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
     return child;
   }
 }
