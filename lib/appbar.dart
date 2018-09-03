@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:tesserapp/common.dart';
 
 class TopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Stack(
         children: <Widget>[
           Positioned.fill(
-            child: center(
-              Text(
+            child: Center(
+              child: Text(
                 "TESSERAPP",
                 style: Theme.of(context).primaryTextTheme.title,
               ),
