@@ -11,8 +11,7 @@ class Backdrop extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _BackdropState createState() =>
-      _BackdropState(backLayer, frontLayer);
+  _BackdropState createState() => _BackdropState(backLayer, frontLayer);
 }
 
 class _BackdropState extends State<Backdrop>
@@ -102,40 +101,39 @@ class _BackdropState extends State<Backdrop>
                 height: backBarHeight,
                 left: 0.0,
                 right: 0.0,
-                child: GestureDetector(
-                  onTap: () {
-                    switch (controller.status) {
-                      case AnimationStatus.forward:
-                      case AnimationStatus.completed:
-                        controller.fling(velocity: -.01);
-                        break;
-                      case AnimationStatus.reverse:
-                      case AnimationStatus.dismissed:
-                        controller.fling(velocity: 0.01);
-                        break;
-                    }
-                  },
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Stack(
-                        children: <Widget>[
-                          Positioned.fill(
-                            child: Center(
-                              child: Text(
-                                "TESSERAPP",
-                                style: Theme.of(context).primaryTextTheme.title,
-                              ),
-                            ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Stack(
+                    children: <Widget>[
+                      Positioned.fill(
+                        child: Center(
+                          child: Text(
+                            "TESSERAPP",
+                            style: Theme.of(context).primaryTextTheme.title,
                           ),
-                          Positioned.fill(
-                            child: Icon(Icons.keyboard_arrow_down),
-                            left: null,
-                          )
-                        ],
+                        ),
                       ),
-                    ),
+                      Positioned.fill(
+                        left: null,
+                        child: FlatButton(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onPressed: () {
+                            switch (controller.status) {
+                              case AnimationStatus.forward:
+                              case AnimationStatus.completed:
+                                controller.fling(velocity: -.01);
+                                break;
+                              case AnimationStatus.reverse:
+                              case AnimationStatus.dismissed:
+                                controller.fling(velocity: 0.01);
+                                break;
+                            }
+                          },
+                          child: Icon(Icons.keyboard_arrow_down),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
