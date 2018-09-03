@@ -12,10 +12,7 @@ class BackPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themes = Theme.of(context);
-    return Container(
-      color: themes.primaryColor,
-      width: double.infinity,
-      child: ScrollConfiguration(
+    return ScrollConfiguration(
         behavior: NoGlowScrollBehaviour(),
         child: Scrollbar(
           child: ListView(
@@ -106,8 +103,7 @@ class BackPanel extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }
 
