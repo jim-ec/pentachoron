@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tesserapp/morphing_arrow.dart';
 
 class Backdrop extends StatefulWidget {
   final Widget backLayer;
@@ -130,7 +131,17 @@ class _BackdropState extends State<Backdrop>
                                 break;
                             }
                           },
-                          child: Icon(Icons.keyboard_arrow_down),
+                          child: AspectRatio(
+                            aspectRatio: 1.0,
+                            child: MorphingArrow(
+                              color: Theme
+                                  .of(context)
+                                  .primaryTextTheme
+                                  .title
+                                  .color,
+                              advance: controller.value,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -157,6 +168,8 @@ class _BackdropState extends State<Backdrop>
           );
         },
       );
+
+  get s => 1.0 + controller.value * 0.4;
 
   @override
   void dispose() {
