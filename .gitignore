@@ -9,8 +9,7 @@ out/
 
 doc/api/
 
-.idea/workspace.xml
-.idea/misc.xml
-.idea/libraries
+.idea/
+*.iml
 
 .flutter-plugins
