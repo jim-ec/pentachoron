@@ -8,96 +8,93 @@ class BackLayer extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => ScrollConfiguration(
+  Widget build(final BuildContext context) => ScrollConfiguration(
         behavior: NoGlowScrollBehaviour(),
-        child: Scrollbar(
-          child: ListView(
-            physics: ClampingScrollPhysics(),
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: Text(
-                    "Geometry",
-                    style: Theme.of(context).textTheme.caption,
-                  ),
+        child: ListView(
+          physics: ClampingScrollPhysics(),
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Text(
+                  "Geometry",
+                  style: Theme.of(context).textTheme.caption,
                 ),
               ),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text("16 Vertices"),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text("32 Edges"),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text("24 Faces"),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text("8 Cells"),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Divider(
-                height: 5.0,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: Text(
-                    "Options",
-                    style: Theme.of(context).textTheme.caption,
-                  ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text("16 Vertices"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text("32 Edges"),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text("24 Faces"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text("8 Cells"),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Divider(
+              height: 5.0,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Text(
+                  "Options",
+                  style: Theme.of(context).textTheme.caption,
                 ),
               ),
-              OptionsSection(),
-              Divider(
-                height: 5.0,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: Text(
-                    "Credits",
-                    style: Theme.of(context).textTheme.caption,
-                  ),
+            ),
+            OptionsSection(),
+            Divider(
+              height: 5.0,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Text(
+                  "Credits",
+                  style: Theme.of(context).textTheme.caption,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Center(
-                  child: Text(
-                      "My hobby project to play with four dimensional spatials.\n"
-                      "The app is written with Flutter.\n\n"
-                      "The source code is freely available at my GitHub repository."),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: Text(
+                    "My hobby project to play with four dimensional spatials.\n"
+                    "The app is written with Flutter.\n\n"
+                    "The source code is freely available at my GitHub repository."),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: FlatButton(
+                  child: Text("Source code".toUpperCase()),
+                  onPressed: _launchUrl,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Center(
-                  child: FlatButton(
-                    child: Text("Source code".toUpperCase()),
-                    onPressed: _launchUrl,
-                  ),
-                ),
-              )
-            ],
-          ),
+            )
+          ],
         ),
       );
 }
@@ -143,8 +140,6 @@ _launchUrl() async {
   const url = "https://github.com/Jim-Eckerlein/tesserapp";
   if (await canLaunch(url)) {
     await launch(url);
-  } else {
-    print("Cannot launch url");
   }
 }
 
@@ -153,7 +148,9 @@ _launchUrl() async {
 class NoGlowScrollBehaviour extends ScrollBehavior {
   @override
   Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
-    return child;
-  }
+    final BuildContext context,
+    final Widget child,
+    final AxisDirection axisDirection,
+  ) =>
+      child;
 }
