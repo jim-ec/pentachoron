@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tesserapp/angle.dart';
 import 'package:tesserapp/canvas_4d.dart';
+import 'package:tesserapp/generic/angle.dart';
 
 class FrontLayer extends StatefulWidget {
   @override

@@ -1,29 +1,35 @@
-// This is a basic Flutter widget test.
-// To perform an interaction with a widget in your test, use the WidgetTester utility that Flutter
-// provides. For example, you can send tap and scroll gestures. You can also use WidgetTester to
-// find child widgets in the widget tree, read text, and verify that the values of widget properties
-// are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tesserapp/main.dart';
+import 'package:tesserapp/generic/number_range.dart';
+
+class DoubleMatcher extends Matcher {
+  final double expected;
+  final double margin;
+
+  DoubleMatcher(
+    this.expected, {
+    this.margin = 0.0001,
+  });
+
+  @override
+  Description describe(final Description description) =>
+      StringDescription("Matches two double-precision floating points");
+
+  @override
+  bool matches(final item, final Map matchState) {
+    final actual = item as double;
+    return actual > expected - margin && actual < expected + margin;
+  }
+}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(TesserApp());
-
-    // Verify that our counter starts at 0.
-//    expect(find.text('0'), findsOneWidget);
-//    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-//    await tester.tap(find.byIcon(Icons.add));
-//    await tester.pump();
-
-    // Verify that our counter has incremented.
-//    expect(find.text('0'), findsNothing);
-//    expect(find.text('1'), findsOneWidget);
+  test('Number range remap', () {
+    expect(remap(1.0, -1.0, 1.0, 0.0, 1.0), DoubleMatcher(1.0));
+    expect(remap(-1.0, -1.0, 1.0, 0.0, 1.0), DoubleMatcher(0.0));
+    expect(remap(0.0, -1.0, 1.0, 0.0, 1.0), DoubleMatcher(0.5));
   });
+
+//  testWidgets('', (WidgetTester tester) async {
+//    await tester.pumpWidget(TesserApp());
+//  });
 }
