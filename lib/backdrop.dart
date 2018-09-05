@@ -162,18 +162,52 @@ class _BackdropState extends State<Backdrop>
                           (constraints.biggest.height -
                               hiddenFrontLayerHeight -
                               backBarHeight),
-                  height: constraints.biggest.height,
+                  height: constraints.biggest.height - backBarHeight,
                   left: 0.0,
                   right: 0.0,
-                  child: wrapInGestureDetectorIfClosed(
-                      constraints,
+                  child: Stack(
+                    children: <Widget>[
                       Material(
                         type: MaterialType.card,
                         borderRadius:
                             BorderRadius.vertical(top: Radius.circular(32.0)),
                         elevation: 4.0,
                         child: frontLayer,
-                      )),
+                      ),
+                      (controller.status != AnimationStatus.dismissed)
+                          ? GestureDetector(
+                              onVerticalDragUpdate: (dragDetails) {
+                                setState(() {
+                                  controller.value += dragDetails.primaryDelta /
+                                      (constraints.biggest.height - 100);
+                                });
+                              },
+                              onVerticalDragEnd: (dragDetails) {
+                                final flingVelocity =
+                                    dragDetails.velocity.pixelsPerSecond.dy /
+                                        constraints.biggest.height;
+                                if (flingVelocity < 0.2 &&
+                                    flingVelocity >= 0.0 &&
+                                    controller.value < 0.8) {
+                                  controller.fling(velocity: -1.0);
+                                } else {
+                                  controller.fling(velocity: flingVelocity);
+                                }
+                              },
+                              onTap: () {
+                                switch (controller.status) {
+                                  case AnimationStatus.forward:
+                                  case AnimationStatus.completed:
+                                    controller.fling(velocity: -.01);
+                                    break;
+                                  default:
+                                    break;
+                                }
+                              },
+                            )
+                          : null
+                    ].where((widget) => widget != null).toList(),
+                  ),
                 ),
               ],
             ),
