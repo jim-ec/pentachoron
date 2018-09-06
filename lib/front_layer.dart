@@ -9,12 +9,11 @@ class FrontLayer extends StatefulWidget {
 
 class FrontLayerState extends State<FrontLayer> {
   CameraPosition cameraPosition;
-  
+
   @override
   void initState() {
     super.initState();
-    cameraPosition =
-        CameraPosition(distance: 5.0);
+    cameraPosition = CameraPosition(distance: 10.0);
   }
 
   @override
@@ -28,8 +27,17 @@ class FrontLayerState extends State<FrontLayer> {
           });
         },
         child: Canvas4d(
-        color: Theme.of(context).accentColor,
+          color: Theme.of(context).accentColor,
           cameraPosition: cameraPosition,
+          faces: cube(Position.zero(), 2.0) +
+              cube(Position(3.0, 0.0, 0.0), 1.0),
+//          faces: const <Face>[
+//            Face(
+//              Position(0.0, 1.0, 0.0),
+//              Position(0.0, -1.0, -1.0),
+//              Position(0.0, -1.0, 1.0),
+//            ),
+//          ],
         ),
       );
 }
