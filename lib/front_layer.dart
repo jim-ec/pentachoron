@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tesserapp/canvas_4d.dart';
 import 'package:tesserapp/generic/angle.dart';
+import 'package:vector_math/vector_math_64.dart';
 
 class FrontLayer extends StatefulWidget {
   @override
@@ -29,14 +30,14 @@ class FrontLayerState extends State<FrontLayer> {
         child: Canvas4d(
           cameraPosition: cameraPosition,
           faces: cube(
-            center: Position.zero(),
+            center: Vector3.zero(),
             sideLength: 2.0,
             color: Theme
                 .of(context)
                 .accentColor,
           ) +
               cube(
-                center: Position(3.0, 0.0, 0.0),
+                center: Vector3(3.0, 0.0, 0.0),
                 sideLength: 1.0,
                 color: Theme
                     .of(context)

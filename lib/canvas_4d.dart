@@ -61,7 +61,6 @@ class _Canvas4dPainter extends CustomPainter {
 
     faces.map((face) {
       final positionsGlobalSpace = face.positions
-          .map((pos) => Vector3(pos.x, pos.y, pos.z))
           .map((v) => quaternion.rotated(v))
           .toList();
 
@@ -76,13 +75,12 @@ class _Canvas4dPainter extends CustomPainter {
       final positionsViewSpace =
       positionsGlobalSpace.map((v) => view.transformed3(v)).toList();
 
-      return Face.fromVector3(positionsViewSpace[0], positionsViewSpace[1],
+      return Face(positionsViewSpace[0], positionsViewSpace[1],
           positionsViewSpace[2], illuminatedColor);
     }).toList()
       ..sort((faceA, faceB) => faceA.barycenter.z > faceB.barycenter.z ? 1 : -1)
       ..forEach((face) {
         final positionsPerspectiveSpace = face.positions
-            .map((pos) => Vector3(pos.x, pos.y, pos.z))
             .map((v) => projection.perspectiveTransform(v))
             .toList();
     
@@ -127,61 +125,32 @@ class CameraPosition {
 }
 
 @immutable
-class Position {
-  final double x, y, z;
-
-  const Position(this.x,
-      this.y,
-      this.z,);
-
-  const Position.zero() : this(0.0, 0.0, 0.0);
-
-  Position operator +(final Position other,) =>
-      Position(x + other.x, y + other.y, z + other.z);
-
-  Position operator -(final Position other,) =>
-      this + -other;
-
-  Position operator -() => Position(-x, -y, -z);
-
-  Position operator /(final double value) =>
-      Position(x / value, y / value, z / value);
-}
-
-@immutable
 class Face {
-  final Position a, b, c;
+  final Vector3 a, b, c;
   final Color color;
 
   Face(this.a, this.b, this.c, this.color);
-
-  Face.fromVector3(final Vector3 a,
-      final Vector3 b,
-      final Vector3 c,
-      final Color color,)
-      : this(Position(a.x, a.y, a.z), Position(b.x, b.y, b.z),
-      Position(c.x, c.y, c.z), color);
-
-  List<Position> get positions => [a, b, c];
-
-  Position get barycenter => (a + b + c) / 3.0;
+  
+  List<Vector3> get positions => [a, b, c];
+  
+  Vector3 get barycenter => (a + b + c) / 3.0;
 }
 
 List<Face> cube({
-  final Position center,
+  final Vector3 center,
   final double sideLength,
   final Color color,
 }) {
   final a = sideLength / 2;
   final positions = [
-    center + Position(a, a, a),
-    center + Position(a, a, -a),
-    center + Position(a, -a, a),
-    center + Position(a, -a, -a),
-    center + Position(-a, a, a),
-    center + Position(-a, a, -a),
-    center + Position(-a, -a, a),
-    center + Position(-a, -a, -a),
+    center + Vector3(a, a, a),
+    center + Vector3(a, a, -a),
+    center + Vector3(a, -a, a),
+    center + Vector3(a, -a, -a),
+    center + Vector3(-a, a, a),
+    center + Vector3(-a, a, -a),
+    center + Vector3(-a, -a, a),
+    center + Vector3(-a, -a, -a),
   ];
 
   return [
