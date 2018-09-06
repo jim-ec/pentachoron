@@ -7,19 +7,19 @@ import 'package:vector_math/vector_math_64.dart';
 
 class Canvas4d extends StatelessWidget {
   final CameraPosition cameraPosition;
-  final List<Face> faces;
+  final List<Geometry> geometries;
 
   const Canvas4d({
     Key key,
     @required this.cameraPosition,
-    @required this.faces,
+    @required this.geometries,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Container(
         constraints: BoxConstraints.expand(),
         child: CustomPaint(
-          painter: _Canvas4dPainter(cameraPosition, faces),
+          painter: _Canvas4dPainter(cameraPosition, geometries),
         ),
       );
 }
@@ -28,7 +28,7 @@ class _Canvas4dPainter extends CustomPainter {
   final CameraPosition cameraPosition;
   final bool enableCulling = true;
 
-  final List<Face> faces;
+  final List<Geometry> geometries;
 
   /// Vertical field of view in radians:
   static const fov = Angle.fromDegrees(60.0);
@@ -36,7 +36,7 @@ class _Canvas4dPainter extends CustomPainter {
   /// Direction of global light:
   static final lightDirection = Vector3(1.0, 0.8, 0.2).normalized();
 
-  _Canvas4dPainter(this.cameraPosition, this.faces);
+  _Canvas4dPainter(this.cameraPosition, this.geometries);
 
   @override
   bool shouldRepaint(final CustomPainter oldDelegate) => true;
@@ -47,9 +47,6 @@ class _Canvas4dPainter extends CustomPainter {
     canvas.translate(size.width / 2.0, size.height / 2.0);
     canvas.scale(size.width / 2.0, -size.height / 2.0);
 
-    final quaternion = Quaternion.euler(
-        cameraPosition.polar.radians, 0.0, cameraPosition.azimuth.radians);
-
     final projection = makePerspectiveMatrix(
         fov.radians, size.width / size.height, 0.1, 100.0);
 
@@ -59,42 +56,46 @@ class _Canvas4dPainter extends CustomPainter {
       Vector3(0.0, 1.0, 0.0),
     );
 
-    faces.map((face) {
-      final positionsGlobalSpace = face.positions
-          .map((v) => quaternion.rotated(v))
-          .toList();
-
-      final normal = (positionsGlobalSpace[2] - positionsGlobalSpace[0])
-          .cross(positionsGlobalSpace[1] - positionsGlobalSpace[0])
-          .normalized();
-      final luminance = normal.dot(lightDirection);
-      final softenLuminance = remap(luminance, -1.0, 1.0, -0.2, 1.2);
-      final illuminatedColor =
-      Color.lerp(Color(0xff000000), face.color, softenLuminance);
-
-      final positionsViewSpace =
-      positionsGlobalSpace.map((v) => view.transformed3(v)).toList();
-
-      return Face(positionsViewSpace[0], positionsViewSpace[1],
-          positionsViewSpace[2], illuminatedColor);
+    geometries.expand<Face>((geometry) {
+      final quaternion = Quaternion.euler(
+          cameraPosition.polar.radians, 0.0, cameraPosition.azimuth.radians);
+  
+      return geometry.faces.map((face) {
+        final positionsGlobalSpace =
+        face.positions.map((v) => quaternion.rotated(v)).toList();
+    
+        final normal = (positionsGlobalSpace[2] - positionsGlobalSpace[0])
+            .cross(positionsGlobalSpace[1] - positionsGlobalSpace[0])
+            .normalized();
+        final luminance = normal.dot(lightDirection);
+        final softenLuminance = remap(luminance, -1.0, 1.0, -0.2, 1.2);
+        final illuminatedColor = Color.lerp(
+            Color(0xff000000), face.color ?? geometry.color, softenLuminance);
+    
+        final positionsViewSpace =
+        positionsGlobalSpace.map((v) => view.transformed3(v)).toList();
+    
+        return Face(positionsViewSpace[0], positionsViewSpace[1],
+            positionsViewSpace[2], illuminatedColor);
+      });
     }).toList()
       ..sort((faceA, faceB) => faceA.barycenter.z > faceB.barycenter.z ? 1 : -1)
       ..forEach((face) {
         final positionsPerspectiveSpace = face.positions
             .map((v) => projection.perspectiveTransform(v))
             .toList();
-    
+
         final normalPerspectiveSpace = (positionsPerspectiveSpace[2] -
             positionsPerspectiveSpace[0])
             .cross(positionsPerspectiveSpace[1] - positionsPerspectiveSpace[0])
             .normalized();
         final isFrontFacing = normalPerspectiveSpace.z > 0.0;
         if (!isFrontFacing && enableCulling) return;
-    
+
         final offsets = positionsPerspectiveSpace
             .map((position) => Offset(position.x, position.y))
             .toList();
-    
+
         canvas.drawPath(
             Path()
               ..addPolygon(offsets, true), Paint()
@@ -129,10 +130,10 @@ class Face {
   final Vector3 a, b, c;
   final Color color;
 
-  Face(this.a, this.b, this.c, this.color);
-  
+  Face(this.a, this.b, this.c, [this.color]);
+
   List<Vector3> get positions => [a, b, c];
-  
+
   Vector3 get barycenter => (a + b + c) / 3.0;
 }
 
@@ -167,4 +168,20 @@ List<Face> cube({
     Face(positions[2], positions[3], positions[6], color),
     Face(positions[3], positions[7], positions[6], color),
   ];
+}
+
+class Geometry {
+  final Quaternion quaternion;
+  final Vector3 translation;
+  final Vector3 scale;
+  final List<Face> faces;
+  final Color color;
+  
+  Geometry({
+    @required this.quaternion,
+    @required this.translation,
+    @required this.scale,
+    @required this.faces,
+    this.color,
+  });
 }

@@ -29,20 +29,32 @@ class FrontLayerState extends State<FrontLayer> {
         },
         child: Canvas4d(
           cameraPosition: cameraPosition,
-          faces: cube(
-            center: Vector3.zero(),
-            sideLength: 2.0,
-            color: Theme
-                .of(context)
-                .accentColor,
-          ) +
-              cube(
+          geometries: [
+            Geometry(
+              translation: null,
+              quaternion: null,
+              scale: null,
+              color: Theme
+                  .of(context)
+                  .accentColor,
+              faces: cube(
+                center: Vector3.zero(),
+                sideLength: 2.0,
+              ),
+            ),
+            Geometry(
+              translation: null,
+              quaternion: null,
+              scale: null,
+              color: Theme
+                  .of(context)
+                  .primaryColor,
+              faces: cube(
                 center: Vector3(3.0, 0.0, 0.0),
                 sideLength: 1.0,
-                color: Theme
-                    .of(context)
-                    .primaryColor,
               ),
+            ),
+          ],
         ),
       );
 }
