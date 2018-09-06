@@ -6,13 +6,11 @@ import 'package:tesserapp/generic/number_range.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 class Canvas4d extends StatelessWidget {
-  final Color color;
   final CameraPosition cameraPosition;
   final List<Face> faces;
 
   const Canvas4d({
     Key key,
-    @required this.color,
     @required this.cameraPosition,
     @required this.faces,
   }) : super(key: key);
@@ -21,14 +19,13 @@ class Canvas4d extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         constraints: BoxConstraints.expand(),
         child: CustomPaint(
-          painter: _Canvas4dPainter(color, cameraPosition, faces),
+          painter: _Canvas4dPainter(cameraPosition, faces),
         ),
       );
 }
 
 class _Canvas4dPainter extends CustomPainter {
   final CameraPosition cameraPosition;
-  final Color geometryColor;
   final bool enableCulling = true;
 
   final List<Face> faces;
@@ -39,7 +36,7 @@ class _Canvas4dPainter extends CustomPainter {
   /// Direction of global light:
   static final lightDirection = Vector3(1.0, 0.8, 0.2).normalized();
 
-  _Canvas4dPainter(this.geometryColor, this.cameraPosition, this.faces);
+  _Canvas4dPainter(this.cameraPosition, this.faces);
 
   @override
   bool shouldRepaint(final CustomPainter oldDelegate) => true;
@@ -62,40 +59,49 @@ class _Canvas4dPainter extends CustomPainter {
       Vector3(0.0, 1.0, 0.0),
     );
 
-    for (var face in faces) {
+    faces.map((face) {
       final positionsGlobalSpace = face.positions
           .map((pos) => Vector3(pos.x, pos.y, pos.z))
           .map((v) => quaternion.rotated(v))
           .toList();
-  
+
       final normal = (positionsGlobalSpace[2] - positionsGlobalSpace[0])
           .cross(positionsGlobalSpace[1] - positionsGlobalSpace[0])
           .normalized();
       final luminance = normal.dot(lightDirection);
       final softenLuminance = remap(luminance, -1.0, 1.0, -0.2, 1.2);
       final illuminatedColor =
-      Color.lerp(Color(0xff000000), geometryColor, softenLuminance);
-      final paint = Paint()
-        ..color = illuminatedColor;
-  
-      final positionsPerspectiveSpace = positionsGlobalSpace
-          .map((v) => view.transformed3(v))
-          .map((v) => projection.perspectiveTransform(v))
-          .toList();
-  
-      final normalPerspectiveSpace = (positionsPerspectiveSpace[2] -
-          positionsPerspectiveSpace[0])
-          .cross(positionsPerspectiveSpace[1] - positionsPerspectiveSpace[0])
-          .normalized();
-      final isFrontFacing = normalPerspectiveSpace.z > 0.0;
-      if (!isFrontFacing && enableCulling) continue;
-  
-      final offsets = positionsPerspectiveSpace
-          .map((position) => Offset(position.x, position.y))
-          .toList();
+      Color.lerp(Color(0xff000000), face.color, softenLuminance);
 
-      canvas.drawPath(Path()..addPolygon(offsets, true), paint);
-    }
+      final positionsViewSpace =
+      positionsGlobalSpace.map((v) => view.transformed3(v)).toList();
+
+      return Face.fromVector3(positionsViewSpace[0], positionsViewSpace[1],
+          positionsViewSpace[2], illuminatedColor);
+    }).toList()
+      ..sort((faceA, faceB) => faceA.barycenter.z > faceB.barycenter.z ? 1 : -1)
+      ..forEach((face) {
+        final positionsPerspectiveSpace = face.positions
+            .map((pos) => Vector3(pos.x, pos.y, pos.z))
+            .map((v) => projection.perspectiveTransform(v))
+            .toList();
+    
+        final normalPerspectiveSpace = (positionsPerspectiveSpace[2] -
+            positionsPerspectiveSpace[0])
+            .cross(positionsPerspectiveSpace[1] - positionsPerspectiveSpace[0])
+            .normalized();
+        final isFrontFacing = normalPerspectiveSpace.z > 0.0;
+        if (!isFrontFacing && enableCulling) return;
+    
+        final offsets = positionsPerspectiveSpace
+            .map((position) => Offset(position.x, position.y))
+            .toList();
+    
+        canvas.drawPath(
+            Path()
+              ..addPolygon(offsets, true), Paint()
+          ..color = face.color);
+      });
   }
 }
 
@@ -145,15 +151,27 @@ class Position {
 @immutable
 class Face {
   final Position a, b, c;
-  final Position weightCenter;
+  final Color color;
 
-  Face(this.a, this.b, this.c) : weightCenter = (a + b + c) / 3.0;
+  Face(this.a, this.b, this.c, this.color);
+
+  Face.fromVector3(final Vector3 a,
+      final Vector3 b,
+      final Vector3 c,
+      final Color color,)
+      : this(Position(a.x, a.y, a.z), Position(b.x, b.y, b.z),
+      Position(c.x, c.y, c.z), color);
 
   List<Position> get positions => [a, b, c];
+
+  Position get barycenter => (a + b + c) / 3.0;
 }
 
-List<Face> cube(final Position center,
-    final double sideLength,) {
+List<Face> cube({
+  final Position center,
+  final double sideLength,
+  final Color color,
+}) {
   final a = sideLength / 2;
   final positions = [
     center + Position(a, a, a),
@@ -167,17 +185,17 @@ List<Face> cube(final Position center,
   ];
 
   return [
-    Face(positions[0], positions[1], positions[3]),
-    Face(positions[0], positions[3], positions[2]),
-    Face(positions[1], positions[5], positions[3]),
-    Face(positions[5], positions[7], positions[3]),
-    Face(positions[5], positions[4], positions[7]),
-    Face(positions[4], positions[6], positions[7]),
-    Face(positions[4], positions[0], positions[2]),
-    Face(positions[4], positions[2], positions[6]),
-    Face(positions[0], positions[4], positions[5]),
-    Face(positions[0], positions[5], positions[1]),
-    Face(positions[2], positions[3], positions[6]),
-    Face(positions[3], positions[7], positions[6]),
+    Face(positions[0], positions[1], positions[3], color),
+    Face(positions[0], positions[3], positions[2], color),
+    Face(positions[1], positions[5], positions[3], color),
+    Face(positions[5], positions[7], positions[3], color),
+    Face(positions[5], positions[4], positions[7], color),
+    Face(positions[4], positions[6], positions[7], color),
+    Face(positions[4], positions[0], positions[2], color),
+    Face(positions[4], positions[2], positions[6], color),
+    Face(positions[0], positions[4], positions[5], color),
+    Face(positions[0], positions[5], positions[1], color),
+    Face(positions[2], positions[3], positions[6], color),
+    Face(positions[3], positions[7], positions[6], color),
   ];
 }

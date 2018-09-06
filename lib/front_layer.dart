@@ -27,17 +27,21 @@ class FrontLayerState extends State<FrontLayer> {
           });
         },
         child: Canvas4d(
-          color: Theme.of(context).accentColor,
           cameraPosition: cameraPosition,
-          faces: cube(Position.zero(), 2.0) +
-              cube(Position(3.0, 0.0, 0.0), 1.0),
-//          faces: const <Face>[
-//            Face(
-//              Position(0.0, 1.0, 0.0),
-//              Position(0.0, -1.0, -1.0),
-//              Position(0.0, -1.0, 1.0),
-//            ),
-//          ],
+          faces: cube(
+            center: Position.zero(),
+            sideLength: 2.0,
+            color: Theme
+                .of(context)
+                .accentColor,
+          ) +
+              cube(
+                center: Position(3.0, 0.0, 0.0),
+                sideLength: 1.0,
+                color: Theme
+                    .of(context)
+                    .primaryColor,
+              ),
         ),
       );
 }
