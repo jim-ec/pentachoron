@@ -27,6 +27,7 @@ class Canvas4d extends StatelessWidget {
 class _Canvas4dPainter extends CustomPainter {
   final CameraPosition cameraPosition;
   final bool enableCulling = true;
+  final bool orthographicProjection = true;
 
   final List<Geometry> geometries;
 
@@ -48,8 +49,11 @@ class _Canvas4dPainter extends CustomPainter {
       ..translate(size.width / 2.0, size.height / 2.0)
       ..scale(size.width / 2.0, -size.height / 2.0);
 
-    final projection = makePerspectiveMatrix(
-        fov.radians, size.width / size.height, 0.1, 100.0);
+    final projection = !orthographicProjection
+        ? makePerspectiveMatrix(
+            fov.radians, size.width / size.height, 0.1, 100.0)
+        : makeOrthographicMatrix(5 * -size.width / size.height,
+            5 * size.width / size.height, -5.0, 5.0, 0.1, 10.0);
 
     final view = makeViewMatrix(
       cameraPosition.eye,
