@@ -21,38 +21,30 @@ class FrontLayerState extends State<FrontLayer> {
   Widget build(final BuildContext context) => GestureDetector(
         onPanUpdate: (details) {
           setState(() {
-            polar += Angle.fromRadians(-details.delta.dx * 0.01);
-            azimuth += Angle.fromRadians(details.delta.dy * 0.01);
+            polar += Angle.fromRadians(details.delta.dx * 0.01);
+            azimuth += Angle.fromRadians(-details.delta.dy * 0.01);
           });
         },
         child: Canvas4d(
           cameraPosition: CameraPosition.fromOrbitEuler(
-              distance: 10.0,
-              polar: polar,
-              azimuth: azimuth
+            distance: 10.0,
+            polar: Angle.fromDegrees(0.0),
+            azimuth: Angle.fromDegrees(45.0),
           ),
           geometries: [
             Geometry(
-              translation: null,
-              quaternion: null,
-              scale: null,
-              color: Theme
-                  .of(context)
-                  .accentColor,
+              rotation: Rotation.fromEuler(polar, azimuth, Angle.zero()),
+              color: Theme.of(context).accentColor,
               polygons: cube(
                 center: Vector3.zero(),
                 sideLength: 2.0,
               ),
             ),
             Geometry(
-              translation: null,
-              quaternion: null,
-              scale: null,
-              color: Theme
-                  .of(context)
-                  .primaryColor,
+              translation: Vector3(3.0, 0.0, 0.0),
+              color: Theme.of(context).primaryColor,
               polygons: cube(
-                center: Vector3(3.0, 0.0, 0.0),
+                center: Vector3.zero(),
                 sideLength: 1.0,
               ),
             ),

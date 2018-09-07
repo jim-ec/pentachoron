@@ -83,8 +83,7 @@ class _Canvas4dPainter extends CustomPainter {
     );
 
     geometries
-        .expand((geometry) => geometry.polygons)
-        .map((polygon) => polygon.map((v) => Quaternion.identity().rotated(v)))
+        .expand((geometry) => geometry.appliedTransformation)
         .map((polygon) => polygon.illuminated(lightDirection))
         .map((polygon) => polygon.map((v) => view.transformed3(v)))
         .toList()
@@ -201,20 +200,35 @@ List<Polygon> cube({
 }
 
 class Geometry {
-  final Quaternion quaternion;
-  final Vector3 translation;
-  final Vector3 scale;
+  final Matrix4 transform;
   final List<Polygon> polygons;
-  final Color color;
 
   Geometry({
-    @required this.quaternion,
-    @required this.translation,
-    @required this.scale,
+    Rotation rotation,
+    Vector3 translation,
+    Vector3 scale,
     final List<Polygon> polygons,
     final Color color,
-  })  : color = color ?? Color(0xff000000),
+  })  : transform = rotation?.transform ?? Matrix4.identity() *
+            Matrix4.translation(translation ?? Vector3.zero()),
         polygons = polygons
-            .map((poly) => Polygon(poly.positions, poly.color ?? color))
+            .map((poly) => Polygon(
+                poly.positions, poly.color ?? color ?? Color(0xff000000)))
             .toList();
+
+  List<Polygon> get appliedTransformation => polygons
+      .map((polygon) => polygon.map((v) => transform.transformed3(v)))
+      .toList();
+}
+
+class Rotation {
+  
+  final Matrix4 transform;
+  
+  Rotation.fromEuler(
+      final Angle yaw,
+      final Angle pitch,
+      final Angle roll
+      ) : transform = Matrix4.rotationY(yaw.radians) * Matrix4.rotationZ(pitch.radians) * Matrix4.rotationX(roll.radians);
+  
 }
