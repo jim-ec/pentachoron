@@ -53,6 +53,8 @@ class _Canvas4dPainter extends CustomPainter {
   /// Direction of global light:
   final lightDirection = Vector3(1.0, 0.8, 0.2).normalized();
 
+  final Color outlineColor = Color(0xffff0000);
+
   _Canvas4dPainter(this.cameraPosition, this.geometries);
 
   @override
@@ -91,7 +93,7 @@ class _Canvas4dPainter extends CustomPainter {
 
     var outline = Path();
     final outlinePaint = Paint()
-      ..color = Color(0xffff0000)
+      ..color = outlineColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.01
       ..strokeJoin = StrokeJoin.round;
