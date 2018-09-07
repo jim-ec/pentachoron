@@ -39,7 +39,7 @@ class FrontLayerState extends State<FrontLayer> {
               color: Theme
                   .of(context)
                   .accentColor,
-              faces: cube(
+              polygons: cube(
                 center: Vector3.zero(),
                 sideLength: 2.0,
               ),
@@ -51,7 +51,7 @@ class FrontLayerState extends State<FrontLayer> {
               color: Theme
                   .of(context)
                   .primaryColor,
-              faces: cube(
+              polygons: cube(
                 center: Vector3(3.0, 0.0, 0.0),
                 sideLength: 1.0,
               ),

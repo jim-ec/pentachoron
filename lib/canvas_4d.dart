@@ -56,38 +56,33 @@ class _Canvas4dPainter extends CustomPainter {
       cameraPosition.up,
     );
 
-    geometries.expand<Face>((geometry) {
+    geometries.expand<Polygon>((geometry) {
 //      final quaternion = Quaternion.euler(
 //          cameraPosition.polar.radians, 0.0, cameraPosition.azimuth.radians);
       final quaternion = Quaternion.identity();
 
-      return geometry.faces.map((face) {
-        final positionsGlobalSpace =
-        face.positions.map((v) => quaternion.rotated(v)).toList();
+      return geometry.polygons.map((polygon) {
+        final polygonGlobalSpace = Polygon(polygon.positions.map((v) => quaternion.rotated(v)).toList(), polygon.color);
 
-        final normal = (positionsGlobalSpace[2] - positionsGlobalSpace[0])
-            .cross(positionsGlobalSpace[1] - positionsGlobalSpace[0])
-            .normalized();
-        final luminance = normal.dot(lightDirection);
+        final luminance = polygonGlobalSpace.normal.dot(lightDirection);
         final softenLuminance = remap(luminance, -1.0, 1.0, -0.2, 1.2);
-        final illuminatedColor = Color.lerp(
-            Color(0xff000000), face.color ?? geometry.color, softenLuminance);
+        final illuminatedColor = Color.lerp(Color(0xff000000),
+            polygon.color ?? geometry.color, softenLuminance);
 
         final positionsViewSpace =
-        positionsGlobalSpace.map((v) => view.transformed3(v)).toList();
+            polygonGlobalSpace.positions.map((v) => view.transformed3(v)).toList();
 
-        return Face(positionsViewSpace[0], positionsViewSpace[1],
-            positionsViewSpace[2], illuminatedColor);
+        return Polygon(positionsViewSpace, illuminatedColor);
       });
     }).toList()
-      ..sort((faceA, faceB) => faceA.barycenter.z > faceB.barycenter.z ? 1 : -1)
-      ..forEach((face) {
-        final positionsPerspectiveSpace = face.positions
+      ..sort((a, b) => a.barycenter.z > b.barycenter.z ? 1 : -1)
+      ..forEach((polygon) {
+        final positionsPerspectiveSpace = polygon.positions
             .map((v) => projection.perspectiveTransform(v))
             .toList();
 
         final normalPerspectiveSpace = (positionsPerspectiveSpace[2] -
-            positionsPerspectiveSpace[0])
+                positionsPerspectiveSpace[0])
             .cross(positionsPerspectiveSpace[1] - positionsPerspectiveSpace[0])
             .normalized();
         final isFrontFacing = normalPerspectiveSpace.z > 0.0;
@@ -98,9 +93,7 @@ class _Canvas4dPainter extends CustomPainter {
             .toList();
 
         canvas.drawPath(
-            Path()
-              ..addPolygon(offsets, true), Paint()
-          ..color = face.color);
+            Path()..addPolygon(offsets, true), Paint()..color = polygon.color);
       });
   }
 }
@@ -122,33 +115,41 @@ class CameraPosition {
     this.focus,
     up,
   }) : up = up ?? Vector3(0.0, 1.0, 0.0);
-  
+
   CameraPosition.fromOrbitEuler({
     final double distance,
     final Angle polar,
     final Angle azimuth,
   }) : this(
-      focus: Vector3.zero(),
-      eye: Matrix4
-          .rotationY(polar.radians)
-          .multiplied(Matrix4.rotationZ(azimuth.radians))
-          .transform3(Vector3(distance, 0.0, 0.0)));
-  
+            focus: Vector3.zero(),
+            eye: Matrix4
+                .rotationY(polar.radians)
+                .multiplied(Matrix4.rotationZ(azimuth.radians))
+                .transform3(Vector3(distance, 0.0, 0.0)));
 }
 
+/// A polygon consists of an arbitrary count of vertices.
+///
+/// All vertices must share the same mathematical plane, i.e. the polygon has
+/// a single normal vector.
 @immutable
-class Face {
-  final Vector3 a, b, c;
+class Polygon {
+  final List<Vector3> positions;
   final Color color;
 
-  Face(this.a, this.b, this.c, [this.color]);
+  Polygon(this.positions, [this.color]) {
+    assert(positions.length >= 3, "Each polygon must have at least 3 vertices");
+  }
 
-  List<Vector3> get positions => [a, b, c];
+  Vector3 get barycenter =>
+      positions.reduce((a, b) => a + b) / positions.length.toDouble();
 
-  Vector3 get barycenter => (a + b + c) / 3.0;
+  Vector3 get normal => (positions[2] - positions[0])
+      .cross(positions[1] - positions[0])
+      .normalized();
 }
 
-List<Face> cube({
+List<Polygon> cube({
   final Vector3 center,
   final double sideLength,
   final Color color,
@@ -166,18 +167,12 @@ List<Face> cube({
   ];
 
   return [
-    Face(positions[0], positions[1], positions[3], color),
-    Face(positions[0], positions[3], positions[2], color),
-    Face(positions[1], positions[5], positions[3], color),
-    Face(positions[5], positions[7], positions[3], color),
-    Face(positions[5], positions[4], positions[7], color),
-    Face(positions[4], positions[6], positions[7], color),
-    Face(positions[4], positions[0], positions[2], color),
-    Face(positions[4], positions[2], positions[6], color),
-    Face(positions[0], positions[4], positions[5], color),
-    Face(positions[0], positions[5], positions[1], color),
-    Face(positions[2], positions[3], positions[6], color),
-    Face(positions[3], positions[7], positions[6], color),
+    Polygon([positions[0], positions[1], positions[3], positions[2]], color),
+    Polygon([positions[1], positions[5], positions[7], positions[3]], color),
+    Polygon([positions[5], positions[4], positions[6], positions[7]], color),
+    Polygon([positions[4], positions[0], positions[2], positions[6]], color),
+    Polygon([positions[0], positions[4], positions[5], positions[1]], color),
+    Polygon([positions[2], positions[3], positions[7], positions[6]], color),
   ];
 }
 
@@ -185,14 +180,14 @@ class Geometry {
   final Quaternion quaternion;
   final Vector3 translation;
   final Vector3 scale;
-  final List<Face> faces;
+  final List<Polygon> polygons;
   final Color color;
 
   Geometry({
     @required this.quaternion,
     @required this.translation,
     @required this.scale,
-    @required this.faces,
+    @required this.polygons,
     this.color,
   });
 }
