@@ -44,8 +44,9 @@ class _Canvas4dPainter extends CustomPainter {
   @override
   void paint(final Canvas canvas, final Size size) {
     // Transform canvas into viewport space:
-    canvas.translate(size.width / 2.0, size.height / 2.0);
-    canvas.scale(size.width / 2.0, -size.height / 2.0);
+    canvas
+      ..translate(size.width / 2.0, size.height / 2.0)
+      ..scale(size.width / 2.0, -size.height / 2.0);
 
     final projection = makePerspectiveMatrix(
         fov.radians, size.width / size.height, 0.1, 100.0);
@@ -56,45 +57,24 @@ class _Canvas4dPainter extends CustomPainter {
       cameraPosition.up,
     );
 
-    geometries.expand<Polygon>((geometry) {
-//      final quaternion = Quaternion.euler(
-//          cameraPosition.polar.radians, 0.0, cameraPosition.azimuth.radians);
-      final quaternion = Quaternion.identity();
+    geometries
+        .expand((geometry) => geometry.polygons)
+        .map((polygon) => polygon.map((v) => Quaternion.identity().rotated(v)))
+        .map((polygon) => polygon.illuminated(lightDirection))
+        .map((polygon) => polygon.map((v) => view.transformed3(v)))
+        .toList()
+          ..sort()
+          ..map((polygon) =>
+                  polygon.map((v) => projection.perspectiveTransform(v)))
+              .where((polygon) => polygon.normal.z > 0.0 || !enableCulling)
+              .forEach((polygon) {
+            final offsets = polygon.positions
+                .map((position) => Offset(position.x, position.y))
+                .toList();
 
-      return geometry.polygons.map((polygon) {
-        final polygonGlobalSpace = Polygon(polygon.positions.map((v) => quaternion.rotated(v)).toList(), polygon.color);
-
-        final luminance = polygonGlobalSpace.normal.dot(lightDirection);
-        final softenLuminance = remap(luminance, -1.0, 1.0, -0.2, 1.2);
-        final illuminatedColor = Color.lerp(Color(0xff000000),
-            polygon.color ?? geometry.color, softenLuminance);
-
-        final positionsViewSpace =
-            polygonGlobalSpace.positions.map((v) => view.transformed3(v)).toList();
-
-        return Polygon(positionsViewSpace, illuminatedColor);
-      });
-    }).toList()
-      ..sort((a, b) => a.barycenter.z > b.barycenter.z ? 1 : -1)
-      ..forEach((polygon) {
-        final positionsPerspectiveSpace = polygon.positions
-            .map((v) => projection.perspectiveTransform(v))
-            .toList();
-
-        final normalPerspectiveSpace = (positionsPerspectiveSpace[2] -
-                positionsPerspectiveSpace[0])
-            .cross(positionsPerspectiveSpace[1] - positionsPerspectiveSpace[0])
-            .normalized();
-        final isFrontFacing = normalPerspectiveSpace.z > 0.0;
-        if (!isFrontFacing && enableCulling) return;
-
-        final offsets = positionsPerspectiveSpace
-            .map((position) => Offset(position.x, position.y))
-            .toList();
-
-        canvas.drawPath(
-            Path()..addPolygon(offsets, true), Paint()..color = polygon.color);
-      });
+            canvas.drawPath(Path()..addPolygon(offsets, false),
+                Paint()..color = polygon.color);
+          });
   }
 }
 
@@ -133,7 +113,7 @@ class CameraPosition {
 /// All vertices must share the same mathematical plane, i.e. the polygon has
 /// a single normal vector.
 @immutable
-class Polygon {
+class Polygon implements Comparable<Polygon> {
   final List<Vector3> positions;
   final Color color;
 
@@ -147,6 +127,25 @@ class Polygon {
   Vector3 get normal => (positions[2] - positions[0])
       .cross(positions[1] - positions[0])
       .normalized();
+
+  Polygon map(Vector3 f(final Vector3 position)) =>
+      Polygon(positions.map(f).toList(), color);
+
+  Polygon illuminated(final Vector3 lightDirection) {
+    final luminance = normal.dot(lightDirection);
+    final softenLuminance = remap(luminance, -1.0, 1.0, -0.2, 1.2);
+    final illuminatedColor =
+        Color.lerp(Color(0xff000000), color, softenLuminance);
+    return Polygon(positions, illuminatedColor);
+  }
+
+  /// Performs a depth comparison.
+  ///
+  /// The polygon which's barycenter has a higher z coordinate
+  /// is occluding the other one.
+  @override
+  int compareTo(final Polygon other) =>
+      barycenter.z > other.barycenter.z ? 1 : -1;
 }
 
 List<Polygon> cube({
@@ -187,7 +186,10 @@ class Geometry {
     @required this.quaternion,
     @required this.translation,
     @required this.scale,
-    @required this.polygons,
-    this.color,
-  });
+    final List<Polygon> polygons,
+    final Color color,
+  })  : color = color ?? Color(0xff000000),
+        polygons = polygons
+            .map((poly) => Polygon(poly.positions, poly.color ?? color))
+            .toList();
 }
