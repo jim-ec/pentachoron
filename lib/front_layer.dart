@@ -28,7 +28,7 @@ class FrontLayerState extends State<FrontLayer> {
         child: Canvas4d(
           cameraPosition: CameraPosition.fromOrbitEuler(
             distance: 10.0,
-            polar: Angle.fromDegrees(0.0),
+            polar: Angle.fromDegrees(45.0),
             azimuth: Angle.fromDegrees(45.0),
           ),
           geometries: [

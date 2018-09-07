@@ -82,35 +82,37 @@ class _Canvas4dPainter extends CustomPainter {
       cameraPosition.up,
     );
 
-    geometries
+    final sortedPolygons = geometries
         .expand((geometry) => geometry.appliedTransformation)
         .map((polygon) => polygon.illuminated(lightDirection))
-        .map((polygon) => polygon.map((v) => view.transformed3(v)))
+        .map((polygon) => polygon.transformed(view))
         .toList()
-          ..sort()
-          ..map((polygon) =>
-                  polygon.map((v) => projection.perspectiveTransform(v)))
-              .where((polygon) => polygon.normal.z > 0.0 || !enableCulling)
-              .forEach((polygon) {
-            final offsets = polygon.positions
-                .map((position) => Offset(position.x, position.y))
-                .toList();
+          ..sort();
 
-            canvas.drawPath(Path()..addPolygon(offsets, false),
-                Paint()..color = polygon.color);
-          });
+    var outline = Path();
+    final outlinePaint = Paint()
+      ..color = Color(0xffff0000)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.01
+      ..strokeJoin = StrokeJoin.round;
+
+    sortedPolygons
+        .map((polygon) => polygon.perspectiveTransformed(projection))
+        .where((polygon) => polygon.normal.z > 0.0 || !enableCulling)
+        .forEach((polygon) {
+      final offsets = polygon.positions
+          .map((position) => Offset(position.x, position.y))
+          .toList();
+      final path = Path()..addPolygon(offsets, false);
+      outline = Path.combine(PathOperation.union, outline, path);
+      canvas.drawPath(path, Paint()..color = polygon.color);
+    });
+
+    canvas.drawPath(outline, outlinePaint);
   }
 }
 
 /// Camera position.
-/// Rather than using cartesian coordinates, which would be quite impractical
-/// as the camera is supposed to orbit around a fixed center, the position
-/// is denoted by a given [distance] from the origin and two angles.
-///
-/// - The [polar] angle defines the rotation around the x-y plane.
-/// - The [azimuth] angle dines the rotation from the x-y plane towards the
-///   z-axis.
-///
 class CameraPosition {
   final Vector3 eye, focus, up;
 
@@ -154,6 +156,12 @@ class Polygon implements Comparable<Polygon> {
 
   Polygon map(Vector3 f(final Vector3 position)) =>
       Polygon(positions.map(f).toList(), color);
+
+  Polygon transformed(final Matrix4 matrix) =>
+      Polygon(positions.map((v) => matrix.transformed3(v)).toList(), color);
+
+  Polygon perspectiveTransformed(final Matrix4 matrix) => Polygon(
+      positions.map((v) => matrix.perspectiveTransform(v)).toList(), color);
 
   Polygon illuminated(final Vector3 lightDirection) {
     final luminance = normal.dot(lightDirection);
@@ -209,26 +217,23 @@ class Geometry {
     Vector3 scale,
     final List<Polygon> polygons,
     final Color color,
-  })  : transform = rotation?.transform ?? Matrix4.identity() *
-            Matrix4.translation(translation ?? Vector3.zero()),
+  })  : transform = rotation?.transform ??
+            Matrix4.identity() *
+                Matrix4.translation(translation ?? Vector3.zero()),
         polygons = polygons
             .map((poly) => Polygon(
                 poly.positions, poly.color ?? color ?? Color(0xff000000)))
             .toList();
 
-  List<Polygon> get appliedTransformation => polygons
-      .map((polygon) => polygon.map((v) => transform.transformed3(v)))
-      .toList();
+  List<Polygon> get appliedTransformation =>
+      polygons.map((polygon) => polygon.transformed(transform)).toList();
 }
 
 class Rotation {
-  
   final Matrix4 transform;
-  
-  Rotation.fromEuler(
-      final Angle yaw,
-      final Angle pitch,
-      final Angle roll
-      ) : transform = Matrix4.rotationY(yaw.radians) * Matrix4.rotationZ(pitch.radians) * Matrix4.rotationX(roll.radians);
-  
+
+  Rotation.fromEuler(final Angle yaw, final Angle pitch, final Angle roll)
+      : transform = Matrix4.rotationY(yaw.radians) *
+            Matrix4.rotationZ(pitch.radians) *
+            Matrix4.rotationX(roll.radians);
 }
