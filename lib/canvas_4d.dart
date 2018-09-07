@@ -33,7 +33,7 @@ class _Canvas4dPainter extends CustomPainter {
   /// and fewer polygons needs to be drawn.
   /// On the other side, enabling culling can increase artifacts at the
   /// polygon edges due to anti-aliasing.
-  final bool enableCulling = false;
+  final bool enableCulling = true;
 
   /// If enabled, geometry is drawn using an orthographic projection
   /// rather then using a perspective projection.
@@ -83,7 +83,7 @@ class _Canvas4dPainter extends CustomPainter {
     );
 
     final sortedPolygons = geometries
-        .expand((geometry) => geometry.appliedTransformation)
+        .expand((geometry) => geometry.polygons)
         .map((polygon) => polygon.illuminated(lightDirection))
         .map((polygon) => polygon.transformed(view))
         .toList()
@@ -208,25 +208,45 @@ List<Polygon> cube({
 }
 
 class Geometry {
-  final Matrix4 transform;
   final List<Polygon> polygons;
 
+  /// Create a geometry from a set of positions and a default color.
   Geometry({
+    @required final List<Polygon> polygons,
+    final Color color,
+  }) : polygons = polygons
+            .map((poly) => Polygon(
+                  poly.positions,
+                  poly.color ?? color ?? Color(0xff000000),
+                ))
+            .toList();
+
+  /// Create a geometry from a set of points to be transformed through
+  /// [matrix], and a default color.
+  Geometry.fromMatrix({
+    @required final List<Polygon> polygons,
+    @required Matrix4 matrix,
+    final Color color,
+  }) : this(
+          color: color,
+          polygons: polygons.map((poly) => poly.transformed(matrix)).toList(),
+        );
+
+  /// Create a geometry from a set of points to be transformed through
+  /// [rotation], [translation] and [scale], and a default color.
+  Geometry.fromTransform({
+    @required final List<Polygon> polygons,
+    final Color color,
     Rotation rotation,
     Vector3 translation,
     Vector3 scale,
-    final List<Polygon> polygons,
-    final Color color,
-  })  : transform = rotation?.transform ??
-            Matrix4.identity() *
-                Matrix4.translation(translation ?? Vector3.zero()),
-        polygons = polygons
-            .map((poly) => Polygon(
-                poly.positions, poly.color ?? color ?? Color(0xff000000)))
-            .toList();
-
-  List<Polygon> get appliedTransformation =>
-      polygons.map((polygon) => polygon.transformed(transform)).toList();
+  }) : this.fromMatrix(
+          polygons: polygons,
+          color: color,
+          matrix: rotation?.transform ??
+              Matrix4.identity() *
+                  Matrix4.translation(translation ?? Vector3.zero()),
+        );
 }
 
 class Rotation {

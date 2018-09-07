@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 ThemeData tesserTheme(final Brightness brightness) => ThemeData(
-      primarySwatch: Colors.deepOrange,
-      toggleableActiveColor: Colors.deepOrangeAccent,
-      accentColor: Colors.deepOrangeAccent,
+      primaryColor: Colors.deepOrange,
+      toggleableActiveColor: Colors.indigo,
+      accentColor: Colors.indigo,
       fontFamily: "GeoNMS",
       brightness: brightness,
       textTheme: TextTheme(

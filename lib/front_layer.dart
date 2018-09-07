@@ -32,17 +32,17 @@ class FrontLayerState extends State<FrontLayer> {
             azimuth: Angle.fromDegrees(45.0),
           ),
           geometries: [
-            Geometry(
+            Geometry.fromTransform(
               rotation: Rotation.fromEuler(polar, azimuth, Angle.zero()),
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).primaryColor,
               polygons: cube(
                 center: Vector3.zero(),
                 sideLength: 2.0,
               ),
             ),
-            Geometry(
+            Geometry.fromTransform(
               translation: Vector3(3.0, 0.0, 0.0),
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).cardColor,
               polygons: cube(
                 center: Vector3.zero(),
                 sideLength: 1.0,
