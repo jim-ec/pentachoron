@@ -25,17 +25,33 @@ class Canvas4d extends StatelessWidget {
 }
 
 class _Canvas4dPainter extends CustomPainter {
+  /// Camera position, in global space.
   final CameraPosition cameraPosition;
-  final bool enableCulling = true;
-  final bool orthographicProjection = true;
 
+  /// If enabled, back facing polygons are not drawn at all.
+  /// This improves performance, as fewer vertices have to processed
+  /// and fewer polygons needs to be drawn.
+  /// On the other side, enabling culling can increase artifacts at the
+  /// polygon edges due to anti-aliasing.
+  final bool enableCulling = false;
+
+  /// If enabled, geometry is drawn using an orthographic projection
+  /// rather then using a perspective projection.
+  final bool orthographicProjection = false;
+
+  /// List of geometry to be drawn.
   final List<Geometry> geometries;
 
-  /// Vertical field of view in radians:
-  static const fov = Angle.fromDegrees(60.0);
+  /// Vertical field of view in radians.
+  /// The value is only used when rendering perspective projection.
+  final fov = Angle.fromDegrees(60.0);
+
+  /// The frustum side length.
+  /// The value is only used when rendering orthographic projection.
+  final frustumSize = 10.0;
 
   /// Direction of global light:
-  static final lightDirection = Vector3(1.0, 0.8, 0.2).normalized();
+  final lightDirection = Vector3(1.0, 0.8, 0.2).normalized();
 
   _Canvas4dPainter(this.cameraPosition, this.geometries);
 
@@ -52,8 +68,13 @@ class _Canvas4dPainter extends CustomPainter {
     final projection = !orthographicProjection
         ? makePerspectiveMatrix(
             fov.radians, size.width / size.height, 0.1, 100.0)
-        : makeOrthographicMatrix(5 * -size.width / size.height,
-            5 * size.width / size.height, -5.0, 5.0, 0.1, 10.0);
+        : makeOrthographicMatrix(
+            (frustumSize / 2.0) * -size.width / size.height,
+            (frustumSize / 2.0) * size.width / size.height,
+            -frustumSize / 2.0,
+            frustumSize / 2.0,
+            0.1,
+            10.0);
 
     final view = makeViewMatrix(
       cameraPosition.eye,
