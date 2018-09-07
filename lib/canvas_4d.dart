@@ -51,19 +51,20 @@ class _Canvas4dPainter extends CustomPainter {
         fov.radians, size.width / size.height, 0.1, 100.0);
 
     final view = makeViewMatrix(
-      Vector3(cameraPosition.distance, 0.0, 0.0),
-      Vector3.zero(),
-      Vector3(0.0, 1.0, 0.0),
+      cameraPosition.eye,
+      cameraPosition.focus,
+      cameraPosition.up,
     );
 
     geometries.expand<Face>((geometry) {
-      final quaternion = Quaternion.euler(
-          cameraPosition.polar.radians, 0.0, cameraPosition.azimuth.radians);
-  
+//      final quaternion = Quaternion.euler(
+//          cameraPosition.polar.radians, 0.0, cameraPosition.azimuth.radians);
+      final quaternion = Quaternion.identity();
+
       return geometry.faces.map((face) {
         final positionsGlobalSpace =
         face.positions.map((v) => quaternion.rotated(v)).toList();
-    
+
         final normal = (positionsGlobalSpace[2] - positionsGlobalSpace[0])
             .cross(positionsGlobalSpace[1] - positionsGlobalSpace[0])
             .normalized();
@@ -71,10 +72,10 @@ class _Canvas4dPainter extends CustomPainter {
         final softenLuminance = remap(luminance, -1.0, 1.0, -0.2, 1.2);
         final illuminatedColor = Color.lerp(
             Color(0xff000000), face.color ?? geometry.color, softenLuminance);
-    
+
         final positionsViewSpace =
         positionsGlobalSpace.map((v) => view.transformed3(v)).toList();
-    
+
         return Face(positionsViewSpace[0], positionsViewSpace[1],
             positionsViewSpace[2], illuminatedColor);
       });
@@ -114,15 +115,25 @@ class _Canvas4dPainter extends CustomPainter {
 ///   z-axis.
 ///
 class CameraPosition {
-  double distance = 1.0;
-  Angle polar;
-  Angle azimuth;
+  final Vector3 eye, focus, up;
 
   CameraPosition({
-    this.distance,
-    this.polar = const Angle.zero(),
-    this.azimuth = const Angle.zero(),
-  });
+    this.eye,
+    this.focus,
+    up,
+  }) : up = up ?? Vector3(0.0, 1.0, 0.0);
+  
+  CameraPosition.fromOrbitEuler({
+    final double distance,
+    final Angle polar,
+    final Angle azimuth,
+  }) : this(
+      focus: Vector3.zero(),
+      eye: Matrix4
+          .rotationY(polar.radians)
+          .multiplied(Matrix4.rotationZ(azimuth.radians))
+          .transform3(Vector3(distance, 0.0, 0.0)));
+  
 }
 
 @immutable
@@ -176,7 +187,7 @@ class Geometry {
   final Vector3 scale;
   final List<Face> faces;
   final Color color;
-  
+
   Geometry({
     @required this.quaternion,
     @required this.translation,

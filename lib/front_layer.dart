@@ -9,26 +9,28 @@ class FrontLayer extends StatefulWidget {
 }
 
 class FrontLayerState extends State<FrontLayer> {
-  CameraPosition cameraPosition;
+  var polar = Angle.zero();
+  var azimuth = Angle.zero();
 
   @override
   void initState() {
     super.initState();
-    cameraPosition = CameraPosition(distance: 10.0);
   }
 
   @override
   Widget build(final BuildContext context) => GestureDetector(
         onPanUpdate: (details) {
           setState(() {
-            cameraPosition.polar = cameraPosition.polar +
-                Angle.fromRadians(-details.delta.dx * 0.01);
-            cameraPosition.azimuth = cameraPosition.azimuth +
-                Angle.fromRadians(details.delta.dy * 0.01);
+            polar += Angle.fromRadians(-details.delta.dx * 0.01);
+            azimuth += Angle.fromRadians(details.delta.dy * 0.01);
           });
         },
         child: Canvas4d(
-          cameraPosition: cameraPosition,
+          cameraPosition: CameraPosition.fromOrbitEuler(
+              distance: 10.0,
+              polar: polar,
+              azimuth: azimuth
+          ),
           geometries: [
             Geometry(
               translation: null,
