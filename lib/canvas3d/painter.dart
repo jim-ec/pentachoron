@@ -46,7 +46,7 @@ class _Canvas3dPainter extends CustomPainter {
                   polygon.positions,
                   polygon.color,
                   geometry.outlined,
-                  parameters.enableCulling,
+                  geometry.culling,
                 ))
             .map((polygon) => polygon.transformed(geometry.transform)))
         .map((polygon) => polygon.illuminated(parameters.lightDirection))
@@ -58,8 +58,16 @@ class _Canvas3dPainter extends CustomPainter {
 
     sortedPolygons
         .map((polygon) => polygon.perspectiveTransformed(projection))
-        .where((polygon) => polygon.normal.z > 0.0 || !parameters.enableCulling)
-        .forEach((polygon) {
+        .where((polygon) {
+      switch (polygon.culling) {
+        case CullMode.off:
+          return true;
+        case CullMode.frontFacing:
+          return polygon.normal.z < 0.0;
+        case CullMode.backFacing:
+          return polygon.normal.z > 0.0;
+      }
+    }).forEach((polygon) {
       final offsets = polygon.positions
           .map((position) => Offset(position.x, position.y))
           .toList();

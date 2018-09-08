@@ -9,14 +9,13 @@ class _ProcessingPolygon extends Polygon
   /// Whether or not to add this polygon to the outline path.
   final bool outlined;
   
-  /// Not used right now.
-  final bool culled;
+  final CullMode culling;
   
   _ProcessingPolygon(
       final List<Vector3> positions,
       final Color color,
       this.outlined,
-      this.culled,
+      this.culling,
       ) : super(positions, color);
   
   /// This polygon's gravitational center.
@@ -36,7 +35,7 @@ class _ProcessingPolygon extends Polygon
       positions.map((v) => matrix.transformed3(v)).toList(),
       color,
       outlined,
-      culled);
+      culling);
   
   /// Return a transformed version of this polygon,
   /// taking perspective division into account.
@@ -45,7 +44,7 @@ class _ProcessingPolygon extends Polygon
           positions.map((v) => matrix.perspectiveTransform(v)).toList(),
           color,
           outlined,
-          culled);
+          culling);
   
   /// Return a re-colored version of this polygon.
   /// [lightDirection] defines the direction of parallel light rays,
@@ -60,7 +59,7 @@ class _ProcessingPolygon extends Polygon
         positions,
         Color.lerp(Color(0xff000000), color, softenLuminance),
         outlined,
-        culled);
+        culling);
   }
   
   /// Performs a depth comparison.

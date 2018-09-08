@@ -28,7 +28,6 @@ class FrontLayerState extends State<FrontLayer> {
         child: Canvas3d(
           parameters: DrawParameters(
             antiAliasing: true,
-            enableCulling: false,
             outlineMode: OutlineMode.overlay,
             outlineColor: Theme.of(context).accentColor,
             cameraPosition: CameraPosition.fromOrbitEuler(
@@ -46,6 +45,7 @@ class FrontLayerState extends State<FrontLayer> {
                 ),
               ),
               Geometry(
+                culling: CullMode.off,
                 rotation: Rotation.fromEuler(polar, azimuth, Angle.zero()),
                 color: Theme.of(context).primaryColor.withOpacity(0.6),
                 outlined: true,

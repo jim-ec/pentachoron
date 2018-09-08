@@ -4,6 +4,7 @@ class Geometry {
   final List<Polygon> polygons;
   final bool outlined;
   final Matrix4 transform;
+  final CullMode culling;
   
   /// Create a geometry from a set of points to be transformed through
   /// [rotation], [translation] and [scale], and a default color.
@@ -14,6 +15,7 @@ class Geometry {
     Rotation rotation,
     Vector3 translation,
     Vector3 scale,
+    this.culling = CullMode.backFacing
   })  : transform = rotation?.transform ??
       Matrix4.identity() *
           Matrix4.translation(translation ?? Vector3.zero()),
