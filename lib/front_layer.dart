@@ -21,8 +21,8 @@ class FrontLayerState extends State<FrontLayer> {
   Widget build(final BuildContext context) => GestureDetector(
         onPanUpdate: (details) {
           setState(() {
-            polar += Angle.fromRadians(details.delta.dx * 0.01);
-            azimuth += Angle.fromRadians(-details.delta.dy * 0.01);
+            polar += Angle.fromRadians(-details.delta.dx * 0.008);
+            azimuth += Angle.fromRadians(details.delta.dy * 0.008);
           });
         },
         child: Canvas3d(
