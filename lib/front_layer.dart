@@ -26,32 +26,34 @@ class FrontLayerState extends State<FrontLayer> {
           });
         },
         child: Canvas4d(
-          outlineMode: OutlineMode.occluded,
-          outlineColor: Theme.of(context).accentColor,
-          cameraPosition: CameraPosition.fromOrbitEuler(
-            distance: 10.0,
-            polar: Angle.fromDegrees(10.0),
-            azimuth: Angle.fromDegrees(20.0),
+          parameters: DrawParameters(
+            outlineMode: OutlineMode.overlay,
+            outlineColor: Theme.of(context).accentColor,
+            cameraPosition: CameraPosition.fromOrbitEuler(
+              distance: 10.0,
+              polar: Angle.fromDegrees(10.0),
+              azimuth: Angle.fromDegrees(20.0),
+            ),
+            geometries: [
+              Geometry(
+                translation: Vector3(3.0, 0.0, 0.0),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                polygons: cube(
+                  center: Vector3.zero(),
+                  sideLength: 1.0,
+                ),
+              ),
+              Geometry(
+                rotation: Rotation.fromEuler(polar, azimuth, Angle.zero()),
+                color: Theme.of(context).primaryColor,
+                outlined: true,
+                polygons: cube(
+                  center: Vector3.zero(),
+                  sideLength: 2.0,
+                ),
+              ),
+            ],
           ),
-          geometries: [
-            Geometry(
-              translation: Vector3(3.0, 0.0, 0.0),
-              color: Theme.of(context).scaffoldBackgroundColor,
-              polygons: cube(
-                center: Vector3.zero(),
-                sideLength: 1.0,
-              ),
-            ),
-            Geometry(
-              rotation: Rotation.fromEuler(polar, azimuth, Angle.zero()),
-              color: Theme.of(context).primaryColor,
-              outlined: true,
-              polygons: cube(
-                center: Vector3.zero(),
-                sideLength: 2.0,
-              ),
-            ),
-          ],
         ),
       );
 }

@@ -5,19 +5,26 @@ import 'package:tesserapp/generic/angle.dart';
 import 'package:tesserapp/generic/number_range.dart';
 import 'package:vector_math/vector_math_64.dart';
 
-class Canvas4d extends StatelessWidget {
+/// All modifiable options to affect rendering of the canvas.
+class DrawParameters {
+  /// Camera position, in global space.
   final CameraPosition cameraPosition;
+
+  /// List of geometry to be drawn.
   final List<Geometry> geometries;
+  
+  /// How to draw the outline.
   final OutlineMode outlineMode;
+  
+  /// Color of the outline, if drawn.
   final Color outlineColor;
 
-  Canvas4d({
-    Key key,
+  DrawParameters({
     @required this.cameraPosition,
     @required this.geometries,
     this.outlineMode = OutlineMode.off,
-    this.outlineColor,
-  }) : super(key: key) {
+    final Color outlineColor,
+  }) : outlineColor = outlineColor ?? Color(0x0) {
     if (outlineMode != OutlineMode.off) {
       assert(
           outlineColor != null,
@@ -25,25 +32,26 @@ class Canvas4d extends StatelessWidget {
           "a non-null outline color must be specified");
     }
   }
+}
+
+class Canvas4d extends StatelessWidget {
+  final DrawParameters parameters;
+
+  Canvas4d({
+    Key key,
+    @required this.parameters,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Container(
         constraints: BoxConstraints.expand(),
         child: CustomPaint(
-          painter: _Canvas4dPainter(
-            cameraPosition: cameraPosition,
-            geometries: geometries,
-            outlineMode: outlineMode,
-            outlineColor: outlineColor,
-          ),
+          painter: _Canvas4dPainter(parameters),
         ),
       );
 }
 
 class _Canvas4dPainter extends CustomPainter {
-  /// Camera position, in global space.
-  final CameraPosition cameraPosition;
-
   /// If enabled, back facing polygons are not drawn at all.
   /// This improves performance, as fewer vertices have to processed
   /// and fewer polygons needs to be drawn.
@@ -54,9 +62,6 @@ class _Canvas4dPainter extends CustomPainter {
   /// If enabled, geometry is drawn using an orthographic projection
   /// rather then using a perspective projection.
   final bool orthographicProjection = false;
-
-  /// List of geometry to be drawn.
-  final List<Geometry> geometries;
 
   /// Vertical field of view in radians.
   /// The value is only used when rendering perspective projection.
@@ -69,19 +74,13 @@ class _Canvas4dPainter extends CustomPainter {
   /// Direction of global light:
   final lightDirection = Vector3(1.0, 0.8, 0.2).normalized();
 
-  final Color outlineColor = Color(0xffff0000);
+  final DrawParameters parameters;
 
   final outlinePaint;
 
-  final OutlineMode outlineMode;
-
-  _Canvas4dPainter({
-    this.cameraPosition,
-    this.geometries,
-    final Color outlineColor,
-    this.outlineMode,
-  }) : outlinePaint = Paint()
-          ..color = outlineColor ?? Color(0x0)
+  _Canvas4dPainter(this.parameters)
+      : outlinePaint = Paint()
+          ..color = parameters.outlineColor
           ..style = PaintingStyle.stroke
           ..strokeWidth = 0.01
           ..strokeJoin = StrokeJoin.round;
@@ -108,12 +107,12 @@ class _Canvas4dPainter extends CustomPainter {
             10.0);
 
     final view = makeViewMatrix(
-      cameraPosition.eye,
-      cameraPosition.focus,
-      cameraPosition.up,
+      parameters.cameraPosition.eye,
+      parameters.cameraPosition.focus,
+      parameters.cameraPosition.up,
     );
 
-    final sortedPolygons = geometries
+    final sortedPolygons = parameters.geometries
         .expand((geometry) => geometry.polygons
             .map((polygon) => ProcessingPolygon(
                   polygon.positions,
@@ -127,7 +126,7 @@ class _Canvas4dPainter extends CustomPainter {
         .toList()
           ..sort();
 
-    var outline = (outlineMode != OutlineMode.off) ? Path() : null;
+    var outline = (parameters.outlineMode != OutlineMode.off) ? Path() : null;
 
     sortedPolygons
         .map((polygon) => polygon.perspectiveTransformed(projection))
@@ -138,9 +137,10 @@ class _Canvas4dPainter extends CustomPainter {
           .toList();
       final path = Path()..addPolygon(offsets, false);
 
-      if (outlineMode != OutlineMode.off && polygon.outlined) {
+      if (parameters.outlineMode != OutlineMode.off && polygon.outlined) {
+        // Add current polygon path to outline path.
         outline = Path.combine(PathOperation.union, outline, path);
-      } else if (outlineMode == OutlineMode.occluded) {
+      } else if (parameters.outlineMode == OutlineMode.occluded) {
         // Remove current path from outline, so that the outline outlines
         // only the visible, un-obscured part of the geometry
         // rather than simply the whole geometry.
