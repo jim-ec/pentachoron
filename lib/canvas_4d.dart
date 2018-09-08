@@ -10,7 +10,7 @@ class Canvas4d extends StatelessWidget {
   final List<Geometry> geometries;
   final OutlineMode outlineMode;
   final Color outlineColor;
-  
+
   Canvas4d({
     Key key,
     @required this.cameraPosition,
@@ -18,8 +18,10 @@ class Canvas4d extends StatelessWidget {
     this.outlineMode = OutlineMode.off,
     this.outlineColor,
   }) : super(key: key) {
-    if(outlineMode != OutlineMode.off) {
-      assert(outlineColor != null, "If outline mode is not off, "
+    if (outlineMode != OutlineMode.off) {
+      assert(
+          outlineColor != null,
+          "If outline mode is not off, "
           "a non-null outline color must be specified");
     }
   }
@@ -124,7 +126,7 @@ class _Canvas4dPainter extends CustomPainter {
         .map((polygon) => polygon.transformed(view))
         .toList()
           ..sort();
-    
+
     var outline = (outlineMode != OutlineMode.off) ? Path() : null;
 
     sortedPolygons
@@ -158,13 +160,12 @@ class _Canvas4dPainter extends CustomPainter {
 /// a common outline path, that's why one cannot set the outline color
 /// of a single geometry.
 enum OutlineMode {
-  
   /// No outlining at all.
   off,
-  
+
   /// Outline is draw on top off all other geometry.
   overlay,
-  
+
   /// Outline is occluded by obscuring geometry.
   /// The actual path is still closed, drawn around occluding geometry.
   /// This is quite performance expensive when drawing a lot of geometry.
@@ -207,56 +208,67 @@ class Polygon {
   }
 }
 
-class ProcessingPolygon implements Comparable<ProcessingPolygon> {
-  final List<Vector3> positions;
-  final Color color;
+/// A polygon wrapper adding pipeline processing functionality to it.
+/// It bundles per-geometry features like outlining into the polygons,
+/// as they are decoupled from their geometries in order to perform
+/// depth sorting.
+class ProcessingPolygon extends Polygon
+    implements Comparable<ProcessingPolygon> {
+  /// Whether or not to add this polygon to the outline path.
   final bool outlined;
+
+  /// Not used right now.
   final bool culled;
 
-  ProcessingPolygon(this.positions, this.color, this.outlined, this.culled) {
-    assert(positions.length >= 3, "Each polygon must have at least 3 vertices");
-  }
+  ProcessingPolygon(
+    final List<Vector3> positions,
+    final Color color,
+    this.outlined,
+    this.culled,
+  ) : super(positions, color);
 
+  /// This polygon's gravitational center.
   Vector3 get barycenter =>
       positions.reduce((a, b) => a + b) / positions.length.toDouble();
 
+  /// Normal vector, standing perpendicular on top of the plane this polygon
+  /// is forming.
   Vector3 get normal => (positions[2] - positions[0])
       .cross(positions[1] - positions[0])
       .normalized();
 
-  ProcessingPolygon map(Vector3 f(final Vector3 position)) => ProcessingPolygon(
-        positions.map(f).toList(),
-        color,
-        outlined,
-        culled,
-      );
-
+  /// Return a transformed version of this polygon.
+  /// To transform the polygon using perspective matrices,
+  /// use [perspectiveTransformed] instead.
   ProcessingPolygon transformed(final Matrix4 matrix) => ProcessingPolygon(
-        positions.map((v) => matrix.transformed3(v)).toList(),
-        color,
-        outlined,
-        culled,
-      );
+      positions.map((v) => matrix.transformed3(v)).toList(),
+      color,
+      outlined,
+      culled);
 
+  /// Return a transformed version of this polygon,
+  /// taking perspective division into account.
   ProcessingPolygon perspectiveTransformed(final Matrix4 matrix) =>
       ProcessingPolygon(
-        positions.map((v) => matrix.perspectiveTransform(v)).toList(),
-        color,
-        outlined,
-        culled,
-      );
+          positions.map((v) => matrix.perspectiveTransform(v)).toList(),
+          color,
+          outlined,
+          culled);
 
+  /// Return a re-colored version of this polygon.
+  /// [lightDirection] defines the direction of parallel light rays,
+  /// used to illuminate the polygon.
+  ///
+  /// [lightDirection] is assumed to be in the *same coordinate space*
+  /// as this polygon.
   ProcessingPolygon illuminated(final Vector3 lightDirection) {
     final luminance = normal.dot(lightDirection);
     final softenLuminance = remap(luminance, -1.0, 1.0, -0.2, 1.2);
-    final illuminatedColor =
-        Color.lerp(Color(0xff000000), color, softenLuminance);
     return ProcessingPolygon(
-      positions,
-      illuminatedColor,
-      outlined,
-      culled,
-    );
+        positions,
+        Color.lerp(Color(0xff000000), color, softenLuminance),
+        outlined,
+        culled);
   }
 
   /// Performs a depth comparison.
