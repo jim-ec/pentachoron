@@ -70,11 +70,14 @@ class _Canvas3dPainter extends CustomPainter {
       }
     });
 
-    final drawPolygons = culledPolygons;
+    // Clip polygons away that are fully out of view:
+    final clippedPolygons = culledPolygons.where((polygon) => polygon.positions
+        .any((v) => v.x < 1.0 && v.x > -1.0 && v.y < 1.0 && v.y > -1.0));
+
+    final drawPolygons = clippedPolygons.toList();
     var outline = (parameters.outlineMode != OutlineMode.off) ? Path() : null;
 
     for (final polygon in drawPolygons) {
-      
       // Convert polygon position vectors into offsets.
       final offsets = polygon.positions
           .map((position) => Offset(position.x, position.y))
