@@ -15,10 +15,10 @@ class Canvas4d extends StatelessWidget {
     Key key,
     @required this.cameraPosition,
     @required this.geometries,
-    this.outlineMode = OutlineMode.OFF,
+    this.outlineMode = OutlineMode.off,
     this.outlineColor,
   }) : super(key: key) {
-    if(outlineMode != OutlineMode.OFF) {
+    if(outlineMode != OutlineMode.off) {
       assert(outlineColor != null, "If outline mode is not off, "
           "a non-null outline color must be specified");
     }
@@ -124,8 +124,8 @@ class _Canvas4dPainter extends CustomPainter {
         .map((polygon) => polygon.transformed(view))
         .toList()
           ..sort();
-
-    var outline = Path();
+    
+    var outline = (outlineMode != OutlineMode.off) ? Path() : null;
 
     sortedPolygons
         .map((polygon) => polygon.perspectiveTransformed(projection))
@@ -136,9 +136,9 @@ class _Canvas4dPainter extends CustomPainter {
           .toList();
       final path = Path()..addPolygon(offsets, false);
 
-      if (outlineMode != OutlineMode.OFF && polygon.outlined) {
+      if (outlineMode != OutlineMode.off && polygon.outlined) {
         outline = Path.combine(PathOperation.union, outline, path);
-      } else if (outlineMode == OutlineMode.PERFECT_FIT) {
+      } else if (outlineMode == OutlineMode.occluded) {
         // Remove current path from outline, so that the outline outlines
         // only the visible, un-obscured part of the geometry
         // rather than simply the whole geometry.
@@ -153,10 +153,22 @@ class _Canvas4dPainter extends CustomPainter {
   }
 }
 
+/// Marking a geometry as outlined adds it to the overhaul set of
+/// outlined geometry. All outlined geometry share a common color and
+/// a common outline path, that's why one cannot set the outline color
+/// of a single geometry.
 enum OutlineMode {
-  OFF,
-  OCCLUDING,
-  PERFECT_FIT,
+  
+  /// No outlining at all.
+  off,
+  
+  /// Outline is draw on top off all other geometry.
+  overlay,
+  
+  /// Outline is occluded by obscuring geometry.
+  /// The actual path is still closed, drawn around occluding geometry.
+  /// This is quite performance expensive when drawing a lot of geometry.
+  occluded,
 }
 
 /// Camera position.

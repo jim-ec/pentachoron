@@ -26,7 +26,7 @@ class FrontLayerState extends State<FrontLayer> {
           });
         },
         child: Canvas4d(
-          outlineMode: OutlineMode.OCCLUDING,
+          outlineMode: OutlineMode.occluded,
           outlineColor: Theme.of(context).accentColor,
           cameraPosition: CameraPosition.fromOrbitEuler(
             distance: 10.0,
