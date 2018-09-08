@@ -28,6 +28,11 @@ class DrawParameters {
   /// The frustum side length.
   /// The value is only used when rendering orthographic projection.
   final double frustumSize;
+  
+  /// Maximum distance at which polygons remains visible.
+  /// Defaults to [double.infinity], i.e. there is no limit in view distance.
+  /// This might be inefficient if there is a large area of geometry to render.
+  final double viewDistance;
 
   /// Direction of global light:
   final Vector3 lightDirection;
@@ -42,6 +47,7 @@ class DrawParameters {
     this.frustumSize = 10.0,
     final Vector3 lightDirection,
     this.antiAliasing = true,
+    this.viewDistance = double.infinity,
   }) : lightDirection = lightDirection?.normalized() ??
             Vector3(1.0, 0.8, 0.2).normalized() {
     if (outlineMode != OutlineMode.off) {

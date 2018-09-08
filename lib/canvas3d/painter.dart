@@ -5,6 +5,10 @@ class _Canvas3dPainter extends CustomPainter {
 
   final outlinePaint;
 
+  static const nearPlane = 0.1;
+
+  static const farPlane = 100.0;
+
   _Canvas3dPainter(this.parameters)
       : outlinePaint = Paint()
           ..color = parameters.outlineColor
@@ -21,18 +25,24 @@ class _Canvas3dPainter extends CustomPainter {
     // Transform canvas into viewport space:
     canvas
       ..translate(size.width / 2.0, size.height / 2.0)
-      ..scale(size.width / 2.0, -size.height / 2.0);
+      ..scale(size.width / 2.0, -size.height / 2.0)
+      ..clipRect(Rect.fromLTRB(-1.0, 1.0, 1.0, -1.0));
 
     final projection = !parameters.orthographicProjection
         ? makePerspectiveMatrix(
-            parameters.fov.radians, size.width / size.height, 0.1, 100.0)
+            parameters.fov.radians,
+            size.width / size.height,
+            nearPlane,
+            farPlane,
+          )
         : makeOrthographicMatrix(
             (parameters.frustumSize / 2.0) * -size.width / size.height,
             (parameters.frustumSize / 2.0) * size.width / size.height,
             -parameters.frustumSize / 2.0,
             parameters.frustumSize / 2.0,
-            0.1,
-            10.0);
+            nearPlane,
+            farPlane,
+          );
 
     final view = makeViewMatrix(
       parameters.cameraPosition.eye,
@@ -54,11 +64,22 @@ class _Canvas3dPainter extends CustomPainter {
         .map((polygon) => polygon.illuminated(parameters.lightDirection))
         .map((polygon) => polygon.transformed(view));
 
+    // Depth sort polygons.
     final depthSortedPolygons = polygonsViewSpace.toList()..sort();
 
-    final polygonsProjectiveSpace = depthSortedPolygons
+    // Clip polygons away that are either too near or too far.
+    // This has to be done before perspective division occurs.
+    // When orthographic projection is used, there is no "too near".
+    final distanceClippedPolygons = depthSortedPolygons.where((polygon) =>
+        polygon.positions.every((v) =>
+            (v.z < 0.0 || parameters.orthographicProjection) &&
+            v.z > -parameters.viewDistance));
+
+    // Transform into projective space.
+    final polygonsProjectiveSpace = distanceClippedPolygons
         .map((polygon) => polygon.perspectiveTransformed(projection));
 
+    // Cull polygons.
     final culledPolygons = polygonsProjectiveSpace.where((polygon) {
       switch (polygon.culling) {
         case CullMode.off:
