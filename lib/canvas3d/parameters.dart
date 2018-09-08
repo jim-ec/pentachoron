@@ -23,14 +23,14 @@ class DrawParameters {
 
   /// Vertical field of view in radians.
   /// The value is only used when rendering perspective projection.
-  final fov;
+  final Angle fov;
 
   /// The frustum side length.
   /// The value is only used when rendering orthographic projection.
-  final frustumSize;
+  final double frustumSize;
 
   /// Direction of global light:
-  final lightDirection;
+  final Vector3 lightDirection;
 
   DrawParameters({
     @required this.cameraPosition,
