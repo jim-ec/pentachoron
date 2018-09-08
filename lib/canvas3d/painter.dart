@@ -61,8 +61,13 @@ class _Canvas3dPainter extends CustomPainter {
             .map((polygon) => polygon.transformed(geometry.transform)));
 
     final polygonsViewSpace = polygonsGlobalSpace
-        .map((polygon) => polygon.illuminated(parameters.lightDirection))
-        .map((polygon) => polygon.transformed(view));
+        .map((polygon) => (parameters.lightSpace == LightSpace.global)
+            ? polygon.illuminated(parameters.lightDirection)
+            : polygon)
+        .map((polygon) => polygon.transformed(view))
+        .map((polygon) => (parameters.lightSpace == LightSpace.view)
+            ? polygon.illuminated(parameters.lightDirection)
+            : polygon);
 
     // Depth sort polygons.
     final depthSortedPolygons = polygonsViewSpace.toList()..sort();
