@@ -28,29 +28,27 @@ class FrontLayerState extends State<FrontLayer> {
         child: Canvas3d(
           parameters: DrawParameters(
             antiAliasing: true,
-            outlineMode: OutlineMode.occluded,
+            outlineMode: OutlineMode.overlay,
             outlineColor: Theme.of(context).accentColor,
             cameraPosition: CameraPosition.fromOrbitEuler(
               distance: 10.0,
-              polar: Angle.fromDegrees(10.0),
-              azimuth: Angle.fromDegrees(20.0),
+              polar: polar,
+              azimuth: azimuth,
             ),
             geometries: [
               Geometry(
-                translation: Vector3(3.0, 0.0, 0.0),
-                color: Theme.of(context).scaffoldBackgroundColor,
+                translation: Vector3(5.0, 0.0, 0.0),
+                color: Color(0xffaa3300),
                 polygons: cube(
                   center: Vector3.zero(),
                   sideLength: 1.0,
                 ),
               ),
               Geometry(
-                culling: CullMode.off,
-                rotation: Rotation.fromEuler(polar, azimuth, Angle.zero()),
-                color: Theme.of(context).primaryColor.withOpacity(0.6),
+                color: Theme.of(context).primaryColor,
                 outlined: true,
                 polygons: cube(
-                  center: Vector3.zero(),
+                  center: Vector3(0.0, 2.0, 0.0),
                   sideLength: 2.0,
                 ),
               ),

@@ -40,25 +40,26 @@ class _Canvas3dPainter extends CustomPainter {
       parameters.cameraPosition.up,
     );
 
-    final sortedPolygons = parameters.geometries
-        .expand((geometry) => geometry.polygons
+    final polygonsGlobalSpace =
+        parameters.geometries.expand((geometry) => geometry.polygons
             .map((polygon) => _ProcessingPolygon(
                   polygon.positions,
                   polygon.color,
                   geometry.outlined,
                   geometry.culling,
                 ))
-            .map((polygon) => polygon.transformed(geometry.transform)))
+            .map((polygon) => polygon.transformed(geometry.transform)));
+
+    final polygonsViewSpace = polygonsGlobalSpace
         .map((polygon) => polygon.illuminated(parameters.lightDirection))
-        .map((polygon) => polygon.transformed(view))
-        .toList()
-          ..sort();
+        .map((polygon) => polygon.transformed(view));
 
-    var outline = (parameters.outlineMode != OutlineMode.off) ? Path() : null;
+    final depthSortedPolygons = polygonsViewSpace.toList()..sort();
 
-    sortedPolygons
-        .map((polygon) => polygon.perspectiveTransformed(projection))
-        .where((polygon) {
+    final polygonsProjectiveSpace = depthSortedPolygons
+        .map((polygon) => polygon.perspectiveTransformed(projection));
+
+    final culledPolygons = polygonsProjectiveSpace.where((polygon) {
       switch (polygon.culling) {
         case CullMode.off:
           return true;
@@ -67,12 +68,22 @@ class _Canvas3dPainter extends CustomPainter {
         case CullMode.backFacing:
           return polygon.normal.z > 0.0;
       }
-    }).forEach((polygon) {
+    });
+
+    final drawPolygons = culledPolygons;
+    var outline = (parameters.outlineMode != OutlineMode.off) ? Path() : null;
+
+    for (final polygon in drawPolygons) {
+      
+      // Convert polygon position vectors into offsets.
       final offsets = polygon.positions
           .map((position) => Offset(position.x, position.y))
           .toList();
+
+      // Path of the current polygon to draw.
       final path = Path()..addPolygon(offsets, false);
 
+      // Modify outline according to current path.
       if (parameters.outlineMode != OutlineMode.off && polygon.outlined) {
         // Add current polygon path to outline path.
         outline = Path.combine(PathOperation.union, outline, path);
@@ -84,13 +95,12 @@ class _Canvas3dPainter extends CustomPainter {
         outline = Path.combine(PathOperation.difference, outline, path);
       }
 
-      canvas.drawPath(
-          path,
-          Paint()
-            ..color = polygon.color
-            ..isAntiAlias = parameters.antiAliasing);
-    });
+      final paint = Paint()
+        ..color = polygon.color
+        ..isAntiAlias = parameters.antiAliasing;
 
+      canvas.drawPath(path, paint);
+    }
     canvas.drawPath(outline, outlinePaint);
   }
 }
