@@ -21,6 +21,9 @@ class DrawParameters {
   /// polygon edges due to anti-aliasing.
   final bool enableCulling;
   
+  /// Anti aliasing for polygons and the outline path.
+  final bool antiAliasing;
+  
   /// If enabled, geometry is drawn using an orthographic projection
   /// rather then using a perspective projection.
   final bool orthographicProjection;
@@ -46,6 +49,7 @@ class DrawParameters {
     this.fov = const Angle.fromDegrees(60.0),
     this.frustumSize = 10.0,
     final Vector3 lightDirection,
+    this.antiAliasing = true,
   }) : lightDirection =
       lightDirection?.normalized() ?? Vector3(1.0, 0.8, 0.2).normalized() {
     if (outlineMode != OutlineMode.off) {

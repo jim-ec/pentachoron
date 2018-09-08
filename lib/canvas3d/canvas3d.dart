@@ -9,6 +9,7 @@ import 'package:tesserapp/generic/number_range.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 part 'geometry.dart';
+part 'painter.dart';
 part 'parameters.dart';
 part 'polygon.dart';
 part 'rendering.dart';
