@@ -8,18 +8,32 @@ import 'package:vector_math/vector_math_64.dart';
 class Canvas4d extends StatelessWidget {
   final CameraPosition cameraPosition;
   final List<Geometry> geometries;
-
-  const Canvas4d({
+  final OutlineMode outlineMode;
+  final Color outlineColor;
+  
+  Canvas4d({
     Key key,
     @required this.cameraPosition,
     @required this.geometries,
-  }) : super(key: key);
+    this.outlineMode = OutlineMode.OFF,
+    this.outlineColor,
+  }) : super(key: key) {
+    if(outlineMode != OutlineMode.OFF) {
+      assert(outlineColor != null, "If outline mode is not off, "
+          "a non-null outline color must be specified");
+    }
+  }
 
   @override
   Widget build(BuildContext context) => Container(
         constraints: BoxConstraints.expand(),
         child: CustomPaint(
-          painter: _Canvas4dPainter(cameraPosition, geometries),
+          painter: _Canvas4dPainter(
+            cameraPosition: cameraPosition,
+            geometries: geometries,
+            outlineMode: outlineMode,
+            outlineColor: outlineColor,
+          ),
         ),
       );
 }
@@ -55,7 +69,20 @@ class _Canvas4dPainter extends CustomPainter {
 
   final Color outlineColor = Color(0xffff0000);
 
-  _Canvas4dPainter(this.cameraPosition, this.geometries);
+  final outlinePaint;
+
+  final OutlineMode outlineMode;
+
+  _Canvas4dPainter({
+    this.cameraPosition,
+    this.geometries,
+    final Color outlineColor,
+    this.outlineMode,
+  }) : outlinePaint = Paint()
+          ..color = outlineColor ?? Color(0x0)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.01
+          ..strokeJoin = StrokeJoin.round;
 
   @override
   bool shouldRepaint(final CustomPainter oldDelegate) => true;
@@ -85,18 +112,20 @@ class _Canvas4dPainter extends CustomPainter {
     );
 
     final sortedPolygons = geometries
-        .expand((geometry) => geometry.polygons)
+        .expand((geometry) => geometry.polygons
+            .map((polygon) => ProcessingPolygon(
+                  polygon.positions,
+                  polygon.color,
+                  geometry.outlined,
+                  enableCulling,
+                ))
+            .map((polygon) => polygon.transformed(geometry.transform)))
         .map((polygon) => polygon.illuminated(lightDirection))
         .map((polygon) => polygon.transformed(view))
         .toList()
           ..sort();
 
     var outline = Path();
-    final outlinePaint = Paint()
-      ..color = outlineColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.01
-      ..strokeJoin = StrokeJoin.round;
 
     sortedPolygons
         .map((polygon) => polygon.perspectiveTransformed(projection))
@@ -106,12 +135,28 @@ class _Canvas4dPainter extends CustomPainter {
           .map((position) => Offset(position.x, position.y))
           .toList();
       final path = Path()..addPolygon(offsets, false);
-      outline = Path.combine(PathOperation.union, outline, path);
+
+      if (outlineMode != OutlineMode.OFF && polygon.outlined) {
+        outline = Path.combine(PathOperation.union, outline, path);
+      } else if (outlineMode == OutlineMode.PERFECT_FIT) {
+        // Remove current path from outline, so that the outline outlines
+        // only the visible, un-obscured part of the geometry
+        // rather than simply the whole geometry.
+        // Is is quite performance heavy when having a lot of polygons.
+        outline = Path.combine(PathOperation.difference, outline, path);
+      }
+
       canvas.drawPath(path, Paint()..color = polygon.color);
     });
 
     canvas.drawPath(outline, outlinePaint);
   }
+}
+
+enum OutlineMode {
+  OFF,
+  OCCLUDING,
+  PERFECT_FIT,
 }
 
 /// Camera position.
@@ -141,11 +186,22 @@ class CameraPosition {
 /// All vertices must share the same mathematical plane, i.e. the polygon has
 /// a single normal vector.
 @immutable
-class Polygon implements Comparable<Polygon> {
+class Polygon {
   final List<Vector3> positions;
   final Color color;
 
-  Polygon(this.positions, [this.color]) {
+  Polygon(this.positions, this.color) {
+    assert(positions.length >= 3, "Each polygon must have at least 3 vertices");
+  }
+}
+
+class ProcessingPolygon implements Comparable<ProcessingPolygon> {
+  final List<Vector3> positions;
+  final Color color;
+  final bool outlined;
+  final bool culled;
+
+  ProcessingPolygon(this.positions, this.color, this.outlined, this.culled) {
     assert(positions.length >= 3, "Each polygon must have at least 3 vertices");
   }
 
@@ -156,21 +212,39 @@ class Polygon implements Comparable<Polygon> {
       .cross(positions[1] - positions[0])
       .normalized();
 
-  Polygon map(Vector3 f(final Vector3 position)) =>
-      Polygon(positions.map(f).toList(), color);
+  ProcessingPolygon map(Vector3 f(final Vector3 position)) => ProcessingPolygon(
+        positions.map(f).toList(),
+        color,
+        outlined,
+        culled,
+      );
 
-  Polygon transformed(final Matrix4 matrix) =>
-      Polygon(positions.map((v) => matrix.transformed3(v)).toList(), color);
+  ProcessingPolygon transformed(final Matrix4 matrix) => ProcessingPolygon(
+        positions.map((v) => matrix.transformed3(v)).toList(),
+        color,
+        outlined,
+        culled,
+      );
 
-  Polygon perspectiveTransformed(final Matrix4 matrix) => Polygon(
-      positions.map((v) => matrix.perspectiveTransform(v)).toList(), color);
+  ProcessingPolygon perspectiveTransformed(final Matrix4 matrix) =>
+      ProcessingPolygon(
+        positions.map((v) => matrix.perspectiveTransform(v)).toList(),
+        color,
+        outlined,
+        culled,
+      );
 
-  Polygon illuminated(final Vector3 lightDirection) {
+  ProcessingPolygon illuminated(final Vector3 lightDirection) {
     final luminance = normal.dot(lightDirection);
     final softenLuminance = remap(luminance, -1.0, 1.0, -0.2, 1.2);
     final illuminatedColor =
         Color.lerp(Color(0xff000000), color, softenLuminance);
-    return Polygon(positions, illuminatedColor);
+    return ProcessingPolygon(
+      positions,
+      illuminatedColor,
+      outlined,
+      culled,
+    );
   }
 
   /// Performs a depth comparison.
@@ -178,7 +252,7 @@ class Polygon implements Comparable<Polygon> {
   /// The polygon which's barycenter has a higher z coordinate
   /// is occluding the other one.
   @override
-  int compareTo(final Polygon other) =>
+  int compareTo(final ProcessingPolygon other) =>
       barycenter.z > other.barycenter.z ? 1 : -1;
 }
 
@@ -211,44 +285,27 @@ List<Polygon> cube({
 
 class Geometry {
   final List<Polygon> polygons;
+  final bool outlined;
+  final Matrix4 transform;
 
-  /// Create a geometry from a set of positions and a default color.
+  /// Create a geometry from a set of points to be transformed through
+  /// [rotation], [translation] and [scale], and a default color.
   Geometry({
     @required final List<Polygon> polygons,
     final Color color,
-  }) : polygons = polygons
+    this.outlined = false,
+    Rotation rotation,
+    Vector3 translation,
+    Vector3 scale,
+  })  : transform = rotation?.transform ??
+            Matrix4.identity() *
+                Matrix4.translation(translation ?? Vector3.zero()),
+        polygons = polygons
             .map((poly) => Polygon(
                   poly.positions,
                   poly.color ?? color ?? Color(0xff000000),
                 ))
             .toList();
-
-  /// Create a geometry from a set of points to be transformed through
-  /// [matrix], and a default color.
-  Geometry.fromMatrix({
-    @required final List<Polygon> polygons,
-    @required Matrix4 matrix,
-    final Color color,
-  }) : this(
-          color: color,
-          polygons: polygons.map((poly) => poly.transformed(matrix)).toList(),
-        );
-
-  /// Create a geometry from a set of points to be transformed through
-  /// [rotation], [translation] and [scale], and a default color.
-  Geometry.fromTransform({
-    @required final List<Polygon> polygons,
-    final Color color,
-    Rotation rotation,
-    Vector3 translation,
-    Vector3 scale,
-  }) : this.fromMatrix(
-          polygons: polygons,
-          color: color,
-          matrix: rotation?.transform ??
-              Matrix4.identity() *
-                  Matrix4.translation(translation ?? Vector3.zero()),
-        );
 }
 
 class Rotation {

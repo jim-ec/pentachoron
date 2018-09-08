@@ -26,26 +26,29 @@ class FrontLayerState extends State<FrontLayer> {
           });
         },
         child: Canvas4d(
+          outlineMode: OutlineMode.OCCLUDING,
+          outlineColor: Theme.of(context).accentColor,
           cameraPosition: CameraPosition.fromOrbitEuler(
             distance: 10.0,
-            polar: Angle.fromDegrees(45.0),
-            azimuth: Angle.fromDegrees(45.0),
+            polar: Angle.fromDegrees(10.0),
+            azimuth: Angle.fromDegrees(20.0),
           ),
           geometries: [
-            Geometry.fromTransform(
-              rotation: Rotation.fromEuler(polar, azimuth, Angle.zero()),
-              color: Theme.of(context).primaryColor,
-              polygons: cube(
-                center: Vector3.zero(),
-                sideLength: 2.0,
-              ),
-            ),
-            Geometry.fromTransform(
+            Geometry(
               translation: Vector3(3.0, 0.0, 0.0),
               color: Theme.of(context).cardColor,
               polygons: cube(
                 center: Vector3.zero(),
                 sideLength: 1.0,
+              ),
+            ),
+            Geometry(
+              rotation: Rotation.fromEuler(polar, azimuth, Angle.zero()),
+              color: Theme.of(context).primaryColor,
+              outlined: true,
+              polygons: cube(
+                center: Vector3.zero(),
+                sideLength: 2.0,
               ),
             ),
           ],
