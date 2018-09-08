@@ -28,7 +28,7 @@ class DrawParameters {
   /// The frustum side length.
   /// The value is only used when rendering orthographic projection.
   final double frustumSize;
-  
+
   /// Maximum distance at which polygons remains visible.
   /// Defaults to [double.infinity], i.e. there is no limit in view distance.
   /// This might be inefficient if there is a large area of geometry to render.
@@ -36,23 +36,23 @@ class DrawParameters {
 
   /// Direction of global light:
   final Vector3 lightDirection;
-  
+
   /// Space of light direction:
   final LightSpace lightSpace;
 
-  DrawParameters({
-    @required this.cameraPosition,
-    @required this.geometries,
-    this.outlineMode = OutlineMode.off,
-    this.outlineColor = const Color(0x0),
-    this.orthographicProjection = false,
-    this.fov = const Angle.fromDegrees(60.0),
-    this.frustumSize = 10.0,
-    final Vector3 lightDirection,
-    this.antiAliasing = true,
-    this.viewDistance = double.infinity,
-    this.lightSpace = LightSpace.global
-  }) : lightDirection = lightDirection?.normalized() ??
+  DrawParameters(
+      {@required this.cameraPosition,
+      @required this.geometries,
+      this.outlineMode = OutlineMode.off,
+      this.outlineColor = const Color(0x0),
+      this.orthographicProjection = false,
+      this.fov = const Angle.fromDegrees(60.0),
+      this.frustumSize = 10.0,
+      final Vector3 lightDirection,
+      this.antiAliasing = true,
+      this.viewDistance = double.infinity,
+      this.lightSpace = LightSpace.global})
+      : lightDirection = lightDirection?.normalized() ??
             Vector3(1.0, 0.8, 0.2).normalized() {
     if (outlineMode != OutlineMode.off) {
       assert(
@@ -113,14 +113,12 @@ enum CullMode {
 
 /// The space in which [DrawParameters.lightDirection] is to be interpreted.
 enum LightSpace {
-  
   /// The light direction is given in global coordinates.
   global,
-  
+
   /// The light direction is given in view space coordinates.
   /// This effectively binds the light to the current camera orientation.
   view,
-  
 }
 
 /// Camera position.

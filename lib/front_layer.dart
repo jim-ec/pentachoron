@@ -27,7 +27,7 @@ class FrontLayerState extends State<FrontLayer> {
         },
         child: Canvas3d(
           parameters: DrawParameters(
-            lightDirection: Vector3(0.0, 0.0 ,1.0),
+            lightDirection: Vector3(0.0, 0.0, 1.0),
             antiAliasing: false,
             lightSpace: LightSpace.view,
             outlineMode: OutlineMode.occluded,
@@ -39,7 +39,7 @@ class FrontLayerState extends State<FrontLayer> {
             ),
             geometries: [
               Geometry(
-                translation: Vector3(10.0, 0.0, 0.0),
+                translation: Vector3(4.0, 0.0, 0.0),
                 color: Color(0xffaa3300),
                 polygons: cube(
                   center: Vector3.zero(),
@@ -50,7 +50,7 @@ class FrontLayerState extends State<FrontLayer> {
                 color: Theme.of(context).primaryColor,
                 outlined: true,
                 polygons: cube(
-                  center: Vector3(0.0, 0.0, 0.0),
+                  center: Vector3.zero(),
                   sideLength: 2.0,
                 ),
               ),
