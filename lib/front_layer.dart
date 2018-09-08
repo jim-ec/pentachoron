@@ -36,7 +36,7 @@ class FrontLayerState extends State<FrontLayer> {
           geometries: [
             Geometry(
               translation: Vector3(3.0, 0.0, 0.0),
-              color: Theme.of(context).cardColor,
+              color: Theme.of(context).scaffoldBackgroundColor,
               polygons: cube(
                 center: Vector3.zero(),
                 sideLength: 1.0,

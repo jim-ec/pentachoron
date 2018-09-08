@@ -168,7 +168,6 @@ class _BackdropState extends State<Backdrop>
                   child: Stack(
                     children: <Widget>[
                       Material(
-                        type: MaterialType.card,
                         borderRadius:
                             BorderRadius.vertical(top: Radius.circular(32.0)),
                         elevation: 4.0,
