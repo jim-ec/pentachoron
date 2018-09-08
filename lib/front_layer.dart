@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tesserapp/canvas_4d.dart';
+import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/generic/angle.dart';
 import 'package:vector_math/vector_math_64.dart';
 
@@ -25,7 +25,7 @@ class FrontLayerState extends State<FrontLayer> {
             azimuth += Angle.fromRadians(-details.delta.dy * 0.01);
           });
         },
-        child: Canvas4d(
+        child: Canvas3d(
           parameters: DrawParameters(
             enableCulling: false,
             outlineMode: OutlineMode.overlay,
