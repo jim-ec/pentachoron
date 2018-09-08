@@ -28,7 +28,7 @@ class FrontLayerState extends State<FrontLayer> {
         child: Canvas3d(
           parameters: DrawParameters(
             antiAliasing: true,
-            outlineMode: OutlineMode.overlay,
+            outlineMode: OutlineMode.occluded,
             outlineColor: Theme.of(context).accentColor,
             cameraPosition: CameraPosition.fromOrbitEuler(
               distance: 10.0,

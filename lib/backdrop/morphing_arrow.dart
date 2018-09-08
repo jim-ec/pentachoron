@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+part of backdrop;
 
 class MorphingArrow extends StatelessWidget {
   final double advance;
