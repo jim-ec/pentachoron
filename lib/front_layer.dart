@@ -27,6 +27,7 @@ class FrontLayerState extends State<FrontLayer> {
         },
         child: Canvas4d(
           parameters: DrawParameters(
+            enableCulling: false,
             outlineMode: OutlineMode.overlay,
             outlineColor: Theme.of(context).accentColor,
             cameraPosition: CameraPosition.fromOrbitEuler(
@@ -45,7 +46,7 @@ class FrontLayerState extends State<FrontLayer> {
               ),
               Geometry(
                 rotation: Rotation.fromEuler(polar, azimuth, Angle.zero()),
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).primaryColor.withOpacity(0.6),
                 outlined: true,
                 polygons: cube(
                   center: Vector3.zero(),

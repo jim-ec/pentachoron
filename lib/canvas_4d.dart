@@ -12,19 +12,47 @@ class DrawParameters {
 
   /// List of geometry to be drawn.
   final List<Geometry> geometries;
-  
+
   /// How to draw the outline.
   final OutlineMode outlineMode;
-  
+
   /// Color of the outline, if drawn.
   final Color outlineColor;
+
+  /// If enabled, back facing polygons are not drawn at all.
+  /// This improves performance, as fewer vertices have to processed
+  /// and fewer polygons needs to be drawn.
+  /// On the other side, enabling culling can increase artifacts at the
+  /// polygon edges due to anti-aliasing.
+  final bool enableCulling;
+
+  /// If enabled, geometry is drawn using an orthographic projection
+  /// rather then using a perspective projection.
+  final bool orthographicProjection;
+
+  /// Vertical field of view in radians.
+  /// The value is only used when rendering perspective projection.
+  final fov;
+
+  /// The frustum side length.
+  /// The value is only used when rendering orthographic projection.
+  final frustumSize;
+
+  /// Direction of global light:
+  final lightDirection;
 
   DrawParameters({
     @required this.cameraPosition,
     @required this.geometries,
     this.outlineMode = OutlineMode.off,
-    final Color outlineColor,
-  }) : outlineColor = outlineColor ?? Color(0x0) {
+    this.outlineColor = const Color(0x0),
+    this.enableCulling = true,
+    this.orthographicProjection = false,
+    this.fov = const Angle.fromDegrees(60.0),
+    this.frustumSize = 10.0,
+    final Vector3 lightDirection,
+  }) : lightDirection =
+            lightDirection?.normalized() ?? Vector3(1.0, 0.8, 0.2).normalized() {
     if (outlineMode != OutlineMode.off) {
       assert(
           outlineColor != null,
@@ -52,28 +80,6 @@ class Canvas4d extends StatelessWidget {
 }
 
 class _Canvas4dPainter extends CustomPainter {
-  /// If enabled, back facing polygons are not drawn at all.
-  /// This improves performance, as fewer vertices have to processed
-  /// and fewer polygons needs to be drawn.
-  /// On the other side, enabling culling can increase artifacts at the
-  /// polygon edges due to anti-aliasing.
-  final bool enableCulling = true;
-
-  /// If enabled, geometry is drawn using an orthographic projection
-  /// rather then using a perspective projection.
-  final bool orthographicProjection = false;
-
-  /// Vertical field of view in radians.
-  /// The value is only used when rendering perspective projection.
-  final fov = Angle.fromDegrees(60.0);
-
-  /// The frustum side length.
-  /// The value is only used when rendering orthographic projection.
-  final frustumSize = 10.0;
-
-  /// Direction of global light:
-  final lightDirection = Vector3(1.0, 0.8, 0.2).normalized();
-
   final DrawParameters parameters;
 
   final outlinePaint;
@@ -95,14 +101,14 @@ class _Canvas4dPainter extends CustomPainter {
       ..translate(size.width / 2.0, size.height / 2.0)
       ..scale(size.width / 2.0, -size.height / 2.0);
 
-    final projection = !orthographicProjection
+    final projection = !parameters.orthographicProjection
         ? makePerspectiveMatrix(
-            fov.radians, size.width / size.height, 0.1, 100.0)
+            parameters.fov.radians, size.width / size.height, 0.1, 100.0)
         : makeOrthographicMatrix(
-            (frustumSize / 2.0) * -size.width / size.height,
-            (frustumSize / 2.0) * size.width / size.height,
-            -frustumSize / 2.0,
-            frustumSize / 2.0,
+            (parameters.frustumSize / 2.0) * -size.width / size.height,
+            (parameters.frustumSize / 2.0) * size.width / size.height,
+            -parameters.frustumSize / 2.0,
+            parameters.frustumSize / 2.0,
             0.1,
             10.0);
 
@@ -118,10 +124,10 @@ class _Canvas4dPainter extends CustomPainter {
                   polygon.positions,
                   polygon.color,
                   geometry.outlined,
-                  enableCulling,
+                  parameters.enableCulling,
                 ))
             .map((polygon) => polygon.transformed(geometry.transform)))
-        .map((polygon) => polygon.illuminated(lightDirection))
+        .map((polygon) => polygon.illuminated(parameters.lightDirection))
         .map((polygon) => polygon.transformed(view))
         .toList()
           ..sort();
@@ -130,7 +136,7 @@ class _Canvas4dPainter extends CustomPainter {
 
     sortedPolygons
         .map((polygon) => polygon.perspectiveTransformed(projection))
-        .where((polygon) => polygon.normal.z > 0.0 || !enableCulling)
+        .where((polygon) => polygon.normal.z > 0.0 || !parameters.enableCulling)
         .forEach((polygon) {
       final offsets = polygon.positions
           .map((position) => Offset(position.x, position.y))
