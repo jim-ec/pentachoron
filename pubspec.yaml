@@ -7,7 +7,7 @@ dependencies:
 
   dynamic_theme:
     git:
-      url: git://github.com/jim-eckerlein/dynamic_theme.git
+      url: git://github.com/Norbert515/dynamic_theme.git
 
   flutter:
     sdk: flutter
