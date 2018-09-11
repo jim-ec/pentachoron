@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:tesserapp/app_options.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 
 class BackLayer extends StatelessWidget {
-  const BackLayer({
-    Key key,
-  }) : super(key: key);
 
   @override
-  Widget build(final BuildContext context) => ScrollConfiguration(
+  Widget build(final BuildContext context) {
+//    print("build Inverted=$inverted");
+    return ScrollConfiguration(
         behavior: NoGlowScrollBehaviour(),
         child: ListView(
           physics: ClampingScrollPhysics(),
@@ -63,7 +63,21 @@ class BackLayer extends StatelessWidget {
                 ),
               ),
             ),
-            OptionsSection(),
+            Option(
+              label: "Dark Theme",
+              value: DynamicTheme.of(context).brightness == Brightness.dark,
+              onToggled: () {
+                DynamicTheme.of(context).setBrightness(
+                    DynamicTheme.of(context).brightness == Brightness.light
+                        ? Brightness.dark
+                        : Brightness.light);
+              },
+            ),
+            Option(
+              label: "Inverted horizontal camera",
+              value: AppOptions.of(context).invertedHorizontalCamera,
+              onToggled: AppOptions.of(context).toggle,
+            ),
             Divider(
               height: 5.0,
             ),
@@ -102,29 +116,7 @@ class BackLayer extends StatelessWidget {
           ],
         ),
       );
-}
-
-class OptionsSection extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => Column(
-    children: <Widget>[
-      Option(
-        label: "Dark Theme",
-        value: DynamicTheme.of(context).brightness == Brightness.dark,
-        onToggled: () {
-          DynamicTheme.of(context).setBrightness(
-              DynamicTheme.of(context).brightness == Brightness.light
-                  ? Brightness.dark
-                  : Brightness.light);
-        },
-      ),
-      Option(
-        label: "Inverted horizontal camera",
-        value: false,
-        onToggled: () {},
-      ),
-    ],
-  );
+  }
 }
 
 /// A single, toggleable option.

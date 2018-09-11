@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tesserapp/app_options.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/generic/angle.dart';
 import 'package:vector_math/vector_math_64.dart';
@@ -17,11 +18,16 @@ class FrontLayerState extends State<FrontLayer> {
     super.initState();
   }
 
+  static const orbitSensitivity = 0.008;
+
   @override
   Widget build(final BuildContext context) => GestureDetector(
         onPanUpdate: (details) {
           setState(() {
-            polar += Angle.fromRadians(-details.delta.dx * 0.008);
+            polar += Angle.fromRadians(-details.delta.dx *
+                (AppOptions.of(context).invertedHorizontalCamera
+                    ? -orbitSensitivity
+                    : orbitSensitivity));
             azimuth += Angle.fromRadians(details.delta.dy * 0.008);
           });
         },
