@@ -34,6 +34,10 @@ class _BackdropState extends State<Backdrop>
 
   final Widget backLayer;
   final Widget frontLayer;
+  
+  /// The controller used to animate the front layer.
+  /// 0.0 means that the front layer is completely opened,
+  /// whereas 1.0 indicates a completely closed front layer.
   AnimationController controller;
 
   @override
@@ -86,53 +90,57 @@ class _BackdropState extends State<Backdrop>
             ),
       );
 
-  Widget buildBackBar() => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Stack(
-          children: <Widget>[
-            Positioned.fill(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Center(
-                  child: Text(
-                    "TESSERAPP",
-                    style: Theme.of(context).primaryTextTheme.title,
-                  ),
-                ),
-              ),
-            ),
-            Positioned.fill(
-              left: null,
-              child: FlatButton(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                onPressed: () {
-                  switch (controller.status) {
-                    case AnimationStatus.forward:
-                    case AnimationStatus.completed:
-                      controller.fling(velocity: -.01);
-                      break;
-                    case AnimationStatus.reverse:
-                    case AnimationStatus.dismissed:
-                      controller.fling(velocity: 0.01);
-                      break;
-                  }
-                },
+  Widget buildBackBar() => Material(
+    color: Theme.of(context).primaryColor,
+    elevation: 2.0 * controller.value,
+    child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Stack(
+            children: <Widget>[
+              Positioned.fill(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: AspectRatio(
-                    aspectRatio: 1.0,
-                    child: MorphingArrow(
-                      color: Theme.of(context).primaryTextTheme.title.color,
-                      advance: controller.value,
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    child: Text(
+                      "TESSERAPP",
+                      style: Theme.of(context).primaryTextTheme.title,
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+              Positioned.fill(
+                left: null,
+                child: FlatButton(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onPressed: () {
+                    switch (controller.status) {
+                      case AnimationStatus.forward:
+                      case AnimationStatus.completed:
+                        controller.fling(velocity: -.01);
+                        break;
+                      case AnimationStatus.reverse:
+                      case AnimationStatus.dismissed:
+                        controller.fling(velocity: 0.01);
+                        break;
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: AspectRatio(
+                      aspectRatio: 1.0,
+                      child: MorphingArrow(
+                        color: Theme.of(context).primaryTextTheme.title.color,
+                        advance: controller.value,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      );
+  );
 
   Widget buildFrontLayer(final BoxConstraints constraints) {
     final List<Widget> stackedWidget = [
