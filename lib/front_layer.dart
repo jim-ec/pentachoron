@@ -48,7 +48,7 @@ class FrontLayerState extends State<FrontLayer> {
             geometries: [
               Geometry(
                 translation: Vector3(4.0, 0.0, 0.0),
-                color: Color(0xffaa3300),
+                color: Theme.of(context).scaffoldBackgroundColor,
                 polygons: cube(
                   center: Vector3.zero(),
                   sideLength: 1.0,
