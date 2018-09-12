@@ -19,17 +19,17 @@ class AppOptionsProvider extends StatefulWidget {
 }
 
 class _AppOptionsState extends State<AppOptionsProvider> {
-  _SingleStatefulAppOption _invertedHorizontalCamera;
+  SingleStatefulAppOption _invertedHorizontalCamera;
 
   _AppOptionsState() {
     _invertedHorizontalCamera =
-        _SingleStatefulAppOption("inverted_horizontal_camera", setState);
+        SingleStatefulAppOption("inverted_horizontal_camera", setState);
   }
 
   @override
   Widget build(BuildContext context) => AppOptions(
         invertedHorizontalCamera:
-            _SingleStatelessAppOption(_invertedHorizontalCamera),
+            SingleStatelessAppOption(_invertedHorizontalCamera),
         child: widget.child,
       );
 }
@@ -37,7 +37,7 @@ class _AppOptionsState extends State<AppOptionsProvider> {
 /// The actual class listing all the options.
 /// Obtaining access works through a call to [AppOptions.of].
 class AppOptions extends InheritedWidget {
-  final _SingleStatelessAppOption invertedHorizontalCamera;
+  final SingleStatelessAppOption invertedHorizontalCamera;
 
   const AppOptions({
     Key key,
@@ -52,8 +52,8 @@ class AppOptions extends InheritedWidget {
 
   @override
   bool updateShouldNotify(final AppOptions old) =>
-      invertedHorizontalCamera.creationValue !=
-      old.invertedHorizontalCamera.creationValue;
+      invertedHorizontalCamera._creationValue !=
+      old.invertedHorizontalCamera._creationValue;
 }
 
 /// Instances of this class keep track of the actual option values,
@@ -67,7 +67,7 @@ class AppOptions extends InheritedWidget {
 /// because one can compare two values from different time points,
 /// which would not be possible if one would use the actual, stateful option
 /// value provided by this class.
-class _SingleStatefulAppOption {
+class SingleStatefulAppOption {
   final String key;
   final OnOptionChanged onChanged;
 
@@ -93,7 +93,7 @@ class _SingleStatefulAppOption {
   /// happens within the callback the function provides as its single
   /// parameter. I.e. simply pass [State.setState] as a function reference.
   /// This will do the job of updating the state appropriately.
-  _SingleStatefulAppOption(
+  SingleStatefulAppOption(
     final String name,
     this.onChanged, [
     final bool defaultValue = false,
@@ -109,10 +109,10 @@ class _SingleStatefulAppOption {
 }
 
 @immutable
-class _SingleStatelessAppOption {
-  final actualOption;
-  final bool creationValue;
+class SingleStatelessAppOption {
+  final SingleStatefulAppOption option;
+  final bool _creationValue;
 
-  _SingleStatelessAppOption(this.actualOption)
-      : creationValue = actualOption.value;
+  SingleStatelessAppOption(this.option)
+      : _creationValue = option.value;
 }

@@ -25,7 +25,7 @@ class FrontLayerState extends State<FrontLayer> {
         onPanUpdate: (details) {
           setState(() {
             polar += Angle.fromRadians(-details.delta.dx *
-                (AppOptions.of(context).invertedHorizontalCamera.actualOption.value
+                (AppOptions.of(context).invertedHorizontalCamera.option.value
                     ? -orbitSensitivity
                     : orbitSensitivity));
             azimuth += Angle.fromRadians(details.delta.dy * 0.008);
