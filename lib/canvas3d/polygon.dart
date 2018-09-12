@@ -1,5 +1,3 @@
-
-
 import 'dart:ui';
 
 import 'package:meta/meta.dart';
@@ -13,7 +11,7 @@ import 'package:vector_math/vector_math_64.dart' show Vector3;
 class Polygon {
   final List<Vector3> positions;
   final Color color;
-  
+
   Polygon(this.positions, this.color) {
     assert(positions.length >= 3, "Each polygon must have at least 3 vertices");
   }
@@ -35,7 +33,7 @@ List<Polygon> cube({
     center + Vector3(-a, -a, a),
     center + Vector3(-a, -a, -a),
   ];
-  
+
   return [
     Polygon([positions[0], positions[1], positions[3], positions[2]], color),
     Polygon([positions[1], positions[5], positions[7], positions[3]], color),

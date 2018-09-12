@@ -1,5 +1,3 @@
-
-
 import 'dart:ui';
 
 import 'package:tesserapp/canvas3d/canvas3d.dart';
@@ -15,26 +13,26 @@ class ProcessingPolygon extends Polygon
     implements Comparable<ProcessingPolygon> {
   /// Whether or not to add this polygon to the outline path.
   final bool outlined;
-  
+
   final CullMode culling;
-  
+
   ProcessingPolygon(
-      final List<Vector3> positions,
-      final Color color,
-      this.outlined,
-      this.culling,
-      ) : super(positions, color);
-  
+    final List<Vector3> positions,
+    final Color color,
+    this.outlined,
+    this.culling,
+  ) : super(positions, color);
+
   /// This polygon's gravitational center.
   Vector3 get barycenter =>
       positions.reduce((a, b) => a + b) / positions.length.toDouble();
-  
+
   /// Normal vector, standing perpendicular on top of the plane this polygon
   /// is forming.
   Vector3 get normal => (positions[2] - positions[0])
       .cross(positions[1] - positions[0])
       .normalized();
-  
+
   /// Return a transformed version of this polygon.
   /// To transform the polygon using perspective matrices,
   /// use [perspectiveTransformed] instead.
@@ -43,7 +41,7 @@ class ProcessingPolygon extends Polygon
       color,
       outlined,
       culling);
-  
+
   /// Return a transformed version of this polygon,
   /// taking perspective division into account.
   ProcessingPolygon perspectiveTransformed(final Matrix4 matrix) =>
@@ -52,7 +50,7 @@ class ProcessingPolygon extends Polygon
           color,
           outlined,
           culling);
-  
+
   /// Return a re-colored version of this polygon.
   /// [lightDirection] defines the direction of parallel light rays,
   /// used to illuminate the polygon.
@@ -68,7 +66,7 @@ class ProcessingPolygon extends Polygon
         outlined,
         culling);
   }
-  
+
   /// Performs a depth comparison.
   ///
   /// The polygon which's barycenter has a higher z coordinate

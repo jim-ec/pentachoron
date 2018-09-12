@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:tesserapp/canvas3d/geometry.dart';
 import 'package:tesserapp/canvas3d/painter.dart';

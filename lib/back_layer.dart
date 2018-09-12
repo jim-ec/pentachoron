@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:tesserapp/button.dart';
-import 'package:tesserapp/app_options.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:flutter/material.dart';
+import 'package:tesserapp/app_options.dart';
+import 'package:tesserapp/button.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BackLayer extends StatelessWidget {
   @override
@@ -122,19 +122,18 @@ class BackLayer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Center(
-                child: Button(
-                  child: Text(
-                    "Get Source code".toUpperCase(),
-                    style: Theme.of(context).primaryTextTheme.button,
-                  ),
-                  onPressed: () async {
-                    const url = "https://github.com/Jim-Eckerlein/tesserapp";
-                    if (await canLaunch(url)) {
-                      await launch(url);
-                    }
-                  },
-                )
-              ),
+                  child: Button(
+                child: Text(
+                  "Get Source code".toUpperCase(),
+                  style: Theme.of(context).primaryTextTheme.button,
+                ),
+                onPressed: () async {
+                  const url = "https://github.com/Jim-Eckerlein/tesserapp";
+                  if (await canLaunch(url)) {
+                    await launch(url);
+                  }
+                },
+              )),
             )
           ],
         ),

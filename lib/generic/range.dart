@@ -12,7 +12,7 @@ Iterable<int> range({
   assert(from != null && to != null && step != null, "Nothing must be null");
   assert(to > from, "Range end must be greater than the range start");
   assert(step > 0, "Step must be positive and not null");
-  
+
   for (var i = from; i < to; i += step) {
     yield i;
   }
@@ -30,7 +30,7 @@ Iterable<double> rangeDoubles({
   assert(from != null && to != null && step != null, "Nothing must be null");
   assert(to > from, "Range end must be greater than the range start");
   assert(step > 0.0, "Step must be positive and not null");
-  
+
   for (var i = from; i < to; i += step) {
     yield i;
   }

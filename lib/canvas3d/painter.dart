@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/canvas3d/rendering.dart';
-import 'package:vector_math/vector_math_64.dart' show Matrix4, makeOrthographicMatrix, makePerspectiveMatrix, makeViewMatrix;
+import 'package:vector_math/vector_math_64.dart'
+    show Matrix4, makeOrthographicMatrix, makePerspectiveMatrix, makeViewMatrix;
 
 class Canvas3dPainter extends CustomPainter {
   final Canvas3d canvas3d;
@@ -137,9 +137,12 @@ class Canvas3dPainter extends CustomPainter {
       canvas.drawPath(path, paint);
     }
 
-    if(outlinePath != null) {
+    if (outlinePath != null) {
       canvas.scale(1.0, aspectRatio);
-      canvas.drawPath(outlinePath.transform(Matrix4.diagonal3Values(1.0, 1.0 / aspectRatio, 1.0).storage), outlinePaint);
+      canvas.drawPath(
+          outlinePath.transform(
+              Matrix4.diagonal3Values(1.0, 1.0 / aspectRatio, 1.0).storage),
+          outlinePaint);
     }
   }
 }

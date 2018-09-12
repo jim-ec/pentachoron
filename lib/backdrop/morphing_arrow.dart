@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:tesserapp/generic/angle.dart';
 
@@ -15,11 +13,11 @@ class MorphingArrow extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) => ConstrainedBox(
-    constraints: BoxConstraints.expand(),
-    child: CustomPaint(
-      painter: _MorphingArrowPainter(advance, color),
-    ),
-  );
+        constraints: BoxConstraints.expand(),
+        child: CustomPaint(
+          painter: _MorphingArrowPainter(advance, color),
+        ),
+      );
 }
 
 @immutable
