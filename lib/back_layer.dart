@@ -7,7 +7,7 @@ class BackLayer extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-//    print("build Inverted=$inverted");
+    final appOptions = AppOptions.of(context);
     return ScrollConfiguration(
         behavior: NoGlowScrollBehaviour(),
         child: ListView(
@@ -75,8 +75,13 @@ class BackLayer extends StatelessWidget {
             ),
             Option(
               label: "Inverted horizontal camera",
-              value: AppOptions.of(context).invertedHorizontalCamera.option.value,
-              onToggled: AppOptions.of(context).invertedHorizontalCamera.option.toggle,
+              value: appOptions.invertedHorizontalCamera.option.value,
+              onToggled: appOptions.invertedHorizontalCamera.option.toggle,
+            ),
+            Option(
+              label: "Inverted vertical camera",
+              value: appOptions.invertedVerticalCamera.option.value,
+              onToggled: appOptions.invertedVerticalCamera.option.toggle,
             ),
             Divider(
               height: 5.0,

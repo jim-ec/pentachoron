@@ -28,7 +28,10 @@ class FrontLayerState extends State<FrontLayer> {
                 (AppOptions.of(context).invertedHorizontalCamera.option.value
                     ? -orbitSensitivity
                     : orbitSensitivity));
-            azimuth += Angle.fromRadians(details.delta.dy * 0.008);
+            azimuth += Angle.fromRadians(details.delta.dy *
+                (AppOptions.of(context).invertedVerticalCamera.option.value
+                    ? -orbitSensitivity
+                    : orbitSensitivity));
           });
         },
         child: Canvas3d(

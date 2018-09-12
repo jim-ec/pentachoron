@@ -20,16 +20,21 @@ class AppOptionsProvider extends StatefulWidget {
 
 class _AppOptionsState extends State<AppOptionsProvider> {
   SingleStatefulAppOption _invertedHorizontalCamera;
+  SingleStatefulAppOption _invertedVerticalCamera;
 
   _AppOptionsState() {
     _invertedHorizontalCamera =
         SingleStatefulAppOption("inverted_horizontal_camera", setState);
+    _invertedVerticalCamera =
+        SingleStatefulAppOption("inverted_vertical_camera", setState);
   }
 
   @override
   Widget build(BuildContext context) => AppOptions(
         invertedHorizontalCamera:
             SingleStatelessAppOption(_invertedHorizontalCamera),
+        invertedVerticalCamera:
+            SingleStatelessAppOption(_invertedVerticalCamera),
         child: widget.child,
       );
 }
@@ -38,10 +43,12 @@ class _AppOptionsState extends State<AppOptionsProvider> {
 /// Obtaining access works through a call to [AppOptions.of].
 class AppOptions extends InheritedWidget {
   final SingleStatelessAppOption invertedHorizontalCamera;
+  final SingleStatelessAppOption invertedVerticalCamera;
 
   const AppOptions({
     Key key,
     @required this.invertedHorizontalCamera,
+    @required this.invertedVerticalCamera,
     @required Widget child,
   })  : assert(child != null),
         super(key: key, child: child);
@@ -53,7 +60,9 @@ class AppOptions extends InheritedWidget {
   @override
   bool updateShouldNotify(final AppOptions old) =>
       invertedHorizontalCamera._creationValue !=
-      old.invertedHorizontalCamera._creationValue;
+          old.invertedHorizontalCamera._creationValue ||
+      invertedVerticalCamera._creationValue !=
+          old.invertedVerticalCamera._creationValue;
 }
 
 /// Instances of this class keep track of the actual option values,
@@ -113,6 +122,5 @@ class SingleStatelessAppOption {
   final SingleStatefulAppOption option;
   final bool _creationValue;
 
-  SingleStatelessAppOption(this.option)
-      : _creationValue = option.value;
+  SingleStatelessAppOption(this.option) : _creationValue = option.value;
 }
