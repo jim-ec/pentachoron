@@ -14,7 +14,7 @@ class Button extends StatelessWidget {
     child: child,
     color: Theme.of(context).toggleableActiveColor,
     borderSide: BorderSide(
-        width: 1.0,
+        width: 0.5,
         color: Theme.of(context).primaryTextTheme.button.color
     ),
     shape: new RoundedRectangleBorder(
