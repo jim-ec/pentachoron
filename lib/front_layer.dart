@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tesserapp/app_options.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
+import 'package:tesserapp/canvas3d/geometry.dart';
+import 'package:tesserapp/canvas3d/polygon.dart';
 import 'package:tesserapp/generic/angle.dart';
 import 'package:vector_math/vector_math_64.dart';
 

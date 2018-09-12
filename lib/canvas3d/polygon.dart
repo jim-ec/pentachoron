@@ -1,4 +1,9 @@
-part of canvas3d;
+
+
+import 'dart:ui';
+
+import 'package:meta/meta.dart';
+import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 /// A polygon consists of an arbitrary count of vertices.
 ///

@@ -1,6 +1,10 @@
-part of canvas3d;
 
-class _Canvas3dPainter extends CustomPainter {
+import 'package:flutter/material.dart';
+import 'package:tesserapp/canvas3d/canvas3d.dart';
+import 'package:tesserapp/canvas3d/rendering.dart';
+import 'package:vector_math/vector_math_64.dart' show Matrix4, makeOrthographicMatrix, makePerspectiveMatrix, makeViewMatrix;
+
+class Canvas3dPainter extends CustomPainter {
   final Canvas3d canvas3d;
 
   final outlinePaint;
@@ -9,7 +13,7 @@ class _Canvas3dPainter extends CustomPainter {
 
   static const farPlane = 100.0;
 
-  _Canvas3dPainter(this.canvas3d)
+  Canvas3dPainter(this.canvas3d)
       : outlinePaint = Paint()
           ..color = canvas3d.outlineColor
           ..style = PaintingStyle.stroke
@@ -53,7 +57,7 @@ class _Canvas3dPainter extends CustomPainter {
 
     final polygonsGlobalSpace =
         canvas3d.geometries.expand((geometry) => geometry.polygons
-            .map((polygon) => _ProcessingPolygon(
+            .map((polygon) => ProcessingPolygon(
                   polygon.positions,
                   polygon.color,
                   geometry.outlined,

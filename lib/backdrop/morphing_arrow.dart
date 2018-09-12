@@ -1,4 +1,7 @@
-part of backdrop;
+
+
+import 'package:flutter/material.dart';
+import 'package:tesserapp/generic/angle.dart';
 
 class MorphingArrow extends StatelessWidget {
   final double advance;
