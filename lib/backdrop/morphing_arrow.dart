@@ -11,12 +11,12 @@ class MorphingArrow extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(final BuildContext context) => Container(
-        constraints: BoxConstraints.expand(),
-        child: CustomPaint(
-          painter: _MorphingArrowPainter(advance, color),
-        ),
-      );
+  Widget build(final BuildContext context) => ConstrainedBox(
+    constraints: BoxConstraints.expand(),
+    child: CustomPaint(
+      painter: _MorphingArrowPainter(advance, color),
+    ),
+  );
 }
 
 @immutable
@@ -68,11 +68,8 @@ class _MorphingArrowPainter extends CustomPainter {
     canvas.translate(size.width / 2, size.height / 2);
     canvas.rotate(Angle.fromPi(advance).radians);
     canvas.translate(-size.width / 2, -size.height / 2);
-    linePoles
-      .map((linePoles) => linePoles.lerp(advance))
-      .forEach((line) => canvas.drawLine(
-          line.from.scale(size.width, size.height),
-          line.to.scale(size.width, size.height),
-          arrowPaint));
+    linePoles.map((linePoles) => linePoles.lerp(advance)).forEach((line) =>
+        canvas.drawLine(line.from.scale(size.width, size.height),
+            line.to.scale(size.width, size.height), arrowPaint));
   }
 }
