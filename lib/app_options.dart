@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 typedef void Toggle();
 
@@ -20,22 +21,32 @@ class AppOptionsProvider extends StatefulWidget {
 class _AppOptionsState extends State<AppOptionsProvider> {
   bool _invertedHorizontalCamera = false;
 
+  _AppOptionsState() {
+    SharedPreferences.getInstance().then((final prefs) => setState(() {
+      SharedPreferences.getInstance().then((final prefs) {
+        _invertedHorizontalCamera = prefs.getBool("invert_h_cam") ?? false;
+      });
+    }));
+  }
+
   void toggleInvertedHorizontalCamera() {
     setState(() {
       _invertedHorizontalCamera = !_invertedHorizontalCamera;
+      SharedPreferences.getInstance().then((final prefs) =>
+          prefs.setBool("invert_h_cam", _invertedHorizontalCamera));
     });
   }
 
   @override
   Widget build(BuildContext context) => AppOptions(
-      invertedHorizontalCamera: _invertedHorizontalCamera,
-      toggle: toggleInvertedHorizontalCamera,
-      child: widget.builder(
-        context,
-        _invertedHorizontalCamera,
-        toggleInvertedHorizontalCamera,
-      ),
-    );
+        invertedHorizontalCamera: _invertedHorizontalCamera,
+        toggle: toggleInvertedHorizontalCamera,
+        child: widget.builder(
+          context,
+          _invertedHorizontalCamera,
+          toggleInvertedHorizontalCamera,
+        ),
+      );
 }
 
 class AppOptions extends InheritedWidget {
