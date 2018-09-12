@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tesserapp/Button.dart';
 import 'package:tesserapp/app_options.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
@@ -121,26 +122,18 @@ class BackLayer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Center(
-                child: OutlineButton(
-                  highlightElevation: 0.0,
+                child: Button(
                   child: Text(
                     "Get Source code".toUpperCase(),
                     style: Theme.of(context).primaryTextTheme.button,
                   ),
-                  color: Theme.of(context).toggleableActiveColor,
-                  borderSide: BorderSide(
-                    width: 1.0,
-                    color: Theme.of(context).primaryTextTheme.button.color
-                  ),
-                  shape: new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(30.0)),
                   onPressed: () async {
                     const url = "https://github.com/Jim-Eckerlein/tesserapp";
                     if (await canLaunch(url)) {
                       await launch(url);
                     }
                   },
-                ),
+                )
               ),
             )
           ],
