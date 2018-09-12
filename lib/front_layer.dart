@@ -35,35 +35,33 @@ class FrontLayerState extends State<FrontLayer> {
           });
         },
         child: Canvas3d(
-          parameters: DrawParameters(
-            lightDirection: Vector3(0.0, 0.0, 1.0),
-            lightSpace: LightSpace.view,
-            outlineMode: OutlineMode.occluded,
-            outlineColor: Theme.of(context).accentColor,
-            cameraPosition: CameraPosition.fromOrbitEuler(
-              distance: 10.0,
-              polar: polar,
-              azimuth: azimuth,
-            ),
-            geometries: [
-              Geometry(
-                translation: Vector3(4.0, 0.0, 0.0),
-                color: Theme.of(context).scaffoldBackgroundColor,
-                polygons: cube(
-                  center: Vector3.zero(),
-                  sideLength: 1.0,
-                ),
-              ),
-              Geometry(
-                color: Theme.of(context).primaryColor,
-                outlined: true,
-                polygons: cube(
-                  center: Vector3.zero(),
-                  sideLength: 2.0,
-                ),
-              ),
-            ],
+          lightDirection: Vector3(0.0, 0.0, 1.0),
+          lightSpace: LightSpace.view,
+          outlineMode: OutlineMode.occluded,
+          outlineColor: Theme.of(context).accentColor,
+          cameraPosition: CameraPosition.fromOrbitEuler(
+            distance: 10.0,
+            polar: polar,
+            azimuth: azimuth,
           ),
+          geometries: [
+            Geometry(
+              translation: Vector3(4.0, 0.0, 0.0),
+              color: Theme.of(context).scaffoldBackgroundColor,
+              polygons: cube(
+                center: Vector3.zero(),
+                sideLength: 1.0,
+              ),
+            ),
+            Geometry(
+              color: Theme.of(context).primaryColor,
+              outlined: true,
+              polygons: cube(
+                center: Vector3.zero(),
+                sideLength: 2.0,
+              ),
+            ),
+          ],
         ),
       );
 }

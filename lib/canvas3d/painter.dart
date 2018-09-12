@@ -1,21 +1,22 @@
 part of canvas3d;
 
 class _Canvas3dPainter extends CustomPainter {
-  final DrawParameters parameters;
-
+  
+  final Canvas3d canvas3d;
+  
   final outlinePaint;
 
   static const nearPlane = 0.1;
 
   static const farPlane = 100.0;
 
-  _Canvas3dPainter(this.parameters)
+  _Canvas3dPainter(this.canvas3d)
       : outlinePaint = Paint()
-          ..color = parameters.outlineColor
+          ..color = canvas3d.outlineColor
           ..style = PaintingStyle.stroke
           ..strokeWidth = 0.01
           ..strokeJoin = StrokeJoin.round
-          ..isAntiAlias = parameters.antiAliasing;
+          ..isAntiAlias = canvas3d.antiAliasing;
 
   @override
   bool shouldRepaint(final CustomPainter oldDelegate) => true;
@@ -28,30 +29,30 @@ class _Canvas3dPainter extends CustomPainter {
       ..scale(size.width / 2.0, -size.height / 2.0)
       ..clipRect(Rect.fromLTRB(-1.0, 1.0, 1.0, -1.0));
 
-    final projection = !parameters.orthographicProjection
+    final projection = !canvas3d.orthographicProjection
         ? makePerspectiveMatrix(
-            parameters.fov.radians,
+            canvas3d.fov.radians,
             size.width / size.height,
             nearPlane,
             farPlane,
           )
         : makeOrthographicMatrix(
-            (parameters.frustumSize / 2.0) * -size.width / size.height,
-            (parameters.frustumSize / 2.0) * size.width / size.height,
-            -parameters.frustumSize / 2.0,
-            parameters.frustumSize / 2.0,
+            (canvas3d.frustumSize / 2.0) * -size.width / size.height,
+            (canvas3d.frustumSize / 2.0) * size.width / size.height,
+            -canvas3d.frustumSize / 2.0,
+            canvas3d.frustumSize / 2.0,
             nearPlane,
             farPlane,
           );
 
     final view = makeViewMatrix(
-      parameters.cameraPosition.eye,
-      parameters.cameraPosition.focus,
-      parameters.cameraPosition.up,
+      canvas3d.cameraPosition.eye,
+      canvas3d.cameraPosition.focus,
+      canvas3d.cameraPosition.up,
     );
 
     final polygonsGlobalSpace =
-        parameters.geometries.expand((geometry) => geometry.polygons
+        canvas3d.geometries.expand((geometry) => geometry.polygons
             .map((polygon) => _ProcessingPolygon(
                   polygon.positions,
                   polygon.color,
@@ -61,12 +62,12 @@ class _Canvas3dPainter extends CustomPainter {
             .map((polygon) => polygon.transformed(geometry.transform)));
 
     final polygonsViewSpace = polygonsGlobalSpace
-        .map((polygon) => (parameters.lightSpace == LightSpace.global)
-            ? polygon.illuminated(parameters.lightDirection)
+        .map((polygon) => (canvas3d.lightSpace == LightSpace.global)
+            ? polygon.illuminated(canvas3d.lightDirection)
             : polygon)
         .map((polygon) => polygon.transformed(view))
-        .map((polygon) => (parameters.lightSpace == LightSpace.view)
-            ? polygon.illuminated(parameters.lightDirection)
+        .map((polygon) => (canvas3d.lightSpace == LightSpace.view)
+            ? polygon.illuminated(canvas3d.lightDirection)
             : polygon);
 
     // Depth sort polygons.
@@ -77,8 +78,8 @@ class _Canvas3dPainter extends CustomPainter {
     // When orthographic projection is used, there is no "too near".
     final distanceClippedPolygons = depthSortedPolygons.where((polygon) =>
         polygon.positions.every((v) =>
-            (v.z < 0.0 || parameters.orthographicProjection) &&
-            v.z > -parameters.viewDistance));
+            (v.z < 0.0 || canvas3d.orthographicProjection) &&
+            v.z > -canvas3d.viewDistance));
 
     // Transform into projective space.
     final polygonsProjectiveSpace = distanceClippedPolygons
@@ -101,7 +102,7 @@ class _Canvas3dPainter extends CustomPainter {
         .any((v) => v.x < 1.0 && v.x > -1.0 && v.y < 1.0 && v.y > -1.0));
 
     final drawPolygons = clippedPolygons.toList();
-    var outline = (parameters.outlineMode != OutlineMode.off) ? Path() : null;
+    var outline = (canvas3d.outlineMode != OutlineMode.off) ? Path() : null;
 
     for (final polygon in drawPolygons) {
       // Convert polygon position vectors into offsets.
@@ -113,10 +114,10 @@ class _Canvas3dPainter extends CustomPainter {
       final path = Path()..addPolygon(offsets, false);
 
       // Modify outline according to current path.
-      if (parameters.outlineMode != OutlineMode.off && polygon.outlined) {
+      if (canvas3d.outlineMode != OutlineMode.off && polygon.outlined) {
         // Add current polygon path to outline path.
         outline = Path.combine(PathOperation.union, outline, path);
-      } else if (parameters.outlineMode == OutlineMode.occluded) {
+      } else if (canvas3d.outlineMode == OutlineMode.occluded) {
         // Remove current path from outline, so that the outline outlines
         // only the visible, un-obscured part of the geometry
         // rather than simply the whole geometry.
@@ -126,7 +127,7 @@ class _Canvas3dPainter extends CustomPainter {
 
       final paint = Paint()
         ..color = polygon.color
-        ..isAntiAlias = parameters.antiAliasing;
+        ..isAntiAlias = canvas3d.antiAliasing;
 
       canvas.drawPath(path, paint);
     }
