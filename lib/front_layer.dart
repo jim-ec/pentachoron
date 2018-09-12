@@ -38,7 +38,7 @@ class FrontLayerState extends State<FrontLayer> {
           lightDirection: Vector3(0.0, 0.0, 1.0),
           lightSpace: LightSpace.view,
           outlineMode: OutlineMode.occluded,
-          outlineColor: Theme.of(context).accentColor,
+          outlineColor: Theme.of(context).textTheme.title.color,
           cameraPosition: CameraPosition.fromOrbitEuler(
             distance: 10.0,
             polar: polar,
@@ -54,7 +54,7 @@ class FrontLayerState extends State<FrontLayer> {
               ),
             ),
             Geometry(
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).accentColor,
               outlined: true,
               polygons: cube(
                 center: Vector3.zero(),
