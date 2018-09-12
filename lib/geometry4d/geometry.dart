@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:meta/meta.dart';
+import 'package:tesserapp/canvas3d/polygon.dart';
+import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 @immutable
 class Vertex4 {
@@ -15,9 +17,13 @@ class Tetrahedron4 {
 
   const Tetrahedron4(this.base0, this.base1, this.base2, this.tip);
   
-//  List<Polygon> get polygons => [
-//    Polygon()
-//  ]
+  List<Polygon> get polygons => [
+    Polygon([
+      Vector3(base0.x, base0.y, base0.z),
+      Vector3(base1.x, base1.y, base1.z),
+      Vector3(base2.x, base2.y, base2.z),
+    ])
+  ];
 }
 
 /// The base four-dimensional geometry, in the same manner as the triangle

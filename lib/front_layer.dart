@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tesserapp/app_options.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/canvas3d/geometry.dart';
-import 'package:tesserapp/canvas3d/polygon.dart';
 import 'package:tesserapp/generic/angle.dart';
+import 'package:tesserapp/geometry4d/geometry.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 class FrontLayer extends StatefulWidget {
@@ -48,20 +48,9 @@ class FrontLayerState extends State<FrontLayer> {
           ),
           geometries: [
             Geometry(
-              translation: Vector3(4.0, 0.0, 0.0),
-              color: Theme.of(context).scaffoldBackgroundColor,
-              polygons: cube(
-                center: Vector3.zero(),
-                sideLength: 1.0,
-              ),
-            ),
-            Geometry(
               color: Theme.of(context).accentColor,
               outlined: true,
-              polygons: cube(
-                center: Vector3.zero(),
-                sideLength: 2.0,
-              ),
+              polygons: Pentachoron4.simple().baseCell.polygons
             ),
           ],
         ),

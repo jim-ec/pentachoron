@@ -139,6 +139,7 @@ class Canvas3dPainter extends CustomPainter {
 
     if (outlinePath != null) {
       canvas.scale(1.0, aspectRatio);
+      outlinePath.close();
       canvas.drawPath(
           outlinePath.transform(
               Matrix4.diagonal3Values(1.0, 1.0 / aspectRatio, 1.0).storage),
