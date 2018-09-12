@@ -6,6 +6,7 @@ import 'package:tesserapp/canvas3d/polygon.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3, Matrix4;
 
 class Geometry {
+  final Color color;
   final List<Polygon> polygons;
   final bool outlined;
   final Matrix4 transform;
@@ -14,8 +15,8 @@ class Geometry {
   /// Create a geometry from a set of points to be transformed through
   /// [rotation], [translation] and [scale], and a default color.
   Geometry(
-      {@required final List<Polygon> polygons,
-      final Color color,
+      {@required this.polygons,
+      @required this.color,
       this.outlined = false,
       Rotation rotation,
       Vector3 translation,
@@ -23,11 +24,5 @@ class Geometry {
       this.culling = CullMode.backFacing})
       : transform = rotation?.transform ??
             Matrix4.identity() *
-                Matrix4.translation(translation ?? Vector3.zero()),
-        polygons = polygons
-            .map((poly) => Polygon(
-                  poly.positions,
-                  poly.color ?? color ?? Color(0xff000000),
-                ))
-            .toList();
+                Matrix4.translation(translation ?? Vector3.zero());
 }

@@ -15,13 +15,15 @@ class ProcessingPolygon extends Polygon
   final bool outlined;
 
   final CullMode culling;
+  
+  final Color color;
 
   ProcessingPolygon(
     final List<Vector3> positions,
-    final Color color,
+    this.color,
     this.outlined,
     this.culling,
-  ) : super(positions, color);
+  ) : super(positions);
 
   /// This polygon's gravitational center.
   Vector3 get barycenter =>

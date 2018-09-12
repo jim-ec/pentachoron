@@ -59,7 +59,7 @@ class Canvas3dPainter extends CustomPainter {
         canvas3d.geometries.expand((geometry) => geometry.polygons
             .map((polygon) => ProcessingPolygon(
                   polygon.positions,
-                  polygon.color,
+                  geometry.color,
                   geometry.outlined,
                   geometry.culling,
                 ))
