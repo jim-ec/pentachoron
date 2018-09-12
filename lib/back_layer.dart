@@ -9,140 +9,142 @@ class BackLayer extends StatelessWidget {
     final appOptions = AppOptions.of(context);
     return ScrollConfiguration(
       behavior: NoGlowScrollBehaviour(),
-      child: ListView(
-        physics: ClampingScrollPhysics(),
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                "Geometry",
-                style: Theme.of(context).primaryTextTheme.caption,
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      "16 Vertices",
-                      style: Theme.of(context).primaryTextTheme.body1,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      "32 Edges",
-                      style: Theme.of(context).primaryTextTheme.body1,
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      "24 Faces",
-                      style: Theme.of(context).primaryTextTheme.body1,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      "8 Cells",
-                      style: Theme.of(context).primaryTextTheme.body1,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Divider(
-            height: 5.0,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                "Options",
-                style: Theme.of(context).primaryTextTheme.caption,
-              ),
-            ),
-          ),
-          Option(
-            label: "Dark Theme",
-            value: DynamicTheme.of(context).brightness == Brightness.dark,
-            onToggled: () {
-              DynamicTheme.of(context).setBrightness(
-                  DynamicTheme.of(context).brightness == Brightness.light
-                      ? Brightness.dark
-                      : Brightness.light);
-            },
-          ),
-          Option(
-            label: "Inverted horizontal camera",
-            value: appOptions.invertedHorizontalCamera.option.value,
-            onToggled: appOptions.invertedHorizontalCamera.option.toggle,
-          ),
-          Option(
-            label: "Inverted vertical camera",
-            value: appOptions.invertedVerticalCamera.option.value,
-            onToggled: appOptions.invertedVerticalCamera.option.toggle,
-          ),
-          Divider(
-            height: 5.0,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                "Credits",
-                style: Theme.of(context).primaryTextTheme.caption,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Center(
-              child: Text(
-                "My hobby project to play with four dimensional spatials.\n"
-                    "The app is written with Flutter.\n\n"
-                    "The source code is freely available at my GitHub repository.",
-                style: Theme.of(context).primaryTextTheme.body1,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Center(
-              child: OutlineButton(
-                highlightElevation: 0.0,
+      child: Scrollbar(
+        child: ListView(
+          physics: ClampingScrollPhysics(),
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
                 child: Text(
-                  "Get Source code".toUpperCase(),
-                  style: Theme.of(context).primaryTextTheme.button,
+                  "Geometry",
+                  style: Theme.of(context).primaryTextTheme.caption,
                 ),
-                color: Theme.of(context).toggleableActiveColor,
-                borderSide: BorderSide(
-                  width: 1.0,
-                  color: Theme.of(context).primaryTextTheme.button.color
-                ),
-                shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(30.0)),
-                onPressed: () async {
-                  const url = "https://github.com/Jim-Eckerlein/tesserapp";
-                  if (await canLaunch(url)) {
-                    await launch(url);
-                  }
-                },
               ),
             ),
-          )
-        ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        "16 Vertices",
+                        style: Theme.of(context).primaryTextTheme.body1,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        "32 Edges",
+                        style: Theme.of(context).primaryTextTheme.body1,
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        "24 Faces",
+                        style: Theme.of(context).primaryTextTheme.body1,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        "8 Cells",
+                        style: Theme.of(context).primaryTextTheme.body1,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Divider(
+              height: 5.0,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Text(
+                  "Options",
+                  style: Theme.of(context).primaryTextTheme.caption,
+                ),
+              ),
+            ),
+            Option(
+              label: "Dark Theme",
+              value: DynamicTheme.of(context).brightness == Brightness.dark,
+              onToggled: () {
+                DynamicTheme.of(context).setBrightness(
+                    DynamicTheme.of(context).brightness == Brightness.light
+                        ? Brightness.dark
+                        : Brightness.light);
+              },
+            ),
+            Option(
+              label: "Inverted horizontal camera",
+              value: appOptions.invertedHorizontalCamera.option.value,
+              onToggled: appOptions.invertedHorizontalCamera.option.toggle,
+            ),
+            Option(
+              label: "Inverted vertical camera",
+              value: appOptions.invertedVerticalCamera.option.value,
+              onToggled: appOptions.invertedVerticalCamera.option.toggle,
+            ),
+            Divider(
+              height: 5.0,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Text(
+                  "Credits",
+                  style: Theme.of(context).primaryTextTheme.caption,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: Text(
+                  "My hobby project to play with four dimensional spatials.\n"
+                      "The app is written with Flutter.\n\n"
+                      "The source code is freely available at my GitHub repository.",
+                  style: Theme.of(context).primaryTextTheme.body1,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: OutlineButton(
+                  highlightElevation: 0.0,
+                  child: Text(
+                    "Get Source code".toUpperCase(),
+                    style: Theme.of(context).primaryTextTheme.button,
+                  ),
+                  color: Theme.of(context).toggleableActiveColor,
+                  borderSide: BorderSide(
+                    width: 1.0,
+                    color: Theme.of(context).primaryTextTheme.button.color
+                  ),
+                  shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(30.0)),
+                  onPressed: () async {
+                    const url = "https://github.com/Jim-Eckerlein/tesserapp";
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    }
+                  },
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
