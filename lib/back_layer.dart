@@ -4,123 +4,136 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 
 class BackLayer extends StatelessWidget {
-
   @override
   Widget build(final BuildContext context) {
     final appOptions = AppOptions.of(context);
     return ScrollConfiguration(
-        behavior: NoGlowScrollBehaviour(),
-        child: ListView(
-          physics: ClampingScrollPhysics(),
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Text(
-                  "Geometry",
-                  style: Theme.of(context).textTheme.caption,
-                ),
+      behavior: NoGlowScrollBehaviour(),
+      child: ListView(
+        physics: ClampingScrollPhysics(),
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Text(
+                "Geometry",
+                style: Theme.of(context).primaryTextTheme.caption,
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text("16 Vertices"),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      "16 Vertices",
+                      style: Theme.of(context).primaryTextTheme.body1,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text("32 Edges"),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      "32 Edges",
+                      style: Theme.of(context).primaryTextTheme.body1,
                     ),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text("24 Faces"),
+                  ),
+                ],
+              ),
+              Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      "24 Faces",
+                      style: Theme.of(context).primaryTextTheme.body1,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text("8 Cells"),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      "8 Cells",
+                      style: Theme.of(context).primaryTextTheme.body1,
                     ),
-                  ],
-                ),
-              ],
-            ),
-            Divider(
-              height: 5.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Text(
-                  "Options",
-                  style: Theme.of(context).textTheme.caption,
-                ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Divider(
+            height: 5.0,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Text(
+                "Options",
+                style: Theme.of(context).primaryTextTheme.caption,
               ),
             ),
-            Option(
-              label: "Dark Theme",
-              value: DynamicTheme.of(context).brightness == Brightness.dark,
-              onToggled: () {
-                DynamicTheme.of(context).setBrightness(
-                    DynamicTheme.of(context).brightness == Brightness.light
-                        ? Brightness.dark
-                        : Brightness.light);
-              },
-            ),
-            Option(
-              label: "Inverted horizontal camera",
-              value: appOptions.invertedHorizontalCamera.option.value,
-              onToggled: appOptions.invertedHorizontalCamera.option.toggle,
-            ),
-            Option(
-              label: "Inverted vertical camera",
-              value: appOptions.invertedVerticalCamera.option.value,
-              onToggled: appOptions.invertedVerticalCamera.option.toggle,
-            ),
-            Divider(
-              height: 5.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Text(
-                  "Credits",
-                  style: Theme.of(context).textTheme.caption,
-                ),
+          ),
+          Option(
+            label: "Dark Theme",
+            value: DynamicTheme.of(context).brightness == Brightness.dark,
+            onToggled: () {
+              DynamicTheme.of(context).setBrightness(
+                  DynamicTheme.of(context).brightness == Brightness.light
+                      ? Brightness.dark
+                      : Brightness.light);
+            },
+          ),
+          Option(
+            label: "Inverted horizontal camera",
+            value: appOptions.invertedHorizontalCamera.option.value,
+            onToggled: appOptions.invertedHorizontalCamera.option.toggle,
+          ),
+          Option(
+            label: "Inverted vertical camera",
+            value: appOptions.invertedVerticalCamera.option.value,
+            onToggled: appOptions.invertedVerticalCamera.option.toggle,
+          ),
+          Divider(
+            height: 5.0,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Text(
+                "Credits",
+                style: Theme.of(context).primaryTextTheme.caption,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Center(
-                child: Text(
-                    "My hobby project to play with four dimensional spatials.\n"
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: Text(
+                "My hobby project to play with four dimensional spatials.\n"
                     "The app is written with Flutter.\n\n"
-                    "The source code is freely available at my GitHub repository."),
+                    "The source code is freely available at my GitHub repository.",
+                style: Theme.of(context).primaryTextTheme.body1,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Center(
-                child: FlatButton(
-                  child: Text("Source code".toUpperCase()),
-                  onPressed: () async {
-                    const url = "https://github.com/Jim-Eckerlein/tesserapp";
-                    if (await canLaunch(url)) {
-                      await launch(url);
-                    }
-                  },
-                ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: FlatButton(
+                child: Text("Source code".toUpperCase(),style: Theme.of(context).primaryTextTheme.button,),
+                onPressed: () async {
+                  const url = "https://github.com/Jim-Eckerlein/tesserapp";
+                  if (await canLaunch(url)) {
+                    await launch(url);
+                  }
+                },
               ),
-            )
-          ],
-        ),
-      );
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
 
@@ -150,7 +163,10 @@ class Option extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(label),
+                Text(
+                  label,
+                  style: Theme.of(context).primaryTextTheme.body1,
+                ),
                 Checkbox(
                   value: value,
                   onChanged: (value) => onToggled(),
