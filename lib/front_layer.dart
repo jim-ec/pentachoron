@@ -12,8 +12,8 @@ class FrontLayer extends StatefulWidget {
 }
 
 class FrontLayerState extends State<FrontLayer> {
-  var polar = Angle.zero();
-  var azimuth = Angle.zero();
+  var polar = Angle.fromDegrees(30.0);
+  var azimuth = Angle.fromDegrees(20.0);
 
   @override
   void initState() {
