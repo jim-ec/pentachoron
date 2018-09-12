@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tesserapp/backdrop/morphing_arrow.dart';
 import 'package:tesserapp/button.dart';
+import 'package:tesserapp/generic/number_range.dart';
 
 class Backdrop extends StatefulWidget {
   final Widget backLayer;
@@ -94,7 +95,8 @@ class _BackdropState extends State<Backdrop>
 
   Widget buildBackBar() => Material(
         color: Theme.of(context).primaryColor,
-        elevation: 2.0 * controller.value,
+        elevation: remap(controller.value, 0.0, 1.0, -2.0, 2.0)
+            .clamp(0.0, double.infinity),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Stack(
