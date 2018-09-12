@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-typedef void Toggle();
-
 typedef Widget AppOptionsWidgetBuilder(
   final BuildContext context,
-  final bool inverted,
-  final Toggle toggle,
 );
 
 class AppOptionsProvider extends StatefulWidget {
@@ -18,45 +14,67 @@ class AppOptionsProvider extends StatefulWidget {
   _AppOptionsState createState() => _AppOptionsState();
 }
 
-class _AppOptionsState extends State<AppOptionsProvider> {
-  bool _invertedHorizontalCamera = false;
+typedef void OnOptionChanged(VoidCallback fn);
 
-  _AppOptionsState() {
-    SharedPreferences.getInstance().then((final prefs) => setState(() {
-      SharedPreferences.getInstance().then((final prefs) {
-        _invertedHorizontalCamera = prefs.getBool("invert_h_cam") ?? false;
-      });
-    }));
+class _SingleStatefulAppOption {
+  final String key;
+  final OnOptionChanged onChanged;
+
+  bool _value = false;
+
+  set value(value) {
+    onChanged(() {
+      _value = value;
+    });
   }
 
-  void toggleInvertedHorizontalCamera() {
-    setState(() {
-      _invertedHorizontalCamera = !_invertedHorizontalCamera;
-      SharedPreferences.getInstance().then((final prefs) =>
-          prefs.setBool("invert_h_cam", _invertedHorizontalCamera));
+  get value => _value;
+
+  _SingleStatefulAppOption(
+    final String name,
+    this.onChanged,
+  ) : key = "jim.io.tesserapp.options.$name" {
+    SharedPreferences.getInstance().then((final prefs) {
+      value = prefs.getBool(key) ?? false;
     });
+  }
+
+  void toggle() {
+    value = !value;
+  }
+}
+
+@immutable
+class _SingleStatelessAppOption {
+  final _SingleStatefulAppOption actualOption;
+  final bool creationValue;
+
+  _SingleStatelessAppOption(this.actualOption) : creationValue = actualOption.value;
+}
+
+class _AppOptionsState extends State<AppOptionsProvider> {
+  _SingleStatefulAppOption _invertedHorizontalCamera;
+
+  _AppOptionsState() {
+    _invertedHorizontalCamera = _SingleStatefulAppOption("invert_h_cam", setState);
   }
 
   @override
   Widget build(BuildContext context) => AppOptions(
-        invertedHorizontalCamera: _invertedHorizontalCamera,
-        toggle: toggleInvertedHorizontalCamera,
+        invertedHorizontalCamera:
+            _SingleStatelessAppOption(_invertedHorizontalCamera),
         child: widget.builder(
           context,
-          _invertedHorizontalCamera,
-          toggleInvertedHorizontalCamera,
         ),
       );
 }
 
 class AppOptions extends InheritedWidget {
-  final bool invertedHorizontalCamera;
-  final Function toggle;
+  final _SingleStatelessAppOption invertedHorizontalCamera;
 
   const AppOptions({
     Key key,
     @required this.invertedHorizontalCamera,
-    @required this.toggle,
     @required Widget child,
   })  : assert(child != null),
         super(key: key, child: child);
@@ -67,5 +85,6 @@ class AppOptions extends InheritedWidget {
 
   @override
   bool updateShouldNotify(final AppOptions old) =>
-      invertedHorizontalCamera != old.invertedHorizontalCamera;
+      invertedHorizontalCamera.creationValue !=
+      old.invertedHorizontalCamera.creationValue;
 }

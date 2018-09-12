@@ -75,8 +75,8 @@ class BackLayer extends StatelessWidget {
             ),
             Option(
               label: "Inverted horizontal camera",
-              value: AppOptions.of(context).invertedHorizontalCamera,
-              onToggled: AppOptions.of(context).toggle,
+              value: AppOptions.of(context).invertedHorizontalCamera.actualOption.value,
+              onToggled: AppOptions.of(context).invertedHorizontalCamera.actualOption.toggle,
             ),
             Divider(
               height: 5.0,

@@ -16,9 +16,7 @@ class TesserApp extends StatelessWidget {
               title: "Tesserapp",
               debugShowCheckedModeBanner: false,
               theme: theme,
-              home: AppOptionsProvider(builder: (context, inverted, toggle) {
-                return Home();
-              }),
+              home: AppOptionsProvider(builder: (context) => Home()),
             ),
       );
 }
