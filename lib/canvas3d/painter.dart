@@ -1,9 +1,8 @@
 part of canvas3d;
 
 class _Canvas3dPainter extends CustomPainter {
-  
   final Canvas3d canvas3d;
-  
+
   final outlinePaint;
 
   static const nearPlane = 0.1;
@@ -14,7 +13,6 @@ class _Canvas3dPainter extends CustomPainter {
       : outlinePaint = Paint()
           ..color = canvas3d.outlineColor
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 0.01
           ..strokeJoin = StrokeJoin.round
           ..isAntiAlias = canvas3d.antiAliasing;
 
@@ -23,6 +21,8 @@ class _Canvas3dPainter extends CustomPainter {
 
   @override
   void paint(final Canvas canvas, final Size size) {
+    final aspectRatio = size.width / size.height;
+
     // Transform canvas into viewport space:
     canvas
       ..translate(size.width / 2.0, size.height / 2.0)
@@ -32,13 +32,13 @@ class _Canvas3dPainter extends CustomPainter {
     final projection = !canvas3d.orthographicProjection
         ? makePerspectiveMatrix(
             canvas3d.fov.radians,
-            size.width / size.height,
+            aspectRatio,
             nearPlane,
             farPlane,
           )
         : makeOrthographicMatrix(
-            (canvas3d.frustumSize / 2.0) * -size.width / size.height,
-            (canvas3d.frustumSize / 2.0) * size.width / size.height,
+            (canvas3d.frustumSize / 2.0) * -aspectRatio,
+            (canvas3d.frustumSize / 2.0) * aspectRatio,
             -canvas3d.frustumSize / 2.0,
             canvas3d.frustumSize / 2.0,
             nearPlane,
@@ -102,7 +102,8 @@ class _Canvas3dPainter extends CustomPainter {
         .any((v) => v.x < 1.0 && v.x > -1.0 && v.y < 1.0 && v.y > -1.0));
 
     final drawPolygons = clippedPolygons.toList();
-    var outline = (canvas3d.outlineMode != OutlineMode.off) ? Path() : null;
+    var outlinePath = (canvas3d.outlineMode != OutlineMode.off) ? Path() : null;
+    outlinePaint.strokeWidth = 0.01 / aspectRatio;
 
     for (final polygon in drawPolygons) {
       // Convert polygon position vectors into offsets.
@@ -116,13 +117,13 @@ class _Canvas3dPainter extends CustomPainter {
       // Modify outline according to current path.
       if (canvas3d.outlineMode != OutlineMode.off && polygon.outlined) {
         // Add current polygon path to outline path.
-        outline = Path.combine(PathOperation.union, outline, path);
+        outlinePath = Path.combine(PathOperation.union, outlinePath, path);
       } else if (canvas3d.outlineMode == OutlineMode.occluded) {
         // Remove current path from outline, so that the outline outlines
         // only the visible, un-obscured part of the geometry
         // rather than simply the whole geometry.
         // Is is quite performance heavy when having a lot of polygons.
-        outline = Path.combine(PathOperation.difference, outline, path);
+        outlinePath = Path.combine(PathOperation.difference, outlinePath, path);
       }
 
       final paint = Paint()
@@ -131,6 +132,10 @@ class _Canvas3dPainter extends CustomPainter {
 
       canvas.drawPath(path, paint);
     }
-    canvas.drawPath(outline, outlinePaint);
+
+    if(outlinePath != null) {
+      canvas.scale(1.0, aspectRatio);
+      canvas.drawPath(outlinePath.transform(Matrix4.diagonal3Values(1.0, 1.0 / aspectRatio, 1.0).storage), outlinePaint);
+    }
   }
 }
