@@ -16,14 +16,29 @@ class Tetrahedron4 {
   final Vertex4 base0, base1, base2, tip;
 
   const Tetrahedron4(this.base0, this.base1, this.base2, this.tip);
-  
+
   List<Polygon> get polygons => [
-    Polygon([
-      Vector3(base0.x, base0.y, base0.z),
-      Vector3(base1.x, base1.y, base1.z),
-      Vector3(base2.x, base2.y, base2.z),
-    ])
-  ];
+        Polygon([
+          Vector3(base0.x, base0.y, base0.z),
+          Vector3(base1.x, base1.y, base1.z),
+          Vector3(base2.x, base2.y, base2.z),
+        ]),
+        Polygon([
+          Vector3(base0.x, base0.y, base0.z),
+          Vector3(base1.x, base1.y, base1.z),
+          Vector3(tip.x, tip.y, tip.z),
+        ]),
+        Polygon([
+          Vector3(base1.x, base1.y, base1.z),
+          Vector3(base2.x, base2.y, base2.z),
+          Vector3(tip.x, tip.y, tip.z),
+        ]),
+        Polygon([
+          Vector3(base1.x, base1.y, base1.z),
+          Vector3(base0.x, base0.y, base0.z),
+          Vector3(tip.x, tip.y, tip.z),
+        ]),
+      ];
 }
 
 /// The base four-dimensional geometry, in the same manner as the triangle
@@ -49,10 +64,10 @@ class Pentachoron4 {
   /// The base cell is origin-centered.
   Pentachoron4.simple()
       : this(
-          Vertex4(1.0 / sqrt(10), 1.0 / sqrt(6), -2.0 / sqrt(3), 0.0),
-          Vertex4(1.0 / sqrt(10), -sqrt(3.0 / 2.0), 0.0, 0.0),
-          Vertex4(-2.0 * sqrt(2.0 / 5.0), 0.0, 0.0, 0.0),
-          Vertex4(1.0 / sqrt(10), 1.0 / sqrt(6), 1.0 / sqrt(3), 1.0),
-          Vertex4(1.0 / sqrt(10), 1.0 / sqrt(6), 1.0 / sqrt(3), -1.0),
+          Vertex4(1.0, 1.0, 1.0, -1.0 / sqrt(5.0)),
+          Vertex4(1.0, -1.0, -1.0, -1.0 / sqrt(5.0)),
+          Vertex4(-1.0, 1.0, -1.0, -1.0 / sqrt(5.0)),
+          Vertex4(-1.0, -1.0, 1.0, -1.0 / sqrt(5.0)),
+          Vertex4(0.0, 0.0, 0.0, sqrt(5.0) - 1.0 / sqrt(5.0)),
         );
 }

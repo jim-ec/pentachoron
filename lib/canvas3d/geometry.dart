@@ -22,7 +22,6 @@ class Geometry {
       Vector3 translation,
       Vector3 scale,
       this.culling = CullMode.backFacing})
-      : transform = rotation?.transform ??
-            Matrix4.identity() *
-                Matrix4.translation(translation ?? Vector3.zero());
+      : transform = Matrix4.translation(translation ?? Vector3.zero()) *
+                (rotation ?? Rotation.zero()).transform;
 }

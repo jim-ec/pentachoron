@@ -12,6 +12,8 @@ class Polygon {
   Polygon(this.positions) {
     assert(positions.length >= 3, "Each polygon must have at least 3 vertices");
   }
+
+  Polygon get flippedNormal => Polygon(positions.reversed.toList());
 }
 
 List<Polygon> cube({
@@ -39,3 +41,33 @@ List<Polygon> cube({
     Polygon([positions[2], positions[3], positions[7], positions[6]]),
   ];
 }
+
+List<Polygon> pyramid({final double edgeLength, final double height}) => [
+      Polygon([
+        Vector3(-edgeLength / 2, edgeLength / 2, 0.0),
+        Vector3(-edgeLength / 2, -edgeLength / 2, 0.0),
+        Vector3(edgeLength / 2, -edgeLength / 2, 0.0),
+        Vector3(edgeLength / 2, edgeLength / 2, 0.0),
+      ]),
+      Polygon([
+        Vector3(-edgeLength / 2, -edgeLength / 2, 0.0),
+        Vector3(-edgeLength / 2, edgeLength / 2, 0.0),
+        Vector3(0.0, 0.0, height),
+      ]),
+      Polygon([
+        Vector3(edgeLength / 2, -edgeLength / 2, 0.0),
+        Vector3(-edgeLength / 2, -edgeLength / 2, 0.0),
+        Vector3(0.0, 0.0, height),
+      ]),
+      Polygon([
+        Vector3(edgeLength / 2, edgeLength / 2, 0.0),
+        Vector3(edgeLength / 2, -edgeLength / 2, 0.0),
+        Vector3(0.0, 0.0, height),
+      ]),
+      Polygon([
+        Vector3(-edgeLength / 2, edgeLength / 2, 0.0),
+        Vector3(edgeLength / 2, edgeLength / 2, 0.0),
+        Vector3(0.0, 0.0, height),
+      ]),
+    ];
+

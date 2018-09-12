@@ -162,4 +162,7 @@ class Rotation {
       : transform = Matrix4.rotationY(yaw.radians) *
             Matrix4.rotationZ(pitch.radians) *
             Matrix4.rotationX(roll.radians);
+
+  static Rotation zero() =>
+      Rotation.fromEuler(Angle.zero(), Angle.zero(), Angle.zero());
 }
