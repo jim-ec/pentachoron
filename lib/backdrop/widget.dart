@@ -146,7 +146,7 @@ class _BackdropState extends State<Backdrop>
     final List<Widget> stackedWidget = [
       Material(
         borderRadius: frontLayerBorderRadius,
-        elevation: 4.0,
+        elevation: 24.0,
         color: Theme.of(context).scaffoldBackgroundColor,
         child: frontLayer,
       )
