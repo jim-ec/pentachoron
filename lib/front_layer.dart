@@ -69,9 +69,7 @@ class FrontLayerState extends State<FrontLayer> {
                       Vector.ofY(1.0),
                       Vector.ofZ(1.0),
                     ]);
-                    final plane = Plane.fromNormal(
-                        a: Vector.ofZ(sliderValue), n: Vector.ofZ(1.0));
-                    return polygonsOfTriangle(tetrahedron.intersected(plane));
+                    return polygonsOfTriangle(tetrahedron.intersected(sliderValue));
                   })(),
                 ),
               ]

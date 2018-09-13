@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tesserapp/generic/number_range.dart';
-import 'package:tesserapp/geometry4d/geometry.dart';
 
 import 'double_matcher.dart';
 
@@ -13,23 +12,23 @@ void main() {
 
   group("Geometry", () {
 
-    test("", () {
-      final tetrahedron = Tetrahedron([
-        Vector.zero(),
-        Vector.ofX(1.0),
-        Vector.ofY(1.0),
-        Vector.ofZ(1.0),
-      ]);
-      
-      final plane = Plane.fromNormal(a: Vector.ofZ(0.5), n: Vector.ofZ(1.0));
-      
+//    test("", () {
+//      final tetrahedron = Tetrahedron([
+//        Vector.zero(),
+//        Vector.ofX(1.0),
+//        Vector.ofY(1.0),
+//        Vector.ofZ(1.0),
+//      ]);
+//
+//      final plane = Plane.fromNormal(a: Vector.ofZ(0.5), n: Vector.ofZ(1.0));
+//
 //      print(intersect(Line.fromPoints(Vector.ofX(1.0), Vector.ofZ(1.0)), plane));
-
-      final intersection = tetrahedron
-          .intersected(plane);
-      
-      print(intersection.points);
-    });
+//
+//      final intersection = tetrahedron
+//          .intersected(plane);
+//
+//      print(intersection.points);
+//    });
   });
 
 //  testWidgets('', (WidgetTester tester) async {
