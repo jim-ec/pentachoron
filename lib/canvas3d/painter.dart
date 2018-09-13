@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/canvas3d/rendering.dart';
 import 'package:vector_math/vector_math_64.dart'
-    show Matrix4, makeOrthographicMatrix, makePerspectiveMatrix, makeViewMatrix;
+    show Matrix4, makePerspectiveMatrix, makeViewMatrix;
 
 class Canvas3dPainter extends CustomPainter {
   final Canvas3d canvas3d;
@@ -17,8 +17,7 @@ class Canvas3dPainter extends CustomPainter {
       : outlinePaint = Paint()
           ..color = canvas3d.outlineColor
           ..style = PaintingStyle.stroke
-          ..strokeJoin = StrokeJoin.round
-          ..isAntiAlias = canvas3d.antiAliasing;
+          ..strokeJoin = StrokeJoin.round;
 
   @override
   bool shouldRepaint(final CustomPainter oldDelegate) => true;
@@ -33,21 +32,12 @@ class Canvas3dPainter extends CustomPainter {
       ..scale(size.width / 2.0, -size.height / 2.0)
       ..clipRect(Rect.fromLTRB(-1.0, 1.0, 1.0, -1.0));
 
-    final projection = !canvas3d.orthographicProjection
-        ? makePerspectiveMatrix(
-            canvas3d.fov.radians,
-            aspectRatio,
-            nearPlane,
-            farPlane,
-          )
-        : makeOrthographicMatrix(
-            (canvas3d.frustumSize / 2.0) * -aspectRatio,
-            (canvas3d.frustumSize / 2.0) * aspectRatio,
-            -canvas3d.frustumSize / 2.0,
-            canvas3d.frustumSize / 2.0,
-            nearPlane,
-            farPlane,
-          );
+    final projection = makePerspectiveMatrix(
+      canvas3d.fov.radians,
+      aspectRatio,
+      nearPlane,
+      farPlane,
+    );
 
     final view = makeViewMatrix(
       canvas3d.cameraPosition.eye,
@@ -60,19 +50,12 @@ class Canvas3dPainter extends CustomPainter {
             .map((polygon) => ProcessingPolygon(
                   polygon.positions,
                   geometry.color,
-                  geometry.outlined,
-                  geometry.culling,
                 ))
             .map((polygon) => polygon.transformed(geometry.transform)));
 
     final polygonsViewSpace = polygonsGlobalSpace
-        .map((polygon) => (canvas3d.lightSpace == LightSpace.global)
-            ? polygon.illuminated(canvas3d.lightDirection)
-            : polygon)
         .map((polygon) => polygon.transformed(view))
-        .map((polygon) => (canvas3d.lightSpace == LightSpace.view)
-            ? polygon.illuminated(canvas3d.lightDirection)
-            : polygon);
+        .map((polygon) => polygon.illuminated(canvas3d.lightDirection));
 
     // Depth sort polygons.
     final depthSortedPolygons = polygonsViewSpace.toList()..sort();
@@ -80,33 +63,15 @@ class Canvas3dPainter extends CustomPainter {
     // Clip polygons away that are either too near or too far.
     // This has to be done before perspective division occurs.
     // When orthographic projection is used, there is no "too near".
-    final distanceClippedPolygons = depthSortedPolygons.where((polygon) =>
-        polygon.positions.every((v) =>
-            (v.z < 0.0 || canvas3d.orthographicProjection) &&
-            v.z > -canvas3d.viewDistance));
+    final distanceClippedPolygons = depthSortedPolygons
+        .where((polygon) => polygon.positions.every((v) => v.z < 0.0));
 
     // Transform into projective space.
     final polygonsProjectiveSpace = distanceClippedPolygons
         .map((polygon) => polygon.perspectiveTransformed(projection));
 
-    // Cull polygons.
-    final culledPolygons = polygonsProjectiveSpace.where((polygon) {
-      switch (polygon.culling) {
-        case CullMode.off:
-          return true;
-        case CullMode.frontFacing:
-          return polygon.normal.z < 0.0;
-        case CullMode.backFacing:
-          return polygon.normal.z > 0.0;
-      }
-    });
-
-    // Clip polygons away that are fully out of view:
-    final clippedPolygons = culledPolygons.where((polygon) => polygon.positions
-        .any((v) => v.x < 1.0 && v.x > -1.0 && v.y < 1.0 && v.y > -1.0));
-
-    final drawPolygons = clippedPolygons.toList();
-    var outlinePath = (canvas3d.outlineMode != OutlineMode.off) ? Path() : null;
+    final drawPolygons = polygonsProjectiveSpace.toList();
+    var outlinePath = Path();
     outlinePaint.strokeWidth = 0.01 / aspectRatio;
 
     for (final polygon in drawPolygons) {
@@ -118,32 +83,19 @@ class Canvas3dPainter extends CustomPainter {
       // Path of the current polygon to draw.
       final path = Path()..addPolygon(offsets, false);
 
-      // Modify outline according to current path.
-      if (canvas3d.outlineMode != OutlineMode.off && polygon.outlined) {
-        // Add current polygon path to outline path.
-        outlinePath = Path.combine(PathOperation.union, outlinePath, path);
-      } else if (canvas3d.outlineMode == OutlineMode.occluded) {
-        // Remove current path from outline, so that the outline outlines
-        // only the visible, un-obscured part of the geometry
-        // rather than simply the whole geometry.
-        // Is is quite performance heavy when having a lot of polygons.
-        outlinePath = Path.combine(PathOperation.difference, outlinePath, path);
-      }
+      // Add current polygon path to outline path.
+      outlinePath = Path.combine(PathOperation.union, outlinePath, path);
 
-      final paint = Paint()
-        ..color = polygon.color
-        ..isAntiAlias = canvas3d.antiAliasing;
+      final paint = Paint()..color = polygon.color;
 
       canvas.drawPath(path, paint);
     }
 
-    if (outlinePath != null) {
-      canvas.scale(1.0, aspectRatio);
-      outlinePath.close();
-      canvas.drawPath(
-          outlinePath.transform(
-              Matrix4.diagonal3Values(1.0, 1.0 / aspectRatio, 1.0).storage),
-          outlinePaint);
-    }
+    canvas.scale(1.0, aspectRatio);
+    outlinePath.close();
+    canvas.drawPath(
+        outlinePath.transform(
+            Matrix4.diagonal3Values(1.0, 1.0 / aspectRatio, 1.0).storage),
+        outlinePaint);
   }
 }

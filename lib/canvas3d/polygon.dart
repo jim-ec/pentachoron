@@ -44,10 +44,10 @@ List<Polygon> cube({
 
 List<Polygon> pyramid({final double edgeLength, final double height}) => [
       Polygon([
-        Vector3(-edgeLength / 2, edgeLength / 2, 0.0),
-        Vector3(-edgeLength / 2, -edgeLength / 2, 0.0),
-        Vector3(edgeLength / 2, -edgeLength / 2, 0.0),
         Vector3(edgeLength / 2, edgeLength / 2, 0.0),
+        Vector3(edgeLength / 2, -edgeLength / 2, 0.0),
+        Vector3(-edgeLength / 2, -edgeLength / 2, 0.0),
+        Vector3(-edgeLength / 2, edgeLength / 2, 0.0),
       ]),
       Polygon([
         Vector3(-edgeLength / 2, -edgeLength / 2, 0.0),

@@ -12,8 +12,8 @@ class FrontLayer extends StatefulWidget {
 }
 
 class FrontLayerState extends State<FrontLayer> {
-  var polar = Angle.fromDegrees(30.0);
-  var azimuth = Angle.fromDegrees(20.0);
+  var polar = Angle.fromDegrees(-60.0);
+  var azimuth = Angle.fromDegrees(30.0);
 
   @override
   void initState() {
@@ -44,8 +44,7 @@ class FrontLayerState extends State<FrontLayer> {
         },
         child: Canvas3d(
           lightDirection: Vector3(0.0, 0.0, 1.0),
-          lightSpace: LightSpace.view,
-          outlineMode: OutlineMode.occluded,
+          fov: Angle.fromDegrees(60.0),
           outlineColor: Theme.of(context).textTheme.title.color,
           cameraPosition: CameraPosition.fromOrbitEuler(
             distance: 10.0,
@@ -58,10 +57,17 @@ class FrontLayerState extends State<FrontLayer> {
 //                outlined: true,
 //                polygons: Pentachoron4.simple().baseCell.polygons),
             Geometry(
-                color: Colors.red,
-//                translation: Vector3(2.0, 0.0, 0.0),
-                rotation: Rotation.fromEuler(Angle.fromDegrees(90.0), Angle.zero(), Angle.zero()),
-                polygons: pyramid(edgeLength: 0.5, height: 2.0)),
+                color: Theme.of(context).accentColor,
+                translation: Vector3(0.5, 0.0, 0.0),
+                polygons: [
+                  Polygon([
+                    Vector3.zero(),
+                    Vector3(0.0, 1.0, 0.0),
+                    Vector3(1.0, 0.0, 0.0),
+                  ])
+                ]
+//              polygons: pyramid(edgeLength: 0.5, height: 2.0),
+                ),
           ],
         ),
       );

@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/canvas3d/polygon.dart';
 import 'package:tesserapp/generic/number_range.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3, Matrix4;
@@ -11,18 +10,12 @@ import 'package:vector_math/vector_math_64.dart' show Vector3, Matrix4;
 /// depth sorting.
 class ProcessingPolygon extends Polygon
     implements Comparable<ProcessingPolygon> {
-  /// Whether or not to add this polygon to the outline path.
-  final bool outlined;
-
-  final CullMode culling;
   
   final Color color;
 
   ProcessingPolygon(
     final List<Vector3> positions,
     this.color,
-    this.outlined,
-    this.culling,
   ) : super(positions);
 
   /// This polygon's gravitational center.
@@ -40,18 +33,14 @@ class ProcessingPolygon extends Polygon
   /// use [perspectiveTransformed] instead.
   ProcessingPolygon transformed(final Matrix4 matrix) => ProcessingPolygon(
       positions.map((v) => matrix.transformed3(v)).toList(),
-      color,
-      outlined,
-      culling);
+      color);
 
   /// Return a transformed version of this polygon,
   /// taking perspective division into account.
   ProcessingPolygon perspectiveTransformed(final Matrix4 matrix) =>
       ProcessingPolygon(
           positions.map((v) => matrix.perspectiveTransform(v)).toList(),
-          color,
-          outlined,
-          culling);
+          color);
 
   /// Return a re-colored version of this polygon.
   /// [lightDirection] defines the direction of parallel light rays,
@@ -64,9 +53,7 @@ class ProcessingPolygon extends Polygon
     final softenLuminance = remap(luminance, -1.0, 1.0, -0.2, 1.2);
     return ProcessingPolygon(
         positions,
-        Color.lerp(Color(0xff000000), color, softenLuminance),
-        outlined,
-        culling);
+        Color.lerp(Color(0xff000000), color, softenLuminance));
   }
 
   /// Performs a depth comparison.
