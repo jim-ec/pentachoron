@@ -5,7 +5,7 @@ ThemeData tesserTheme(final Brightness brightness) => ThemeData(
           ? Colors.lime[800]
           : Colors.grey[900],
       toggleableActiveColor: Colors.lime[900],
-      accentColor: Colors.lime[800],
+      accentColor: Colors.lime[700],
       fontFamily: "GeoNMS",
       brightness: brightness,
       primaryTextTheme: TextTheme(
