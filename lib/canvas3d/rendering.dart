@@ -49,7 +49,7 @@ class ProcessingPolygon extends Polygon
   /// [lightDirection] is assumed to be in the *same coordinate space*
   /// as this polygon.
   ProcessingPolygon illuminated(final Vector3 lightDirection) {
-    final luminance = normal.dot(lightDirection);
+    final luminance = normal.dot(lightDirection).abs();
     final softenLuminance = remap(luminance, -1.0, 1.0, -0.2, 1.2);
     return ProcessingPolygon(
         positions,
