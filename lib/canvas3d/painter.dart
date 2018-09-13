@@ -2,21 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/canvas3d/rendering.dart';
 import 'package:vector_math/vector_math_64.dart'
-    show Matrix4, makePerspectiveMatrix, makeViewMatrix;
+    show makePerspectiveMatrix, makeViewMatrix;
 
 class Canvas3dPainter extends CustomPainter {
   final Canvas3d canvas3d;
 
-  final outlinePaint;
-
-  static const nearPlane = 0.1;
-
-  static const farPlane = 100.0;
+  final Paint outlinePaint;
 
   Canvas3dPainter(this.canvas3d)
       : outlinePaint = Paint()
           ..color = canvas3d.outlineColor
           ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.01
           ..strokeJoin = StrokeJoin.round;
 
   @override
@@ -28,16 +25,22 @@ class Canvas3dPainter extends CustomPainter {
 
     // Transform canvas into viewport space:
     canvas
+      ..clipRect(Rect.fromLTWH(0.0, 0.0, size.width, size.height))
       ..translate(size.width / 2.0, size.height / 2.0)
-      ..scale(size.width / 2.0, -size.height / 2.0)
-      ..clipRect(Rect.fromLTRB(-1.0, 1.0, 1.0, -1.0));
+      ..scale(size.width / 2.0, -size.height / 2.0);
 
-    final projection = makePerspectiveMatrix(
-      canvas3d.fov.radians,
-      aspectRatio,
-      nearPlane,
-      farPlane,
-    );
+    // Scale canvas according to current orientation, to maintain the
+    // same geometry scaling when rotating the viewport.
+    if (size.width < size.height) {
+      // Portrait oriented canvas:
+      canvas.scale(1.0, aspectRatio);
+    } else {
+      // Landscape oriented canvas:
+      canvas.scale(1.0 / aspectRatio, 1.0);
+    }
+
+    final projection =
+        makePerspectiveMatrix(canvas3d.fov.radians, 1.0, 0.1, 1.0);
 
     final view = makeViewMatrix(
       canvas3d.cameraPosition.eye,
@@ -72,7 +75,6 @@ class Canvas3dPainter extends CustomPainter {
 
     final drawPolygons = polygonsProjectiveSpace.toList();
     var outlinePath = Path();
-    outlinePaint.strokeWidth = 0.01 / aspectRatio;
 
     for (final polygon in drawPolygons) {
       // Convert polygon position vectors into offsets.
@@ -91,11 +93,7 @@ class Canvas3dPainter extends CustomPainter {
       canvas.drawPath(path, paint);
     }
 
-    canvas.scale(1.0, aspectRatio);
     outlinePath.close();
-    canvas.drawPath(
-        outlinePath.transform(
-            Matrix4.diagonal3Values(1.0, 1.0 / aspectRatio, 1.0).storage),
-        outlinePaint);
+    canvas.drawPath(outlinePath, outlinePaint);
   }
 }
