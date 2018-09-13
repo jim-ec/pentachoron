@@ -27,7 +27,7 @@ class Canvas3dPainter extends CustomPainter {
     canvas
       ..clipRect(Rect.fromLTWH(0.0, 0.0, size.width, size.height))
       ..translate(size.width / 2.0, size.height / 2.0)
-      ..scale(size.width / 2.0, -size.height / 2.0);
+      ..scale(-size.width / 2.0, -size.height / 2.0);
 
     // Scale canvas according to current orientation, to maintain the
     // same geometry scaling when rotating the viewport.

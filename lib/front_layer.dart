@@ -12,7 +12,7 @@ class FrontLayer extends StatefulWidget {
 }
 
 class FrontLayerState extends State<FrontLayer> {
-  var polar = Angle.fromDegrees(-60.0);
+  var polar = Angle.fromDegrees(0.0);
   var azimuth = Angle.fromDegrees(30.0);
 
   @override
@@ -26,7 +26,7 @@ class FrontLayerState extends State<FrontLayer> {
   Widget build(final BuildContext context) => GestureDetector(
         onPanUpdate: (details) {
           setState(() {
-            polar += Angle.fromRadians(-details.delta.dx *
+            polar += Angle.fromRadians(details.delta.dx *
                 (AppOptions.of(context).invertedHorizontalCamera.option.value
                     ? -orbitSensitivity
                     : orbitSensitivity));
@@ -57,13 +57,18 @@ class FrontLayerState extends State<FrontLayer> {
 //                outlined: true,
 //                polygons: Pentachoron4.simple().baseCell.polygons),
             Geometry(
+              color: Colors.blue,
+              translation: Vector3(0.0, 0.0, 0.0),
+              polygons: pyramid(edgeLength: 0.5, height: 2.0),
+            ),
+            Geometry(
                 color: Theme.of(context).accentColor,
                 translation: Vector3(0.5, 0.0, 0.0),
                 polygons: [
                   Polygon([
                     Vector3.zero(),
                     Vector3(0.0, 1.0, 0.0),
-                    Vector3(1.0, 0.0, 0.0),
+                    Vector3(2.0, 0.0, 0.0),
                   ])
                 ]
 //              polygons: pyramid(edgeLength: 0.5, height: 2.0),

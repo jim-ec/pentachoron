@@ -56,18 +56,18 @@ class CameraPosition {
     final Angle azimuth,
   }) : this(
             focus: Vector3.zero(),
-            eye: Rotation.fromEuler(polar, azimuth, Angle.zero())
-                .transform
-                .transform3(Vector3(distance, 0.0, 0.0)));
+            eye: Matrix4.rotationZ(polar.radians)
+                .multiplied(Matrix4.rotationX(azimuth.radians))
+                .transform3(Vector3(0.0, distance, 0.0)));
 }
 
 class Rotation {
   final Matrix4 transform;
 
-  Rotation.fromEuler(final Angle yaw, final Angle pitch, final Angle roll)
-      : transform = Matrix4.rotationZ(yaw.radians) *
-            Matrix4.rotationY(pitch.radians) *
-            Matrix4.rotationX(roll.radians);
+  Rotation.fromEuler(final Angle x, final Angle y, final Angle z)
+      : transform = Matrix4.rotationZ(z.radians) *
+            Matrix4.rotationY(y.radians) *
+            Matrix4.rotationX(x.radians);
 
   static Rotation zero() =>
       Rotation.fromEuler(Angle.zero(), Angle.zero(), Angle.zero());
