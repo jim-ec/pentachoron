@@ -23,7 +23,7 @@ void main() {
       
       final plane = Plane.fromNormal(a: Vector.ofZ(0.5), n: Vector.ofZ(1.0));
       
-      print(intersect(Line.fromPoints(Vector.ofX(1.0), Vector.ofZ(1.0)), plane));
+//      print(intersect(Line.fromPoints(Vector.ofX(1.0), Vector.ofZ(1.0)), plane));
 
       final intersection = tetrahedron
           .intersected(plane);

@@ -87,13 +87,38 @@ class Plane {
     assert(n.length != 0.0, "Normal vector of plane cannot have the length 0");
   }
 
-  Plane.fromNormal({final Vector a, final Vector n})
-      : this.fromCoordinates(n: n, b: Vector.scalar(a, n));
+  Plane.fromNormal({
+    final Vector a,
+    final Vector n,
+  }) : this.fromCoordinates(n: n, b: Vector.scalar(a, n));
 
-  Plane.fromVectors({final Vector a, final Vector u, final Vector v})
-      : this.fromNormal(a: a, n: Vector.cross(u, v));
+  Plane.fromTangents({
+    final Vector a,
+    final Vector tangent,
+    final Vector bitangent,
+  }) : this.fromNormal(a: a, n: Vector.cross(tangent, bitangent));
 
   Plane get normalized => Plane.fromCoordinates(n: n.normalized, b: b);
+
+  /// Intersect a line with a plane, returning the point of intersection.
+  /// If [line] is parallel to [plane], the result is `null`.
+  Vector intersected(final Line line) {
+    if (Vector.scalar(line.d, n) == 0.0) {
+      return null;
+    }
+
+    final a = line.a;
+    final d = line.d;
+    
+    final lambda = -(n.x * a.x + n.y * a.y + n.z * a.z - b) /
+        (n.x * d.x + n.y * d.y + n.z * d.z);
+    
+    if(lambda < 0.0 || lambda > 1.0) {
+      return null;
+    }
+
+    return line(lambda);
+  }
 
   @override
   String toString() => "E: ${n.x.toStringAsFixed(1)}x "
@@ -102,25 +127,36 @@ class Plane {
       "${b.toStringAsFixed(1)} = 0";
 }
 
-/// Intersect a line with a plane, returning the point of intersection.
-/// If [line] is parallel to [plane], the result is `null`.
-Vector intersect(
-  final Line line,
-  final Plane plane,
-) {
-  if (Vector.scalar(line.d, plane.n) == 0.0) {
-    return null;
-  }
+@immutable
+class Volume {
+  final Vector a, normal, binormal;
 
-  final e = plane.n.x;
-  final f = plane.n.y;
-  final g = plane.n.z;
-  final a = line.a;
-  final d = line.d;
-  final b = plane.b;
+  Volume.fromNormals({this.a, this.normal, this.binormal});
 
-  return line(
-      -(e * a.x + f * a.y + g * a.z - b) / (e * d.x + f * d.y + g * d.z));
+  Volume.fromTangents({
+    final Vector a,
+    final Vector tangent,
+    final Vector bitangent,
+    final Vector tritangent,
+  }) : this.fromNormals(
+            a: a,
+            normal: Vector.cross(tangent, bitangent),
+            binormal: Vector.cross(bitangent, tritangent));
+
+  /// Intersect a line with a plane, returning the point of intersection.
+  /// If [line] is parallel to [plane], the result is `null`.
+//  Vector intersected(final Line line) {
+//    if (Vector.scalar(line.d, normal) == 0.0 ||
+//        Vector.scalar(line.d, binormal) == 0.0) {
+//      return null;
+//    }
+//
+//    final a = line.a;
+//    final d = line.d;
+//
+//    return line(-(n.x * a.x + n.y * a.y + n.z * a.z - b) /
+//        (n.x * d.x + n.y * d.y + n.z * d.z));
+//  }
 }
 
 @immutable
@@ -149,10 +185,19 @@ class Tetrahedron {
     assert(points.length == 4, "Each tetrahedron must have 4 points");
   }
 
-  Triangle intersected(final Plane plane) => Triangle(lines
-      .map((line) => intersect(line, plane))
-      .where((line) => line != null)
-      .toList());
+  Triangle intersected(final Plane plane) {
+    final intersectingPoints = lines
+        .map((line) => plane.intersected(line))
+        .where((line) => line != null)
+        .toList();
+    
+    if(intersectingPoints.length < 3) {
+      return null;
+    }
+    else {
+      return Triangle(intersectingPoints);
+    }
+  }
 }
 
 /// The base four-dimensional geometry, in the same manner as the triangle
@@ -188,6 +233,6 @@ class Pentachoron {
           Vector(-1.0, -1.0, 1.0, -1.0 / sqrt(5.0)),
           Vector(0.0, 0.0, 0.0, sqrt(5.0) - 1.0 / sqrt(5.0)),
         ]);
-  
+
 //  Tetrahedron intersected()
 }
