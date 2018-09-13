@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tesserapp/app_options.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/canvas3d/geometry.dart';
-import 'package:tesserapp/canvas3d/polygon.dart';
 import 'package:tesserapp/generic/angle.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
@@ -12,7 +11,7 @@ class FrontLayer extends StatefulWidget {
 }
 
 class FrontLayerState extends State<FrontLayer> {
-  var polar = Angle.fromDegrees(0.0);
+  var polar = Angle.fromDegrees(-30.0);
   var azimuth = Angle.fromDegrees(30.0);
 
   @override
@@ -51,29 +50,12 @@ class FrontLayerState extends State<FrontLayer> {
             polar: polar,
             azimuth: azimuth,
           ),
-          geometries: [
+          geometries: <Geometry>[
 //            Geometry(
 //                color: Theme.of(context).accentColor,
 //                outlined: true,
 //                polygons: Pentachoron4.simple().baseCell.polygons),
-            Geometry(
-              color: Colors.blue,
-              translation: Vector3(0.0, 0.0, 0.0),
-              polygons: pyramid(edgeLength: 0.5, height: 2.0),
-            ),
-            Geometry(
-                color: Theme.of(context).accentColor,
-                translation: Vector3(0.5, 0.0, 0.0),
-                polygons: [
-                  Polygon([
-                    Vector3.zero(),
-                    Vector3(0.0, 1.0, 0.0),
-                    Vector3(2.0, 0.0, 0.0),
-                  ])
-                ]
-//              polygons: pyramid(edgeLength: 0.5, height: 2.0),
-                ),
-          ],
+          ] + axisIndicator,
         ),
       );
 }
