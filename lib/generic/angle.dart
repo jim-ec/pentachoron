@@ -18,13 +18,13 @@ class Angle implements Comparable<Angle> {
   const Angle.fromGradians(final double gradians)
       : _storage = gradians / 200.0 * math.pi;
 
-  get degrees => (_storage / math.pi) * 180.0;
+  double get degrees => (_storage / math.pi) * 180.0;
 
-  get radians => _storage;
+  double get radians => _storage;
 
-  get overPi => _storage / math.pi;
+  double get overPi => _storage / math.pi;
 
-  get gradians => (_storage / math.pi) * 200.0;
+  double get gradians => (_storage / math.pi) * 200.0;
 
   Angle operator +(final Angle other) =>
       Angle.fromRadians(radians + other.radians);

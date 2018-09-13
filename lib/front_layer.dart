@@ -34,6 +34,7 @@ class FrontLayerState extends State<FrontLayer> {
                 (AppOptions.of(context).invertedVerticalCamera.option.value
                     ? -orbitSensitivity
                     : orbitSensitivity));
+            azimuth = Angle.fromDegrees(azimuth.degrees.clamp(-80.0, 80.0));
           });
         },
         onDoubleTap: () {
