@@ -38,7 +38,7 @@ class Vector {
   }
 
   static double scalar(final Vector a, final Vector b) =>
-      a.x * b.x + a.y * b.y + a.z * b.z;
+      a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 
   Vector operator +(final Vector other) =>
       Vector(x + other.x, y + other.y, z + other.z, w + other.w);
