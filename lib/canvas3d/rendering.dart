@@ -50,7 +50,7 @@ class ProcessingPolygon extends Polygon
   /// as this polygon.
   ProcessingPolygon illuminated(final Vector3 lightDirection) {
     final luminance = normal.dot(lightDirection).abs();
-    final softenLuminance = remap(luminance, -1.0, 1.0, -0.2, 1.2);
+    final softenLuminance = remap(luminance, 0.0, 1.0, 0.2, 1.2);
     return ProcessingPolygon(
         positions,
         Color.lerp(Color(0xff000000), color, softenLuminance));

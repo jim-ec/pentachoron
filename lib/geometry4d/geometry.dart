@@ -34,7 +34,7 @@ class Tetrahedron4 {
           Vector3(tip.x, tip.y, tip.z),
         ]),
         Polygon([
-          Vector3(base1.x, base1.y, base1.z),
+          Vector3(base2.x, base2.y, base2.z),
           Vector3(base0.x, base0.y, base0.z),
           Vector3(tip.x, tip.y, tip.z),
         ]),
