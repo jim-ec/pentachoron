@@ -4,6 +4,7 @@ import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/canvas3d/geometry.dart';
 import 'package:tesserapp/generic/angle.dart';
 import 'package:tesserapp/geometry4d/geometry.dart';
+import 'package:tesserapp/geometry4d/polygons.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 class FrontLayer extends StatefulWidget {
@@ -48,17 +49,27 @@ class FrontLayerState extends State<FrontLayer> {
           fov: Angle.fromDegrees(60.0),
           outlineColor: Theme.of(context).textTheme.title.color,
           cameraPosition: CameraPosition.fromOrbitEuler(
-            distance: 10.0,
+            distance: 5.0,
             polar: polar,
             azimuth: azimuth,
           ),
           geometries: <Geometry>[
             Geometry(
                 color: Theme.of(context).accentColor,
-                polygons: Pentachoron4.simple().baseCell.polygons),
+                polygons: (() {
+                  final tetrahedron = Tetrahedron([
+                    Vector.zero(),
+                    Vector.ofX(1.0),
+                    Vector.ofY(1.0),
+                    Vector.ofZ(1.0),
+                  ]);
+                  final plane = Plane.fromNormal(a: Vector.ofZ(0.75), n: Vector.ofZ(1.0));
+                  return polygonsOfTriangle(tetrahedron.intersected(plane));
+                })(),
+            ),
           ]
 //              + axisIndicator
-          ,
+              ,
         ),
       );
 }
