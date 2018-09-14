@@ -5,8 +5,9 @@ import 'package:tesserapp/canvas3d/geometry.dart';
 import 'package:tesserapp/generic/angle.dart';
 import 'package:tesserapp/generic/number_range.dart';
 import 'package:tesserapp/geometry4d/geometry.dart';
+import 'package:tesserapp/geometry4d/matrix.dart';
 import 'package:tesserapp/geometry4d/polygons.dart';
-import 'package:tesserapp/geometry4d/transform.dart';
+import 'package:tesserapp/geometry4d/vector.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 class FrontLayer extends StatefulWidget {

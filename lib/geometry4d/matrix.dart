@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:meta/meta.dart';
 import 'package:quiver/iterables.dart';
 import 'package:tesserapp/generic/angle.dart';
-import 'package:tesserapp/geometry4d/geometry.dart';
+import 'package:tesserapp/geometry4d/vector.dart';
 
 enum RotationPlane {
   aroundX,
@@ -48,41 +48,19 @@ class Matrix {
 
   List<double> operator [](final int row) => rows[row];
 
-  /*
-  operator fun Matrix.times(rhs: Matrix) =
-        if (cols != rhs.rows)
-            throw MathException("Cannot multiply $this * $rhs")
-        else
-            Matrix(rows, rhs.cols) { row, col ->
-                (0 until cols).sumByDouble { this[row, it] * rhs[it, col] }
-            }
-   */
   Matrix operator *(final Matrix rhs) =>
       Matrix.generate((final row, final col) => range(5)
           .map((final i) => this[row][i] * rhs[i][col])
           .reduce((a, b) => a + b));
 
-  /*
-  fun transformChain(matrices: List<Matrix>) = matrices.reduce { acc, matrix -> acc * matrix }
-   */
+  /// Create a transform matrix by chaining all transform matrices.
+  /// This is the same behaviour as successively multiplying all the matrices
+  /// in the same order they are given here.
+  /// Since the matrices are row-major, all the transformations are applied
+  /// intuitively in the same order as they appear in the list.
   factory Matrix.chain(final List<Matrix> matrices) =>
       matrices.reduce((acc, matrix) => acc * matrix);
 
-  /*
-  enum class RotationPlane(inline val a: Int, inline val b: Int) {
-      AROUND_X(1, 2),
-      AROUND_Y(2, 0),
-      AROUND_Z(0, 1),
-      XQ(0, 3)
-  }
-  fun rotation(size: Int, plane: RotationPlane, radians: Radians) =
-          identity(size, values = mapOf(
-                  plane.a to plane.a to cos(radians),
-                  plane.a to plane.b to sin(radians),
-                  plane.b to plane.a to -sin(radians),
-                  plane.b to plane.b to cos(radians)
-          ))
-   */
   factory Matrix.rotation(final RotationPlane plane, final Angle angle) {
     final matrix = Matrix.identity();
     int a, b;
@@ -110,16 +88,6 @@ class Matrix {
     matrix[b][b] = cos(angle.radians);
     return matrix;
   }
-
-  /*
-  operator fun times(rhs: Matrix): VectorN =
-            if (dimension + 1 != rhs.rows || rhs.cols != dimension + 1)
-                throw MathException("Target matrix $this is incompatible for $this * $rhs")
-            else
-                VectorN(dimension) { col ->
-                    (0 until dimension).sumByDouble { i -> this[i] * rhs[i, col] } + rhs[dimension, col]
-                } / ((0 until dimension).sumByDouble { i -> this[i] * rhs[i, dimension] } + rhs[dimension, dimension])
-   */
 
   Vector transform(final Vector v) => Vector.generate((final int col) =>
       range(4).map((i) => v[i] * this[i][col]).reduce((a, b) => a + b) +

@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tesserapp/generic/angle.dart';
 import 'package:tesserapp/generic/number_range.dart';
-import 'package:tesserapp/geometry4d/geometry.dart';
-import 'package:tesserapp/geometry4d/transform.dart';
+import 'package:tesserapp/geometry4d/matrix.dart';
+import 'package:tesserapp/geometry4d/vector.dart';
 
 import 'double_matcher.dart';
 
