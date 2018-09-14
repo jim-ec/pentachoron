@@ -30,15 +30,20 @@ class Vector {
   const Vector.ofZ(final double c) : this(0.0, 0.0, c, 0.0);
 
   const Vector.ofW(final double c) : this(0.0, 0.0, 0.0, c);
-  
-  double operator[](final int index) {
+
+  double operator [](final int index) {
     assert(index >= 0 && index < 4, "Invalid vector index $index");
-    switch(index) {
-      case 0: return x;
-      case 1: return y;
-      case 2: return z;
-      case 3: return w;
-      default: return null;
+    switch (index) {
+      case 0:
+        return x;
+      case 1:
+        return y;
+      case 2:
+        return z;
+      case 3:
+        return w;
+      default:
+        return null;
     }
   }
 
@@ -96,9 +101,9 @@ class Line {
 
   @override
   String toString() => "g : x = $a + $lambdaSymbol$d";
-
-  Vector intersected(final double z) {
-    final lambda = (z - a.z) / d.z;
+  
+  Vector get intersection {
+    final lambda = -a.z / d.z;
     if (lambda >= 0.0 && lambda <= 1.0 && lambda.isFinite) {
       return this(lambda);
     } else {
@@ -133,9 +138,9 @@ class Tetrahedron {
     assert(points.length == 4, "Each tetrahedron must have 4 points");
   }
 
-  Triangle intersected(final double z) {
+  Triangle get intersection {
     final intersectingPoints = lines
-        .map((line) => line.intersected(z))
+        .map((line) => line.intersection)
         .where((line) => line != null)
         .toList();
 

@@ -19,7 +19,7 @@ void main() {
       final v = Vector(2.0, 0.0, 0.0, 0.0);
       final m = Matrix.rotation(RotationPlane.aroundZ, Angle.fromDegrees(90.0));
       print(m);
-      final u = m.transformed(v);
+      final u = m.transform(v);
       print(u);
     });
 

@@ -3,8 +3,10 @@ import 'package:tesserapp/app_options.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/canvas3d/geometry.dart';
 import 'package:tesserapp/generic/angle.dart';
+import 'package:tesserapp/generic/number_range.dart';
 import 'package:tesserapp/geometry4d/geometry.dart';
 import 'package:tesserapp/geometry4d/polygons.dart';
+import 'package:tesserapp/geometry4d/transform.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 class FrontLayer extends StatefulWidget {
@@ -63,13 +65,15 @@ class FrontLayerState extends State<FrontLayer> {
                 Geometry(
                   color: Theme.of(context).accentColor,
                   polygons: (() {
-                    final tetrahedron = Tetrahedron([
+                    final m = Matrix.translation(
+                        Vector.ofZ(remap(sliderValue, 0.0, 1.0, -1.0, 1.0)));
+                    final tetrahedron = Tetrahedron(m.transformAll([
                       Vector.zero(),
                       Vector.ofX(1.0),
                       Vector.ofY(1.0),
                       Vector.ofZ(1.0),
-                    ]);
-                    return polygonsOfTriangle(tetrahedron.intersected(sliderValue));
+                    ]));
+                    return polygonsOfTriangle(tetrahedron.intersection);
                   })(),
                 ),
               ]

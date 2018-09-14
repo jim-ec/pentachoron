@@ -121,9 +121,12 @@ class Matrix {
                 } / ((0 until dimension).sumByDouble { i -> this[i] * rhs[i, dimension] } + rhs[dimension, dimension])
    */
 
-  Vector transformed(final Vector v) => Vector.generate((final int col) =>
+  Vector transform(final Vector v) => Vector.generate((final int col) =>
       range(4).map((i) => v[i] * this[i][col]).reduce((a, b) => a + b) +
       this[4][col]);
+
+  List<Vector> transformAll(final List<Vector> vectors) =>
+      vectors.map((v) => transform(v)).toList();
 
   @override
   String toString() {
