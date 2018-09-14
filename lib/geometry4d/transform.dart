@@ -110,4 +110,25 @@ class Matrix {
     matrix[b][b] = cos(angle.radians);
     return matrix;
   }
+
+  /*
+  operator fun times(rhs: Matrix): VectorN =
+            if (dimension + 1 != rhs.rows || rhs.cols != dimension + 1)
+                throw MathException("Target matrix $this is incompatible for $this * $rhs")
+            else
+                VectorN(dimension) { col ->
+                    (0 until dimension).sumByDouble { i -> this[i] * rhs[i, col] } + rhs[dimension, col]
+                } / ((0 until dimension).sumByDouble { i -> this[i] * rhs[i, dimension] } + rhs[dimension, dimension])
+   */
+
+  Vector transformed(final Vector v) => Vector.generate((final int col) =>
+      range(4).map((i) => v[i] * this[i][col]).reduce((a, b) => a + b) +
+      this[4][col]);
+
+  @override
+  String toString() {
+    final rowToString = (final num index) =>
+        rows[index].map((final c) => c.toStringAsFixed(1)).join(", ");
+    return "[ " + range(5).map(rowToString).join(" | ") + " ]";
+  }
 }

@@ -30,6 +30,27 @@ class Vector {
   const Vector.ofZ(final double c) : this(0.0, 0.0, c, 0.0);
 
   const Vector.ofW(final double c) : this(0.0, 0.0, 0.0, c);
+  
+  double operator[](final int index) {
+    assert(index >= 0 && index < 4, "Invalid vector index $index");
+    switch(index) {
+      case 0: return x;
+      case 1: return y;
+      case 2: return z;
+      case 3: return w;
+      default: return null;
+    }
+  }
+
+  factory Vector.generate(double f(int index)) {
+    final components = Iterable.generate(4, f).iterator;
+    return Vector(
+      (components..moveNext()).current,
+      (components..moveNext()).current,
+      (components..moveNext()).current,
+      (components..moveNext()).current,
+    );
+  }
 
   Vector.cross(final Vector a, final Vector b)
       : w = 0.0,
