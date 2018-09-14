@@ -22,9 +22,9 @@ class Line {
 
   @override
   String toString() => "g : x = $a + $lambdaSymbol$d";
-  
+
   Vector get intersection {
-    final lambda = -a.z / d.z;
+    final lambda = -a.w / d.w;
     if (lambda >= 0.0 && lambda <= 1.0 && lambda.isFinite) {
       return this(lambda);
     } else {
@@ -86,6 +86,7 @@ class Tetrahedron {
 class Pentachoron {
   final List<Vector> points;
   final List<Tetrahedron> cells;
+  final List<Line> lines;
 
   Pentachoron(this.points)
       : cells = [
@@ -94,6 +95,18 @@ class Pentachoron {
           Tetrahedron([points[1], points[2], points[3], points[4]]),
           Tetrahedron([points[2], points[3], points[1], points[4]]),
           Tetrahedron([points[3], points[1], points[2], points[4]])
+        ],
+        lines = [
+          Line.fromPoints(points[0], points[1]),
+          Line.fromPoints(points[0], points[2]),
+          Line.fromPoints(points[0], points[3]),
+          Line.fromPoints(points[0], points[4]),
+          Line.fromPoints(points[1], points[2]),
+          Line.fromPoints(points[1], points[3]),
+          Line.fromPoints(points[1], points[4]),
+          Line.fromPoints(points[2], points[3]),
+          Line.fromPoints(points[2], points[4]),
+          Line.fromPoints(points[3], points[4]),
         ] {
     assert(points.length == 5, "Each pentachoron must have 5 points");
   }
@@ -108,6 +121,29 @@ class Pentachoron {
           Vector(-1.0, -1.0, 1.0, -1.0 / sqrt(5.0)),
           Vector(0.0, 0.0, 0.0, sqrt(5.0) - 1.0 / sqrt(5.0)),
         ]);
+
+  Tetrahedron get intersection {
+    final firstTetra = lines
+        .map((line) => line.intersection)
+        .where((line) => line != null)
+        .toList();
+
+    print(firstTetra);
+
+    final intersectingPoints = lines
+        .map((line) => line.intersection)
+        .where((line) => line != null)
+        .toList();
+
+    print(intersectingPoints);
+    assert(intersectingPoints.length <= 4, "Impossible count of intersections");
+
+    if (intersectingPoints.length < 3) {
+      return null;
+    } else {
+      return Tetrahedron(intersectingPoints);
+    }
+  }
 
 //  Tetrahedron intersected()
 }

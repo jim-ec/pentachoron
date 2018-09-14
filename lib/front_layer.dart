@@ -3,7 +3,6 @@ import 'package:tesserapp/app_options.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/canvas3d/geometry.dart';
 import 'package:tesserapp/generic/angle.dart';
-import 'package:tesserapp/generic/number_range.dart';
 import 'package:tesserapp/geometry4d/geometry.dart';
 import 'package:tesserapp/geometry4d/matrix.dart';
 import 'package:tesserapp/geometry4d/polygons.dart';
@@ -66,15 +65,10 @@ class FrontLayerState extends State<FrontLayer> {
                 Geometry(
                   color: Theme.of(context).accentColor,
                   polygons: (() {
-                    final m = Matrix.translation(
-                        Vector.ofZ(remap(sliderValue, 0.0, 1.0, -1.0, 1.0)));
-                    final tetrahedron = Tetrahedron(m.transformAll([
-                      Vector.zero(),
-                      Vector.ofX(1.0),
-                      Vector.ofY(1.0),
-                      Vector.ofZ(1.0),
-                    ]));
-                    return polygonsOfTriangle(tetrahedron.intersection);
+                    final m = Matrix.translation(Vector.ofW(sliderValue));
+//                    final m = Matrix.rotation(RotationPlane.onXQ, Angle.fromDegrees(sliderValue * 180.0));
+                    final pentachoron = Pentachoron(m.transformAll(Pentachoron.simple().points));
+                    return polygonsOfTetrahedron(pentachoron.intersection);
                   })(),
                 ),
               ]
@@ -86,8 +80,10 @@ class FrontLayerState extends State<FrontLayer> {
             top: null,
             child: Slider(
               value: sliderValue,
-              min: 0.0,
-              max: 1.0,
+              min: -2.0,
+              max: 2.0,
+              divisions: 10 * 4,
+              label: sliderValue.toStringAsFixed(2),
               onChanged: (value) {
                 setState(() {
                   sliderValue = value;
