@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:tesserapp/canvas3d/polygon.dart';
 import 'package:tesserapp/generic/number_range.dart';
+import 'package:tesserapp/geometry/polygon.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3, Matrix4;
 
 /// A polygon wrapper adding pipeline processing functionality to it.

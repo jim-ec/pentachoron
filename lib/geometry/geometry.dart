@@ -1,7 +1,8 @@
 import 'dart:math';
 
 import 'package:meta/meta.dart';
-import 'package:tesserapp/geometry4d/vector.dart';
+import 'package:tesserapp/geometry/polygon.dart';
+import 'package:tesserapp/geometry/vector.dart';
 
 String get timesSymbol => "\u{22c5}";
 
@@ -50,9 +51,9 @@ class Tetrahedron {
     assert(points.length == 4, "Each tetrahedron must have 4 points");
   }
 
-  Iterable<Vector> intersection(final int componentIndex) => lines
-        .map((line) => line.intersection(componentIndex))
-        .where((line) => line != null);
+  Polygon intersection(final int componentIndex) => Polygon(lines
+      .map((line) => line.intersection(componentIndex))
+      .where((line) => line != null));
 }
 
 /// The base four-dimensional geometry, in the same manner as the triangle

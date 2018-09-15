@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
-import 'package:tesserapp/canvas3d/polygon.dart';
 import 'package:tesserapp/generic/angle.dart';
+import 'package:tesserapp/geometry/polygon.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3, Matrix4;
 
 class Geometry {

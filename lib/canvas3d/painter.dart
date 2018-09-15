@@ -61,7 +61,8 @@ class Canvas3dPainter extends CustomPainter {
         .map((polygon) => polygon.illuminated(canvas3d.lightDirection));
 
     // Depth sort polygons.
-    final depthSortedPolygons = polygonsViewSpace.toList()..sort();
+    final depthSortedPolygons = polygonsViewSpace.toList(growable: false)
+      ..sort();
 
     // Clip polygons away that are either too near or too far.
     // This has to be done before perspective division occurs.
@@ -78,11 +79,11 @@ class Canvas3dPainter extends CustomPainter {
 
     for (final polygon in drawPolygons) {
       // Convert polygon position vectors into offsets.
-      final offsets = polygon.points
-          .map((position) => Offset(position.x, position.y));
+      final offsets =
+          polygon.points.map((position) => Offset(position.x, position.y));
 
       // Path of the current polygon to draw.
-      final path = Path()..addPolygon(offsets.toList(), false);
+      final path = Path()..addPolygon(offsets.toList(growable: false), false);
 
       // Add current polygon path to outline path.
       outlinePath = Path.combine(PathOperation.union, outlinePath, path);
