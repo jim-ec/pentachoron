@@ -19,7 +19,7 @@ class Polygon {
 
     final sortedAngles = points.map((v) {
       final delta = barycenter - v;
-      return _PointAngle(v, Angle.atan360(delta.y, delta.x));
+      return _PointAngle(v, Angle.atanFullTurn(delta.y, delta.x));
     }).toList(growable: false)
       ..sort();
     return sortedAngles.map((v) => v.v);

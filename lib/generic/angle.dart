@@ -27,6 +27,16 @@ class Angle implements Comparable<Angle> {
   /// One full turn equals 1 turn.
   const Angle.fromTurns(final double turns) : _storage = turns * 2.0 * math.pi;
 
+  factory Angle.fullTurn() => Angle.fromTurns(1.0);
+
+  factory Angle.halfTurn() => Angle.fromTurns(0.5);
+
+  factory Angle.quarterTurn() => Angle.fromTurns(0.25);
+
+  factory Angle.thirdTurn() => Angle.fromTurns(1.0 / 3.0);
+
+  factory Angle.eighthTurn() => Angle.fromTurns(0.125);
+
   Angle.asin(final double c) : _storage = math.asin(c);
 
   Angle.acos(final double c) : _storage = math.acos(c);
@@ -41,7 +51,7 @@ class Angle implements Comparable<Angle> {
 
   /// Works in the same manner as [Angle.atan2], but results
   /// in an angle in `]0.0°;360°]`.
-  factory Angle.atan360(final double y, final double x) =>
+  factory Angle.atanFullTurn(final double y, final double x) =>
       Angle.atan2(y, x) + Angle.fromDegrees(180.0);
 
   double get turns => (_storage) / math.pi / 2.0;
