@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 import 'package:tesserapp/generic/angle.dart';
-import 'package:tesserapp/geometry/geometry.dart';
+import 'package:tesserapp/geometry/tetrahedron.dart';
 import 'package:tesserapp/geometry/vector.dart';
 
 /// A polygon consists of an arbitrary count of vertices.
