@@ -8,15 +8,20 @@ import 'package:vector_math/vector_math_64.dart' show Vector3, Matrix4;
 /// It bundles per-geometry features like outlining into the polygons,
 /// as they are decoupled from their geometries in order to perform
 /// depth sorting.
-class ProcessingPolygon extends Polygon
-    implements Comparable<ProcessingPolygon> {
+class ProcessingPolygon implements Comparable<ProcessingPolygon> {
   
+  final List<Vector3> points;
   final Color color;
 
+  ProcessingPolygon.fromPolygon(
+      final Polygon polygon,
+      this.color,
+      ) : points = polygon.points.map((v) => Vector3(v.x, v.y, v.z)).toList();
+
   ProcessingPolygon(
-    final List<Vector3> positions,
-    this.color,
-  ) : super(positions);
+      this.points,
+      this.color,
+      );
 
   /// This polygon's gravitational center.
   Vector3 get barycenter =>

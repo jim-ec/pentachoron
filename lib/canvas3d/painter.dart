@@ -50,8 +50,8 @@ class Canvas3dPainter extends CustomPainter {
 
     final polygonsGlobalSpace =
         canvas3d.geometries.expand((geometry) => geometry.polygons
-            .map((polygon) => ProcessingPolygon(
-                  polygon.points,
+            .map((polygon) => ProcessingPolygon.fromPolygon(
+                  polygon,
                   geometry.color,
                 ))
             .map((polygon) => polygon.transformed(geometry.transform)));

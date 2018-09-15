@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import 'package:vector_math/vector_math_64.dart' show Vector3;
+import 'package:tesserapp/geometry4d/vector.dart';
 
 /// A polygon consists of an arbitrary count of vertices.
 ///
@@ -7,24 +7,24 @@ import 'package:vector_math/vector_math_64.dart' show Vector3;
 /// a single normal vector.
 @immutable
 class Polygon {
-  final List<Vector3> points;
+  final List<Vector> points;
   Polygon(this.points);
 }
 
 List<Polygon> cube({
-  final Vector3 center,
+  final Vector center,
   final double sideLength,
 }) {
   final a = sideLength / 2;
   final positions = [
-    center + Vector3(a, a, a),
-    center + Vector3(a, a, -a),
-    center + Vector3(a, -a, a),
-    center + Vector3(a, -a, -a),
-    center + Vector3(-a, a, a),
-    center + Vector3(-a, a, -a),
-    center + Vector3(-a, -a, a),
-    center + Vector3(-a, -a, -a),
+    center + Vector(a, a, a),
+    center + Vector(a, a, -a),
+    center + Vector(a, -a, a),
+    center + Vector(a, -a, -a),
+    center + Vector(-a, a, a),
+    center + Vector(-a, a, -a),
+    center + Vector(-a, -a, a),
+    center + Vector(-a, -a, -a),
   ];
 
   return [
@@ -39,30 +39,30 @@ List<Polygon> cube({
 
 List<Polygon> pyramid({final double edgeLength, final double height}) => [
       Polygon([
-        Vector3(edgeLength / 2, edgeLength / 2, 0.0),
-        Vector3(edgeLength / 2, -edgeLength / 2, 0.0),
-        Vector3(-edgeLength / 2, -edgeLength / 2, 0.0),
-        Vector3(-edgeLength / 2, edgeLength / 2, 0.0),
+        Vector(edgeLength / 2, edgeLength / 2, 0.0),
+        Vector(edgeLength / 2, -edgeLength / 2, 0.0),
+        Vector(-edgeLength / 2, -edgeLength / 2, 0.0),
+        Vector(-edgeLength / 2, edgeLength / 2, 0.0),
       ]),
       Polygon([
-        Vector3(-edgeLength / 2, -edgeLength / 2, 0.0),
-        Vector3(-edgeLength / 2, edgeLength / 2, 0.0),
-        Vector3(0.0, 0.0, height),
+        Vector(-edgeLength / 2, -edgeLength / 2, 0.0),
+        Vector(-edgeLength / 2, edgeLength / 2, 0.0),
+        Vector(0.0, 0.0, height),
       ]),
       Polygon([
-        Vector3(edgeLength / 2, -edgeLength / 2, 0.0),
-        Vector3(-edgeLength / 2, -edgeLength / 2, 0.0),
-        Vector3(0.0, 0.0, height),
+        Vector(edgeLength / 2, -edgeLength / 2, 0.0),
+        Vector(-edgeLength / 2, -edgeLength / 2, 0.0),
+        Vector(0.0, 0.0, height),
       ]),
       Polygon([
-        Vector3(edgeLength / 2, edgeLength / 2, 0.0),
-        Vector3(edgeLength / 2, -edgeLength / 2, 0.0),
-        Vector3(0.0, 0.0, height),
+        Vector(edgeLength / 2, edgeLength / 2, 0.0),
+        Vector(edgeLength / 2, -edgeLength / 2, 0.0),
+        Vector(0.0, 0.0, height),
       ]),
       Polygon([
-        Vector3(-edgeLength / 2, edgeLength / 2, 0.0),
-        Vector3(edgeLength / 2, edgeLength / 2, 0.0),
-        Vector3(0.0, 0.0, height),
+        Vector(-edgeLength / 2, edgeLength / 2, 0.0),
+        Vector(edgeLength / 2, edgeLength / 2, 0.0),
+        Vector(0.0, 0.0, height),
       ]),
     ];
 
