@@ -67,7 +67,7 @@ class _MorphingArrowPainter extends CustomPainter {
   @override
   void paint(final Canvas canvas, final Size size) {
     canvas.translate(size.width / 2, size.height / 2);
-    canvas.rotate(Angle.fromPi(advance).radians);
+    canvas.rotate(Angle.fromTurns(advance / 0.5).radians);
     canvas.translate(-size.width / 2, -size.height / 2);
     linePoles.map((linePoles) => linePoles.lerp(advance)).forEach((line) =>
         canvas.drawLine(line.from.scale(size.width, size.height),

@@ -18,10 +18,6 @@ class Angle implements Comparable<Angle> {
   /// One full turn equals 2pi radians.
   const Angle.fromRadians(final double radians) : _storage = radians;
 
-  /// Create an angle from radians over pi.
-  /// One full turn equals 2 pi.
-  const Angle.fromPi(final double pi) : _storage = pi * math.pi;
-
   /// Create an angle defined by gradians.
   /// One full turn equals 400 gradians.
   const Angle.fromGradians(final double gradians)
@@ -36,9 +32,7 @@ class Angle implements Comparable<Angle> {
   double get degrees => (_storage / math.pi) * 180.0;
 
   double get radians => _storage;
-
-  double get overPi => _storage / math.pi;
-
+  
   double get gradians => (_storage / math.pi) * 200.0;
 
   Angle operator +(final Angle other) =>
