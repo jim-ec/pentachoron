@@ -9,7 +9,7 @@ import 'package:vector_math/vector_math_64.dart' show Vector3, Matrix4;
 
 class Geometry {
   final Color color;
-  final List<Polygon> polygons;
+  final Iterable<Polygon> polygons;
   final Matrix4 transform;
 
   /// Create a geometry from a set of points to be transformed through
@@ -24,7 +24,7 @@ class Geometry {
             (rotation ?? Rotation.zero()).transform;
 }
 
-List<Geometry> get axisIndicator => <Geometry>[
+Iterable<Geometry> get axisIndicator => <Geometry>[
       Geometry(
         color: Colors.red,
         translation: Vector3(0.15, 0.0, 0.0),

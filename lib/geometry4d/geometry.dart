@@ -35,25 +35,24 @@ class Line {
 
 @immutable
 class Tetrahedron {
-  final List<Vector> points;
-  final List<Line> lines;
+  final Iterable<Vector> points;
+  final Iterable<Line> lines;
 
   Tetrahedron(this.points)
       : lines = [
-          Line.fromPoints(points[0], points[3]),
-          Line.fromPoints(points[1], points[3]),
-          Line.fromPoints(points[2], points[3]),
-          Line.fromPoints(points[0], points[1]),
-          Line.fromPoints(points[1], points[2]),
-          Line.fromPoints(points[2], points[0])
+          Line.fromPoints(points.elementAt(0), points.elementAt(3)),
+          Line.fromPoints(points.elementAt(1), points.elementAt(3)),
+          Line.fromPoints(points.elementAt(2), points.elementAt(3)),
+          Line.fromPoints(points.elementAt(0), points.elementAt(1)),
+          Line.fromPoints(points.elementAt(1), points.elementAt(2)),
+          Line.fromPoints(points.elementAt(2), points.elementAt(0))
         ] {
     assert(points.length == 4, "Each tetrahedron must have 4 points");
   }
 
-  List<Vector> intersection(final int componentIndex) => lines
+  Iterable<Vector> intersection(final int componentIndex) => lines
         .map((line) => line.intersection(componentIndex))
-        .where((line) => line != null)
-        .toList();
+        .where((line) => line != null);
 }
 
 /// The base four-dimensional geometry, in the same manner as the triangle
@@ -65,29 +64,21 @@ class Tetrahedron {
 /// A pentachoron is defined through 5 cells.
 @immutable
 class Pentachoron {
-  final List<Vector> points;
-  final List<Tetrahedron> cells;
-  final List<Line> lines;
+  final Iterable<Vector> points;
+  final Iterable<Line> lines;
 
   Pentachoron(this.points)
-      : cells = [
-          Tetrahedron([points[0], points[1], points[2], points[3]]),
-          Tetrahedron([points[0], points[1], points[2], points[4]]),
-          Tetrahedron([points[1], points[2], points[3], points[4]]),
-          Tetrahedron([points[2], points[3], points[1], points[4]]),
-          Tetrahedron([points[3], points[1], points[2], points[4]])
-        ],
-        lines = [
-          Line.fromPoints(points[0], points[1]),
-          Line.fromPoints(points[0], points[2]),
-          Line.fromPoints(points[0], points[3]),
-          Line.fromPoints(points[0], points[4]),
-          Line.fromPoints(points[1], points[2]),
-          Line.fromPoints(points[1], points[3]),
-          Line.fromPoints(points[1], points[4]),
-          Line.fromPoints(points[2], points[3]),
-          Line.fromPoints(points[2], points[4]),
-          Line.fromPoints(points[3], points[4]),
+      : lines = [
+          Line.fromPoints(points.elementAt(0), points.elementAt(1)),
+          Line.fromPoints(points.elementAt(0), points.elementAt(2)),
+          Line.fromPoints(points.elementAt(0), points.elementAt(3)),
+          Line.fromPoints(points.elementAt(0), points.elementAt(4)),
+          Line.fromPoints(points.elementAt(1), points.elementAt(2)),
+          Line.fromPoints(points.elementAt(1), points.elementAt(3)),
+          Line.fromPoints(points.elementAt(1), points.elementAt(4)),
+          Line.fromPoints(points.elementAt(2), points.elementAt(3)),
+          Line.fromPoints(points.elementAt(2), points.elementAt(4)),
+          Line.fromPoints(points.elementAt(3), points.elementAt(4)),
         ] {
     assert(points.length == 5, "Each pentachoron must have 5 points");
   }
@@ -104,19 +95,10 @@ class Pentachoron {
         ]);
 
   Tetrahedron intersection(final int componentIndex) {
-    final firstTetra = lines
-        .map((line) => line.intersection)
-        .where((line) => line != null)
-        .toList();
-
-    print(firstTetra);
-
     final intersectingPoints = lines
         .map((line) => line.intersection(componentIndex))
-        .where((line) => line != null)
-        .toList();
+        .where((line) => line != null);
 
-    print(intersectingPoints);
     assert(intersectingPoints.length <= 4, "Impossible count of intersections");
 
     if (intersectingPoints.length < 3) {

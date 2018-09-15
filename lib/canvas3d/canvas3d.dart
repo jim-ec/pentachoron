@@ -9,7 +9,7 @@ class Canvas3d extends StatelessWidget {
   final CameraPosition cameraPosition;
 
   /// List of geometry to be drawn.
-  final List<Geometry> geometries;
+  final Iterable<Geometry> geometries;
 
   /// Color of the outline, if drawn.
   final Color outlineColor;

@@ -10,13 +10,13 @@ import 'package:vector_math/vector_math_64.dart' show Vector3, Matrix4;
 /// depth sorting.
 class ProcessingPolygon implements Comparable<ProcessingPolygon> {
   
-  final List<Vector3> points;
+  final Iterable<Vector3> points;
   final Color color;
 
   ProcessingPolygon.fromPolygon(
       final Polygon polygon,
       this.color,
-      ) : points = polygon.points.map((v) => Vector3(v.x, v.y, v.z)).toList();
+      ) : points = polygon.points.map((v) => Vector3(v.x, v.y, v.z));
 
   ProcessingPolygon(
       this.points,
@@ -29,22 +29,22 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
 
   /// Normal vector, standing perpendicular on top of the plane this polygon
   /// is forming.
-  Vector3 get normal => (points[2] - points[0])
-      .cross(points[1] - points[0])
+  Vector3 get normal => (points.elementAt(2) - points.elementAt(0))
+      .cross(points.elementAt(1) - points.elementAt(0))
       .normalized();
 
   /// Return a transformed version of this polygon.
   /// To transform the polygon using perspective matrices,
   /// use [perspectiveTransformed] instead.
   ProcessingPolygon transformed(final Matrix4 matrix) => ProcessingPolygon(
-      points.map((v) => matrix.transformed3(v)).toList(),
+      points.map((v) => matrix.transformed3(v)),
       color);
 
   /// Return a transformed version of this polygon,
   /// taking perspective division into account.
   ProcessingPolygon perspectiveTransformed(final Matrix4 matrix) =>
       ProcessingPolygon(
-          points.map((v) => matrix.perspectiveTransform(v)).toList(),
+          points.map((v) => matrix.perspectiveTransform(v)),
           color);
 
   /// Return a re-colored version of this polygon.

@@ -7,11 +7,11 @@ import 'package:tesserapp/geometry4d/vector.dart';
 /// a single normal vector.
 @immutable
 class Polygon {
-  final List<Vector> points;
+  final Iterable<Vector> points;
   Polygon(this.points);
 }
 
-List<Polygon> cube({
+Iterable<Polygon> cube({
   final Vector center,
   final double sideLength,
 }) {
@@ -37,7 +37,7 @@ List<Polygon> cube({
   ];
 }
 
-List<Polygon> pyramid({final double edgeLength, final double height}) => [
+Iterable<Polygon> pyramid({final double edgeLength, final double height}) => [
       Polygon([
         Vector(edgeLength / 2, edgeLength / 2, 0.0),
         Vector(edgeLength / 2, -edgeLength / 2, 0.0),

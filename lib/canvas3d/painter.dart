@@ -73,17 +73,16 @@ class Canvas3dPainter extends CustomPainter {
     final polygonsProjectiveSpace = distanceClippedPolygons
         .map((polygon) => polygon.perspectiveTransformed(projection));
 
-    final drawPolygons = polygonsProjectiveSpace.toList();
+    final drawPolygons = polygonsProjectiveSpace;
     var outlinePath = Path();
 
     for (final polygon in drawPolygons) {
       // Convert polygon position vectors into offsets.
       final offsets = polygon.points
-          .map((position) => Offset(position.x, position.y))
-          .toList();
+          .map((position) => Offset(position.x, position.y));
 
       // Path of the current polygon to draw.
-      final path = Path()..addPolygon(offsets, false);
+      final path = Path()..addPolygon(offsets.toList(), false);
 
       // Add current polygon path to outline path.
       outlinePath = Path.combine(PathOperation.union, outlinePath, path);
