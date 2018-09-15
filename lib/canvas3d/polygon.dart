@@ -7,13 +7,8 @@ import 'package:vector_math/vector_math_64.dart' show Vector3;
 /// a single normal vector.
 @immutable
 class Polygon {
-  final List<Vector3> positions;
-
-  Polygon(this.positions) {
-    assert(positions.length >= 3, "Each polygon must have at least 3 vertices");
-  }
-
-  Polygon get flippedNormal => Polygon(positions.reversed.toList());
+  final List<Vector3> points;
+  Polygon(this.points);
 }
 
 List<Polygon> cube({

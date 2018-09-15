@@ -51,7 +51,7 @@ class Canvas3dPainter extends CustomPainter {
     final polygonsGlobalSpace =
         canvas3d.geometries.expand((geometry) => geometry.polygons
             .map((polygon) => ProcessingPolygon(
-                  polygon.positions,
+                  polygon.points,
                   geometry.color,
                 ))
             .map((polygon) => polygon.transformed(geometry.transform)));
@@ -67,7 +67,7 @@ class Canvas3dPainter extends CustomPainter {
     // This has to be done before perspective division occurs.
     // When orthographic projection is used, there is no "too near".
     final distanceClippedPolygons = depthSortedPolygons
-        .where((polygon) => polygon.positions.every((v) => v.z < 0.0));
+        .where((polygon) => polygon.points.every((v) => v.z < 0.0));
 
     // Transform into projective space.
     final polygonsProjectiveSpace = distanceClippedPolygons
@@ -78,7 +78,7 @@ class Canvas3dPainter extends CustomPainter {
 
     for (final polygon in drawPolygons) {
       // Convert polygon position vectors into offsets.
-      final offsets = polygon.positions
+      final offsets = polygon.points
           .map((position) => Offset(position.x, position.y))
           .toList();
 

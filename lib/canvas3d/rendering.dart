@@ -20,26 +20,26 @@ class ProcessingPolygon extends Polygon
 
   /// This polygon's gravitational center.
   Vector3 get barycenter =>
-      positions.reduce((a, b) => a + b) / positions.length.toDouble();
+      points.reduce((a, b) => a + b) / points.length.toDouble();
 
   /// Normal vector, standing perpendicular on top of the plane this polygon
   /// is forming.
-  Vector3 get normal => (positions[2] - positions[0])
-      .cross(positions[1] - positions[0])
+  Vector3 get normal => (points[2] - points[0])
+      .cross(points[1] - points[0])
       .normalized();
 
   /// Return a transformed version of this polygon.
   /// To transform the polygon using perspective matrices,
   /// use [perspectiveTransformed] instead.
   ProcessingPolygon transformed(final Matrix4 matrix) => ProcessingPolygon(
-      positions.map((v) => matrix.transformed3(v)).toList(),
+      points.map((v) => matrix.transformed3(v)).toList(),
       color);
 
   /// Return a transformed version of this polygon,
   /// taking perspective division into account.
   ProcessingPolygon perspectiveTransformed(final Matrix4 matrix) =>
       ProcessingPolygon(
-          positions.map((v) => matrix.perspectiveTransform(v)).toList(),
+          points.map((v) => matrix.perspectiveTransform(v)).toList(),
           color);
 
   /// Return a re-colored version of this polygon.
@@ -52,7 +52,7 @@ class ProcessingPolygon extends Polygon
     final luminance = normal.dot(lightDirection).abs();
     final softenLuminance = remap(luminance, 0.0, 1.0, 0.2, 1.2);
     return ProcessingPolygon(
-        positions,
+        points,
         Color.lerp(Color(0xff000000), color, softenLuminance));
   }
 

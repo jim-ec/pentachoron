@@ -58,8 +58,9 @@ class Matrix {
   /// in the same order they are given here.
   /// Since the matrices are row-major, all the transformations are applied
   /// intuitively in the same order as they appear in the list.
-  factory Matrix.chain(final List<Matrix> matrices) =>
-      matrices.reduce((acc, matrix) => acc * matrix);
+  factory Matrix.chain(final List<Matrix> matrices) => matrices.isEmpty
+      ? Matrix.identity()
+      : matrices.reduce((acc, matrix) => acc * matrix);
 
   factory Matrix.rotation(final RotationPlane plane, final Angle angle) {
     final matrix = Matrix.identity();

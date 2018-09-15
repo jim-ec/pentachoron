@@ -1,8 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tesserapp/generic/angle.dart';
 import 'package:tesserapp/generic/number_range.dart';
-import 'package:tesserapp/geometry4d/matrix.dart';
-import 'package:tesserapp/geometry4d/vector.dart';
 
 import 'double_matcher.dart';
 
@@ -15,13 +12,16 @@ void main() {
 
   group("Geometry", () {
     
-    test("", () {
-      final v = Vector(2.0, 0.0, 0.0, 0.0);
-      final m = Matrix.rotation(RotationPlane.aroundZ, Angle.fromDegrees(90.0));
-      print(m);
-      final u = m.transform(v);
-      print(u);
-    });
+//    test("", () {
+//      final polygon = Polygon([
+//        Vector(1.0, 1.0),
+//        Vector(1.0, -1.0),
+//        Vector(-1.0, 1.0),
+//        Vector(-1.0, -1.0),
+//      ]);
+//      print(polygon);
+//      print(polygon.triangulate);
+//    });
 
 //    test("", () {
 //      final tetrahedron = Tetrahedron([

@@ -27,13 +27,36 @@ class Angle implements Comparable<Angle> {
   /// One full turn equals 1 turn.
   const Angle.fromTurns(final double turns) : _storage = turns * 2.0 * math.pi;
 
+  Angle.asin(final double c) : _storage = math.asin(c);
+
+  Angle.acos(final double c) : _storage = math.acos(c);
+
+  Angle.atan(final double c) : _storage = math.atan(c);
+
+  /// Create an angle by computing the arcus tangent from `y / x`.
+  /// This uses the `atan2()` function, therefore there are two
+  /// separate parameters for the nominator and the denominator.
+  /// The result is an angle in `]-180°;180°]`.
+  Angle.atan2(final double y, final double x) : _storage = math.atan2(y, x);
+
+  /// Works in the same manner as [Angle.atan2], but results
+  /// in an angle in `]0.0°;360°]`.
+  factory Angle.atan360(final double y, final double x) =>
+      Angle.atan2(y, x) + Angle.fromDegrees(180.0);
+
   double get turns => (_storage) / math.pi / 2.0;
 
   double get degrees => (_storage / math.pi) * 180.0;
 
   double get radians => _storage;
-  
+
   double get gradians => (_storage / math.pi) * 200.0;
+
+  double get sin => math.sin(radians);
+
+  double get cos => math.cos(radians);
+
+  double get tan => math.tan(radians);
 
   Angle operator +(final Angle other) =>
       Angle.fromRadians(radians + other.radians);
@@ -49,8 +72,6 @@ class Angle implements Comparable<Angle> {
 
   @override
   String toString() => "$degrees°";
-
-  String toStringRadians() => "${radians}rad";
 
   bool operator <(final Angle other) => _storage < other._storage;
 

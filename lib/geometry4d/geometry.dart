@@ -23,22 +23,13 @@ class Line {
   @override
   String toString() => "g : x = $a + $lambdaSymbol$d";
 
-  Vector get intersection {
-    final lambda = -a.w / d.w;
+  Vector intersection(final int componentIndex) {
+    final lambda = -a[componentIndex] / d[componentIndex];
     if (lambda >= 0.0 && lambda <= 1.0 && lambda.isFinite) {
       return this(lambda);
     } else {
       return null;
     }
-  }
-}
-
-@immutable
-class Triangle {
-  final List<Vector> points;
-
-  Triangle(this.points) {
-    assert(points.length == 3);
   }
 }
 
@@ -59,20 +50,10 @@ class Tetrahedron {
     assert(points.length == 4, "Each tetrahedron must have 4 points");
   }
 
-  Triangle get intersection {
-    final intersectingPoints = lines
-        .map((line) => line.intersection)
+  List<Vector> intersection(final int componentIndex) => lines
+        .map((line) => line.intersection(componentIndex))
         .where((line) => line != null)
         .toList();
-
-    assert(intersectingPoints.length <= 3, "Impossible count of intersections");
-
-    if (intersectingPoints.length < 3) {
-      return null;
-    } else {
-      return Triangle(intersectingPoints);
-    }
-  }
 }
 
 /// The base four-dimensional geometry, in the same manner as the triangle
@@ -122,7 +103,7 @@ class Pentachoron {
           Vector(0.0, 0.0, 0.0, sqrt(5.0) - 1.0 / sqrt(5.0)),
         ]);
 
-  Tetrahedron get intersection {
+  Tetrahedron intersection(final int componentIndex) {
     final firstTetra = lines
         .map((line) => line.intersection)
         .where((line) => line != null)
@@ -131,7 +112,7 @@ class Pentachoron {
     print(firstTetra);
 
     final intersectingPoints = lines
-        .map((line) => line.intersection)
+        .map((line) => line.intersection(componentIndex))
         .where((line) => line != null)
         .toList();
 
