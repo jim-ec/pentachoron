@@ -20,7 +20,7 @@ class Tetrahedron {
     assert(points.length == 4, "Each tetrahedron must have 4 points");
   }
 
-  Polygon intersection(final int componentIndex) => Polygon(lines
-      .map((line) => line.intersection(componentIndex))
+  Polygon get intersection => Polygon(lines
+      .map((line) => line.intersection)
       .where((line) => line != null));
 }

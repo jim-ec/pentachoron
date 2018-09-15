@@ -15,8 +15,8 @@ class Line {
   @override
   String toString() => "g : x = $a + \u{03bb}$d";
 
-  Vector intersection(final int componentIndex) {
-    final lambda = -a[componentIndex] / d[componentIndex];
+  Vector get intersection {
+    final lambda = -a.w / d.w;
     if (lambda >= 0.0 && lambda <= 1.0 && lambda.isFinite) {
       return this(lambda);
     } else {

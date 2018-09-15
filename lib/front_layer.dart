@@ -71,17 +71,17 @@ class FrontLayerState extends State<FrontLayer> {
 //                          RotationPlane.aroundY, Angle.fromDegrees(45.0)),
 //                      Matrix.rotation(
 //                          RotationPlane.aroundX, Angle.fromDegrees(-45.0)),
-                      Matrix.translation(Vector.ofZ(sliderValue))
+                      Matrix.translation(Vector.ofW(sliderValue))
                     ]);
                     final tetrahedron = Tetrahedron(m.transformAll([
-                      Vector(0.0, -1.0, 1.0),
-                      Vector(1.0, 1.0, -1.0),
-                      Vector(-1.0, 1.0, -1.0),
-                      Vector(0.0, 2.0, 2.0)
+                      Vector(0.0, -1.0, 0.0, 1.0),
+                      Vector(1.0, 1.0, 0.0, -1.0),
+                      Vector(-1.0, 1.0, 0.0, -1.0),
+                      Vector(0.0, 2.0, 0.0, 2.0)
                     ]));
 
 //                    return Polygon.tetrahedron(tetrahedron);
-                    return [tetrahedron.intersection(0)];
+                    return [tetrahedron.intersection];
                   })(),
                 ),
               ]

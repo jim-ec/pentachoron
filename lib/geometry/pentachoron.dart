@@ -44,9 +44,9 @@ class Pentachoron {
           Vector(0.0, 0.0, 0.0, sqrt(5.0) - 1.0 / sqrt(5.0)),
         ]);
 
-  Tetrahedron intersection(final int componentIndex) {
+  Tetrahedron get intersection {
     final intersectingPoints = lines
-        .map((line) => line.intersection(componentIndex))
+        .map((line) => line.intersection)
         .where((line) => line != null);
 
     assert(intersectingPoints.length <= 4, "Impossible count of intersections");
