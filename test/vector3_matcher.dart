@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tesserapp/generic/range.dart';
+import 'package:quiver/iterables.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 class Vector3Matcher extends Matcher {
@@ -32,7 +32,7 @@ class Vector3Matcher extends Matcher {
   bool matches(final item, final Map matchState) {
     final actual = item as Vector3;
 
-    for (var i in range(to: 3)) {
+    for (var i in range(3)) {
       if (actual.storage[i] < expected.storage[i] - margin ||
           actual.storage[i] > expected.storage[i] + margin) {
         return false;
