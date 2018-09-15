@@ -24,6 +24,88 @@ class Polygon {
       ..sort();
     return sortedAngles.map((v) => v.v);
   }
+
+
+  static Iterable<Polygon> tetrahedron(final Tetrahedron t) => t != null
+      ? [
+    Polygon([
+      t.points.elementAt(0),
+      t.points.elementAt(1),
+      t.points.elementAt(2),
+    ]),
+    Polygon([
+      t.points.elementAt(0),
+      t.points.elementAt(1),
+      t.points.elementAt(3),
+    ]),
+    Polygon([
+      t.points.elementAt(1),
+      t.points.elementAt(2),
+      t.points.elementAt(3),
+    ]),
+    Polygon([
+      t.points.elementAt(2),
+      t.points.elementAt(0),
+      t.points.elementAt(3),
+    ]),
+  ]
+      : [];
+
+  static Iterable<Polygon> cube({
+    final Vector center,
+    final double sideLength,
+  }) {
+    final a = sideLength / 2;
+    final positions = [
+      center + Vector(a, a, a),
+      center + Vector(a, a, -a),
+      center + Vector(a, -a, a),
+      center + Vector(a, -a, -a),
+      center + Vector(-a, a, a),
+      center + Vector(-a, a, -a),
+      center + Vector(-a, -a, a),
+      center + Vector(-a, -a, -a),
+    ];
+  
+    return [
+      Polygon([positions[0], positions[1], positions[3], positions[2]]),
+      Polygon([positions[1], positions[5], positions[7], positions[3]]),
+      Polygon([positions[5], positions[4], positions[6], positions[7]]),
+      Polygon([positions[4], positions[0], positions[2], positions[6]]),
+      Polygon([positions[0], positions[4], positions[5], positions[1]]),
+      Polygon([positions[2], positions[3], positions[7], positions[6]]),
+    ];
+  }
+
+  static Iterable<Polygon> pyramid({final double edgeLength, final double height}) => [
+    Polygon([
+      Vector(edgeLength / 2, edgeLength / 2, 0.0),
+      Vector(edgeLength / 2, -edgeLength / 2, 0.0),
+      Vector(-edgeLength / 2, -edgeLength / 2, 0.0),
+      Vector(-edgeLength / 2, edgeLength / 2, 0.0),
+    ]),
+    Polygon([
+      Vector(-edgeLength / 2, -edgeLength / 2, 0.0),
+      Vector(-edgeLength / 2, edgeLength / 2, 0.0),
+      Vector(0.0, 0.0, height),
+    ]),
+    Polygon([
+      Vector(edgeLength / 2, -edgeLength / 2, 0.0),
+      Vector(-edgeLength / 2, -edgeLength / 2, 0.0),
+      Vector(0.0, 0.0, height),
+    ]),
+    Polygon([
+      Vector(edgeLength / 2, edgeLength / 2, 0.0),
+      Vector(edgeLength / 2, -edgeLength / 2, 0.0),
+      Vector(0.0, 0.0, height),
+    ]),
+    Polygon([
+      Vector(-edgeLength / 2, edgeLength / 2, 0.0),
+      Vector(edgeLength / 2, edgeLength / 2, 0.0),
+      Vector(0.0, 0.0, height),
+    ]),
+  ];
+  
 }
 
 class _PointAngle implements Comparable<_PointAngle> {
@@ -38,83 +120,3 @@ class _PointAngle implements Comparable<_PointAngle> {
   @override
   String toString() => "Angle to $v amounts $angle";
 }
-
-Iterable<Polygon> tetrahedron(final Tetrahedron t) => t != null
-    ? [
-        Polygon([
-          t.points.elementAt(0),
-          t.points.elementAt(1),
-          t.points.elementAt(2),
-        ]),
-        Polygon([
-          t.points.elementAt(0),
-          t.points.elementAt(1),
-          t.points.elementAt(3),
-        ]),
-        Polygon([
-          t.points.elementAt(1),
-          t.points.elementAt(2),
-          t.points.elementAt(3),
-        ]),
-        Polygon([
-          t.points.elementAt(2),
-          t.points.elementAt(0),
-          t.points.elementAt(3),
-        ]),
-      ]
-    : [];
-
-Iterable<Polygon> cube({
-  final Vector center,
-  final double sideLength,
-}) {
-  final a = sideLength / 2;
-  final positions = [
-    center + Vector(a, a, a),
-    center + Vector(a, a, -a),
-    center + Vector(a, -a, a),
-    center + Vector(a, -a, -a),
-    center + Vector(-a, a, a),
-    center + Vector(-a, a, -a),
-    center + Vector(-a, -a, a),
-    center + Vector(-a, -a, -a),
-  ];
-
-  return [
-    Polygon([positions[0], positions[1], positions[3], positions[2]]),
-    Polygon([positions[1], positions[5], positions[7], positions[3]]),
-    Polygon([positions[5], positions[4], positions[6], positions[7]]),
-    Polygon([positions[4], positions[0], positions[2], positions[6]]),
-    Polygon([positions[0], positions[4], positions[5], positions[1]]),
-    Polygon([positions[2], positions[3], positions[7], positions[6]]),
-  ];
-}
-
-Iterable<Polygon> pyramid({final double edgeLength, final double height}) => [
-      Polygon([
-        Vector(edgeLength / 2, edgeLength / 2, 0.0),
-        Vector(edgeLength / 2, -edgeLength / 2, 0.0),
-        Vector(-edgeLength / 2, -edgeLength / 2, 0.0),
-        Vector(-edgeLength / 2, edgeLength / 2, 0.0),
-      ]),
-      Polygon([
-        Vector(-edgeLength / 2, -edgeLength / 2, 0.0),
-        Vector(-edgeLength / 2, edgeLength / 2, 0.0),
-        Vector(0.0, 0.0, height),
-      ]),
-      Polygon([
-        Vector(edgeLength / 2, -edgeLength / 2, 0.0),
-        Vector(-edgeLength / 2, -edgeLength / 2, 0.0),
-        Vector(0.0, 0.0, height),
-      ]),
-      Polygon([
-        Vector(edgeLength / 2, edgeLength / 2, 0.0),
-        Vector(edgeLength / 2, -edgeLength / 2, 0.0),
-        Vector(0.0, 0.0, height),
-      ]),
-      Polygon([
-        Vector(-edgeLength / 2, edgeLength / 2, 0.0),
-        Vector(edgeLength / 2, edgeLength / 2, 0.0),
-        Vector(0.0, 0.0, height),
-      ]),
-    ];

@@ -30,18 +30,18 @@ Iterable<Geometry> get axisIndicator => <Geometry>[
         translation: Vector3(0.15, 0.0, 0.0),
         rotation: Rotation.fromEuler(
             Angle.zero(), Angle.fromDegrees(90.0), Angle.zero()),
-        polygons: pyramid(edgeLength: 0.3, height: 2.0),
+        polygons: Polygon.pyramid(edgeLength: 0.3, height: 2.0),
       ),
       Geometry(
         color: Colors.lightGreen,
         translation: Vector3(0.0, 0.15, 0.0),
         rotation: Rotation.fromEuler(
             Angle.fromDegrees(-90.0), Angle.zero(), Angle.zero()),
-        polygons: pyramid(edgeLength: 0.3, height: 2.0),
+        polygons: Polygon.pyramid(edgeLength: 0.3, height: 2.0),
       ),
       Geometry(
         color: Colors.blue,
         translation: Vector3(0.0, 0.0, 0.15),
-        polygons: pyramid(edgeLength: 0.3, height: 2.0),
+        polygons: Polygon.pyramid(edgeLength: 0.3, height: 2.0),
       ),
     ];

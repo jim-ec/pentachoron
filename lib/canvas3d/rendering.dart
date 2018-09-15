@@ -9,19 +9,18 @@ import 'package:vector_math/vector_math_64.dart' show Vector3, Matrix4;
 /// as they are decoupled from their geometries in order to perform
 /// depth sorting.
 class ProcessingPolygon implements Comparable<ProcessingPolygon> {
-  
   final Iterable<Vector3> points;
   final Color color;
 
   ProcessingPolygon.fromPolygon(
-      final Polygon polygon,
-      this.color,
-      ) : points = polygon.points.map((v) => Vector3(v.x, v.y, v.z));
+    final Polygon polygon,
+    this.color,
+  ) : points = polygon.points.map((v) => Vector3(v.x, v.y, v.z));
 
   ProcessingPolygon(
-      this.points,
-      this.color,
-      );
+    this.points,
+    this.color,
+  );
 
   /// This polygon's gravitational center.
   Vector3 get barycenter =>
@@ -29,23 +28,26 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
 
   /// Normal vector, standing perpendicular on top of the plane this polygon
   /// is forming.
-  Vector3 get normal => (points.elementAt(2) - points.elementAt(0))
-      .cross(points.elementAt(1) - points.elementAt(0))
-      .normalized();
+  Vector3 get normal {
+    if (points.length >= 3) {
+      return (points.elementAt(2) - points.elementAt(0))
+          .cross(points.elementAt(1) - points.elementAt(0))
+          .normalized();
+    }
+    else return Vector3.zero();
+  }
 
   /// Return a transformed version of this polygon.
   /// To transform the polygon using perspective matrices,
   /// use [perspectiveTransformed] instead.
-  ProcessingPolygon transformed(final Matrix4 matrix) => ProcessingPolygon(
-      points.map((v) => matrix.transformed3(v)),
-      color);
+  ProcessingPolygon transformed(final Matrix4 matrix) =>
+      ProcessingPolygon(points.map((v) => matrix.transformed3(v)), color);
 
   /// Return a transformed version of this polygon,
   /// taking perspective division into account.
   ProcessingPolygon perspectiveTransformed(final Matrix4 matrix) =>
       ProcessingPolygon(
-          points.map((v) => matrix.perspectiveTransform(v)),
-          color);
+          points.map((v) => matrix.perspectiveTransform(v)), color);
 
   /// Return a re-colored version of this polygon.
   /// [lightDirection] defines the direction of parallel light rays,
@@ -57,8 +59,7 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
     final luminance = normal.dot(lightDirection).abs();
     final softenLuminance = remap(luminance, 0.0, 1.0, 0.2, 1.2);
     return ProcessingPolygon(
-        points,
-        Color.lerp(Color(0xff000000), color, softenLuminance));
+        points, Color.lerp(Color(0xff000000), color, softenLuminance));
   }
 
   /// Performs a depth comparison.

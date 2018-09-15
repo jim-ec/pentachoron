@@ -65,13 +65,13 @@ class FrontLayerState extends State<FrontLayer> {
                   color: Theme.of(context).accentColor,
                   polygons: (() {
                     final m = Matrix.chain([
-//                      Matrix.rotation(
-//                          RotationPlane.aroundZ, Angle.fromDegrees(45.0)),
+                      Matrix.rotation(
+                          RotationPlane.aroundZ, Angle.fromDegrees(45.0)),
 //                      Matrix.rotation(
 //                          RotationPlane.aroundY, Angle.fromDegrees(45.0)),
 //                      Matrix.rotation(
 //                          RotationPlane.aroundX, Angle.fromDegrees(-45.0)),
-////                      Matrix.translation(Vector.ofZ(0.2))
+                      Matrix.translation(Vector.ofZ(sliderValue))
                     ]);
                     final tetrahedron = Tetrahedron(m.transformAll([
                       Vector(0.0, -1.0, 1.0),
@@ -80,7 +80,8 @@ class FrontLayerState extends State<FrontLayer> {
                       Vector(0.0, 2.0, 2.0)
                     ]));
 
-                    return [tetrahedron.intersection(2)];
+//                    return Polygon.tetrahedron(tetrahedron);
+                    return [tetrahedron.intersection(0)];
                   })(),
                 ),
               ]
@@ -92,8 +93,8 @@ class FrontLayerState extends State<FrontLayer> {
             top: null,
             child: Slider(
               value: sliderValue,
-              min: 0.0,
-              max: 1.0,
+              min: -2.0,
+              max: 2.0,
               onChanged: (value) {
                 setState(() {
                   sliderValue = value;
