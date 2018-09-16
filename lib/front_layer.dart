@@ -65,14 +65,19 @@ class FrontLayerState extends State<FrontLayer> {
                   polygons: (() {
                     return [
                       Polygon([
+                        Vector(0.0, 1.0, 0.0),
+                        Vector(1.0, 0.0, 0.0),
+                        Vector(-1.0, 0.0, 0.0),
+                      ]),
+                      Polygon([
                         Vector(1.0, 0.0, 0.0),
                         Vector(-1.0, 0.0, 0.0),
                         Vector(0.0, 2.0, 2.0),
                       ]),
                       Polygon([
-                        Vector(1.0, 0.0, 0.0),
-                        Vector(-1.0, 0.0, 0.0),
-                        Vector(0.0, 1.0, 0.0),
+                        Vector(0.0, -4.0, 0.0),
+                        Vector(1.0, -4.0, 1.0),
+                        Vector(-1.0, -4.0, 1.0),
                       ]),
                     ];
                   })(),
