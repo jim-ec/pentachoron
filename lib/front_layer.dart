@@ -3,8 +3,8 @@ import 'package:tesserapp/app_options.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/canvas3d/geometry.dart';
 import 'package:tesserapp/generic/angle.dart';
+import 'package:tesserapp/geometry/polygon.dart';
 import 'package:tesserapp/geometry/vector.dart';
-import 'package:tesserapp/geometry/volume.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 class FrontLayer extends StatefulWidget {
@@ -63,32 +63,23 @@ class FrontLayerState extends State<FrontLayer> {
                 Geometry(
                   color: Theme.of(context).accentColor,
                   polygons: (() {
-//                    final m = Matrix.chain([
-//                      Matrix.rotation(
-//                          RotationPlane.aroundZ, Angle.fromDegrees(45.0)),
-//                      Matrix.rotation(
-//                          RotationPlane.aroundY, Angle.fromDegrees(45.0)),
-//                      Matrix.rotation(
-//                          RotationPlane.aroundX, Angle.fromDegrees(-45.0)),
-//                      Matrix.translation(Vector.ofW(sliderValue))
-//                    ]);
-//                    final tetrahedron = Tetrahedron(m.transformAll([
-//                      Vector(0.0, -1.0, 0.0, 1.0),
-//                      Vector(1.0, 1.0, 0.0, -1.0),
-//                      Vector(-1.0, 1.0, 0.0, -1.0),
-//                      Vector(0.0, 2.0, 0.0, 2.0)
-//                    ]));
-
-//                    return Polygon.tetrahedron(tetrahedron);
-//                    return [tetrahedron.intersection];
-                    final volume = Volume([
-                      Vector.zero(),
-                      Vector.ofX(1.0),
-                      Vector.ofY(1.0),
-                      Vector.ofZ(1.0),
-                      Vector(2.0, 2.0, 2.0),
-                    ]);
-                    return volume.hull;
+                    return [
+                      Polygon([
+                        Vector(0.0, 1.0, 0.0),
+                        Vector(1.0, 0.0, 0.0),
+                        Vector(-1.0, 0.0, 0.0),
+                      ]),
+                      Polygon([
+                        Vector(1.0, 0.0, 0.0),
+                        Vector(-1.0, 0.0, 0.0),
+                        Vector(0.0, 2.0, 2.0),
+                      ]),
+                      Polygon([
+                        Vector(0.0, -4.0, 0.0),
+                        Vector(1.0, -4.0, 1.0),
+                        Vector(-1.0, -4.0, 1.0),
+                      ]),
+                    ];
                   })(),
                 ),
               ]
