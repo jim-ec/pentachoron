@@ -19,6 +19,9 @@ class Canvas3dPainter extends CustomPainter {
   @override
   bool shouldRepaint(final CustomPainter oldDelegate) => true;
 
+  String _iterableToMultiLineLog(final String title, final Iterable i) =>
+      "$title:\n    ${i.join("\n    ")}";
+
   @override
   void paint(final Canvas canvas, final Size size) {
     final aspectRatio = size.width / size.height;
@@ -60,9 +63,14 @@ class Canvas3dPainter extends CustomPainter {
         .map((polygon) => polygon.transformed(view))
         .map((polygon) => polygon.illuminated(canvas3d.lightDirection));
 
+    print(_iterableToMultiLineLog("Polygons View Space", polygonsViewSpace));
+
     // Depth sort polygons.
     final depthSortedPolygons = polygonsViewSpace.toList(growable: false)
       ..sort();
+
+    print(
+        _iterableToMultiLineLog("Depth sorted polygons", depthSortedPolygons));
 
     // Clip polygons away that are either too near or too far.
     // This has to be done before perspective division occurs.
