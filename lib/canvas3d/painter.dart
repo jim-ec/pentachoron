@@ -50,7 +50,7 @@ class Canvas3dPainter extends CustomPainter {
 
     final polygonsGlobalSpace =
         canvas3d.geometries.expand((geometry) => geometry.polygons
-            .map((polygon) => ProcessingPolygon.fromPolygon(
+            .map((polygon) => ProcessingPolygon(
                   polygon,
                   geometry.color,
                 ))
@@ -73,9 +73,10 @@ class Canvas3dPainter extends CustomPainter {
     // Depth sort polygons.
     final depthSortedPolygons = polygonsProjectiveSpace.toList(growable: false)
       ..sort();
-    
-    final nonIntersectingPolygons = depthSortedPolygons.where((polygon) => !polygon.taggedAsIntersecting);
-    
+
+    final nonIntersectingPolygons =
+        depthSortedPolygons.where((polygon) => !polygon.taggedAsIntersecting);
+
     final drawPolygons = nonIntersectingPolygons;
     var outlinePath = Path();
 

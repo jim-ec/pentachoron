@@ -14,28 +14,33 @@ typedef double _PlaneEquation(final Vector3 v);
 /// as they are decoupled from their geometries in order to perform
 /// depth sorting.
 class ProcessingPolygon implements Comparable<ProcessingPolygon> {
+  /// Kept in order to simplify debugging.
   final Iterable<Vector> sourcePoints;
+
+  /// Points in current space.
   final Iterable<Vector3> points;
+
+  /// Color of this polygon.
   final Color color;
-  final Vector3 barycenter;
+
+  /// Normal vector in current space.
   final Vector3 normal;
-  
+
   /// True if this polygons intersects with an other polygon.
   /// Set during depth sorting, i.e. a call to [compareTo].
   var taggedAsIntersecting = false;
 
-  ProcessingPolygon.fromPolygon(
+  ProcessingPolygon(
     final Polygon polygon,
     final Color color,
-  ) : this(polygon.points, polygon.points.map((v) => Vector3(v.x, v.y, v.z)),
+  ) : this._(polygon.points, polygon.points.map((v) => Vector3(v.x, v.y, v.z)),
             color);
 
-  ProcessingPolygon(
+  ProcessingPolygon._(
     this.sourcePoints,
     this.points,
     this.color,
-  )   : barycenter = points.reduce((a, b) => a + b) / points.length.toDouble(),
-        normal = (points.length >= 3)
+  ) : normal = (points.length >= 3)
             ? (points.elementAt(2) - points.elementAt(0))
                 .cross(points.elementAt(1) - points.elementAt(0))
                 .normalized()
@@ -44,26 +49,28 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
   /// Return a transformed version of this polygon.
   /// To transform the polygon using perspective matrices,
   /// use [perspectiveTransformed] instead.
-  ProcessingPolygon transformed(final Matrix4 matrix) => ProcessingPolygon(
+  ProcessingPolygon transformed(final Matrix4 matrix) => ProcessingPolygon._(
       sourcePoints, points.map((v) => matrix.transformed3(v)), color);
 
   /// Return a transformed version of this polygon,
   /// taking perspective division into account.
   ProcessingPolygon perspectiveTransformed(final Matrix4 matrix) =>
-      ProcessingPolygon(sourcePoints,
+      ProcessingPolygon._(sourcePoints,
           points.map((v) => matrix.perspectiveTransform(v)), color);
 
   /// Return a re-colored version of this polygon.
   /// [lightDirection] defines the direction of parallel light rays,
   /// used to illuminate the polygon.
   ///
-  /// [lightDirection] is assumed to be in the *same coordinate space*
-  /// as this polygon.
+  /// [lightDirection] is assumed to be in the same space as this polygon.
   ProcessingPolygon illuminated(final Vector3 lightDirection) {
     final luminance = normal.dot(lightDirection).abs();
     final softenLuminance = remap(luminance, 0.0, 1.0, 0.2, 1.2);
-    return ProcessingPolygon(sourcePoints, points,
-        Color.lerp(Color(0xff000000), color, softenLuminance));
+    return ProcessingPolygon._(
+      sourcePoints,
+      points,
+      Color.lerp(Color(0xff000000), color, softenLuminance),
+    );
   }
 
   /// Performs a depth comparison.
@@ -78,16 +85,16 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
   /// The sorting algorithm is taken from this [SigGraph Letter](https://www.siggraph.org/education/materials/HyperGraph/scanline/visibility/painter.htm),
   /// although it's not fully implemented.
   ///
-  /// Intersecting polygons cannot be sorted correctly and are flagged
-  /// as being [taggedAsIntersecting]. They can be removed in the later stages
-  /// of the painter's pipeline as an optimization, as intersection should
-  /// only appear *within* volumes and therefore represent invisible geometry.
-  ///
-  /// Cyclic occluding polygons lead to infinite sorting.
+  /// Intersecting and cyclic occluding polygons cannot be sorted correctly and
+  /// are flagged as being [taggedAsIntersecting].
+  /// They can be removed in the later stages of the painter's pipeline as an
+  /// optimization, as intersection should only appear *within* volumes and
+  /// therefore represent invisible geometry.
   @override
   int compareTo(final ProcessingPolygon other) {
     const occludingOther = 1;
     const occludedByOther = -1;
+    const undecidable = 0;
 
     // Check if both polygons occupy different z-ranges.
     // If they do, it's trivial to compare the occupied z-ranges and
@@ -128,8 +135,7 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
     }
 
     taggedAsIntersecting = true;
-
-    return 0;
+    return undecidable;
   }
 
   /// Returns a function forming the plane equation for [polygon].
