@@ -5,6 +5,7 @@ import 'package:tesserapp/canvas3d/geometry.dart';
 import 'package:tesserapp/generic/angle.dart';
 import 'package:tesserapp/geometry/polygon.dart';
 import 'package:tesserapp/geometry/vector.dart';
+import 'package:tesserapp/geometry/volume.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 class FrontLayer extends StatefulWidget {
@@ -63,23 +64,14 @@ class FrontLayerState extends State<FrontLayer> {
                 Geometry(
                   color: Theme.of(context).accentColor,
                   polygons: (() {
-                    return [
-                      Polygon([
-                        Vector(0.0, 1.0, 0.0),
-                        Vector(1.0, 0.0, 0.0),
-                        Vector(-1.0, 0.0, 0.0),
-                      ]),
-                      Polygon([
-                        Vector(1.0, 0.0, 0.0),
-                        Vector(-1.0, 0.0, 0.0),
-                        Vector(0.0, 2.0, 2.0),
-                      ]),
-                      Polygon([
-                        Vector(0.0, -4.0, 0.0),
-                        Vector(1.0, -4.0, 1.0),
-                        Vector(-1.0, -4.0, 1.0),
-                      ]),
-                    ];
+                    final volume = Volume([
+                      Vector.zero(),
+                      Vector.ofX(1.0),
+                      Vector.ofY(1.0),
+                      Vector.ofZ(1.0),
+                      Vector(2.0, 2.0, 2.0),
+                    ]);
+                    return volume.hull;
                   })(),
                 ),
               ]

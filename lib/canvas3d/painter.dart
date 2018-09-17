@@ -60,21 +60,23 @@ class Canvas3dPainter extends CustomPainter {
         .map((polygon) => polygon.transformed(view))
         .map((polygon) => polygon.illuminated(canvas3d.lightDirection));
 
-    // Depth sort polygons.
-    final depthSortedPolygons = polygonsViewSpace.toList(growable: false)
-      ..sort();
-
     // Clip polygons away that are either too near or too far.
     // This has to be done before perspective division occurs.
     // When orthographic projection is used, there is no "too near".
-    final distanceClippedPolygons = depthSortedPolygons
+    final distanceClippedPolygons = polygonsViewSpace
         .where((polygon) => polygon.points.every((v) => v.z < 0.0));
 
     // Transform into projective space.
     final polygonsProjectiveSpace = distanceClippedPolygons
         .map((polygon) => polygon.perspectiveTransformed(projection));
 
-    final drawPolygons = polygonsProjectiveSpace;
+    // Depth sort polygons.
+    final depthSortedPolygons = polygonsProjectiveSpace.toList(growable: false)
+      ..sort();
+    
+    final nonIntersectingPolygons = depthSortedPolygons.where((polygon) => !polygon.taggedAsIntersecting);
+    
+    final drawPolygons = nonIntersectingPolygons;
     var outlinePath = Path();
 
     for (final polygon in drawPolygons) {

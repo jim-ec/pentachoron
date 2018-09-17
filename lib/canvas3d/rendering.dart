@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:tesserapp/generic/number_range.dart';
 import 'package:tesserapp/geometry/polygon.dart';
 import 'package:tesserapp/geometry/vector.dart';
@@ -16,6 +17,7 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
   final Color color;
   final Vector3 barycenter;
   final Vector3 normal;
+  var taggedAsIntersecting = false;
 
   ProcessingPolygon.fromPolygon(
     final Polygon polygon,
@@ -98,29 +100,44 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
 
     // Otherwise, check if other polygon lies outside of this polygon.
     // Compute plane equation to check for this.
-    
+
     // Normal is taken is such a manner that is guaranteed to point into
     // positive z direction, i.e. against the view direction.
-    final n = normal.z > 0 ? normal : -normal;
-    
+
     // Plane equation:
     // ax + bx + cx - d = 0
     // Where a = n.x, b = n.y, c = n.z
-    final d = n.dot(points.first);
-    final plane = (final Vector3 v) => n.x * v.x + n.y * v.y + n.z * v.z - d;
+    final planeEquation = (final ProcessingPolygon polygon) {
+      final n = polygon.normal.z < 0 ? polygon.normal : -polygon.normal;
+      final d = n.dot(polygon.points.first);
+      return (final Vector3 v) => n.x * v.x + n.y * v.y + n.z * v.z - d;
+    };
 
     // Mathematically spoken, a points lies "outside" of a plane if that
     // equation results into something greater than 0.
     // I add a small margin, to avoid flickering when points occupy the very
     // same space, which is quite common as polygons are composited
     // to seamless hulls.
-    final outside = other.points.any((v) {
-      return plane(v) > 0.0001;
-    });
-    if (outside) {
-      return occludedByOther;
-    } else {
+
+    const margin = 0.0001;
+
+    final otherIsOutside =
+        other.points.every((v) => planeEquation(this)(v) < margin);
+    final otherIsInside =
+        other.points.every((v) => planeEquation(this)(v) > -margin);
+    final thisIsOutside = points.every((v) => planeEquation(other)(v) < margin);
+    final thisIsInside = points.every((v) => planeEquation(other)(v) > -margin);
+
+    if (otherIsOutside || thisIsInside) {
       return occludingOther;
     }
+
+    if (thisIsOutside || otherIsInside) {
+      return occludedByOther;
+    }
+
+    taggedAsIntersecting = true;
+
+    return occludingOther;
   }
 }
