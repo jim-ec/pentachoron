@@ -7,6 +7,8 @@ import 'package:tesserapp/geometry/polygon.dart';
 import 'package:tesserapp/geometry/vector.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3, Matrix4;
 
+typedef double _PlaneEquation(final Vector3 v);
+
 /// A polygon wrapper adding pipeline processing functionality to it.
 /// It bundles per-geometry features like outlining into the polygons,
 /// as they are decoupled from their geometries in order to perform
@@ -17,6 +19,9 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
   final Color color;
   final Vector3 barycenter;
   final Vector3 normal;
+  
+  /// True if this polygons intersects with an other polygon.
+  /// Set during depth sorting, i.e. a call to [compareTo].
   var taggedAsIntersecting = false;
 
   ProcessingPolygon.fromPolygon(
@@ -35,17 +40,6 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
                 .cross(points.elementAt(1) - points.elementAt(0))
                 .normalized()
             : Vector3.zero();
-
-  String _vectorToString(final Vector v) =>
-      "(${v.x.toStringAsFixed(1)}, ${v.y.toStringAsFixed(1)}, ${v.z.toStringAsFixed(1)})";
-
-  String _vector3ToString(final Vector3 v) =>
-      "(${v.x.toStringAsFixed(1)}, ${v.y.toStringAsFixed(1)}, ${v.z.toStringAsFixed(1)})";
-
-  @override
-  String toString() =>
-      "ProcessingPolygon(barycenter=${_vector3ToString(barycenter)}, "
-      "points=${sourcePoints.map(_vectorToString).join(", ")})";
 
   /// Return a transformed version of this polygon.
   /// To transform the polygon using perspective matrices,
@@ -73,20 +67,31 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
   }
 
   /// Performs a depth comparison.
-  ///
-  /// The polygon which's barycenter has a higher z coordinate
-  /// is occluding the other one, i.e. sorted after it.
+  /// This polygon should reside in projection space in order to construct
+  /// proper normal vectors.
   ///
   /// Polygons are expected to not intersect each other.
   /// Cyclic occluding is not supported and will result into
   /// incorrect sorting, as this simple algorithm is not able
   /// to split polygons.
+  ///
+  /// The sorting algorithm is taken from this [SigGraph Letter](https://www.siggraph.org/education/materials/HyperGraph/scanline/visibility/painter.htm),
+  /// although it's not fully implemented.
+  ///
+  /// Intersecting polygons cannot be sorted correctly and are flagged
+  /// as being [taggedAsIntersecting]. They can be removed in the later stages
+  /// of the painter's pipeline as an optimization, as intersection should
+  /// only appear *within* volumes and therefore represent invisible geometry.
+  ///
+  /// Cyclic occluding polygons lead to infinite sorting.
   @override
   int compareTo(final ProcessingPolygon other) {
     const occludingOther = 1;
     const occludedByOther = -1;
 
     // Check if both polygons occupy different z-ranges.
+    // If they do, it's trivial to compare the occupied z-ranges and
+    // order the polygons accordingly.
     final zMin = points.map((v) => v.z).reduce((a, b) => min(a, b));
     final zMax = points.map((v) => v.z).reduce((a, b) => max(a, b));
     final zMinOther = other.points.map((v) => v.z).reduce((a, b) => min(a, b));
@@ -98,46 +103,41 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
       return occludedByOther;
     }
 
-    // Otherwise, check if other polygon lies outside of this polygon.
-    // Compute plane equation to check for this.
-
-    // Normal is taken is such a manner that is guaranteed to point into
-    // positive z direction, i.e. against the view direction.
-
+    // Otherwise, check if both polygon lying completely on one side
+    // relative to the plane equation of the other polygon.
+    //
     // Plane equation:
     // ax + bx + cx - d = 0
     // Where a = n.x, b = n.y, c = n.z
-    final planeEquation = (final ProcessingPolygon polygon) {
-      final n = polygon.normal.z < 0 ? polygon.normal : -polygon.normal;
-      final d = n.dot(polygon.points.first);
-      return (final Vector3 v) => n.x * v.x + n.y * v.y + n.z * v.z - d;
-    };
+    //
+    // If the result is greater than 0, the point lies in front of the plane.
 
-    // Mathematically spoken, a points lies "outside" of a plane if that
-    // equation results into something greater than 0.
     // I add a small margin, to avoid flickering when points occupy the very
     // same space, which is quite common as polygons are composited
     // to seamless hulls.
-
     const margin = 0.0001;
 
-    final otherIsOutside =
-        other.points.every((v) => planeEquation(this)(v) < margin);
-    final otherIsInside =
-        other.points.every((v) => planeEquation(this)(v) > -margin);
-    final thisIsOutside = points.every((v) => planeEquation(other)(v) < margin);
-    final thisIsInside = points.every((v) => planeEquation(other)(v) > -margin);
-
-    if (otherIsOutside || thisIsInside) {
+    if (other.points.every((v) => _planeEquation(v) < margin) ||
+        points.every((v) => other._planeEquation(v) > -margin)) {
       return occludingOther;
     }
 
-    if (thisIsOutside || otherIsInside) {
+    if (points.every((v) => other._planeEquation(v) < margin) ||
+        other.points.every((v) => _planeEquation(v) > -margin)) {
       return occludedByOther;
     }
 
     taggedAsIntersecting = true;
 
-    return occludingOther;
+    return 0;
+  }
+
+  /// Returns a function forming the plane equation for [polygon].
+  _PlaneEquation get _planeEquation {
+    // Normal is taken is such a manner that is guaranteed to point into
+    // positive z direction, i.e. against the view direction.
+    final n = normal.z < 0 ? normal : -normal;
+    final d = n.dot(points.first);
+    return (final Vector3 v) => n.x * v.x + n.y * v.y + n.z * v.z - d;
   }
 }
