@@ -5,7 +5,6 @@ Small hobby project, playing with 4D geometry.
 ## What's this app's purpose?
 
 I'm writing this app to my own joy and curiosity.
-I try to apply various new designs and concepts I come across, such as the MVVM construct.
 
 ## Git Branching Model
 
