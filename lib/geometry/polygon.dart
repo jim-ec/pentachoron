@@ -3,6 +3,8 @@ import 'package:tesserapp/generic/angle.dart';
 import 'package:tesserapp/geometry/tetrahedron.dart';
 import 'package:tesserapp/geometry/vector.dart';
 
+typedef double _PlaneEquation(final Vector v);
+
 /// A polygon consists of an arbitrary count of vertices.
 ///
 /// All vertices must share the same mathematical plane, i.e. the polygon has
@@ -25,30 +27,43 @@ class Polygon {
     return sortedAngles.map((v) => v.v);
   }
 
+  _PlaneEquation get planeEquation {
+    if (points.length < 3) {
+      return (v) => double.nan;
+    }
+
+    final Vector n = Vector.cross(
+      points.elementAt(1) - points.elementAt(0),
+      points.elementAt(2) - points.elementAt(0),
+    );
+    final double d = Vector.dot(n, points.first);
+
+    return (final v) => n.x * v.x + n.y * v.y + n.z * v.z - d;
+  }
 
   static Iterable<Polygon> tetrahedron(final Tetrahedron t) => t != null
       ? [
-    Polygon([
-      t.points.elementAt(0),
-      t.points.elementAt(1),
-      t.points.elementAt(2),
-    ]),
-    Polygon([
-      t.points.elementAt(0),
-      t.points.elementAt(1),
-      t.points.elementAt(3),
-    ]),
-    Polygon([
-      t.points.elementAt(1),
-      t.points.elementAt(2),
-      t.points.elementAt(3),
-    ]),
-    Polygon([
-      t.points.elementAt(2),
-      t.points.elementAt(0),
-      t.points.elementAt(3),
-    ]),
-  ]
+          Polygon([
+            t.points.elementAt(0),
+            t.points.elementAt(1),
+            t.points.elementAt(2),
+          ]),
+          Polygon([
+            t.points.elementAt(0),
+            t.points.elementAt(1),
+            t.points.elementAt(3),
+          ]),
+          Polygon([
+            t.points.elementAt(1),
+            t.points.elementAt(2),
+            t.points.elementAt(3),
+          ]),
+          Polygon([
+            t.points.elementAt(2),
+            t.points.elementAt(0),
+            t.points.elementAt(3),
+          ]),
+        ]
       : [];
 
   static Iterable<Polygon> cube({
@@ -66,7 +81,7 @@ class Polygon {
       center + Vector(-a, -a, a),
       center + Vector(-a, -a, -a),
     ];
-  
+
     return [
       Polygon([positions[0], positions[1], positions[3], positions[2]]),
       Polygon([positions[1], positions[5], positions[7], positions[3]]),
@@ -77,35 +92,36 @@ class Polygon {
     ];
   }
 
-  static Iterable<Polygon> pyramid({final double edgeLength, final double height}) => [
-    Polygon([
-      Vector(edgeLength / 2, edgeLength / 2, 0.0),
-      Vector(edgeLength / 2, -edgeLength / 2, 0.0),
-      Vector(-edgeLength / 2, -edgeLength / 2, 0.0),
-      Vector(-edgeLength / 2, edgeLength / 2, 0.0),
-    ]),
-    Polygon([
-      Vector(-edgeLength / 2, -edgeLength / 2, 0.0),
-      Vector(-edgeLength / 2, edgeLength / 2, 0.0),
-      Vector(0.0, 0.0, height),
-    ]),
-    Polygon([
-      Vector(edgeLength / 2, -edgeLength / 2, 0.0),
-      Vector(-edgeLength / 2, -edgeLength / 2, 0.0),
-      Vector(0.0, 0.0, height),
-    ]),
-    Polygon([
-      Vector(edgeLength / 2, edgeLength / 2, 0.0),
-      Vector(edgeLength / 2, -edgeLength / 2, 0.0),
-      Vector(0.0, 0.0, height),
-    ]),
-    Polygon([
-      Vector(-edgeLength / 2, edgeLength / 2, 0.0),
-      Vector(edgeLength / 2, edgeLength / 2, 0.0),
-      Vector(0.0, 0.0, height),
-    ]),
-  ];
-  
+  static Iterable<Polygon> pyramid(
+          {final double edgeLength, final double height}) =>
+      [
+        Polygon([
+          Vector(edgeLength / 2, edgeLength / 2, 0.0),
+          Vector(edgeLength / 2, -edgeLength / 2, 0.0),
+          Vector(-edgeLength / 2, -edgeLength / 2, 0.0),
+          Vector(-edgeLength / 2, edgeLength / 2, 0.0),
+        ]),
+        Polygon([
+          Vector(-edgeLength / 2, -edgeLength / 2, 0.0),
+          Vector(-edgeLength / 2, edgeLength / 2, 0.0),
+          Vector(0.0, 0.0, height),
+        ]),
+        Polygon([
+          Vector(edgeLength / 2, -edgeLength / 2, 0.0),
+          Vector(-edgeLength / 2, -edgeLength / 2, 0.0),
+          Vector(0.0, 0.0, height),
+        ]),
+        Polygon([
+          Vector(edgeLength / 2, edgeLength / 2, 0.0),
+          Vector(edgeLength / 2, -edgeLength / 2, 0.0),
+          Vector(0.0, 0.0, height),
+        ]),
+        Polygon([
+          Vector(-edgeLength / 2, edgeLength / 2, 0.0),
+          Vector(edgeLength / 2, edgeLength / 2, 0.0),
+          Vector(0.0, 0.0, height),
+        ]),
+      ];
 }
 
 class _PointAngle implements Comparable<_PointAngle> {

@@ -2,8 +2,9 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 import 'package:tesserapp/geometry/line.dart';
-import 'package:tesserapp/geometry/tetrahedron.dart';
+import 'package:tesserapp/geometry/matrix.dart';
 import 'package:tesserapp/geometry/vector.dart';
+import 'package:tesserapp/geometry/volume.dart';
 
 /// The base four-dimensional geometry, in the same manner as the triangle
 /// forms the base for 2d geometries and the tetrahedron for 3d geometries.
@@ -35,27 +36,20 @@ class Pentachoron {
 
   /// Construct a pentachoron with the edge length 2.
   /// The base cell is origin-centered.
-  Pentachoron.simple()
-      : this([
+  Pentachoron.simple(
+    final Matrix matrix,
+  ) : this(matrix.transformAll([
           Vector(1.0, 1.0, 1.0, -1.0 / sqrt(5.0)),
           Vector(1.0, -1.0, -1.0, -1.0 / sqrt(5.0)),
           Vector(-1.0, 1.0, -1.0, -1.0 / sqrt(5.0)),
           Vector(-1.0, -1.0, 1.0, -1.0 / sqrt(5.0)),
           Vector(0.0, 0.0, 0.0, sqrt(5.0) - 1.0 / sqrt(5.0)),
-        ]);
+        ]));
 
-  Tetrahedron get intersection {
-    final intersectingPoints = lines
-        .map((line) => line.intersection)
-        .where((line) => line != null);
-
-    assert(intersectingPoints.length <= 4, "Impossible count of intersections");
-
-    if (intersectingPoints.length < 3) {
-      return null;
-    } else {
-      return Tetrahedron(intersectingPoints);
-    }
+  Volume get intersection {
+    final intersectingPoints =
+        lines.map((line) => line.intersection).where((line) => line != null);
+    return Volume(intersectingPoints);
   }
 
 //  Tetrahedron intersected()

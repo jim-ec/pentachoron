@@ -3,8 +3,8 @@ import 'package:tesserapp/app_options.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/canvas3d/geometry.dart';
 import 'package:tesserapp/generic/angle.dart';
-import 'package:tesserapp/geometry/vector.dart';
-import 'package:tesserapp/geometry/volume.dart';
+import 'package:tesserapp/geometry/matrix.dart';
+import 'package:tesserapp/geometry/pentachoron.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 class FrontLayer extends StatefulWidget {
@@ -63,14 +63,11 @@ class FrontLayerState extends State<FrontLayer> {
                 Geometry(
                   color: Theme.of(context).accentColor,
                   polygons: (() {
-                    final volume = Volume([
-                      Vector.zero(),
-                      Vector.ofX(1.0),
-                      Vector.ofY(1.0),
-                      Vector.ofZ(1.0),
-                      Vector(2.0, 2.0, 2.0),
-                    ]);
-                    return volume.hull;
+                    final pentachoron = Pentachoron.simple(Matrix.chain([
+                      Matrix.rotation(RotationPlane.onXQ, Angle.fromTurns(sliderValue))
+//                      Matrix.translation(Vector(0.0, 0.0, 0.0, sliderValue)),
+                    ]));
+                    return pentachoron.intersection.hull;
                   })(),
                 ),
               ]
@@ -82,8 +79,8 @@ class FrontLayerState extends State<FrontLayer> {
             top: null,
             child: Slider(
               value: sliderValue,
-              min: -2.0,
-              max: 2.0,
+              min: 0.0,
+              max: 1.0,
               onChanged: (value) {
                 setState(() {
                   sliderValue = value;

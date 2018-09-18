@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:tesserapp/generic/number_range.dart';
 import 'package:tesserapp/geometry/polygon.dart';
+import 'package:tesserapp/geometry/tolerance.dart';
 import 'package:tesserapp/geometry/vector.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3, Matrix4;
 
@@ -119,18 +120,13 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
     //
     // If the result is greater than 0, the point lies in front of the plane.
 
-    // I add a small margin, to avoid flickering when points occupy the very
-    // same space, which is quite common as polygons are composited
-    // to seamless hulls.
-    const margin = 0.0001;
-
-    if (other.points.every((v) => _planeEquation(v) < margin) ||
-        points.every((v) => other._planeEquation(v) > -margin)) {
+    if (other.points.every((v) => _planeEquation(v) < tolerance) ||
+        points.every((v) => other._planeEquation(v) > -tolerance)) {
       return occludingOther;
     }
 
-    if (points.every((v) => other._planeEquation(v) < margin) ||
-        other.points.every((v) => _planeEquation(v) > -margin)) {
+    if (points.every((v) => other._planeEquation(v) < tolerance) ||
+        other.points.every((v) => _planeEquation(v) > -tolerance)) {
       return occludedByOther;
     }
 
