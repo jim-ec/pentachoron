@@ -24,7 +24,7 @@ class Vector {
   const Vector.ofZ(final double c) : this(0.0, 0.0, c, 0.0);
 
   const Vector.ofW(final double c) : this(0.0, 0.0, 0.0, c);
-  
+
   factory Vector.barycenter(final Iterable<Vector> points) =>
       points.reduce((a, b) => a + b) / points.length.toDouble();
 
@@ -59,7 +59,7 @@ class Vector {
         x = a.y * b.z - a.z - b.y,
         y = a.z * b.x - a.x * b.z,
         z = a.x * b.y - a.y * b.x {
-    assert(a.w == b.w, "Only 3d vectors can be crossed");
+    assert((a.w - b.w).abs() < 0.01, "Only 3d vectors can be crossed");
   }
 
   static double dot(final Vector a, final Vector b) =>
