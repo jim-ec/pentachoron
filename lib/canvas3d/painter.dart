@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
-import 'package:tesserapp/canvas3d/rendering.dart';
+import 'package:tesserapp/canvas3d/processing_polygon.dart';
 import 'package:vector_math/vector_math_64.dart'
     show makePerspectiveMatrix, makeViewMatrix;
 
@@ -74,10 +74,7 @@ class Canvas3dPainter extends CustomPainter {
     final depthSortedPolygons = polygonsProjectiveSpace.toList(growable: false)
       ..sort();
 
-    final nonIntersectingPolygons =
-        depthSortedPolygons.where((polygon) => !polygon.taggedAsIntersecting);
-
-    final drawPolygons = nonIntersectingPolygons;
+    final drawPolygons = depthSortedPolygons;
     var outlinePath = Path();
 
     for (final polygon in drawPolygons) {

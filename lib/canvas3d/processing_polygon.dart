@@ -27,10 +27,6 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
   /// Normal vector in current space.
   final Vector3 normal;
 
-  /// True if this polygons intersects with an other polygon.
-  /// Set during depth sorting, i.e. a call to [compareTo].
-  var taggedAsIntersecting = false;
-
   ProcessingPolygon(
     final Polygon polygon,
     final Color color,
@@ -130,7 +126,6 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
       return occludedByOther;
     }
 
-    taggedAsIntersecting = true;
     return undecidable;
   }
 

@@ -14,6 +14,8 @@ class Volume {
   static Iterable<Polygon> _generatePolygonsFromPointCloud(
     final Iterable<Vector> points,
   ) {
+    print("Generate volume:");
+    print("    points=${points.join(", ")}");
     final polygons = <Polygon>[];
     for (final a in range(0, points.length)) {
       for (final b in range(a + 1, points.length)) {
