@@ -62,7 +62,7 @@ class Vector {
     assert(a.w == b.w, "Only 3d vectors can be crossed");
   }
 
-  static double scalar(final Vector a, final Vector b) =>
+  static double dot(final Vector a, final Vector b) =>
       a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 
   Vector operator +(final Vector other) =>
@@ -82,7 +82,7 @@ class Vector {
       "${z.toStringAsFixed(1)}, "
       "${w.toStringAsFixed(1)}]";
 
-  double get length => sqrt(Vector.scalar(this, this));
+  double get length => sqrt(Vector.dot(this, this));
 
   Vector get normalized => Vector(x / length, y / length, z / length);
 }
