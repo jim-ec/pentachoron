@@ -52,10 +52,9 @@ class FrontLayerState extends State<FrontLayer> {
             },
             child: Canvas3d(
               lightDirection: Vector3(0.0, 0.0, 1.0),
-              fov: Angle.fromDegrees(60.0),
               outlineColor: Theme.of(context).textTheme.title.color,
               cameraPosition: CameraPosition.fromOrbitEuler(
-                distance: 5.0,
+                distance: 3.0,
                 polar: polar,
                 azimuth: azimuth,
               ),
@@ -63,11 +62,22 @@ class FrontLayerState extends State<FrontLayer> {
                 Geometry(
                   color: Theme.of(context).accentColor,
                   polygons: (() {
-                    final pentachoron = Pentachoron.simple(Matrix.chain([
-                      Matrix.rotation(RotationPlane.onXQ, Angle.fromTurns(sliderValue))
-//                      Matrix.translation(Vector(0.0, 0.0, 0.0, sliderValue)),
-                    ]));
+                    
+//                    final volume = Volume([
+//                      Vector.zero(),
+//                      Vector.ofX(1.0),
+//                      Vector.ofY(1.0),
+//                      Vector.ofZ(1.0),
+//                    ]);
+//                    return volume.hull;
+//
+                    final matrix = Matrix.chain([
+                      Matrix.rotation(
+                          RotationPlane.onXQ, Angle.fromTurns(sliderValue))
+                    ]);
+                    final pentachoron = Pentachoron.simple(matrix);
                     return pentachoron.intersection.hull;
+                  
                   })(),
                 ),
               ]

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/canvas3d/processing_polygon.dart';
-import 'package:vector_math/vector_math_64.dart'
-    show makePerspectiveMatrix, makeViewMatrix;
+import 'package:vector_math/vector_math_64.dart' show makeViewMatrix;
 
 class Canvas3dPainter extends CustomPainter {
   final Canvas3d canvas3d;
@@ -39,9 +38,6 @@ class Canvas3dPainter extends CustomPainter {
       canvas.scale(1.0 / aspectRatio, 1.0);
     }
 
-    final projection =
-        makePerspectiveMatrix(canvas3d.fov.radians, 1.0, 0.1, 1.0);
-
     final view = makeViewMatrix(
       canvas3d.cameraPosition.eye,
       canvas3d.cameraPosition.focus,
@@ -59,14 +55,11 @@ class Canvas3dPainter extends CustomPainter {
     final polygonsViewSpace = polygonsGlobalSpace
         .map((polygon) => polygon.transformed(view))
         .map((polygon) => polygon.illuminated(canvas3d.lightDirection))
-        .where((polygon) => polygon.points.every((v) => v.z < 0.0));
-
-    // Transform into projective space.
-    final polygonsProjectiveSpace = polygonsViewSpace
-        .map((polygon) => polygon.perspectiveTransformed(projection));
+        .where((polygon) => polygon.points.every((v) => v.z < 0.0))
+        .map((polygon) => polygon.perspectiveDivision);
 
     // Depth sort polygons.
-    final depthSortedPolygons = polygonsProjectiveSpace.toList(growable: false)
+    final depthSortedPolygons = polygonsViewSpace.toList(growable: false)
       ..sort();
 
     final drawPolygons = depthSortedPolygons;

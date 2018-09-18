@@ -40,7 +40,7 @@ class Polygon {
 
     return (final v) => n.x * v.x + n.y * v.y + n.z * v.z - d;
   }
-
+  
   static Iterable<Polygon> tetrahedron(final Tetrahedron t) => t != null
       ? [
           Polygon([

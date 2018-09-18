@@ -28,20 +28,31 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
   final Vector3 normal;
 
   ProcessingPolygon._(
-      this.sourcePoints,
-      this.points,
-      this.color,
-      ) : normal = (points.length >= 3)
-      ? (points.elementAt(2) - points.elementAt(0))
-      .cross(points.elementAt(1) - points.elementAt(0))
-      .normalized()
-      : Vector3.zero();
+    this.sourcePoints,
+    this.points,
+    this.color,
+  ) : normal = (points.length >= 3)
+            ? (points.elementAt(2) - points.elementAt(0))
+                .cross(points.elementAt(1) - points.elementAt(0))
+                .normalized()
+            : Vector3.zero();
 
   ProcessingPolygon(
     final Polygon polygon,
     final Color color,
   ) : this._(polygon.points, polygon.points.map((v) => Vector3(v.x, v.y, v.z)),
             color);
+
+  /// Computes the polygon representing this' perspective division.
+  /// The z-component is negated, after which the x and y component
+  /// are divided through that negated z value.
+  /// The v value is than kept as-is, i.e. it need not to be -1.0
+  /// after the division.
+  ProcessingPolygon get perspectiveDivision => ProcessingPolygon._(
+        sourcePoints,
+        points.map((v) => Vector3(-v.x / v.z, -v.y / v.z, -v.z)),
+        color,
+      );
 
   /// Return a transformed version of this polygon.
   /// To transform the polygon using perspective matrices,
@@ -106,7 +117,7 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
     if (zMax < zMinOther) {
       return occludedByOther;
     }
-    
+
     print(points);
 
     // Otherwise, check if both polygon lying completely on one side

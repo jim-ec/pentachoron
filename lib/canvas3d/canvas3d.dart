@@ -14,10 +14,6 @@ class Canvas3d extends StatelessWidget {
   /// Color of the outline, if drawn.
   final Color outlineColor;
 
-  /// Vertical field of view in radians.
-  /// The value is only used when rendering perspective projection.
-  final Angle fov;
-
   /// Direction of global light.
   /// A vector longer than 1.0 increases light intensity.
   final Vector3 lightDirection;
@@ -27,7 +23,6 @@ class Canvas3d extends StatelessWidget {
     @required this.cameraPosition,
     @required this.geometries,
     @required this.outlineColor,
-    @required this.fov,
     @required this.lightDirection,
   }) : super(key: key);
 
