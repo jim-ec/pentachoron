@@ -30,14 +30,14 @@ class FrontLayerState extends State<FrontLayer> {
           GestureDetector(
             onPanUpdate: (details) {
               setState(() {
-                polar += Angle.fromRadians(details.delta.dx *
+                polar -= Angle.fromRadians(details.delta.dx *
                     (AppOptions.of(context)
                             .invertedHorizontalCamera
                             .option
                             .value
                         ? -orbitSensitivity
                         : orbitSensitivity));
-                azimuth += Angle.fromRadians(details.delta.dy *
+                azimuth -= Angle.fromRadians(details.delta.dy *
                     (AppOptions.of(context).invertedVerticalCamera.option.value
                         ? -orbitSensitivity
                         : orbitSensitivity));
@@ -55,8 +55,8 @@ class FrontLayerState extends State<FrontLayer> {
               outlineColor: Theme.of(context).textTheme.title.color,
               cameraPosition: CameraPosition.fromOrbitEuler(
                 distance: 3.0,
-                polar: polar,
-                azimuth: azimuth,
+                polar: Angle.zero(),
+                azimuth: Angle.zero(),
               ),
               geometries: <Geometry>[
                 Geometry(
@@ -72,6 +72,8 @@ class FrontLayerState extends State<FrontLayer> {
 //                    return volume.hull;
 //
                     final matrix = Matrix.chain([
+                      Matrix.rotation(RotationPlane.onXY, polar),
+                      Matrix.rotation(RotationPlane.onYZ, azimuth),
                       Matrix.rotation(
                           RotationPlane.onXQ, Angle.fromTurns(sliderValue))
                     ]);
