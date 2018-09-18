@@ -27,21 +27,21 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
   /// Normal vector in current space.
   final Vector3 normal;
 
+  ProcessingPolygon._(
+      this.sourcePoints,
+      this.points,
+      this.color,
+      ) : normal = (points.length >= 3)
+      ? (points.elementAt(2) - points.elementAt(0))
+      .cross(points.elementAt(1) - points.elementAt(0))
+      .normalized()
+      : Vector3.zero();
+
   ProcessingPolygon(
     final Polygon polygon,
     final Color color,
   ) : this._(polygon.points, polygon.points.map((v) => Vector3(v.x, v.y, v.z)),
             color);
-
-  ProcessingPolygon._(
-    this.sourcePoints,
-    this.points,
-    this.color,
-  ) : normal = (points.length >= 3)
-            ? (points.elementAt(2) - points.elementAt(0))
-                .cross(points.elementAt(1) - points.elementAt(0))
-                .normalized()
-            : Vector3.zero();
 
   /// Return a transformed version of this polygon.
   /// To transform the polygon using perspective matrices,
@@ -106,6 +106,8 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
     if (zMax < zMinOther) {
       return occludedByOther;
     }
+    
+    print(points);
 
     // Otherwise, check if both polygon lying completely on one side
     // relative to the plane equation of the other polygon.

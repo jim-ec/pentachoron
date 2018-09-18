@@ -58,16 +58,11 @@ class Canvas3dPainter extends CustomPainter {
 
     final polygonsViewSpace = polygonsGlobalSpace
         .map((polygon) => polygon.transformed(view))
-        .map((polygon) => polygon.illuminated(canvas3d.lightDirection));
-
-    // Clip polygons away that are either too near or too far.
-    // This has to be done before perspective division occurs.
-    // When orthographic projection is used, there is no "too near".
-    final distanceClippedPolygons = polygonsViewSpace
+        .map((polygon) => polygon.illuminated(canvas3d.lightDirection))
         .where((polygon) => polygon.points.every((v) => v.z < 0.0));
 
     // Transform into projective space.
-    final polygonsProjectiveSpace = distanceClippedPolygons
+    final polygonsProjectiveSpace = polygonsViewSpace
         .map((polygon) => polygon.perspectiveTransformed(projection));
 
     // Depth sort polygons.
