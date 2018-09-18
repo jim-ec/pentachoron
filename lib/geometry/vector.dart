@@ -76,11 +76,15 @@ class Vector {
 
   Vector operator -() => Vector(-x, -y, -z, -w);
 
+  /// Create a string representing this vector.
+  /// Z and w component are only included if they differ from 0 by more than
+  /// one tenth.
   @override
-  String toString() => "[${x.toStringAsFixed(1)}, "
-      "${y.toStringAsFixed(1)}, "
-      "${z.toStringAsFixed(1)}, "
-      "${w.toStringAsFixed(1)}]";
+  String toString() => "[${x.toStringAsFixed(1)}"
+      ", ${y.toStringAsFixed(1)}"
+      "${z.abs() >= 0.1 ? ", ${z.toStringAsFixed(1)}" : ""}"
+      "${w.abs() >= 0.1 ? ", ${w.toStringAsFixed(1)}" : ""}"
+      "]";
 
   double get length => sqrt(Vector.dot(this, this));
 
