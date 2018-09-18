@@ -56,7 +56,7 @@ class Vector {
 
   Vector.cross(final Vector a, final Vector b)
       : w = 0.0,
-        x = a.y * b.z - a.z - b.y,
+        x = a.y * b.z - a.z * b.y,
         y = a.z * b.x - a.x * b.z,
         z = a.x * b.y - a.y * b.x {
     assert((a.w - b.w).abs() < 0.01, "Only 3d vectors can be crossed");
