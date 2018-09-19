@@ -5,7 +5,7 @@ import 'package:tesserapp/canvas3d/geometry.dart';
 import 'package:tesserapp/generic/angle.dart';
 import 'package:tesserapp/geometry/matrix.dart';
 import 'package:tesserapp/geometry/pentachoron.dart';
-import 'package:vector_math/vector_math_64.dart' show Vector3;
+import 'package:tesserapp/geometry/vector.dart';
 
 class FrontLayer extends StatefulWidget {
   @override
@@ -51,18 +51,13 @@ class FrontLayerState extends State<FrontLayer> {
               });
             },
             child: Canvas3d(
-              lightDirection: Vector3(0.0, 0.0, 1.0),
+              lightDirection: Vector.ofZ(1.0),
               outlineColor: Theme.of(context).textTheme.title.color,
-              cameraPosition: CameraPosition.fromOrbitEuler(
-                distance: 3.0,
-                polar: Angle.zero(),
-                azimuth: Angle.zero(),
-              ),
+              cameraDistance: 3.0,
               geometries: <Geometry>[
                 Geometry(
                   color: Theme.of(context).accentColor,
                   polygons: (() {
-                    
 //                    final volume = Volume([
 //                      Vector.zero(),
 //                      Vector.ofX(1.0),
@@ -79,12 +74,9 @@ class FrontLayerState extends State<FrontLayer> {
                     ]);
                     final pentachoron = Pentachoron.simple(matrix);
                     return pentachoron.intersection.hull;
-                  
                   })(),
                 ),
-              ]
-//              + axisIndicator
-                  ,
+              ],
             ),
           ),
           Positioned.fill(

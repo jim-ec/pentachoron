@@ -3,12 +3,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:tesserapp/generic/number_range.dart';
+import 'package:tesserapp/geometry/matrix.dart';
 import 'package:tesserapp/geometry/polygon.dart';
 import 'package:tesserapp/geometry/tolerance.dart';
 import 'package:tesserapp/geometry/vector.dart';
-import 'package:vector_math/vector_math_64.dart' show Vector3, Matrix4;
 
-typedef double _PlaneEquation(final Vector3 v);
+typedef double _PlaneEquation(final Vector v);
 
 /// A polygon wrapper adding pipeline processing functionality to it.
 /// It bundles per-geometry features like outlining into the polygons,
@@ -19,29 +19,28 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
   final Iterable<Vector> sourcePoints;
 
   /// Points in current space.
-  final Iterable<Vector3> points;
+  final Iterable<Vector> points;
 
   /// Color of this polygon.
   final Color color;
 
   /// Normal vector in current space.
-  final Vector3 normal;
+  final Vector normal;
 
   ProcessingPolygon._(
     this.sourcePoints,
     this.points,
     this.color,
   ) : normal = (points.length >= 3)
-            ? (points.elementAt(2) - points.elementAt(0))
-                .cross(points.elementAt(1) - points.elementAt(0))
-                .normalized()
-            : Vector3.zero();
+            ? Vector.cross(points.elementAt(2) - points.elementAt(0),
+                    points.elementAt(1) - points.elementAt(0))
+                .normalized
+            : Vector.zero();
 
   ProcessingPolygon(
     final Polygon polygon,
     final Color color,
-  ) : this._(polygon.points, polygon.points.map((v) => Vector3(v.x, v.y, v.z)),
-            color);
+  ) : this._(polygon.points, polygon.points, color);
 
   /// Computes the polygon representing this' perspective division.
   /// The z-component is negated, after which the x and y component
@@ -50,29 +49,23 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
   /// after the division.
   ProcessingPolygon get perspectiveDivision => ProcessingPolygon._(
         sourcePoints,
-        points.map((v) => Vector3(-v.x / v.z, -v.y / v.z, -v.z)),
+        points.map((v) => -Vector(v.x / v.z, v.y / v.z, v.z)),
         color,
       );
 
   /// Return a transformed version of this polygon.
   /// To transform the polygon using perspective matrices,
   /// use [perspectiveTransformed] instead.
-  ProcessingPolygon transformed(final Matrix4 matrix) => ProcessingPolygon._(
-      sourcePoints, points.map((v) => matrix.transformed3(v)), color);
-
-  /// Return a transformed version of this polygon,
-  /// taking perspective division into account.
-  ProcessingPolygon perspectiveTransformed(final Matrix4 matrix) =>
-      ProcessingPolygon._(sourcePoints,
-          points.map((v) => matrix.perspectiveTransform(v)), color);
+  ProcessingPolygon transformed(final Matrix matrix) => ProcessingPolygon._(
+      sourcePoints, points.map((v) => matrix.transform(v)), color);
 
   /// Return a re-colored version of this polygon.
   /// [lightDirection] defines the direction of parallel light rays,
   /// used to illuminate the polygon.
   ///
   /// [lightDirection] is assumed to be in the same space as this polygon.
-  ProcessingPolygon illuminated(final Vector3 lightDirection) {
-    final luminance = normal.dot(lightDirection).abs();
+  ProcessingPolygon illuminated(final Vector lightDirection) {
+    final luminance = Vector.dot(normal, lightDirection).abs();
     final softenLuminance = remap(luminance, 0.0, 1.0, 0.2, 1.2);
     return ProcessingPolygon._(
       sourcePoints,
@@ -147,7 +140,7 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
     // Normal is taken is such a manner that is guaranteed to point into
     // positive z direction, i.e. against the view direction.
     final n = normal.z < 0 ? normal : -normal;
-    final d = n.dot(points.first);
-    return (final Vector3 v) => n.x * v.x + n.y * v.y + n.z * v.z - d;
+    final d = Vector.dot(n, points.first);
+    return (final Vector v) => n.x * v.x + n.y * v.y + n.z * v.z - d;
   }
 }

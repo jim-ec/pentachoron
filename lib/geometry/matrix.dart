@@ -49,6 +49,9 @@ class Matrix {
           [v.x, v.y, v.z, v.w, 1.0],
         ]);
 
+  Matrix get transpose =>
+      Matrix.generate((final row, final col) => at(col, row));
+
   double at(final int row, final int col) => rows.elementAt(row).elementAt(col);
 
   Matrix operator *(final Matrix rhs) =>
@@ -102,7 +105,11 @@ class Matrix {
   }
 
   Vector transform(final Vector v) => Vector.generate((final int col) =>
-      range(4).map((i) => v[i] * this.at(i, col)).reduce((a, b) => a + b) +
+      range(4)
+          .map(
+            (i) => v[i] * at(i, col),
+          )
+          .reduce((a, b) => a + b) +
       at(4, col));
 
   Iterable<Vector> transformAll(final Iterable<Vector> vectors) =>

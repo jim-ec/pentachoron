@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tesserapp/canvas3d/geometry.dart';
 import 'package:tesserapp/canvas3d/painter.dart';
-import 'package:tesserapp/generic/angle.dart';
-import 'package:vector_math/vector_math_64.dart';
+import 'package:tesserapp/geometry/vector.dart';
 
 class Canvas3d extends StatelessWidget {
-  /// Camera position, in global space.
-  final CameraPosition cameraPosition;
+  /// Camera distance from the origin along the y axis.
+  final double cameraDistance;
 
   /// List of geometry to be drawn.
   final Iterable<Geometry> geometries;
@@ -16,11 +15,11 @@ class Canvas3d extends StatelessWidget {
 
   /// Direction of global light.
   /// A vector longer than 1.0 increases light intensity.
-  final Vector3 lightDirection;
+  final Vector lightDirection;
 
   Canvas3d({
     Key key,
-    @required this.cameraPosition,
+    @required this.cameraDistance,
     @required this.geometries,
     @required this.outlineColor,
     @required this.lightDirection,
@@ -33,37 +32,4 @@ class Canvas3d extends StatelessWidget {
           painter: Canvas3dPainter(this),
         ),
       );
-}
-
-/// Camera position.
-class CameraPosition {
-  final Vector3 eye, focus, up;
-
-  CameraPosition({
-    this.eye,
-    this.focus,
-    up,
-  }) : up = up ?? Vector3(0.0, 0.0, 1.0);
-
-  CameraPosition.fromOrbitEuler({
-    final double distance,
-    final Angle polar,
-    final Angle azimuth,
-  }) : this(
-            focus: Vector3.zero(),
-            eye: Matrix4.rotationZ(polar.radians)
-                .multiplied(Matrix4.rotationX(azimuth.radians))
-                .transform3(Vector3(0.0, distance, 0.0)));
-}
-
-class Rotation {
-  final Matrix4 transform;
-
-  Rotation.fromEuler(final Angle x, final Angle y, final Angle z)
-      : transform = Matrix4.rotationZ(z.radians) *
-            Matrix4.rotationY(y.radians) *
-            Matrix4.rotationX(x.radians);
-
-  static Rotation zero() =>
-      Rotation.fromEuler(Angle.zero(), Angle.zero(), Angle.zero());
 }

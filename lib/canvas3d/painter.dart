@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/canvas3d/processing_polygon.dart';
-import 'package:vector_math/vector_math_64.dart' show makeViewMatrix;
+import 'package:tesserapp/geometry/matrix.dart';
 
 class Canvas3dPainter extends CustomPainter {
   final Canvas3d canvas3d;
@@ -38,19 +38,19 @@ class Canvas3dPainter extends CustomPainter {
       canvas.scale(1.0 / aspectRatio, 1.0);
     }
 
-    final view = makeViewMatrix(
-      canvas3d.cameraPosition.eye,
-      canvas3d.cameraPosition.focus,
-      canvas3d.cameraPosition.up,
-    );
+    final view = Matrix.fromRows([
+      [1.0, 0.0, 0.0, 0.0, 0.0],
+      [0.0, 0.0, -1.0, 0.0, 0.0],
+      [0.0, 1.0, 0.0, 0.0, 0.0],
+      [0.0, 0.0, 0.0, 1.0, 0.0],
+      [0.0, 0.0, -canvas3d.cameraDistance, 0.0, 1.0],
+    ]);
 
-    final polygonsGlobalSpace =
-        canvas3d.geometries.expand((geometry) => geometry.polygons
-            .map((polygon) => ProcessingPolygon(
-                  polygon,
-                  geometry.color,
-                ))
-            .map((polygon) => polygon.transformed(geometry.transform)));
+    final polygonsGlobalSpace = canvas3d.geometries.expand(
+        (geometry) => geometry.polygons.map((polygon) => ProcessingPolygon(
+              polygon,
+              geometry.color,
+            )));
 
     final polygonsViewSpace = polygonsGlobalSpace
         .map((polygon) => polygon.transformed(view))
