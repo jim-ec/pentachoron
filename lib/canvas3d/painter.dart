@@ -55,7 +55,7 @@ class Canvas3dPainter extends CustomPainter {
     final polygonsViewSpace = polygonsGlobalSpace
         .map((polygon) => polygon.transformed(view))
         .map((polygon) => polygon.illuminated(canvas3d.lightDirection))
-        .where((polygon) => polygon.points.every((v) => v.z < 0.0))
+        .where((polygon) => polygon.polygon.points.every((v) => v.z < 0.0))
         .map((polygon) => polygon.perspectiveDivision);
 
     // Depth sort polygons.
@@ -68,7 +68,7 @@ class Canvas3dPainter extends CustomPainter {
     for (final polygon in drawPolygons) {
       // Convert polygon position vectors into offsets.
       final offsets =
-          polygon.points.map((position) => Offset(position.x, position.y));
+          polygon.polygon.points.map((position) => Offset(position.x, position.y));
 
       // Path of the current polygon to draw.
       final path = Path()..addPolygon(offsets.toList(growable: false), false);

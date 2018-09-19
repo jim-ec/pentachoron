@@ -8,56 +8,37 @@ import 'package:tesserapp/geometry/polygon.dart';
 import 'package:tesserapp/geometry/tolerance.dart';
 import 'package:tesserapp/geometry/vector.dart';
 
-typedef double _PlaneEquation(final Vector v);
-
 /// A polygon wrapper adding pipeline processing functionality to it.
 /// It bundles per-geometry features like outlining into the polygons,
 /// as they are decoupled from their geometries in order to perform
 /// depth sorting.
 class ProcessingPolygon implements Comparable<ProcessingPolygon> {
-  /// Kept in order to simplify debugging.
-  final Iterable<Vector> sourcePoints;
-
-  /// Points in current space.
-  final Iterable<Vector> points;
+  /// Resulting polygon in current space.
+  final Polygon polygon;
 
   /// Color of this polygon.
   final Color color;
 
-  /// Normal vector in current space.
-  final Vector normal;
-
-  ProcessingPolygon._(
-    this.sourcePoints,
-    this.points,
-    this.color,
-  ) : normal = (points.length >= 3)
-            ? Vector.cross(points.elementAt(2) - points.elementAt(0),
-                    points.elementAt(1) - points.elementAt(0))
-                .normalized
-            : Vector.zero();
-
   ProcessingPolygon(
-    final Polygon polygon,
-    final Color color,
-  ) : this._(polygon.points, polygon.points, color);
+    this.polygon,
+    this.color,
+  );
 
   /// Computes the polygon representing this' perspective division.
   /// The z-component is negated, after which the x and y component
   /// are divided through that negated z value.
   /// The v value is than kept as-is, i.e. it need not to be -1.0
   /// after the division.
-  ProcessingPolygon get perspectiveDivision => ProcessingPolygon._(
-        sourcePoints,
-        points.map((v) => -Vector(v.x / v.z, v.y / v.z, v.z)),
+  ProcessingPolygon get perspectiveDivision => ProcessingPolygon(
+        polygon.map((v) => -Vector(v.x / v.z, v.y / v.z, v.z)),
         color,
       );
 
   /// Return a transformed version of this polygon.
   /// To transform the polygon using perspective matrices,
   /// use [perspectiveTransformed] instead.
-  ProcessingPolygon transformed(final Matrix matrix) => ProcessingPolygon._(
-      sourcePoints, points.map((v) => matrix.transform(v)), color);
+  ProcessingPolygon transformed(final Matrix matrix) =>
+      ProcessingPolygon(polygon.map((v) => matrix.transform(v)), color);
 
   /// Return a re-colored version of this polygon.
   /// [lightDirection] defines the direction of parallel light rays,
@@ -65,11 +46,10 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
   ///
   /// [lightDirection] is assumed to be in the same space as this polygon.
   ProcessingPolygon illuminated(final Vector lightDirection) {
-    final luminance = Vector.dot(normal, lightDirection).abs();
+    final luminance = Vector.dot(polygon.normal, lightDirection).abs();
     final softenLuminance = remap(luminance, 0.0, 1.0, 0.2, 1.2);
-    return ProcessingPolygon._(
-      sourcePoints,
-      points,
+    return ProcessingPolygon(
+      polygon,
       Color.lerp(Color(0xff000000), color, softenLuminance),
     );
   }
@@ -100,18 +80,18 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
     // Check if both polygons occupy different z-ranges.
     // If they do, it's trivial to compare the occupied z-ranges and
     // order the polygons accordingly.
-    final zMin = points.map((v) => v.z).reduce((a, b) => min(a, b));
-    final zMax = points.map((v) => v.z).reduce((a, b) => max(a, b));
-    final zMinOther = other.points.map((v) => v.z).reduce((a, b) => min(a, b));
-    final zMaxOther = other.points.map((v) => v.z).reduce((a, b) => max(a, b));
+    final zMin = polygon.points.map((v) => v.z).reduce((a, b) => min(a, b));
+    final zMax = polygon.points.map((v) => v.z).reduce((a, b) => max(a, b));
+    final zMinOther =
+        other.polygon.points.map((v) => v.z).reduce((a, b) => min(a, b));
+    final zMaxOther =
+        other.polygon.points.map((v) => v.z).reduce((a, b) => max(a, b));
     if (zMin > zMaxOther) {
       return occludingOther;
     }
     if (zMax < zMinOther) {
       return occludedByOther;
     }
-
-    print(points);
 
     // Otherwise, check if both polygon lying completely on one side
     // relative to the plane equation of the other polygon.
@@ -122,25 +102,24 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
     //
     // If the result is greater than 0, the point lies in front of the plane.
 
-    if (other.points.every((v) => _planeEquation(v) < tolerance) ||
-        points.every((v) => other._planeEquation(v) > -tolerance)) {
+    final e0 = (polygon.normal.z < 0)
+        ? polygon.planeEquation
+        : polygon.flip.planeEquation;
+
+    final e1 = (other.polygon.normal.z < 0)
+        ? other.polygon.planeEquation
+        : other.polygon.flip.planeEquation;
+
+    if (other.polygon.points.every((v) => e0(v) < tolerance) ||
+        polygon.points.every((v) => e1(v) > -tolerance)) {
       return occludingOther;
     }
 
-    if (points.every((v) => other._planeEquation(v) < tolerance) ||
-        other.points.every((v) => _planeEquation(v) > -tolerance)) {
+    if (polygon.points.every((v) => e1(v) < tolerance) ||
+        other.polygon.points.every((v) => e0(v) > -tolerance)) {
       return occludedByOther;
     }
 
     return undecidable;
-  }
-
-  /// Returns a function forming the plane equation for [polygon].
-  _PlaneEquation get _planeEquation {
-    // Normal is taken is such a manner that is guaranteed to point into
-    // positive z direction, i.e. against the view direction.
-    final n = normal.z < 0 ? normal : -normal;
-    final d = Vector.dot(n, points.first);
-    return (final Vector v) => n.x * v.x + n.y * v.y + n.z * v.z - d;
   }
 }

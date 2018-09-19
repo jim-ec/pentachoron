@@ -26,21 +26,29 @@ class Polygon {
       ..sort();
     return sortedAngles.map((v) => v.v);
   }
+  
+  Polygon map(Vector f(Vector v)) => Polygon(points.map(f));
+
+  get normal => points.length >= 3
+      ? Vector.cross(
+          points.elementAt(1) - points.elementAt(0),
+          points.elementAt(2) - points.elementAt(0),
+        ).normalized
+      : Vector.zero();
+
+  Polygon get flip => Polygon(points.toList(growable: false).reversed);
 
   _PlaneEquation get planeEquation {
     if (points.length < 3) {
       return (v) => double.nan;
     }
 
-    final Vector n = Vector.cross(
-      points.elementAt(1) - points.elementAt(0),
-      points.elementAt(2) - points.elementAt(0),
-    );
+    final Vector n = normal;
     final double d = Vector.dot(n, points.first);
 
     return (final v) => n.x * v.x + n.y * v.y + n.z * v.z - d;
   }
-  
+
   static Iterable<Polygon> tetrahedron(final Tetrahedron t) => t != null
       ? [
           Polygon([
