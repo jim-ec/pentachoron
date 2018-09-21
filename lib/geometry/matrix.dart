@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 import 'package:quiver/iterables.dart';
@@ -19,40 +20,45 @@ enum RotationPlane {
 /// Suitable to transform 4D points.
 @immutable
 class Matrix {
-  final Iterable<Iterable<double>> rows;
+  
+  final Float64List buffer;
 
-  Matrix.generate(double f(int row, int col))
-      : rows = Iterable.generate(
-            5, (final row) => Iterable.generate(5, (final col) => f(row, col)));
+  Matrix.fromList(final List<double> list)
+      : buffer = UnmodifiableFloat64ListView(Float64List.fromList(list));
 
-  Matrix.fromRows(this.rows) {
+  factory Matrix.generate(double f(int row, int col)) =>
+      Matrix.fromRows(Iterable.generate(5,
+              (final row) => Iterable.generate(5, (final col) => f(row, col)))
+          .toList());
+
+  factory Matrix.fromRows(final Iterable<Iterable<double>> rows) {
     assert(rows.length == 5, "A 5D matrix must have 5 rows");
     assert(rows.every((col) => col.length == 5),
         "A 5D matrix must be have 5 columns");
+
+    return Matrix.fromList(rows.expand((i) => i).toList(growable: false));
   }
 
-  Matrix.identity()
-      : this.fromRows([
-          [1.0, 0.0, 0.0, 0.0, 0.0],
-          [0.0, 1.0, 0.0, 0.0, 0.0],
-          [0.0, 0.0, 1.0, 0.0, 0.0],
-          [0.0, 0.0, 0.0, 1.0, 0.0],
-          [0.0, 0.0, 0.0, 0.0, 1.0],
-        ]);
+  factory Matrix.identity() => Matrix.fromRows([
+        [1.0, 0.0, 0.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 0.0, 1.0],
+      ]);
 
-  Matrix.translation(final Vector v)
-      : this.fromRows([
-          [1.0, 0.0, 0.0, 0.0, 0.0],
-          [0.0, 1.0, 0.0, 0.0, 0.0],
-          [0.0, 0.0, 1.0, 0.0, 0.0],
-          [0.0, 0.0, 0.0, 1.0, 0.0],
-          [v.x, v.y, v.z, v.w, 1.0],
-        ]);
+  factory Matrix.translation(final Vector v) => Matrix.fromRows([
+        [1.0, 0.0, 0.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0, 0.0],
+        [v.x, v.y, v.z, v.w, 1.0],
+      ]);
 
   Matrix get transpose =>
       Matrix.generate((final row, final col) => at(col, row));
 
-  double at(final int row, final int col) => rows.elementAt(row).elementAt(col);
+  double at(final int row, final int col) => buffer.elementAt(row * 5 + col);
 
   Matrix operator *(final Matrix rhs) =>
       Matrix.generate((final row, final col) => range(5)
@@ -104,15 +110,11 @@ class Matrix {
     });
   }
 
-//  Vector transform(final Vector v) => Vector.generate((final int col) =>
-//      range(4)
-//          .map(
-//            (i) => v[i] * at(i, col),
-//          )
-//          .reduce((a, b) => a + b) +
-//      at(4, col));
+  Vector transform(final Vector v) => Vector.generate((final int col) =>
+      range(4).map((i) => v[i] * at(i, col)).reduce((a, b) => a + b) +
+      at(4, col));
 
-  Vector transform(final Vector v) => Vector(
+  Vector transformFast(final Vector v) => Vector(
         v[0] * at(0, 0) +
             v[1] * at(1, 0) +
             v[2] * at(2, 0) +
@@ -138,10 +140,4 @@ class Matrix {
   Iterable<Vector> transformAll(final Iterable<Vector> vectors) =>
       vectors.map((v) => transform(v));
 
-  @override
-  String toString() {
-    final rowToString = (final num index) =>
-        rows.elementAt(index).map((final c) => c.toStringAsFixed(1)).join(", ");
-    return "[ " + range(5).map(rowToString).join(" | ") + " ]";
-  }
 }

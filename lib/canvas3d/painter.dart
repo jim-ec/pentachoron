@@ -30,6 +30,7 @@ class Canvas3dPainter extends CustomPainter {
 
   @override
   void paint(final Canvas canvas, final Size size) {
+    print("**********************************************************");
     final aspectRatio = size.width / size.height;
 
     // Transform canvas into viewport space:

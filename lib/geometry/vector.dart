@@ -1,17 +1,23 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 
 @immutable
 class Vector {
-  final double x, y, z, w;
+  final Float32x4 components;
+  
+  double get x => components.x;
+  double get y => components.y;
+  double get z => components.z;
+  double get w => components.w;
 
-  const Vector(
-    this.x,
-    this.y, [
-    this.z = 0.0,
-    this.w = 0.0,
-  ]);
+  Vector(
+    final double x,
+      final double y, [
+        final double z = 0.0,
+        final double w = 0.0,
+  ]) : components = Float32x4(x, y, z, w);
 
   const Vector.zero() : this.of(0.0);
 
@@ -54,12 +60,12 @@ class Vector {
     );
   }
 
-  Vector.cross(final Vector a, final Vector b)
-      : w = 0.0,
-        x = a.y * b.z - a.z * b.y,
-        y = a.z * b.x - a.x * b.z,
-        z = a.x * b.y - a.y * b.x {
+  factory Vector.cross(final Vector a, final Vector b) {
     assert((a.w - b.w).abs() < 0.01, "Only 3d vectors can be crossed");
+    return Vector(a.y * b.z - a.z * b.y,
+        a.z * b.x - a.x * b.z,
+        a.x * b.y - a.y * b.x,
+        0.0);
   }
 
   static double dot(final Vector a, final Vector b) =>
