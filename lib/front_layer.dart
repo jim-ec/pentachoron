@@ -52,7 +52,8 @@ class FrontLayerState extends State<FrontLayer> {
                 color: Theme.of(context).accentColor,
                 lightDirection: Vector.ofZ(1.0),
                 outlineColor: Theme.of(context).textTheme.title.color,
-                printDrawStats: true,
+                printDrawStats:
+                    AppOptions.of(context).printDrawStats.option.value,
                 drawStatsStyle: TextStyle(
                   color: Theme.of(context).textTheme.body1.color,
                   fontFamily: "monospace",

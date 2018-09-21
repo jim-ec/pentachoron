@@ -21,12 +21,14 @@ class AppOptionsProvider extends StatefulWidget {
 class _AppOptionsState extends State<AppOptionsProvider> {
   SingleStatefulAppOption _invertedHorizontalCamera;
   SingleStatefulAppOption _invertedVerticalCamera;
+  SingleStatefulAppOption _printDrawStats;
 
   _AppOptionsState() {
     _invertedHorizontalCamera =
         SingleStatefulAppOption("inverted_horizontal_camera", setState);
     _invertedVerticalCamera =
         SingleStatefulAppOption("inverted_vertical_camera", setState);
+    _printDrawStats = SingleStatefulAppOption("print_draw_stats", setState);
   }
 
   @override
@@ -35,6 +37,7 @@ class _AppOptionsState extends State<AppOptionsProvider> {
             SingleStatelessAppOption(_invertedHorizontalCamera),
         invertedVerticalCamera:
             SingleStatelessAppOption(_invertedVerticalCamera),
+        printDrawStats: SingleStatelessAppOption(_printDrawStats),
         child: widget.child,
       );
 }
@@ -44,11 +47,13 @@ class _AppOptionsState extends State<AppOptionsProvider> {
 class AppOptions extends InheritedWidget {
   final SingleStatelessAppOption invertedHorizontalCamera;
   final SingleStatelessAppOption invertedVerticalCamera;
+  final SingleStatelessAppOption printDrawStats;
 
   const AppOptions({
     Key key,
     @required this.invertedHorizontalCamera,
     @required this.invertedVerticalCamera,
+    @required this.printDrawStats,
     @required Widget child,
   })  : assert(child != null),
         super(key: key, child: child);
@@ -62,7 +67,8 @@ class AppOptions extends InheritedWidget {
       invertedHorizontalCamera._creationValue !=
           old.invertedHorizontalCamera._creationValue ||
       invertedVerticalCamera._creationValue !=
-          old.invertedVerticalCamera._creationValue;
+          old.invertedVerticalCamera._creationValue ||
+      printDrawStats._creationValue != old.printDrawStats._creationValue;
 }
 
 /// Instances of this class keep track of the actual option values,

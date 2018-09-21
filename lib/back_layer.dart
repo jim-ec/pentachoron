@@ -96,6 +96,11 @@ class BackLayer extends StatelessWidget {
               value: appOptions.invertedVerticalCamera.option.value,
               onToggled: appOptions.invertedVerticalCamera.option.toggle,
             ),
+            Option(
+              label: "Print draw stats",
+              value: appOptions.printDrawStats.option.value,
+              onToggled: appOptions.printDrawStats.option.toggle,
+            ),
             Divider(
               height: 5.0,
             ),
