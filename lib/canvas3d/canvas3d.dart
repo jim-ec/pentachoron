@@ -7,7 +7,7 @@ import 'package:tesserapp/geometry/vector.dart';
 class Canvas3d extends StatelessWidget {
   final Matrix modelMatrix;
 
-  final Drawable drawable;
+  final Iterable<Drawable> drawable;
 
   /// Color of geometry.
   final Color color;
@@ -25,7 +25,7 @@ class Canvas3d extends StatelessWidget {
   Canvas3d({
     Key key,
     @required this.modelMatrix,
-    Drawable drawableBuilder(),
+    Iterable<Drawable> drawableBuilder(),
     @required this.outlineColor,
     @required this.lightDirection,
     @required this.color,

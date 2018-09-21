@@ -14,7 +14,8 @@ class FrontLayer extends StatefulWidget {
 class FrontLayerState extends State<FrontLayer> {
   var polar = Angle.fromDegrees(-30.0);
   var azimuth = Angle.fromDegrees(30.0);
-  var sliderValue = 0.0;
+  var rotationSliderValue = 0.0;
+  var translationSliderValue = 0.0;
 
   @override
   void initState() {
@@ -61,28 +62,63 @@ class FrontLayerState extends State<FrontLayer> {
                 ),
                 modelMatrix: Matrix.chain([
                   Matrix.rotation(
-                      RotationPlane.onXQ, Angle.fromTurns(sliderValue)),
+                      RotationPlane.onXQ, Angle.fromTurns(rotationSliderValue)),
                   Matrix.rotation(RotationPlane.onXY, polar),
                   Matrix.rotation(RotationPlane.onYZ, azimuth),
-                  Matrix.translation(Vector(0.0, 3.0, 0.0)),
+                  Matrix.translation(
+                      Vector(0.0, 3.0, 0.0, translationSliderValue)),
                 ]),
                 drawableBuilder: () {
-                  return Pentachoron.simple();
+                  return [Pentachoron.simple()];
                 }),
           ),
           Positioned.fill(
             top: null,
-            child: Slider(
-              value: sliderValue,
-              min: 0.0,
-              max: 1.0,
-              onChanged: (value) {
-                setState(() {
-                  sliderValue = value;
-                });
-              },
+            left: 8.0,
+            right: 8.0,
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Flexible(
+                      flex: 1,
+                      child: Text("Translation"),
+                    ),
+                    Slider(
+                      activeColor: Theme.of(context).accentColor,
+                      value: translationSliderValue,
+                      min: -3.0,
+                      max: 3.0,
+                      onChanged: (value) {
+                        setState(() {
+                          translationSliderValue = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Flexible(
+                      flex: 1,
+                      child: Text("Rotation"),
+                    ),
+                    Slider(
+                      activeColor: Theme.of(context).accentColor,
+                      value: rotationSliderValue,
+                      min: 0.0,
+                      max: 1.0,
+                      onChanged: (value) {
+                        setState(() {
+                          rotationSliderValue = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ],
             ),
-          )
+          ),
         ],
       );
 }

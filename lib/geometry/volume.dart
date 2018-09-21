@@ -14,6 +14,10 @@ class Volume {
   static Iterable<Polygon> _generatePolygonsFromPointCloud(
     final Iterable<Vector> points,
   ) {
+    if (points.length < 3) {
+      return [];
+    }
+
     final barycenter =
         points.reduce((a, b) => a + b) / points.length.toDouble();
     final polygons = <Polygon>[];
@@ -33,7 +37,9 @@ class Volume {
           final allNegative = solutions.every((s) => s < tolerance);
 
           if (allPositive || allNegative) {
-            polygons.add((polygon.planeEquation(barycenter) < 0) ? polygon : Polygon.flip(polygon));
+            polygons.add((polygon.planeEquation(barycenter) < 0)
+                ? polygon
+                : Polygon.flip(polygon));
           }
         }
       }

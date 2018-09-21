@@ -49,46 +49,53 @@ class Canvas3dPainter extends CustomPainter {
       // Landscape oriented canvas:
       canvas.scale(1.0 / aspectRatio, 1.0);
     }
-    
-    final volume = Volume(canvas3d.drawable
-        .lines(canvas3d.modelMatrix * view)
-        .map((line) => line.intersection)
-        .where((line) => line != null));
 
-    final polygons = volume.hull;
-
-    final polygonsPerspectiveSpace = polygons
-        .map((polygon) => IlluminatedPolygon(
-            polygon, canvas3d.color, canvas3d.lightDirection))
-        .where((polygon) => polygon.polygon.points.every((v) => v.z < 0.0))
-        .map((polygon) => IlluminatedPolygon.perspectiveDivision(polygon))
-        .where((polygon) => polygon.polygon.normal.z > 0.0);
-
-    // Depth sort polygons.
-    final depthSortedPolygons = polygonsPerspectiveSpace.toList(growable: false)
-      ..sort(
-          (final a, final b) => depthCompareBarycenter(a.polygon, b.polygon));
-
-
-    final drawPolygons = depthSortedPolygons;
     var outlinePath = Path();
-
-    for (final polygon in drawPolygons) {
-      // Convert polygon position vectors into offsets.
-      final offsets = polygon.polygon.points
-          .map((position) => Offset(position.x, position.y));
-
-      // Path of the current polygon to draw.
-      final path = Path()..addPolygon(offsets.toList(growable: false), false);
-
-      // Add current polygon path to outline path.
-      outlinePath = Path.combine(PathOperation.union, outlinePath, path);
-
-      final paint = Paint()..color = polygon.color;
-
-      canvas.drawPath(path, paint);
-    }
+    var totalPolygonInputCount = 0;
+    var totalPolygonDrawCount = 0;
     
+    for (final volume in canvas3d.drawable
+        .map((drawable) => Volume(drawable
+            .lines(canvas3d.modelMatrix * view)
+            .map((line) => line.intersection)
+            .where((line) => line != null)))
+        .where((volume) => volume.points.length >= 3)) {
+      final polygons = volume.hull;
+      totalPolygonInputCount += polygons.length;
+
+      final polygonsPerspectiveSpace = polygons
+          .map((polygon) => IlluminatedPolygon(
+              polygon, canvas3d.color, canvas3d.lightDirection))
+          .where((polygon) => polygon.polygon.points.every((v) => v.z < 0.0))
+          .map((polygon) => IlluminatedPolygon.perspectiveDivision(polygon))
+          .where((polygon) => polygon.polygon.normal.z > 0.0);
+
+      // Depth sort polygons.
+      final depthSortedPolygons = polygonsPerspectiveSpace.toList(
+          growable: false)
+        ..sort(
+            (final a, final b) => depthCompareBarycenter(a.polygon, b.polygon));
+
+      final drawPolygons = depthSortedPolygons;
+      totalPolygonDrawCount += drawPolygons.length;
+
+      for (final polygon in drawPolygons) {
+        // Convert polygon position vectors into offsets.
+        final offsets = polygon.polygon.points
+            .map((position) => Offset(position.x, position.y));
+
+        // Path of the current polygon to draw.
+        final path = Path()..addPolygon(offsets.toList(growable: false), false);
+
+        // Add current polygon path to outline path.
+        outlinePath = Path.combine(PathOperation.union, outlinePath, path);
+
+        final paint = Paint()..color = polygon.color;
+
+        canvas.drawPath(path, paint);
+      }
+    }
+
     outlinePath.close();
     canvas.drawPath(outlinePath, outlinePaint);
 
@@ -98,8 +105,8 @@ class Canvas3dPainter extends CustomPainter {
       TextPainter(
         text: TextSpan(
           text: "${DateTime.now().difference(t0).inMilliseconds}ms\n"
-              "Polygon input count: ${polygons.length}\n"
-              "Polygon draw count: ${drawPolygons.length}\n"
+              "Polygon input count: $totalPolygonInputCount\n"
+              "Polygon draw count: $totalPolygonDrawCount\n"
               "Model matrix:\n${canvas3d.modelMatrix.toStringLong()}\n",
           style: canvas3d.drawStatsStyle,
         ),
