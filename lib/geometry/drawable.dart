@@ -1,8 +1,6 @@
-
-import 'package:tesserapp/geometry/volume.dart';
+import 'package:tesserapp/geometry/line.dart';
+import 'package:tesserapp/geometry/matrix.dart';
 
 abstract class Drawable {
-  
-  Volume get intersection;
-  
+  Iterable<Line> lines(final Matrix matrix);
 }

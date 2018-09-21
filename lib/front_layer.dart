@@ -60,16 +60,14 @@ class FrontLayerState extends State<FrontLayer> {
                   fontSize: 11.0,
                 ),
                 modelMatrix: Matrix.chain([
+                  Matrix.rotation(
+                      RotationPlane.onXQ, Angle.fromTurns(sliderValue)),
                   Matrix.rotation(RotationPlane.onXY, polar),
                   Matrix.rotation(RotationPlane.onYZ, azimuth),
-                  Matrix.translation(Vector(0.0, 3.0, 0.0))
+                  Matrix.translation(Vector(0.0, 3.0, 0.0)),
                 ]),
                 drawableBuilder: () {
-                  final matrix = Matrix.chain([
-                    Matrix.rotation(
-                        RotationPlane.onXQ, Angle.fromTurns(sliderValue))
-                  ]);
-                  return Pentachoron.simple(matrix);
+                  return Pentachoron.simple();
                 }),
           ),
           Positioned.fill(

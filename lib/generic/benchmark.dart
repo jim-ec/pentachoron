@@ -7,7 +7,7 @@ class Benchmark {
 
   void step(final String what) {
     final now = DateTime.now();
-    print("${t.difference(now).inMilliseconds}ms: $what");
+    print("${now.difference(t).inMilliseconds}ms: $what");
   }
   
 }
