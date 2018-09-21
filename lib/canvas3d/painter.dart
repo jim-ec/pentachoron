@@ -30,7 +30,6 @@ class Canvas3dPainter extends CustomPainter {
 
   @override
   void paint(final Canvas canvas, final Size size) {
-    print("**********************************************************");
     final aspectRatio = size.width / size.height;
 
     // Transform canvas into viewport space:
@@ -48,50 +47,50 @@ class Canvas3dPainter extends CustomPainter {
       // Landscape oriented canvas:
       canvas.scale(1.0 / aspectRatio, 1.0);
     }
-
-    var t0 = DateTime.now();
+    
+    final b = Benchmark.start();
 
     final modelView = canvas3d.globalTransform * view;
 
-    t0 = benchmark("Compute model-view matrix", t0);
+    b.step("Compute model-view matrix");
 
     final polygonsModelViewSpace = canvas3d.polygons
         .map((polygon) => polygon.transformed(modelView))
         .toList(growable: false);
 
-    t0 = benchmark("Transform to model view space", t0);
+    b.step("Transform to model view space");
 
     final polygonsIlluminated = polygonsModelViewSpace
         .map((polygon) => IlluminatedPolygon(
             polygon, canvas3d.color, canvas3d.lightDirection))
         .toList(growable: false);
 
-    t0 = benchmark("Illumated", t0);
+    b.step("Illumated");
 
     final polygonsClipped = polygonsIlluminated
         .where((polygon) => polygon.polygon.points.every((v) => v.z < 0.0))
         .toList(growable: false);
 
-    t0 = benchmark("Clip", t0);
+    b.step("Clip");
 
     final polygonsProjectiveSpace = polygonsClipped
         .map((polygon) => IlluminatedPolygon.perspectiveDivision(polygon))
         .toList(growable: false);
 
-    t0 = benchmark("Transform to projection space", t0);
+    b.step("Transform to projection space");
 
     final polygonsCulled = polygonsProjectiveSpace
         .where((polygon) => polygon.polygon.normal.z > 0.0)
         .toList(growable: false);
 
-    t0 = benchmark("Transform", t0);
+    b.step("Transform");
 
     // Depth sort polygons.
     final depthSortedPolygons = polygonsCulled.toList(growable: false)
       ..sort(
           (final a, final b) => depthCompareBarycenter(a.polygon, b.polygon));
 
-    t0 = benchmark("Sort", t0);
+    b.step("Sort");
 
     final drawPolygons = depthSortedPolygons;
     var outlinePath = Path();
@@ -112,7 +111,7 @@ class Canvas3dPainter extends CustomPainter {
       canvas.drawPath(path, paint);
     }
 
-    t0 = benchmark("Draw", t0);
+    b.step("Draw");
 
     outlinePath.close();
     canvas.drawPath(outlinePath, outlinePaint);

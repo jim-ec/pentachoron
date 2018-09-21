@@ -1,7 +1,13 @@
 
+class Benchmark {
+  
+  DateTime t = DateTime.now();
 
-DateTime benchmark(final String what, final DateTime t0) {
-  final t1 = DateTime.now();
-  print("${t1.difference(t0).inMilliseconds}ms: $what");
-  return t1;
+  Benchmark.start();
+
+  void step(final String what) {
+    final now = DateTime.now();
+    print("${t.difference(now).inMilliseconds}ms: $what");
+  }
+  
 }
