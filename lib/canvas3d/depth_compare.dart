@@ -39,9 +39,9 @@ int depthComparePrecise(final Polygon a, final Polygon b) {
   //
   // If the result is greater than 0, the point lies in front of the plane.
 
-  final e0 = (a.normal.z < 0) ? a.planeEquation : a.flip.planeEquation;
+  final e0 = (a.normal.z < 0) ? a.planeEquation : Polygon.flip(a).planeEquation;
 
-  final e1 = (b.normal.z < 0) ? b.planeEquation : b.flip.planeEquation;
+  final e1 = (b.normal.z < 0) ? b.planeEquation : Polygon.flip(b).planeEquation;
 
   if (b.points.every((v) => e0(v) < tolerance) ||
       a.points.every((v) => e1(v) > -tolerance)) {

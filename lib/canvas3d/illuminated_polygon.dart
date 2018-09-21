@@ -94,11 +94,11 @@ class IlluminatedPolygon implements Comparable<IlluminatedPolygon> {
 
     final e0 = (polygon.normal.z < 0)
         ? polygon.planeEquation
-        : polygon.flip.planeEquation;
+        : Polygon.flip(polygon).planeEquation;
 
     final e1 = (other.polygon.normal.z < 0)
         ? other.polygon.planeEquation
-        : other.polygon.flip.planeEquation;
+        : Polygon.flip(other.polygon).planeEquation;
 
     if (other.polygon.points.every((v) => e0(v) < tolerance) ||
         polygon.points.every((v) => e1(v) > -tolerance)) {

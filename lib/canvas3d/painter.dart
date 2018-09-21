@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/canvas3d/depth_compare.dart';
 import 'package:tesserapp/canvas3d/illuminated_polygon.dart';
+import 'package:tesserapp/generic/benchmark.dart';
 import 'package:tesserapp/geometry/matrix.dart';
 
 class Canvas3dPainter extends CustomPainter {
@@ -29,8 +30,6 @@ class Canvas3dPainter extends CustomPainter {
 
   @override
   void paint(final Canvas canvas, final Size size) {
-    final t0 = DateTime.now();
-
     final aspectRatio = size.width / size.height;
 
     // Transform canvas into viewport space:
@@ -49,18 +48,49 @@ class Canvas3dPainter extends CustomPainter {
       canvas.scale(1.0 / aspectRatio, 1.0);
     }
 
+    var t0 = DateTime.now();
+
     final modelView = canvas3d.globalTransform * view;
 
-    final polygonsViewSpace = canvas3d.polygons
+    t0 = benchmark("Compute model-view matrix", t0);
+
+    final polygonsModelViewSpace = canvas3d.polygons
         .map((polygon) => polygon.transformed(modelView))
+        .toList(growable: false);
+
+    t0 = benchmark("Transform to model view space", t0);
+
+    final polygonsIlluminated = polygonsModelViewSpace
         .map((polygon) => IlluminatedPolygon(
             polygon, canvas3d.color, canvas3d.lightDirection))
+        .toList(growable: false);
+
+    t0 = benchmark("Illumated", t0);
+
+    final polygonsClipped = polygonsIlluminated
         .where((polygon) => polygon.polygon.points.every((v) => v.z < 0.0))
-        .map((polygon) => IlluminatedPolygon.perspectiveDivision(polygon));
+        .toList(growable: false);
+
+    t0 = benchmark("Clip", t0);
+
+    final polygonsProjectiveSpace = polygonsClipped
+        .map((polygon) => IlluminatedPolygon.perspectiveDivision(polygon))
+        .toList(growable: false);
+
+    t0 = benchmark("Transform to projection space", t0);
+
+    final polygonsCulled = polygonsProjectiveSpace
+        .where((polygon) => polygon.polygon.normal.z > 0.0)
+        .toList(growable: false);
+
+    t0 = benchmark("Transform", t0);
 
     // Depth sort polygons.
-    final depthSortedPolygons = polygonsViewSpace.toList(growable: false)
-      ..sort((final a, final b) => depthCompareBarycenter(a.polygon, b.polygon));
+    final depthSortedPolygons = polygonsCulled.toList(growable: false)
+      ..sort(
+          (final a, final b) => depthCompareBarycenter(a.polygon, b.polygon));
+
+    t0 = benchmark("Sort", t0);
 
     final drawPolygons = depthSortedPolygons;
     var outlinePath = Path();
@@ -81,10 +111,9 @@ class Canvas3dPainter extends CustomPainter {
       canvas.drawPath(path, paint);
     }
 
+    t0 = benchmark("Draw", t0);
+
     outlinePath.close();
     canvas.drawPath(outlinePath, outlinePaint);
-
-    final t1 = DateTime.now();
-    print("Painting took ${t1.difference(t0).inMilliseconds}");
   }
 }

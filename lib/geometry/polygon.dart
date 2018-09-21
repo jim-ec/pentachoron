@@ -19,8 +19,9 @@ class Polygon {
   final _PlaneEquation planeEquation;
 
   final Vector barycenter;
-
-  Polygon._(this.points, this.normal)
+  
+  // TODO: delete as misleading
+  Polygon.fromFixedPointsAndNormal(this.points, this.normal)
       : barycenter = points.reduce((a, b) => a + b) / points.length.toDouble(),
         planeEquation = (() {
           if (points.length < 3) {
@@ -33,8 +34,8 @@ class Polygon {
           return (final v) => n.x * v.x + n.y * v.y + n.z * v.z - d;
         })();
 
-  Polygon._fromSortedPoints(final Iterable<Vector> points)
-      : this._(
+  Polygon.fromFixedPoints(final Iterable<Vector> points)
+      : this.fromFixedPointsAndNormal(
             points,
             points.length >= 3
                 ? Vector.cross(
@@ -44,7 +45,18 @@ class Polygon {
                 : Vector.zero());
 
   Polygon.fromUnsortedPoints(final Iterable<Vector> points)
-      : this._fromSortedPoints(_sortPolygonPoints(points));
+      : this.fromFixedPoints(_sortPolygonPoints(points));
+  
+  factory Polygon.flip(final Polygon other) {
+    if(other.points.length < 3) return other;
+    else {
+      return Polygon.fromFixedPoints([
+        other.points.elementAt(0),
+        other.points.elementAt(2),
+        other.points.elementAt(1),
+      ] + other.points.skip(3).toList(growable: false));
+    }
+  }
 
   static Iterable<Vector> _sortPolygonPoints(final Iterable<Vector> points) {
     if (points.length <= 3) return points;
@@ -58,13 +70,10 @@ class Polygon {
     return sortedAngles.map((v) => v.v);
   }
 
-  Polygon map(Vector f(Vector v)) => Polygon._fromSortedPoints(points.map(f));
+  Polygon map(Vector f(Vector v)) => Polygon.fromFixedPoints(points.map(f));
 
   /// Return a transformed version of this polygon.
   Polygon transformed(final Matrix matrix) => map((v) => matrix.transform(v));
-
-  Polygon get flip =>
-      Polygon._fromSortedPoints(points.toList(growable: false).reversed);
 
   static Iterable<Polygon> tetrahedron(final Tetrahedron t) => t != null
       ? [
