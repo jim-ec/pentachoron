@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:meta/meta.dart';
+import 'package:tesserapp/geometry/drawable.dart';
 import 'package:tesserapp/geometry/line.dart';
 import 'package:tesserapp/geometry/matrix.dart';
 import 'package:tesserapp/geometry/vector.dart';
@@ -14,7 +15,7 @@ import 'package:tesserapp/geometry/volume.dart';
 ///
 /// A pentachoron is defined through 5 cells.
 @immutable
-class Pentachoron {
+class Pentachoron implements Drawable {
   final Iterable<Vector> points;
   final Iterable<Line> lines;
 
@@ -46,6 +47,7 @@ class Pentachoron {
           Vector(0.0, 0.0, 0.0, sqrt(5.0) - 1.0 / sqrt(5.0)),
         ]));
 
+  @override
   Volume get intersection {
     final intersectingPoints =
         lines.map((line) => line.intersection).where((line) => line != null);

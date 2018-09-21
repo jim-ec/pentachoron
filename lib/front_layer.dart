@@ -64,13 +64,12 @@ class FrontLayerState extends State<FrontLayer> {
                   Matrix.rotation(RotationPlane.onYZ, azimuth),
                   Matrix.translation(Vector(0.0, 3.0, 0.0))
                 ]),
-                polygonBuilder: () {
+                drawableBuilder: () {
                   final matrix = Matrix.chain([
                     Matrix.rotation(
                         RotationPlane.onXQ, Angle.fromTurns(sliderValue))
                   ]);
-                  final pentachoron = Pentachoron.simple(matrix);
-                  return pentachoron.intersection.hull;
+                  return Pentachoron.simple(matrix);
                 }),
           ),
           Positioned.fill(

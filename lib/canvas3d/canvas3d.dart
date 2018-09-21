@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tesserapp/canvas3d/painter.dart';
+import 'package:tesserapp/geometry/drawable.dart';
 import 'package:tesserapp/geometry/matrix.dart';
-import 'package:tesserapp/geometry/polygon.dart';
 import 'package:tesserapp/geometry/vector.dart';
 
 class Canvas3d extends StatelessWidget {
   final Matrix modelMatrix;
 
-  /// List of polygons to be drawn.
-  final Iterable<Polygon> polygons;
+  final Drawable drawable;
 
   /// Color of geometry.
   final Color color;
@@ -26,13 +25,13 @@ class Canvas3d extends StatelessWidget {
   Canvas3d({
     Key key,
     @required this.modelMatrix,
-    Iterable<Polygon> polygonBuilder(),
+    Drawable drawableBuilder(),
     @required this.outlineColor,
     @required this.lightDirection,
     @required this.color,
     this.printDrawStats = false,
     this.drawStatsStyle,
-  })  : polygons = polygonBuilder(),
+  })  : drawable = drawableBuilder(),
         super(key: key) {
     if(printDrawStats) {
       assert(drawStatsStyle != null, "When printing draw stats, drawStatsStyle must not be null");

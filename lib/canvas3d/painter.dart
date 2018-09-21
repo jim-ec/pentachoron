@@ -50,13 +50,15 @@ class Canvas3dPainter extends CustomPainter {
       canvas.scale(1.0 / aspectRatio, 1.0);
     }
 
+    final polygons = canvas3d.drawable.intersection.hull;
+
     final b = Benchmark.start();
 
     final modelView = canvas3d.modelMatrix * view;
 
     b.step("Compute model-view matrix");
 
-    final polygonsModelViewSpace = canvas3d.polygons
+    final polygonsModelViewSpace = polygons
         .map((polygon) => polygon.transformed(modelView))
         .toList(growable: false);
 
@@ -124,7 +126,7 @@ class Canvas3dPainter extends CustomPainter {
       TextPainter(
         text: TextSpan(
           text: "${DateTime.now().difference(t0).inMilliseconds}ms\n"
-              "Polygon input count: ${canvas3d.polygons.length}\n"
+              "Polygon input count: ${polygons.length}\n"
               "Polygon draw count: ${drawPolygons.length}\n"
               "Model matrix:\n${canvas3d.modelMatrix.toStringLong()}\n",
           style: canvas3d.drawStatsStyle,
