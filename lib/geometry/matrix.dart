@@ -112,6 +112,29 @@ class Matrix {
           .reduce((a, b) => a + b) +
       at(4, col));
 
+//  Vector transform(final Vector v) => Vector(
+//        v[0] * at(0, 0) +
+//            v[1] * at(1, 0) +
+//            v[2] * at(2, 0) +
+//            v[3] * at(3, 0) +
+//            at(4, 0),
+//        v[0] * at(0, 1) +
+//            v[1] * at(1, 1) +
+//            v[2] * at(2, 1) +
+//            v[3] * at(3, 1) +
+//            at(4, 1),
+//        v[0] * at(0, 2) +
+//            v[1] * at(1, 2) +
+//            v[2] * at(2, 2) +
+//            v[3] * at(3, 2) +
+//            at(4, 2),
+//        v[0] * at(0, 3) +
+//            v[1] * at(1, 3) +
+//            v[2] * at(2, 3) +
+//            v[3] * at(3, 3) +
+//            at(4, 3),
+//      );
+
   Iterable<Vector> transformAll(final Iterable<Vector> vectors) =>
       vectors.map((v) => transform(v));
 

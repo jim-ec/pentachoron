@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:tesserapp/canvas3d/geometry.dart';
 import 'package:tesserapp/canvas3d/painter.dart';
+import 'package:tesserapp/geometry/matrix.dart';
+import 'package:tesserapp/geometry/polygon.dart';
 import 'package:tesserapp/geometry/vector.dart';
 
 class Canvas3d extends StatelessWidget {
-  /// Camera distance from the origin along the y axis.
-  final double cameraDistance;
+  final Matrix globalTransform;
 
-  /// List of geometry to be drawn.
-  final Iterable<Geometry> geometries;
+  /// List of polygons to be drawn.
+  final Iterable<Polygon> polygons;
 
-  /// Color of the outline, if drawn.
+  /// Color of geometry.
+  final Color color;
+
+  /// Color of the outline.
   final Color outlineColor;
 
   /// Direction of global light.
@@ -19,11 +22,13 @@ class Canvas3d extends StatelessWidget {
 
   Canvas3d({
     Key key,
-    @required this.cameraDistance,
-    @required this.geometries,
+    @required this.globalTransform,
+    Iterable<Polygon> polygonBuilder(),
     @required this.outlineColor,
     @required this.lightDirection,
-  }) : super(key: key);
+    @required this.color,
+  })  : polygons = polygonBuilder(),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) => Container(

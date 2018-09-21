@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tesserapp/app_options.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
-import 'package:tesserapp/canvas3d/geometry.dart';
 import 'package:tesserapp/generic/angle.dart';
 import 'package:tesserapp/geometry/matrix.dart';
-import 'package:tesserapp/geometry/pentachoron.dart';
 import 'package:tesserapp/geometry/vector.dart';
+import 'package:tesserapp/geometry/volume.dart';
 
 class FrontLayer extends StatefulWidget {
   @override
@@ -51,32 +50,30 @@ class FrontLayerState extends State<FrontLayer> {
               });
             },
             child: Canvas3d(
+              color: Theme.of(context).accentColor,
               lightDirection: Vector.ofZ(1.0),
               outlineColor: Theme.of(context).textTheme.title.color,
-              cameraDistance: 3.0,
-              geometries: <Geometry>[
-                Geometry(
-                  color: Theme.of(context).accentColor,
-                  polygons: (() {
-//                    final volume = Volume([
-//                      Vector.zero(),
-//                      Vector.ofX(1.0),
-//                      Vector.ofY(1.0),
-//                      Vector.ofZ(1.0),
+              globalTransform: Matrix.chain([
+                Matrix.rotation(RotationPlane.onXY, polar),
+                Matrix.rotation(RotationPlane.onYZ, azimuth),
+                Matrix.translation(Vector(0.0, 3.0, 0.0))
+              ]),
+              polygonBuilder : () {
+                final volume = Volume([
+                  Vector.zero(),
+                  Vector.ofX(1.0),
+                  Vector.ofY(1.0),
+                  Vector.ofZ(1.0),
+                ]);
+                return volume.hull;
+
+//                    final matrix = Matrix.chain([
+//                      Matrix.rotation(
+//                          RotationPlane.onXQ, Angle.fromTurns(sliderValue))
 //                    ]);
-//                    return volume.hull;
-//
-                    final matrix = Matrix.chain([
-                      Matrix.rotation(RotationPlane.onXY, polar),
-                      Matrix.rotation(RotationPlane.onYZ, azimuth),
-                      Matrix.rotation(
-                          RotationPlane.onXQ, Angle.fromTurns(sliderValue))
-                    ]);
-                    final pentachoron = Pentachoron.simple(matrix);
-                    return pentachoron.intersection.hull;
-                  })(),
-                ),
-              ],
+//                    final pentachoron = Pentachoron.simple(matrix);
+//                    return pentachoron.intersection.hull;
+              }
             ),
           ),
           Positioned.fill(

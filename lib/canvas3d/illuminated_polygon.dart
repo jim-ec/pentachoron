@@ -12,47 +12,37 @@ import 'package:tesserapp/geometry/vector.dart';
 /// It bundles per-geometry features like outlining into the polygons,
 /// as they are decoupled from their geometries in order to perform
 /// depth sorting.
-class ProcessingPolygon implements Comparable<ProcessingPolygon> {
+class IlluminatedPolygon implements Comparable<IlluminatedPolygon> {
+  
   /// Resulting polygon in current space.
   final Polygon polygon;
 
   /// Color of this polygon.
   final Color color;
 
-  ProcessingPolygon(
+  IlluminatedPolygon(
     this.polygon,
-    this.color,
-  );
+    final Color color,
+      final Vector lightDirection,
+  ) : color = Color.lerp(Color(0xff000000), color, remap(Vector.dot(polygon.normal, lightDirection).abs(), 0.0, 1.0, 0.2, 1.2));
+
+  IlluminatedPolygon.transformed(
+      final IlluminatedPolygon other,
+      final Matrix matrix
+      )
+      : polygon = other.polygon.transformed(matrix),
+        color = other.color;
 
   /// Computes the polygon representing this' perspective division.
   /// The z-component is negated, after which the x and y component
   /// are divided through that negated z value.
   /// The v value is than kept as-is, i.e. it need not to be -1.0
   /// after the division.
-  ProcessingPolygon get perspectiveDivision => ProcessingPolygon(
-        polygon.map((v) => -Vector(v.x / v.z, v.y / v.z, v.z)),
-        color,
-      );
-
-  /// Return a transformed version of this polygon.
-  /// To transform the polygon using perspective matrices,
-  /// use [perspectiveTransformed] instead.
-  ProcessingPolygon transformed(final Matrix matrix) =>
-      ProcessingPolygon(polygon.map((v) => matrix.transform(v)), color);
-
-  /// Return a re-colored version of this polygon.
-  /// [lightDirection] defines the direction of parallel light rays,
-  /// used to illuminate the polygon.
-  ///
-  /// [lightDirection] is assumed to be in the same space as this polygon.
-  ProcessingPolygon illuminated(final Vector lightDirection) {
-    final luminance = Vector.dot(polygon.normal, lightDirection).abs();
-    final softenLuminance = remap(luminance, 0.0, 1.0, 0.2, 1.2);
-    return ProcessingPolygon(
-      polygon,
-      Color.lerp(Color(0xff000000), color, softenLuminance),
-    );
-  }
+  IlluminatedPolygon.perspectiveDivision(
+      final IlluminatedPolygon other,
+      )
+      : polygon = other.polygon.map((v) => -Vector(v.x / v.z, v.y / v.z, v.z)),
+        color = other.color;
 
   /// Performs a depth comparison.
   /// This polygon should reside in projection space in order to construct
@@ -72,7 +62,7 @@ class ProcessingPolygon implements Comparable<ProcessingPolygon> {
   /// optimization, as intersection should only appear *within* volumes and
   /// therefore represent invisible geometry.
   @override
-  int compareTo(final ProcessingPolygon other) {
+  int compareTo(final IlluminatedPolygon other) {
     const occludingOther = 1;
     const occludedByOther = -1;
     const undecidable = 0;
