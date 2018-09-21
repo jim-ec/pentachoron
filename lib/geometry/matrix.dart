@@ -20,7 +20,6 @@ enum RotationPlane {
 /// Suitable to transform 4D points.
 @immutable
 class Matrix {
-  
   final Float64List buffer;
 
   Matrix.fromList(final List<double> list)
@@ -140,4 +139,37 @@ class Matrix {
   Iterable<Vector> transformAll(final Iterable<Vector> vectors) =>
       vectors.map((v) => transform(v));
 
+  String toStringLong() {
+    final leadingChar = (final int row) {
+      switch (row) {
+        case 0:
+          return "┌ ";
+        case 4:
+          return "└ ";
+        default:
+          return "│ ";
+      }
+    };
+    final trailingChar = (final int row) {
+      switch (row) {
+        case 0:
+          return " ┐";
+        case 4:
+          return " ┘";
+        default:
+          return " │";
+      }
+    };
+    return range(5)
+        .map((final row) =>
+            leadingChar(row) +
+            range(5)
+                .map((final col) => at(row, col))
+                .map((final c) => c >= 0.0
+                    ? " " + c.toStringAsFixed(1)
+                    : c.toStringAsFixed(1))
+                .join(" │ ") +
+            trailingChar(row))
+        .join("\n");
+  }
 }

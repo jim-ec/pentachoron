@@ -31,10 +31,12 @@ class Canvas3dPainter extends CustomPainter {
   @override
   void paint(final Canvas canvas, final Size size) {
     final aspectRatio = size.width / size.height;
+    final t0 = DateTime.now();
 
     // Transform canvas into viewport space:
     canvas
       ..clipRect(Rect.fromLTWH(0.0, 0.0, size.width, size.height))
+      ..save()
       ..translate(size.width / 2.0, size.height / 2.0)
       ..scale(-size.width / 2.0, -size.height / 2.0);
 
@@ -47,10 +49,10 @@ class Canvas3dPainter extends CustomPainter {
       // Landscape oriented canvas:
       canvas.scale(1.0 / aspectRatio, 1.0);
     }
-    
+
     final b = Benchmark.start();
 
-    final modelView = canvas3d.globalTransform * view;
+    final modelView = canvas3d.modelMatrix * view;
 
     b.step("Compute model-view matrix");
 
@@ -115,5 +117,22 @@ class Canvas3dPainter extends CustomPainter {
 
     outlinePath.close();
     canvas.drawPath(outlinePath, outlinePaint);
+
+    canvas.restore();
+
+    if (canvas3d.printDrawStats) {
+      TextPainter(
+        text: TextSpan(
+          text: "${DateTime.now().difference(t0).inMilliseconds}ms\n"
+              "Polygon input count: ${canvas3d.polygons.length}\n"
+              "Polygon draw count: ${drawPolygons.length}\n"
+              "Model matrix:\n${canvas3d.modelMatrix.toStringLong()}\n",
+          style: canvas3d.drawStatsStyle,
+        ),
+        textDirection: TextDirection.ltr,
+      )
+        ..layout()
+        ..paint(canvas, Offset(10.0, 10.0));
+    }
   }
 }

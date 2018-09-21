@@ -52,7 +52,13 @@ class FrontLayerState extends State<FrontLayer> {
                 color: Theme.of(context).accentColor,
                 lightDirection: Vector.ofZ(1.0),
                 outlineColor: Theme.of(context).textTheme.title.color,
-                globalTransform: Matrix.chain([
+                printDrawStats: true,
+                drawStatsStyle: TextStyle(
+                  color: Theme.of(context).textTheme.body1.color,
+                  fontFamily: "monospace",
+                  fontSize: 11.0,
+                ),
+                modelMatrix: Matrix.chain([
                   Matrix.rotation(RotationPlane.onXY, polar),
                   Matrix.rotation(RotationPlane.onYZ, azimuth),
                   Matrix.translation(Vector(0.0, 3.0, 0.0))
