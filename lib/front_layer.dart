@@ -3,8 +3,8 @@ import 'package:tesserapp/app_options.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/generic/angle.dart';
 import 'package:tesserapp/geometry/matrix.dart';
+import 'package:tesserapp/geometry/pentachoron.dart';
 import 'package:tesserapp/geometry/vector.dart';
-import 'package:tesserapp/geometry/volume.dart';
 
 class FrontLayer extends StatefulWidget {
   @override
@@ -21,7 +21,7 @@ class FrontLayerState extends State<FrontLayer> {
     super.initState();
   }
 
-  static const orbitSensitivity = 0.008;
+  static const orbitSensitivity = 0.014;
 
   @override
   Widget build(final BuildContext context) => Stack(
@@ -36,11 +36,10 @@ class FrontLayerState extends State<FrontLayer> {
                             .value
                         ? -orbitSensitivity
                         : orbitSensitivity));
-                azimuth -= Angle.fromRadians(details.delta.dy *
+                azimuth += Angle.fromRadians(details.delta.dy *
                     (AppOptions.of(context).invertedVerticalCamera.option.value
                         ? -orbitSensitivity
                         : orbitSensitivity));
-                azimuth = Angle.fromDegrees(azimuth.degrees.clamp(-80.0, 80.0));
               });
             },
             onDoubleTap: () {
@@ -50,31 +49,22 @@ class FrontLayerState extends State<FrontLayer> {
               });
             },
             child: Canvas3d(
-              color: Theme.of(context).accentColor,
-              lightDirection: Vector.ofZ(1.0),
-              outlineColor: Theme.of(context).textTheme.title.color,
-              globalTransform: Matrix.chain([
-                Matrix.rotation(RotationPlane.onXY, polar),
-                Matrix.rotation(RotationPlane.onYZ, azimuth),
-                Matrix.translation(Vector(0.0, 3.0, 0.0))
-              ]),
-              polygonBuilder : () {
-                final volume = Volume([
-                  Vector.zero(),
-                  Vector.ofX(1.0),
-                  Vector.ofY(1.0),
-                  Vector.ofZ(1.0),
-                ]);
-                return volume.hull;
-
-//                    final matrix = Matrix.chain([
-//                      Matrix.rotation(
-//                          RotationPlane.onXQ, Angle.fromTurns(sliderValue))
-//                    ]);
-//                    final pentachoron = Pentachoron.simple(matrix);
-//                    return pentachoron.intersection.hull;
-              }
-            ),
+                color: Theme.of(context).accentColor,
+                lightDirection: Vector.ofZ(1.0),
+                outlineColor: Theme.of(context).textTheme.title.color,
+                globalTransform: Matrix.chain([
+                  Matrix.rotation(RotationPlane.onXY, polar),
+                  Matrix.rotation(RotationPlane.onYZ, azimuth),
+                  Matrix.translation(Vector(0.0, 3.0, 0.0))
+                ]),
+                polygonBuilder: () {
+                  final matrix = Matrix.chain([
+                    Matrix.rotation(
+                        RotationPlane.onXQ, Angle.fromTurns(sliderValue))
+                  ]);
+                  final pentachoron = Pentachoron.simple(matrix);
+                  return pentachoron.intersection.hull;
+                }),
           ),
           Positioned.fill(
             top: null,
