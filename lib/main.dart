@@ -13,7 +13,7 @@ class TesserApp extends StatelessWidget {
         defaultBrightness: Brightness.dark,
         data: (brightness) => tesserTheme(brightness),
         themedWidgetBuilder: (context, theme) => MaterialApp(
-              title: "Tesserapp",
+              title: "Pentachoron",
               debugShowCheckedModeBanner: false,
               theme: theme,
               home: AppOptionsProvider(child: Home()),

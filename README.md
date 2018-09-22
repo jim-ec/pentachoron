@@ -1,4 +1,4 @@
-# Tesserapp
+# Pentachoron
 
 Small hobby project, playing with 4D geometry.
 

@@ -106,7 +106,7 @@ class _BackdropState extends State<Backdrop>
                   padding: const EdgeInsets.all(16.0),
                   child: Center(
                     child: Text(
-                      "TESSERAPP",
+                      "PENTACHORON",
                       style: Theme.of(context).primaryTextTheme.title,
                     ),
                   ),

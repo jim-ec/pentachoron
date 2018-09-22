@@ -108,7 +108,7 @@ class BackLayer extends StatelessWidget {
                     style: Theme.of(context).primaryTextTheme.button,
                   ),
                   onPressed: () async {
-                    const url = "https://github.com/Jim-Eckerlein/tesserapp";
+                    const url = "https://github.com/Jim-Eckerlein/pentachoron";
                     if (await canLaunch(url)) {
                       await launch(url);
                     }
