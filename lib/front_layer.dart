@@ -3,7 +3,7 @@ import 'package:tesserapp/app_options.dart';
 import 'package:tesserapp/canvas3d/canvas3d.dart';
 import 'package:tesserapp/generic/angle.dart';
 import 'package:tesserapp/geometry/matrix.dart';
-import 'package:tesserapp/geometry/tesseract.dart';
+import 'package:tesserapp/geometry/pentachoron.dart';
 import 'package:tesserapp/geometry/vector.dart';
 
 class FrontLayer extends StatefulWidget {
@@ -12,8 +12,12 @@ class FrontLayer extends StatefulWidget {
 }
 
 class FrontLayerState extends State<FrontLayer> {
-  var polar = Angle.fromDegrees(-30.0);
-  var azimuth = Angle.fromDegrees(30.0);
+  
+  static get defaultPolar => Angle.fromDegrees(60.0);
+  static get defaultAzimuth => Angle.fromDegrees(10.0);
+  
+  var polar = defaultPolar;
+  var azimuth = defaultAzimuth;
   var rotation = Angle.zero();
   var translation = 0.0;
 
@@ -45,8 +49,10 @@ class FrontLayerState extends State<FrontLayer> {
             },
             onDoubleTap: () {
               setState(() {
-                polar = Angle.fromDegrees(0.0);
-                azimuth = Angle.fromDegrees(0.0);
+                polar = defaultPolar;
+                azimuth = defaultAzimuth;
+                rotation = Angle.zero();
+                translation = 0.0;
               });
             },
             child: Canvas3d(
@@ -63,13 +69,13 @@ class FrontLayerState extends State<FrontLayer> {
                 ),
                 modelMatrix: Matrix.chain([
                   Matrix.rotation(RotationPlane.onXQ, rotation),
-                  Matrix.rotation(RotationPlane.onYQ, rotation),
                   Matrix.rotation(RotationPlane.onXY, polar),
                   Matrix.rotation(RotationPlane.onYZ, azimuth),
-                  Matrix.translation(Vector(0.0, 3.0, 0.0, translation)),
+                  Matrix.translation(
+                      Vector(0.0, 3.0, 0.0, translation)),
                 ]),
                 drawableBuilder: () {
-                  return [Tesseract.simple()];
+                  return [Pentachoron.simple()];
                 }),
           ),
           Positioned.fill(
@@ -82,18 +88,15 @@ class FrontLayerState extends State<FrontLayer> {
                   children: <Widget>[
                     Expanded(
                       flex: 1,
-                      child: Text(
-                        "Translation",
-                        style: Theme.of(context).textTheme.subhead,
-                      ),
+                      child: Text("Translation"),
                     ),
                     Expanded(
                       flex: 4,
                       child: Slider(
                         activeColor: Theme.of(context).accentColor,
                         value: translation,
-                        min: -3.0,
-                        max: 3.0,
+                        min: -2.0,
+                        max: 2.0,
                         onChanged: (value) {
                           setState(() {
                             translation = value;
@@ -114,10 +117,7 @@ class FrontLayerState extends State<FrontLayer> {
                   children: <Widget>[
                     Expanded(
                       flex: 1,
-                      child: Text(
-                        "Rotation",
-                        style: Theme.of(context).textTheme.subhead,
-                      ),
+                      child: Text("Rotation"),
                     ),
                     Expanded(
                       flex: 4,

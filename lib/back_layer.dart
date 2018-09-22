@@ -31,14 +31,14 @@ class BackLayer extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        "16 Vertices",
+                        "5 Vertices",
                         style: Theme.of(context).primaryTextTheme.body1,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        "32 Edges",
+                        "10 Edges",
                         style: Theme.of(context).primaryTextTheme.body1,
                       ),
                     ),
@@ -49,20 +49,72 @@ class BackLayer extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        "24 Faces",
+                        "10 Faces",
                         style: Theme.of(context).primaryTextTheme.body1,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        "8 Cells",
+                        "5 Cells",
                         style: Theme.of(context).primaryTextTheme.body1,
                       ),
                     ),
                   ],
                 ),
               ],
+            ),
+            Divider(
+              height: 5.0,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Text(
+                  "Credits",
+                  style: Theme.of(context).primaryTextTheme.caption,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Center(
+                child: Text(
+                  "My hobby project, showcasing the most simple four dimensional "
+                      "geometry, the PENTACHORON. "
+                      "A Pentachoron relates to a tetrahedron in the same way "
+                      "a tetrahedron relates to a triangle by adding one further "
+                      "vertex in the next dimension.\n\n"
+                      "The graphical representation depicts the INTERSECTION "
+                      "between the 4D object and the 3D space, defined by "
+                      "w = 0. Therefore, you are only able to see one spatial "
+                      "SLICE of the whole geometry.\n\n"
+                      "You can translate along the w-axis, as well as rotate "
+                      "on the x-w plane. "
+                      "DOUBLE TAP to reset to initial transformation.\n\n"
+                      "The app is written with Flutter and it's source code "
+                      "is available at my GitHub repository.\n\n"
+                      "Scroll down to change preferences.",
+                  style: Theme.of(context).primaryTextTheme.body1,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: Button(
+                  child: Text(
+                    "Get Source code".toUpperCase(),
+                    style: Theme.of(context).primaryTextTheme.button,
+                  ),
+                  onPressed: () async {
+                    const url = "https://github.com/Jim-Eckerlein/tesserapp";
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    }
+                  },
+                ),
+              ),
             ),
             Divider(
               height: 5.0,
@@ -101,45 +153,6 @@ class BackLayer extends StatelessWidget {
               value: appOptions.printDrawStats.option.value,
               onToggled: appOptions.printDrawStats.option.toggle,
             ),
-            Divider(
-              height: 5.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Text(
-                  "Credits",
-                  style: Theme.of(context).primaryTextTheme.caption,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Center(
-                child: Text(
-                  "My hobby project to play with four dimensional spatials.\n"
-                      "The app is written with Flutter.\n\n"
-                      "The source code is freely available at my GitHub repository.",
-                  style: Theme.of(context).primaryTextTheme.body1,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Center(
-                  child: Button(
-                child: Text(
-                  "Get Source code".toUpperCase(),
-                  style: Theme.of(context).primaryTextTheme.button,
-                ),
-                onPressed: () async {
-                  const url = "https://github.com/Jim-Eckerlein/tesserapp";
-                  if (await canLaunch(url)) {
-                    await launch(url);
-                  }
-                },
-              )),
-            )
           ],
         ),
       ),
