@@ -10,3 +10,9 @@ I'm writing this app to my own joy and curiosity.
 
 I tried various branching models, but now I'm sticking to this one,
 greatly explained [here](https://nvie.com/posts/a-successful-git-branching-model/?).
+
+## Build release app
+
+Keystore file is located at `android/app/keystore.jks`.
+Master and key pwd: *keykey*
+Key alias: *key*

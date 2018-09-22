@@ -14,6 +14,8 @@ enum RotationPlane {
   onYZ,
   onXZ,
   onXQ,
+  onYQ,
+  onZQ,
 }
 
 /// A row-major, 5D transformation matrix.
@@ -93,6 +95,14 @@ class Matrix {
         break;
       case RotationPlane.onXQ:
         a = 0;
+        b = 3;
+        break;
+      case RotationPlane.onYQ:
+        a = 1;
+        b = 3;
+        break;
+      case RotationPlane.onZQ:
+        a = 2;
         b = 3;
         break;
     }

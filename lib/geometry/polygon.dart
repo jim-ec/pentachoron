@@ -75,31 +75,6 @@ class Polygon {
   /// Return a transformed version of this polygon.
   Polygon transformed(final Matrix matrix) => map((v) => matrix.transform(v));
 
-  static Iterable<Polygon> tetrahedron(final Tetrahedron t) => t != null
-      ? [
-          Polygon.fromUnsortedPoints([
-            t.points.elementAt(0),
-            t.points.elementAt(1),
-            t.points.elementAt(2),
-          ]),
-          Polygon.fromUnsortedPoints([
-            t.points.elementAt(0),
-            t.points.elementAt(1),
-            t.points.elementAt(3),
-          ]),
-          Polygon.fromUnsortedPoints([
-            t.points.elementAt(1),
-            t.points.elementAt(2),
-            t.points.elementAt(3),
-          ]),
-          Polygon.fromUnsortedPoints([
-            t.points.elementAt(2),
-            t.points.elementAt(0),
-            t.points.elementAt(3),
-          ]),
-        ]
-      : [];
-
   static Iterable<Polygon> cube({
     final Vector center,
     final double sideLength,
