@@ -81,7 +81,7 @@ class Angle implements Comparable<Angle> {
   Angle operator /(final double scale) => Angle.fromRadians(radians / scale);
 
   @override
-  String toString() => "$degrees°";
+  String toString() => "${degrees.toStringAsFixed(1)}°";
 
   bool operator <(final Angle other) => _storage < other._storage;
 

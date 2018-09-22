@@ -14,8 +14,8 @@ class FrontLayer extends StatefulWidget {
 class FrontLayerState extends State<FrontLayer> {
   var polar = Angle.fromDegrees(-30.0);
   var azimuth = Angle.fromDegrees(30.0);
-  var rotationSliderValue = 0.0;
-  var translationSliderValue = 0.0;
+  var rotation = Angle.zero();
+  var translation = 0.0;
 
   @override
   void initState() {
@@ -59,14 +59,14 @@ class FrontLayerState extends State<FrontLayer> {
                   color: Theme.of(context).textTheme.body1.color,
                   fontFamily: "monospace",
                   fontSize: 11.0,
+                  height: 0.8,
                 ),
                 modelMatrix: Matrix.chain([
-                  Matrix.rotation(
-                      RotationPlane.onXQ, Angle.fromTurns(rotationSliderValue)),
+                  Matrix.rotation(RotationPlane.onXQ, rotation),
                   Matrix.rotation(RotationPlane.onXY, polar),
                   Matrix.rotation(RotationPlane.onYZ, azimuth),
                   Matrix.translation(
-                      Vector(0.0, 3.0, 0.0, translationSliderValue)),
+                      Vector(0.0, 3.0, 0.0, translation)),
                 ]),
                 drawableBuilder: () {
                   return [Pentachoron.simple()];
@@ -80,39 +80,59 @@ class FrontLayerState extends State<FrontLayer> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Flexible(
+                    Expanded(
                       flex: 1,
                       child: Text("Translation"),
                     ),
-                    Slider(
-                      activeColor: Theme.of(context).accentColor,
-                      value: translationSliderValue,
-                      min: -3.0,
-                      max: 3.0,
-                      onChanged: (value) {
-                        setState(() {
-                          translationSliderValue = value;
-                        });
-                      },
+                    Expanded(
+                      flex: 4,
+                      child: Slider(
+                        activeColor: Theme.of(context).accentColor,
+                        value: translation,
+                        min: -3.0,
+                        max: 3.0,
+                        onChanged: (value) {
+                          setState(() {
+                            translation = value;
+                          });
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        translation.toStringAsFixed(1),
+                        textAlign: TextAlign.end,
+                      ),
                     ),
                   ],
                 ),
                 Row(
                   children: <Widget>[
-                    Flexible(
+                    Expanded(
                       flex: 1,
                       child: Text("Rotation"),
                     ),
-                    Slider(
-                      activeColor: Theme.of(context).accentColor,
-                      value: rotationSliderValue,
-                      min: 0.0,
-                      max: 1.0,
-                      onChanged: (value) {
-                        setState(() {
-                          rotationSliderValue = value;
-                        });
-                      },
+                    Expanded(
+                      flex: 4,
+                      child: Slider(
+                        activeColor: Theme.of(context).accentColor,
+                        value: rotation.turns,
+                        min: 0.0,
+                        max: 1.0,
+                        onChanged: (value) {
+                          setState(() {
+                            rotation = Angle.fromTurns(value);
+                          });
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        rotation.toString(),
+                        textAlign: TextAlign.end,
+                      ),
                     ),
                   ],
                 ),

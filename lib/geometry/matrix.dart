@@ -143,21 +143,21 @@ class Matrix {
     final leadingChar = (final int row) {
       switch (row) {
         case 0:
-          return "┌ ";
+          return "\u23A1 ";
         case 4:
-          return "└ ";
+          return "\u23A3 ";
         default:
-          return "│ ";
+          return "\u23A2 ";
       }
     };
     final trailingChar = (final int row) {
       switch (row) {
         case 0:
-          return " ┐";
+          return " \u23A4";
         case 4:
-          return " ┘";
+          return " \u23A6";
         default:
-          return " │";
+          return " \u23A5";
       }
     };
     return range(5)
@@ -168,7 +168,7 @@ class Matrix {
                 .map((final c) => c >= 0.0
                     ? " " + c.toStringAsFixed(1)
                     : c.toStringAsFixed(1))
-                .join(" │ ") +
+                .join(" \u23A2 ") +
             trailingChar(row))
         .join("\n");
   }
