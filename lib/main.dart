@@ -14,7 +14,6 @@ class PentachoronApp extends StatelessWidget {
         data: (brightness) => tesserTheme(brightness),
         themedWidgetBuilder: (context, theme) => MaterialApp(
               title: "Pentachoron",
-              debugShowCheckedModeBanner: false,
               theme: theme,
               home: AppOptionsProvider(child: Home()),
             ),
