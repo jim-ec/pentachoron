@@ -1,27 +1,18 @@
-# Tesserapp
+# Pentachoron
 
 Small hobby project, playing with 4D geometry.
 
 ## What's this app's purpose?
 
 I'm writing this app to my own joy and curiosity.
-I try to apply various new designs and concepts I come across, such as the MVVM construct.
 
 ## Git Branching Model
 
 I tried various branching models, but now I'm sticking to this one,
 greatly explained [here](https://nvie.com/posts/a-successful-git-branching-model/?).
 
-## Math
+## Build release app
 
-The vector, matrix and transform math is implemented in C++.
-For two reasons, that module has moved to its very [own repository](https://github.com/Jim-Eckerlein/fmath):
-Firstly, to be modular, so I can reuse the heavily templated math code.
-Secondly, Android Studio is not suitable to work on "advanced" C++ code.
-
-## Build Signed APK
-
-- Keystore is located at: `app/keystore.jks`
-- Keystore password: `mykeystore123`
-- Key alias: `app_key`
-- Key password: `mykey123`
+Keystore file is located at `android/app/keystore.jks`.
+Master and key pwd: *keykey*
+Key alias: *key*
