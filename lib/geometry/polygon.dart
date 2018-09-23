@@ -1,8 +1,7 @@
+import 'package:angles/angles.dart';
 import 'package:meta/meta.dart';
-import 'package:tesserapp/generic/angle.dart';
-import 'package:tesserapp/geometry/matrix.dart';
-import 'package:tesserapp/geometry/tetrahedron.dart';
-import 'package:tesserapp/geometry/vector.dart';
+import 'package:Pentachoron/geometry/matrix.dart';
+import 'package:Pentachoron/geometry/vector.dart';
 
 typedef double _PlaneEquation(final Vector v);
 

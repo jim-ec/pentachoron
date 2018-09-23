@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tesserapp/canvas3d/canvas3d.dart';
-import 'package:tesserapp/canvas3d/depth_compare.dart';
-import 'package:tesserapp/canvas3d/illuminated_polygon.dart';
-import 'package:tesserapp/geometry/matrix.dart';
-import 'package:tesserapp/geometry/volume.dart';
+import 'package:Pentachoron/canvas3d/canvas3d.dart';
+import 'package:Pentachoron/canvas3d/depth_compare.dart';
+import 'package:Pentachoron/canvas3d/illuminated_polygon.dart';
+import 'package:Pentachoron/geometry/matrix.dart';
+import 'package:Pentachoron/geometry/volume.dart';
 
 class Canvas3dPainter extends CustomPainter {
   final Canvas3d canvas3d;

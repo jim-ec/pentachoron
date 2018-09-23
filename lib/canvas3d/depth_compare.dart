@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:tesserapp/geometry/polygon.dart';
-import 'package:tesserapp/geometry/tolerance.dart';
+import 'package:Pentachoron/geometry/polygon.dart';
+import 'package:Pentachoron/geometry/tolerance.dart';
 
 const _undecidable = 0;
 const _occludingOther = 1;

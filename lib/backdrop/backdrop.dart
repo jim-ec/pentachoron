@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tesserapp/backdrop/morphing_arrow.dart';
-import 'package:tesserapp/button.dart';
-import 'package:tesserapp/generic/number_range.dart';
+import 'package:Pentachoron/backdrop/morphing_arrow.dart';
+import 'package:Pentachoron/button.dart';
+import 'package:Pentachoron/generic/number_range.dart';
 
 class Backdrop extends StatefulWidget {
   final Widget backLayer;

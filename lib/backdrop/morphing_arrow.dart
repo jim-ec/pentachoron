@@ -1,5 +1,5 @@
+import 'package:angles/angles.dart';
 import 'package:flutter/material.dart';
-import 'package:tesserapp/generic/angle.dart';
 
 class MorphingArrow extends StatelessWidget {
   final double advance;

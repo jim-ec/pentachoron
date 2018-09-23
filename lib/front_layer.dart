@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tesserapp/app_options.dart';
-import 'package:tesserapp/canvas3d/canvas3d.dart';
-import 'package:tesserapp/generic/angle.dart';
-import 'package:tesserapp/geometry/matrix.dart';
-import 'package:tesserapp/geometry/pentachoron.dart';
-import 'package:tesserapp/geometry/vector.dart';
+import 'package:Pentachoron/app_options.dart';
+import 'package:Pentachoron/canvas3d/canvas3d.dart';
+import 'package:Pentachoron/geometry/matrix.dart';
+import 'package:Pentachoron/geometry/pentachoron.dart';
+import 'package:Pentachoron/geometry/vector.dart';
+import 'package:angles/angles.dart';
 
 class FrontLayer extends StatefulWidget {
   @override
@@ -88,35 +88,6 @@ class FrontLayerState extends State<FrontLayer> {
                   children: <Widget>[
                     Expanded(
                       flex: 1,
-                      child: Text("Translation"),
-                    ),
-                    Expanded(
-                      flex: 4,
-                      child: Slider(
-                        activeColor: Theme.of(context).accentColor,
-                        value: translation,
-                        min: -2.0,
-                        max: 2.0,
-                        onChanged: (value) {
-                          setState(() {
-                            translation = value;
-                          });
-                        },
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Text(
-                        translation.toStringAsFixed(1),
-                        textAlign: TextAlign.end,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      flex: 1,
                       child: Text("Rotation"),
                     ),
                     Expanded(
@@ -137,6 +108,35 @@ class FrontLayerState extends State<FrontLayer> {
                       flex: 1,
                       child: Text(
                         rotation.toString(),
+                        textAlign: TextAlign.end,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Text("Translation"),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Slider(
+                        activeColor: Theme.of(context).accentColor,
+                        value: translation,
+                        min: -2.0,
+                        max: 2.0,
+                        onChanged: (value) {
+                          setState(() {
+                            translation = value;
+                          });
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        translation.toStringAsFixed(1),
                         textAlign: TextAlign.end,
                       ),
                     ),

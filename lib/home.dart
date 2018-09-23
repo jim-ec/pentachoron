@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tesserapp/back_layer.dart';
-import 'package:tesserapp/backdrop/backdrop.dart';
-import 'package:tesserapp/front_layer.dart';
+import 'package:Pentachoron/back_layer.dart';
+import 'package:Pentachoron/backdrop/backdrop.dart';
+import 'package:Pentachoron/front_layer.dart';
 
 class Home extends StatelessWidget {
   @override

@@ -1,5 +1,5 @@
-import 'package:tesserapp/geometry/line.dart';
-import 'package:tesserapp/geometry/matrix.dart';
+import 'package:Pentachoron/geometry/line.dart';
+import 'package:Pentachoron/geometry/matrix.dart';
 
 abstract class Drawable {
   Iterable<Line> lines(final Matrix matrix);

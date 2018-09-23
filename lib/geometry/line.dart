@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import 'package:tesserapp/geometry/vector.dart';
+import 'package:Pentachoron/geometry/vector.dart';
 
 @immutable
 class Line {

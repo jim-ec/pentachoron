@@ -1,4 +1,4 @@
-package com.example.tesserapp;
+package com.example.pentachoron;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

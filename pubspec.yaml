@@ -1,14 +1,13 @@
-name: tesserapp
-description: A new Flutter project.
+name: Pentachoron
+description: A 4D geometry showcasing.
 
 dependencies:
   sprintf: ^4.0.0
   url_launcher: ^3.0.3
-
+  angles: ^1.0.0
   dynamic_theme:
     git:
       url: git://github.com/Norbert515/dynamic_theme.git
-
   flutter:
     sdk: flutter
 

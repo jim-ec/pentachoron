@@ -1,9 +1,9 @@
 import 'package:meta/meta.dart';
 import 'package:quiver/iterables.dart';
-import 'package:tesserapp/geometry/drawable.dart';
-import 'package:tesserapp/geometry/line.dart';
-import 'package:tesserapp/geometry/matrix.dart';
-import 'package:tesserapp/geometry/vector.dart';
+import 'package:Pentachoron/geometry/drawable.dart';
+import 'package:Pentachoron/geometry/line.dart';
+import 'package:Pentachoron/geometry/matrix.dart';
+import 'package:Pentachoron/geometry/vector.dart';
 
 @immutable
 class Tesseract implements Drawable {

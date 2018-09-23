@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
-import 'package:tesserapp/geometry/line.dart';
-import 'package:tesserapp/geometry/polygon.dart';
-import 'package:tesserapp/geometry/vector.dart';
+import 'package:Pentachoron/geometry/line.dart';
+import 'package:Pentachoron/geometry/polygon.dart';
+import 'package:Pentachoron/geometry/vector.dart';
 
 @immutable
 class Tetrahedron {

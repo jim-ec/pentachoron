@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:angles/angles.dart';
 import 'package:meta/meta.dart';
 import 'package:quiver/iterables.dart';
-import 'package:tesserapp/generic/angle.dart';
-import 'package:tesserapp/geometry/vector.dart';
+import 'package:Pentachoron/geometry/vector.dart';
 
 enum RotationPlane {
   aroundX,
