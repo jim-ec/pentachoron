@@ -1,7 +1,7 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:Pentachoron/app_options.dart';
-import 'package:Pentachoron/button.dart';
+import 'package:pentachoron/app_options.dart';
+import 'package:pentachoron/button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BackLayer extends StatelessWidget {

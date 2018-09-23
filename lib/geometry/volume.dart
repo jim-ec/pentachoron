@@ -1,7 +1,7 @@
 import 'package:quiver/iterables.dart';
-import 'package:Pentachoron/geometry/polygon.dart';
-import 'package:Pentachoron/geometry/tolerance.dart';
-import 'package:Pentachoron/geometry/vector.dart';
+import 'package:pentachoron/geometry/polygon.dart';
+import 'package:pentachoron/geometry/tolerance.dart';
+import 'package:pentachoron/geometry/vector.dart';
 
 /// A volume of arbitrary shape.
 /// Its polygonal hull is defined through a set of points.

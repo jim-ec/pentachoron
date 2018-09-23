@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import 'package:Pentachoron/geometry/vector.dart';
+import 'package:pentachoron/geometry/vector.dart';
 
 @immutable
 class Line {

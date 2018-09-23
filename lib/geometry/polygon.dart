@@ -1,7 +1,7 @@
 import 'package:angles/angles.dart';
 import 'package:meta/meta.dart';
-import 'package:Pentachoron/geometry/matrix.dart';
-import 'package:Pentachoron/geometry/vector.dart';
+import 'package:pentachoron/geometry/matrix.dart';
+import 'package:pentachoron/geometry/vector.dart';
 
 typedef double _PlaneEquation(final Vector v);
 

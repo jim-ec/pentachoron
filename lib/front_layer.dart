@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:Pentachoron/app_options.dart';
-import 'package:Pentachoron/canvas3d/canvas3d.dart';
-import 'package:Pentachoron/geometry/matrix.dart';
-import 'package:Pentachoron/geometry/pentachoron.dart';
-import 'package:Pentachoron/geometry/vector.dart';
+import 'package:pentachoron/app_options.dart';
+import 'package:pentachoron/canvas3d/canvas3d.dart';
+import 'package:pentachoron/geometry/matrix.dart';
+import 'package:pentachoron/geometry/pentachoron.dart';
+import 'package:pentachoron/geometry/vector.dart';
 import 'package:angles/angles.dart';
 
 class FrontLayer extends StatefulWidget {

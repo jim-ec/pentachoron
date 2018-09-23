@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:Pentachoron/common/number_range.dart';
+import 'package:pentachoron/common/number_range.dart';
 
 import 'double_matcher.dart';
 

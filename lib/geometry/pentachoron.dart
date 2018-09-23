@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:meta/meta.dart';
-import 'package:Pentachoron/geometry/drawable.dart';
-import 'package:Pentachoron/geometry/line.dart';
-import 'package:Pentachoron/geometry/matrix.dart';
-import 'package:Pentachoron/geometry/vector.dart';
+import 'package:pentachoron/geometry/drawable.dart';
+import 'package:pentachoron/geometry/line.dart';
+import 'package:pentachoron/geometry/matrix.dart';
+import 'package:pentachoron/geometry/vector.dart';
 
 /// The base four-dimensional geometry, in the same manner as the triangle
 /// forms the base for 2d geometries and the tetrahedron for 3d geometries.

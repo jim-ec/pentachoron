@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:Pentachoron/canvas3d/painter.dart';
-import 'package:Pentachoron/geometry/drawable.dart';
-import 'package:Pentachoron/geometry/matrix.dart';
-import 'package:Pentachoron/geometry/vector.dart';
+import 'package:pentachoron/canvas3d/painter.dart';
+import 'package:pentachoron/geometry/drawable.dart';
+import 'package:pentachoron/geometry/matrix.dart';
+import 'package:pentachoron/geometry/vector.dart';
 
 class Canvas3d extends StatelessWidget {
   final Matrix modelMatrix;

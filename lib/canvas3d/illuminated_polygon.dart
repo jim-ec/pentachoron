@@ -2,11 +2,11 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:Pentachoron/common/number_range.dart';
-import 'package:Pentachoron/geometry/matrix.dart';
-import 'package:Pentachoron/geometry/polygon.dart';
-import 'package:Pentachoron/geometry/tolerance.dart';
-import 'package:Pentachoron/geometry/vector.dart';
+import 'package:pentachoron/common/number_range.dart';
+import 'package:pentachoron/geometry/matrix.dart';
+import 'package:pentachoron/geometry/polygon.dart';
+import 'package:pentachoron/geometry/tolerance.dart';
+import 'package:pentachoron/geometry/vector.dart';
 
 /// A polygon wrapper adding pipeline processing functionality to it.
 /// It bundles per-geometry features like outlining into the polygons,

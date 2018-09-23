@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:Pentachoron/geometry/polygon.dart';
-import 'package:Pentachoron/geometry/tolerance.dart';
+import 'package:pentachoron/geometry/polygon.dart';
+import 'package:pentachoron/geometry/tolerance.dart';
 
 const _undecidable = 0;
 const _occludingOther = 1;
