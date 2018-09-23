@@ -2,7 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:Pentachoron/generic/number_range.dart';
+import 'package:Pentachoron/common/number_range.dart';
 import 'package:Pentachoron/geometry/matrix.dart';
 import 'package:Pentachoron/geometry/polygon.dart';
 import 'package:Pentachoron/geometry/tolerance.dart';
