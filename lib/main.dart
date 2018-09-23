@@ -5,9 +5,9 @@ import 'package:Pentachoron/app_options.dart';
 import 'package:Pentachoron/home.dart';
 import 'package:Pentachoron/theme.dart';
 
-void main() => runApp(TesserApp());
+void main() => runApp(PentachoronApp());
 
-class TesserApp extends StatelessWidget {
+class PentachoronApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => DynamicTheme(
         defaultBrightness: Brightness.dark,

@@ -112,7 +112,7 @@ class SingleStatefulAppOption {
     final String name,
     this.onChanged, [
     final bool defaultValue = false,
-  ]) : key = "jim.io.tesserapp.options.$name" {
+  ]) : key = "jim.io.pentachoron.options.$name" {
     SharedPreferences.getInstance().then((final prefs) {
       value = prefs.getBool(key) ?? defaultValue;
     });
