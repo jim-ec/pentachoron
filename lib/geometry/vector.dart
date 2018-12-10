@@ -19,17 +19,17 @@ class Vector {
         final double w = 0.0,
   ]) : components = Float32x4(x, y, z, w);
 
-  const Vector.zero() : this.of(0.0);
+  Vector.zero() : this.of(0.0);
 
-  const Vector.of(final double c) : this(c, c, c, c);
+  Vector.of(final double c) : this(c, c, c, c);
 
-  const Vector.ofX(final double c) : this(c, 0.0, 0.0, 0.0);
+  Vector.ofX(final double c) : this(c, 0.0, 0.0, 0.0);
 
-  const Vector.ofY(final double c) : this(0.0, c, 0.0, 0.0);
+  Vector.ofY(final double c) : this(0.0, c, 0.0, 0.0);
 
-  const Vector.ofZ(final double c) : this(0.0, 0.0, c, 0.0);
+  Vector.ofZ(final double c) : this(0.0, 0.0, c, 0.0);
 
-  const Vector.ofW(final double c) : this(0.0, 0.0, 0.0, c);
+  Vector.ofW(final double c) : this(0.0, 0.0, 0.0, c);
 
   factory Vector.barycenter(final Iterable<Vector> points) =>
       points.reduce((a, b) => a + b) / points.length.toDouble();
