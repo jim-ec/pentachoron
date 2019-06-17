@@ -20,6 +20,7 @@ class FrontLayerState extends State<FrontLayer> {
   var azimuth = defaultAzimuth;
   var rotation = Angle.zero();
   var translation = 0.0;
+  var transparency = 0.0;
 
   @override
   void initState() {
@@ -59,6 +60,7 @@ class FrontLayerState extends State<FrontLayer> {
                 color: Theme.of(context).accentColor,
                 lightDirection: Vector.ofZ(1.0),
                 outlineColor: Theme.of(context).textTheme.title.color,
+                transparency: ((1.0-transparency)*255).floor(),
                 printDrawStats:
                     AppOptions.of(context).printDrawStats.option.value,
                 drawStatsStyle: TextStyle(
@@ -137,6 +139,35 @@ class FrontLayerState extends State<FrontLayer> {
                       flex: 1,
                       child: Text(
                         translation.toStringAsFixed(1),
+                        textAlign: TextAlign.end,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Text("Transparency"),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Slider(
+                        activeColor: Theme.of(context).accentColor,
+                        value: transparency,
+                        min: 0.0,
+                        max: 1.0,
+                        onChanged: (value) {
+                          setState(() {
+                            transparency = value;
+                          });
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        (transparency*100).round().toString() + "%",
                         textAlign: TextAlign.end,
                       ),
                     ),

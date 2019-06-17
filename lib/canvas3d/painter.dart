@@ -10,6 +10,8 @@ class Canvas3dPainter extends CustomPainter {
 
   final Paint outlinePaint;
 
+  final int transparency;
+
   static final view = Matrix.fromRows([
     [1.0, 0.0, 0.0, 0.0, 0.0],
     [0.0, 0.0, -1.0, 0.0, 0.0],
@@ -23,7 +25,8 @@ class Canvas3dPainter extends CustomPainter {
           ..color = canvas3d.outlineColor
           ..style = PaintingStyle.stroke
           ..strokeWidth = 0.01
-          ..strokeJoin = StrokeJoin.round;
+          ..strokeJoin = StrokeJoin.round,
+        transparency = canvas3d.transparency;
 
   @override
   bool shouldRepaint(final CustomPainter oldDelegate) => true;
@@ -68,13 +71,19 @@ class Canvas3dPainter extends CustomPainter {
               polygon, canvas3d.color, canvas3d.lightDirection))
           .where((polygon) => polygon.polygon.points.every((v) => v.z < 0.0))
           .map((polygon) => IlluminatedPolygon.perspectiveDivision(polygon))
-          .where((polygon) => polygon.polygon.normal.z > 0.0);
+          .where((polygon) => transparency == 0 ? polygon.polygon.normal.z > 0.0 : true);
 
       // Depth sort polygons.
       final depthSortedPolygons = polygonsPerspectiveSpace.toList(
           growable: false)
         ..sort(
-            (final a, final b) => depthCompareBarycenter(a.polygon, b.polygon));
+            (final a, final b) => 
+              a.polygon.normal.z < 0.0 && b.polygon.normal.z > 0.0
+                ? -1
+              : a.polygon.normal.z > 0.0 && b.polygon.normal.z < 0.0
+                ? 1
+              : depthCompareBarycenter(a.polygon, b.polygon)
+            );
 
       final drawPolygons = depthSortedPolygons;
       totalPolygonDrawCount += drawPolygons.length;
@@ -90,7 +99,7 @@ class Canvas3dPainter extends CustomPainter {
         // Add current polygon path to outline path.
         outlinePath = Path.combine(PathOperation.union, outlinePath, path);
 
-        final paint = Paint()..color = polygon.color;
+        final paint = Paint()..color = polygon.color.withAlpha(transparency);
 
         canvas.drawPath(path, paint);
       }

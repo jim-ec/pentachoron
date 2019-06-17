@@ -2,6 +2,7 @@ import 'package:angles/angles.dart';
 import 'package:meta/meta.dart';
 import 'package:pentachoron/geometry/matrix.dart';
 import 'package:pentachoron/geometry/vector.dart';
+import 'package:pentachoron/geometry/tolerance.dart';
 
 typedef double _PlaneEquation(final Vector v);
 
@@ -136,6 +137,31 @@ class Polygon {
           Vector(0.0, 0.0, height),
         ]),
       ];
+ 
+  // Check whether two triangles lying on the same plane overlap
+  bool alignedTrianglesOverlap(Polygon p) {
+    final p0 = points.elementAt(0);
+    final p1 = points.elementAt(1);
+    final p2 = points.elementAt(2);
+    final u = p1 - p0;
+    final v = p2 - p0;
+
+    final dot = Vector.dot;
+    final paramPoints = p.points
+      .map((point) {
+        final denom = (dot(u, v)*dot(u, v) - dot(u,u)*dot(v,v));
+        final w = point - p0;
+        final s = (dot(u, v)*dot(w, v)-dot(v, v)*dot(w, u)) / denom;
+        final t = (dot(u, v)*dot(w, u)-dot(u, u)*dot(w, v)) / denom;
+        return [s, t]; // coordinates in the polygon's parametric plane
+      });
+    
+    final overlap = !(paramPoints.every((coords) => coords[0] <= tolerance) ||
+      paramPoints.every((coords) => coords[1] <= tolerance) ||
+      paramPoints.every((coords) => coords[0] >= 1-coords[1]-tolerance));
+    
+    return overlap;
+  }
 }
 
 class _PointAngle implements Comparable<_PointAngle> {

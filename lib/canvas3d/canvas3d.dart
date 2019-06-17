@@ -15,6 +15,8 @@ class Canvas3d extends StatelessWidget {
   /// Color of the outline.
   final Color outlineColor;
 
+  final int transparency;
+
   /// Direction of global light.
   /// A vector longer than 1.0 increases light intensity.
   final Vector lightDirection;
@@ -29,6 +31,7 @@ class Canvas3d extends StatelessWidget {
     @required this.outlineColor,
     @required this.lightDirection,
     @required this.color,
+    @required this.transparency,
     this.printDrawStats = false,
     this.drawStatsStyle,
   })  : drawable = drawableBuilder(),

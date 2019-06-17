@@ -36,10 +36,18 @@ class Volume {
           final allPositive = solutions.every((s) => s > -tolerance);
           final allNegative = solutions.every((s) => s < tolerance);
 
-          if (allPositive || allNegative) {
-            polygons.add((polygon.planeEquation(barycenter) < 0)
-                ? polygon
-                : Polygon.flip(polygon));
+          final alignedPolygon = polygon.planeEquation(barycenter) < 0
+            ? polygon
+            : Polygon.flip(polygon);
+
+          final colliding = polygons
+            .where((other) => 
+              (alignedPolygon.normal - other.normal).length < tolerance &&
+              Vector.dot(alignedPolygon.normal, alignedPolygon.points.first) - Vector.dot(other.normal, other.points.first) < tolerance)
+            .any((p) => alignedPolygon.alignedTrianglesOverlap(p));
+
+          if ((allPositive || allNegative) && !colliding) {
+            polygons.add(alignedPolygon);
           }
         }
       }
