@@ -89,11 +89,11 @@ class FrontLayerState extends State<FrontLayer> {
                 Row(
                   children: <Widget>[
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Text("Rotation"),
                     ),
                     Expanded(
-                      flex: 4,
+                      flex: 6,
                       child: Slider(
                         activeColor: Theme.of(context).accentColor,
                         value: rotation.turns,
@@ -118,11 +118,11 @@ class FrontLayerState extends State<FrontLayer> {
                 Row(
                   children: <Widget>[
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Text("Translation"),
                     ),
                     Expanded(
-                      flex: 4,
+                      flex: 6,
                       child: Slider(
                         activeColor: Theme.of(context).accentColor,
                         value: translation,
@@ -147,11 +147,11 @@ class FrontLayerState extends State<FrontLayer> {
                 Row(
                   children: <Widget>[
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Text("Transparency"),
                     ),
                     Expanded(
-                      flex: 4,
+                      flex: 6,
                       child: Slider(
                         activeColor: Theme.of(context).accentColor,
                         value: transparency,
